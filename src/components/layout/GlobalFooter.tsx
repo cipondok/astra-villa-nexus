@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import {
   Building2,
   Mail,
@@ -59,6 +60,7 @@ const FOOTER_LINKS = [
 
 export default function GlobalFooter() {
   const year = new Date().getFullYear();
+  const { logoUrl: footerLogo } = useBrandingLogo('footerLogo', '/astra-logo.png');
 
   return (
     <footer className="border-t border-border/60 bg-background text-foreground mt-auto">
@@ -68,7 +70,7 @@ export default function GlobalFooter() {
           <div className="col-span-2">
             <Link to="/" className="inline-flex items-center gap-2">
               <img
-                src="/astra-logo.png"
+                src={footerLogo}
                 alt="ASTRA Villa"
                 className="h-9 w-9 rounded-full object-contain shadow-sm bg-primary/10"
               />
