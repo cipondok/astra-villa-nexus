@@ -49,6 +49,9 @@ const tokens = `
     --promo-gradient: linear-gradient(180deg, #1a1408, #0e0a04);
     --promo-gradient-diag: linear-gradient(135deg, #1a1408, #0e0a04);
     --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(200,169,106,0.06), transparent 70%), #0a0a0c;
+    --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%);
+    --hero-text: #F4F1EA;
+    --hero-text-2: #C8C2B4;
     color: var(--text);
     background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
@@ -74,6 +77,10 @@ const tokens = `
     --promo-gradient: linear-gradient(180deg, #2A1F0A, #1A1408);
     --promo-gradient-diag: linear-gradient(135deg, #2A1F0A, #1A1408);
     --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(176,138,62,0.10), transparent 70%), #F3EFE6;
+    /* Keep hero overlay dark in light mode too so white text on hero image stays readable */
+    --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.88) 0%, rgba(11,11,12,0.55) 55%, rgba(11,11,12,0.15) 100%);
+    --hero-text: #FFFFFF;
+    --hero-text-2: #E8E2D2;
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
@@ -565,15 +572,16 @@ export default function AstraReosHome() {
               {/* Hero */}
               <motion.div variants={fadeUp} className="col-span-12 lg:col-span-9 reos-card overflow-hidden relative min-h-[420px]">
                 <img src={heroImg} alt="Luxury villa overlooking the ocean" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%)" }} />
+                <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
 
-                <div className="relative p-8 md:p-10 flex flex-col h-full">
-                  <h1 className="text-4xl md:text-5xl font-semibold leading-[1.05] tracking-tight max-w-xl">
+                <div className="relative p-8 md:p-10 flex flex-col h-full" style={{ color: "var(--hero-text)" }}>
+                  <h1 className="text-4xl md:text-5xl font-semibold leading-[1.05] tracking-tight max-w-xl" style={{ color: "var(--hero-text)" }}>
                     <span className="block">Southeast Asia's</span>
                     <span className="block"><span className="reos-gold">AI-Powered</span> Real Estate</span>
                     <span className="block">Operating System</span>
                   </h1>
-                  <p className="mt-4 text-[15px] text-[var(--text-2)] max-w-md">Buy. Invest. Manage. Finance. Verify. Grow.</p>
+                  <p className="mt-4 text-[15px] max-w-md" style={{ color: "var(--hero-text-2)" }}>Buy. Invest. Manage. Finance. Verify. Grow.</p>
+
 
                   {/* Search box */}
                   <motion.div variants={fadeUp} className="mt-8 max-w-xl">
