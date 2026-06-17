@@ -34,6 +34,7 @@ import { useAdminCheck } from '@/hooks/useAdminCheck';
 import MaintenancePage from '@/pages/MaintenancePage';
 import { NetworkStatusIndicator } from '@/components/NetworkStatusIndicator';
 import { DataSaverProvider } from '@/contexts/DataSaverContext';
+import { SidebarProvider } from '@/components/ui/sidebar';
 // Lazy load all non-critical shell components — reduces initial parse time
 const Navigation = lazy(() => import('@/components/Navigation'));
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
