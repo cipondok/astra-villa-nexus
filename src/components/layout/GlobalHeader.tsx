@@ -16,6 +16,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import AstraThemeSwitcher from "@/components/theme/AstraThemeSwitcher";
+import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import { cn } from "@/lib/utils";
 
 interface Props {
