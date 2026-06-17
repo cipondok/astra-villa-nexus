@@ -418,12 +418,21 @@ const AppContent = () => {
     return <MaintenancePage message={maintenanceMessage} />;
   }
 
-  return (
-    <div className="min-h-screen bg-background text-foreground">
+  const shellInner = (
+    <>
       <NetworkStatusIndicator />
       <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
-      {!hideAppShell && <Suspense fallback={null}><Navigation /></Suspense>}
+      {!hideAppShell && !isAppRoute && <Suspense fallback={null}><Navigation /></Suspense>}
+      </>
+  );
+
+  return (
+    <SidebarProviderConditional enabled={isAppRoute}>
+      {isAppRoute && <Suspense fallback={null}><AppSidebar /></Suspense>}
+      <div className="min-h-screen bg-background text-foreground flex-1 flex flex-col w-full">
+      {shellInner}
+      
       
       <main className={hideAppShell ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
 
