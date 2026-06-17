@@ -84,12 +84,11 @@ export default function GlobalHeader({
           className="flex items-center gap-2 font-semibold tracking-tight text-foreground"
           aria-label={`${brand} home`}
         >
-          <span
-            aria-hidden
-            className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-primary to-accent text-[10px] font-bold uppercase text-primary-foreground shadow-sm"
-          >
-            AV
-          </span>
+          <img
+            src="/astra-logo.png"
+            alt={brand}
+            className="h-8 w-8 rounded-full object-contain shadow-sm md:h-9 md:w-9"
+          />
           <span className="hidden text-sm sm:inline-block md:text-base">{brand}</span>
         </Link>
 
