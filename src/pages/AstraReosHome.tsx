@@ -489,7 +489,7 @@ export default function AstraReosHome() {
                   {sideNav.map(n => (
                     <Link key={n.label} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
                       <n.icon className="h-4 w-4" /><span className="flex-1">{n.label}</span>
-                      {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
+                      {n.badge && <span className="text-[10px] bg-[var(--gold)] text-[var(--gold-fg)] font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
                     </Link>
                   ))}
                 </div>
