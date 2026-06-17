@@ -234,7 +234,7 @@ export default function AstraReosHome() {
               />
               <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.85) 60%, var(--bg) 100%)" }} />
               <div className="relative px-6 md:px-10 pt-20 pb-28">
-                <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.2, 0.7, 0.2, 1] }}>
+                <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full reos-glass text-[11px] uppercase tracking-[0.22em]">
                     <span className="h-1.5 w-1.5 rounded-full bg-[var(--success)] animate-pulse" />
                     Live · ASEAN Real Estate Operating System
