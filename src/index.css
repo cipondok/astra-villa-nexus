@@ -214,122 +214,123 @@ html, body {
 }
 
 @layer base {
-  :root {
-    /* ASTRA Villa REOS — Obsidian Black + Champagne Gold (single palette, dark-first) */
-    --background: 240 4% 5%;          /* #0B0B0C */
-    --foreground: 40 30% 94%;         /* #F4F1EA */
-    --card: 240 5% 8%;                /* #121214 */
-    --card-foreground: 40 30% 94%;
-    --popover: 240 5% 9%;             /* #17171A */
-    --popover-foreground: 40 30% 94%;
-    --primary: 39 45% 60%;            /* #C8A96A champagne gold */
-    --primary-foreground: 30 25% 8%;  /* near-black on gold */
-    --secondary: 240 4% 12%;
-    --secondary-foreground: 40 30% 94%;
-    --muted: 240 4% 12%;
-    --muted-foreground: 40 8% 60%;    /* #9A958A */
-    --accent: 40 60% 70%;             /* #E0C384 bright gold */
-    --accent-foreground: 30 25% 8%;
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 41 25% 22%;             /* warm gold-tinted line */
-    --input: 41 25% 22%;
-    --ring: 39 45% 60%;
+  /* ═══════════════════════════════════════════════════════════════════════
+     ASTRA Design System V3 — Locked Token Set
+     :root / .light      → ASTRA Pearl White  (warm ivory + deep gold)
+     .dark / .astra-black-gold → ASTRA Black Gold (obsidian + champagne)
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  :root,
+  .light,
+  .astra-pearl-white {
+    /* ── ASTRA Pearl White ─────────────────────────────────────────────── */
+    --background: 42 47% 95%;          /* #F7F4EC warm ivory */
+    --foreground: 28 19% 9%;           /* #1B1612 deep warm near-black */
+    --card: 44 60% 98%;                /* #FFFCF5 */
+    --card-foreground: 28 19% 9%;
+    --popover: 44 60% 98%;
+    --popover-foreground: 28 19% 9%;
+    --primary: 36 39% 47%;             /* #A8854B deep gold */
+    --primary-foreground: 44 60% 98%;  /* ivory on gold */
+    --secondary: 42 30% 90%;
+    --secondary-foreground: 28 19% 14%;
+    --muted: 42 30% 90%;
+    --muted-foreground: 32 14% 37%;    /* #6B6051 */
+    --accent: 39 45% 60%;              /* #C8A96A champagne (accent) */
+    --accent-foreground: 28 19% 9%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 44 60% 98%;
+    --border: 42 32% 84%;              /* #E3DBC8 warm beige line */
+    --input: 42 32% 84%;
+    --ring: 36 39% 47%;
     --radius: 14px;
 
-    
-    /* ASTRA Brand Colors - Light Mode */
-    --gold-primary: 48 100% 52%; /* Bright Yellow #FFCC0A */
-    --gold-secondary: 42 95% 50%;
-    --navy-primary: 200 100% 48%;
-    --navy-secondary: 205 85% 42%;
-    --dark-bg: 200 50% 94%;
-    --dark-card: 0 0% 100%;
-    --text-light: 210 60% 12%;
-    --text-muted: 210 20% 45%;
-    
-    /* Hero & Search Section Gradients - Light Mode */
-    --hero-from: 210 30% 88%;
-    --hero-via: 210 25% 90%;
-    --hero-to: 210 20% 92%;
-    --hero-mid: 210 18% 94%;
-    --hero-end: 210 15% 95%;
-    --hero-fade: 210 12% 96%;
-    
-    /* Glassy effect colors - Light Mode */
-    --glass-bg: 200 100% 98%;
-    --glass-border: 200 35% 85%;
-    --glass-shadow: 200 50% 70%;
-    
-    /* Theme Colors */
-    --titanium-light: 200 30% 94%;
-    --titanium-white: 0 0% 100%;
-    --samsung-blue-primary: 200 100% 48%;
+    /* ASTRA brand convenience tokens */
+    --gold-primary: 36 39% 47%;
+    --gold-secondary: 39 45% 60%;
+    --navy-primary: 200 60% 30%;
+    --navy-secondary: 205 50% 38%;
+    --dark-bg: 42 47% 95%;
+    --dark-card: 44 60% 98%;
+    --text-light: 28 19% 9%;
+    --text-muted: 32 14% 37%;
 
-    /* Chart / Data-Viz — Obsidian Black + Champagne Gold palette */
-    --chart-1: 39 45% 60%;    /* Champagne gold #C8A96A — primary series */
-    --chart-2: 40 60% 70%;    /* Bright gold #E0C384 — secondary series */
-    --chart-3: 142 65% 55%;   /* Emerald — positive deltas */
-    --chart-4: 40 30% 94%;    /* Bone white — neutral baseline */
-    --chart-5: 0 65% 55%;     /* Crimson — negative deltas */
+    /* Hero gradients — Pearl White */
+    --hero-from: 42 47% 95%;
+    --hero-via: 42 40% 93%;
+    --hero-to: 42 32% 90%;
+    --hero-mid: 42 28% 92%;
+    --hero-end: 42 25% 94%;
+    --hero-fade: 42 22% 96%;
 
+    /* Glass — Pearl White */
+    --glass-bg: 44 60% 98%;
+    --glass-border: 42 32% 84%;
+    --glass-shadow: 32 14% 37%;
 
-    /* ═══ AI Intelligence Signal Colors ═══ */
-    --intel-blue: 217 91% 60%;
-    --intel-blue-glow: 217 91% 60%;
-    --intel-success: 160 84% 39%;
-    --intel-success-soft: 160 84% 39%;
-    --intel-warning: 38 92% 50%;
-    --intel-danger: 0 84% 60%;
-    --intel-purple: 270 70% 55%;
+    --titanium-light: 42 32% 90%;
+    --titanium-white: 44 60% 98%;
+    --samsung-blue-primary: 200 60% 30%;
 
-    /* Market Heat Gradient Stops */
+    /* Charts — gold-led, works on ivory */
+    --chart-1: 36 39% 47%;     /* deep gold */
+    --chart-2: 39 45% 60%;     /* champagne */
+    --chart-3: 142 55% 35%;    /* emerald */
+    --chart-4: 28 19% 18%;     /* near-black */
+    --chart-5: 0 65% 45%;      /* crimson */
+
+    --intel-blue: 217 65% 42%;
+    --intel-blue-glow: 217 65% 42%;
+    --intel-success: 160 70% 30%;
+    --intel-success-soft: 160 70% 30%;
+    --intel-warning: 38 92% 42%;
+    --intel-danger: 0 70% 45%;
+    --intel-purple: 270 50% 40%;
+
     --heat-cold: 210 30% 50%;
-    --heat-cool: 200 80% 50%;
-    --heat-warm: 38 92% 50%;
-    --heat-hot: 0 84% 55%;
-    --heat-fire: 346 90% 48%;
+    --heat-cool: 200 80% 45%;
+    --heat-warm: 38 92% 45%;
+    --heat-hot: 0 75% 48%;
+    --heat-fire: 346 80% 42%;
 
-    /* Intelligence Card Elevation */
     --intel-radius: 16px;
     --intel-radius-lg: 20px;
-    --shadow-intel: 0 4px 20px hsl(217 91% 55% / 0.08);
-    --shadow-intel-active: 0 8px 32px hsl(217 91% 55% / 0.15), 0 0 0 1px hsl(217 91% 55% / 0.1);
+    --shadow-intel: 0 4px 20px hsl(36 39% 47% / 0.08);
+    --shadow-intel-active: 0 8px 32px hsl(36 39% 47% / 0.15), 0 0 0 1px hsl(36 39% 47% / 0.1);
 
-    /* ═══ Astra Villa Admin Panel Tokens ═══ */
-    --panel-bg: 220 16% 97%;
-    --panel-bg-elevated: 220 14% 99%;
-    --panel-border: 220 13% 86%;
-    --panel-border-subtle: 220 10% 91%;
-    --panel-hover: 220 14% 94%;
-    --panel-active: 220 12% 91%;
-    --panel-text: 220 25% 12%;
-    --panel-text-secondary: 220 10% 42%;
-    --panel-text-muted: 220 8% 58%;
-    --panel-accent: 43 96% 50%;
-    --panel-accent-dim: 43 80% 44%;
-    --panel-success: 152 69% 38%;
-    --panel-danger: 350 65% 48%;
-    --panel-warning: 38 92% 50%;
-    --panel-info: 210 80% 52%;
-    --panel-tooltip-bg: 220 20% 18%;
-    --panel-tooltip-border: 220 15% 28%;
-    --panel-tooltip-text: 220 8% 88%;
-    --panel-glow-accent: 43 96% 50%;
-    --panel-shadow: 0 1px 3px hsl(220 20% 12% / 0.06), 0 0 0 1px hsl(220 13% 86% / 0.8);
-    --panel-shadow-hover: 0 4px 12px hsl(220 20% 12% / 0.08), 0 0 0 1px hsl(43 96% 50% / 0.15);
+    /* Admin panel — Pearl tokens */
+    --panel-bg: 42 40% 96%;
+    --panel-bg-elevated: 44 60% 98%;
+    --panel-border: 42 32% 84%;
+    --panel-border-subtle: 42 25% 88%;
+    --panel-hover: 42 30% 92%;
+    --panel-active: 42 28% 90%;
+    --panel-text: 28 19% 9%;
+    --panel-text-secondary: 32 14% 37%;
+    --panel-text-muted: 32 10% 50%;
+    --panel-accent: 36 39% 47%;
+    --panel-accent-dim: 36 35% 40%;
+    --panel-success: 152 60% 32%;
+    --panel-danger: 350 60% 42%;
+    --panel-warning: 38 92% 42%;
+    --panel-info: 210 70% 42%;
+    --panel-tooltip-bg: 28 19% 9%;
+    --panel-tooltip-border: 36 39% 47%;
+    --panel-tooltip-text: 44 60% 98%;
+    --panel-glow-accent: 36 39% 47%;
+    --panel-shadow: 0 1px 3px hsl(28 19% 9% / 0.06), 0 0 0 1px hsl(42 32% 84% / 0.8);
+    --panel-shadow-hover: 0 4px 12px hsl(28 19% 9% / 0.08), 0 0 0 1px hsl(36 39% 47% / 0.2);
 
-    /* Sidebar — aligned to Obsidian Black + Champagne Gold */
-    --sidebar-background: 240 5% 7%;
-    --sidebar-foreground: 40 30% 94%;
-    --sidebar-primary: 39 45% 60%;
-    --sidebar-primary-foreground: 30 25% 8%;
-    --sidebar-accent: 41 25% 14%;
-    --sidebar-accent-foreground: 40 60% 78%;
-    --sidebar-border: 41 25% 22%;
-    --sidebar-ring: 39 45% 60%;
-
+    --sidebar-background: 44 60% 98%;
+    --sidebar-foreground: 28 19% 9%;
+    --sidebar-primary: 36 39% 47%;
+    --sidebar-primary-foreground: 44 60% 98%;
+    --sidebar-accent: 42 30% 92%;
+    --sidebar-accent-foreground: 28 19% 14%;
+    --sidebar-border: 42 32% 84%;
+    --sidebar-ring: 36 39% 47%;
   }
+
 
   .dark {
     /* Dark mode = same Obsidian Black + Champagne Gold (single source of truth) */

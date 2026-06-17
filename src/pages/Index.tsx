@@ -330,7 +330,7 @@ const Index = () => {
 
   // Hero background image — admin config or theme-aware default
   const { theme } = useTheme();
-  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const isDark = theme === 'dark';
   const heroImage = heroConfig?.bannerImages?.[0] || (isDark ? heroDesktopDark : heroDesktop);
   const heroMobileImg = isDark ? heroMobileDark : heroMobile;
 

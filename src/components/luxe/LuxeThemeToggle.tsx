@@ -15,14 +15,8 @@ interface LuxeThemeToggleProps {
 export function LuxeThemeToggle({ className, variant = "icon" }: LuxeThemeToggleProps) {
   const { theme, setTheme } = useTheme();
 
-  const resolved =
-    theme === "system"
-      ? (typeof window !== "undefined" &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light")
-      : theme;
-
+  // ThemeProvider already resolves 'system' to 'dark'|'light'.
+  const resolved = theme;
   const next = resolved === "dark" ? "light" : "dark";
   const isDark = resolved === "dark";
 

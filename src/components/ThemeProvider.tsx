@@ -1,89 +1,134 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 
-type Theme = "dark" | "light" | "system";
+/**
+ * ASTRA Design System V3 — Theme Provider
+ *
+ * Two locked ASTRA themes:
+ *   • astra-black-gold  → dark default (Obsidian Black + Champagne Gold)
+ *   • astra-pearl-white → light default (Warm Ivory + Deep Gold)
+ *
+ * Backwards compat: `theme` is exposed as the legacy 'dark' | 'light'
+ * union (black-gold === 'dark', pearl-white === 'light') so existing
+ * comparisons across the codebase keep working. Use `astraTheme` for
+ * the full ASTRA name when needed.
+ */
+export type AstraTheme = "astra-black-gold" | "astra-pearl-white";
+export type ThemePreference = AstraTheme | "dark" | "light" | "system";
+/** Legacy-compatible theme value emitted by useTheme().theme. */
+export type Theme = "dark" | "light";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
-  defaultTheme?: Theme;
+  defaultTheme?: ThemePreference;
   storageKey?: string;
 };
 
 type ThemeProviderState = {
+  /** Legacy compat value: 'dark' (Black Gold) or 'light' (Pearl White). */
   theme: Theme;
-  setTheme: (theme: Theme) => void;
+  /** Full ASTRA theme name currently applied. */
+  astraTheme: AstraTheme;
+  /** Raw stored preference (may be 'system'). */
+  preference: ThemePreference;
+  /** Set a new preference. Accepts ASTRA names or legacy 'dark'|'light'|'system'. */
+  setTheme: (theme: ThemePreference) => void;
+  /** Toggle between the two ASTRA themes. */
+  toggleTheme: () => void;
 };
 
+const STORAGE_KEY_DEFAULT = "astra-villa-theme";
+
+function normalize(value: ThemePreference | null | undefined): AstraTheme | "system" {
+  if (value === "astra-black-gold" || value === "dark") return "astra-black-gold";
+  if (value === "astra-pearl-white" || value === "light") return "astra-pearl-white";
+  return "system";
+}
+
+function resolveSystem(): AstraTheme {
+  if (typeof window === "undefined") return "astra-black-gold";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "astra-black-gold"
+    : "astra-pearl-white";
+}
+
 const initialState: ThemeProviderState = {
-  theme: "system",
+  theme: "dark",
+  astraTheme: "astra-black-gold",
+  preference: "astra-black-gold",
   setTheme: () => null,
+  toggleTheme: () => null,
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = "light",
-  storageKey = "astra-villa-theme",
-  ...props
+  defaultTheme = "astra-black-gold",
+  storageKey = STORAGE_KEY_DEFAULT,
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [preference, setPreference] = useState<ThemePreference>(() => {
     try {
       if (typeof window !== "undefined" && window.localStorage) {
-        const savedTheme = localStorage.getItem(storageKey) as Theme;
-        return savedTheme || defaultTheme;
+        const saved = localStorage.getItem(storageKey) as ThemePreference | null;
+        if (saved) return saved;
       }
-    } catch (error) {
-      console.warn("Error accessing localStorage:", error);
+    } catch {
+      /* ignore */
     }
     return defaultTheme;
   });
 
+  const normalized = normalize(preference);
+  const astraTheme: AstraTheme =
+    normalized === "system" ? resolveSystem() : normalized;
+  const theme: Theme = astraTheme === "astra-black-gold" ? "dark" : "light";
+
+  // Apply the resolved theme to <html>
   useEffect(() => {
     const root = window.document.documentElement;
+    root.classList.remove("light", "dark", "astra-pearl-white", "astra-black-gold");
 
-    // Remove existing theme classes
-    root.classList.remove("light", "dark");
-
-    let effectiveTheme = theme;
-
-    // Handle system theme
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-      effectiveTheme = systemTheme;
+    if (astraTheme === "astra-black-gold") {
+      root.classList.add("dark", "astra-black-gold");
+      root.setAttribute("data-theme", "astra-black-gold");
+    } else {
+      root.classList.add("light", "astra-pearl-white");
+      root.setAttribute("data-theme", "astra-pearl-white");
     }
 
-    // Apply theme class - CSS handles all color switching
-    root.classList.add(effectiveTheme);
-
-    // Listen for system theme changes only if using system theme
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleSystemThemeChange = () => {
-      if (theme === "system") {
-        // Force re-render by toggling classes
-        root.classList.remove("light", "dark");
-        const newSystemTheme = mediaQuery.matches ? "dark" : "light";
-        root.classList.add(newSystemTheme);
-      }
+    // Follow OS only when preference is 'system'
+    if (normalized !== "system") return;
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => {
+      root.classList.remove("light", "dark", "astra-pearl-white", "astra-black-gold");
+      const next: AstraTheme = mq.matches ? "astra-black-gold" : "astra-pearl-white";
+      root.classList.add(next === "astra-black-gold" ? "dark" : "light", next);
+      root.setAttribute("data-theme", next);
     };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [astraTheme, normalized]);
 
-    if (theme === "system") {
-      mediaQuery.addEventListener("change", handleSystemThemeChange);
-      return () => mediaQuery.removeEventListener("change", handleSystemThemeChange);
-    }
-  }, [theme]);
-
-  const value = {
-    theme,
-    setTheme: (newTheme: Theme) => {
-      localStorage.setItem(storageKey, newTheme);
-      setTheme(newTheme);
+  const setTheme = useCallback(
+    (next: ThemePreference) => {
+      try {
+        localStorage.setItem(storageKey, next);
+      } catch {
+        /* ignore */
+      }
+      setPreference(next);
     },
-  };
+    [storageKey]
+  );
+
+  const toggleTheme = useCallback(() => {
+    setTheme(astraTheme === "astra-black-gold" ? "astra-pearl-white" : "astra-black-gold");
+  }, [astraTheme, setTheme]);
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeProviderContext.Provider
+      value={{ theme, astraTheme, preference, setTheme, toggleTheme }}
+    >
       {children}
     </ThemeProviderContext.Provider>
   );
@@ -91,9 +136,8 @@ export function ThemeProvider({
 
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
-
-  if (context === undefined)
+  if (context === undefined) {
     throw new Error("useTheme must be used within a ThemeProvider");
-
+  }
   return context;
 };
