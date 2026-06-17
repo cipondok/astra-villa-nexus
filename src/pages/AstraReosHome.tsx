@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
 import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
+import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 
 
 /* ============================================================
