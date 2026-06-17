@@ -47172,6 +47172,7 @@ export type Database = {
           npwp_number: string | null
           onboarded_at: string | null
           phone: string | null
+          preferred_theme: string
           profile_change_count: number | null
           profile_change_history: Json | null
           profile_completion_percentage: number | null
@@ -47213,6 +47214,7 @@ export type Database = {
           npwp_number?: string | null
           onboarded_at?: string | null
           phone?: string | null
+          preferred_theme?: string
           profile_change_count?: number | null
           profile_change_history?: Json | null
           profile_completion_percentage?: number | null
@@ -47254,6 +47256,7 @@ export type Database = {
           npwp_number?: string | null
           onboarded_at?: string | null
           phone?: string | null
+          preferred_theme?: string
           profile_change_count?: number | null
           profile_change_history?: Json | null
           profile_completion_percentage?: number | null
