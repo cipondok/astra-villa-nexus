@@ -520,35 +520,6 @@ export default function AstraReosHome() {
               </motion.div>
             </Section>
 
-            {/* INVESTOR CLUB */}
-            <Section className="px-6 md:px-10 mt-16">
-              <motion.div variants={fadeUp}>
-                <div className="text-xs uppercase tracking-[0.22em] reos-gold">Investor Club</div>
-                
-              </motion.div>
-              <motion.div variants={stagger} className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  { tier: "Silver", price: "$99/mo", perks: ["Weekly market reports", "Standard alerts", "Email support"] },
-                  { tier: "Gold", price: "$299/mo", perks: ["Daily intelligence briefings", "Exclusive deals", "Dedicated advisor"], featured: true },
-                  { tier: "Platinum", price: "$999/mo", perks: ["Private deal flow", "VIP property tours", "Bespoke wealth planning"] },
-                ].map(t => (
-                  <motion.div key={t.tier} variants={fadeUp} whileHover={{ y: -4 }} className={`reos-card p-6 relative ${t.featured ? "ring-1 ring-[var(--gold-bright)]" : ""}`}>
-                    {t.featured && <div className="absolute -top-3 left-6 text-[10px] uppercase tracking-[0.2em] reos-cta px-2 py-1 rounded-md">Most Popular</div>}
-                    <div className="flex items-center gap-2">
-                      <Crown className="h-4 w-4 reos-gold" />
-                      <span className="text-sm uppercase tracking-[0.18em]">{t.tier}</span>
-                    </div>
-                    <div className="mt-3 text-3xl font-semibold">{t.price}</div>
-                    <ul className="mt-5 space-y-2 text-sm text-[var(--text-2)]">
-                      {t.perks.map(p => <li key={p} className="flex items-center gap-2"><Eye className="h-3.5 w-3.5 reos-gold" />{p}</li>)}
-                    </ul>
-                    <button className={`mt-6 w-full h-11 rounded-xl text-sm transition ${t.featured ? "reos-cta" : "reos-outline hover:bg-[var(--card-2)]"}`}>
-                      Join {t.tier}
-                    </button>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </Section>
 
             {/* FOOTER */}
             <footer className="mt-20 border-t border-[var(--border)]">
