@@ -156,13 +156,13 @@ const Settings = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-2 py-2">
         {/* Compact Header */}
-        <div className="sticky top-0 z-40 bg-gradient-to-r from-gold-primary/20 via-gold-primary/10 to-gold-primary/5 border border-gold-primary/15 backdrop-blur-2xl px-2 py-2 -mx-2 mb-2 rounded-lg">
+        <div className="sticky top-0 z-40 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/5 border border-primary/15 backdrop-blur-2xl px-2 py-2 -mx-2 mb-2 rounded-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 w-7 p-0 text-foreground hover:bg-gold-primary/10"
+                className="h-7 w-7 p-0 text-foreground hover:bg-primary/10"
                 onClick={() => navigate(-1)}
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -172,11 +172,11 @@ const Settings = () => {
                   <img
                     src={profile.avatar_url}
                     alt={profile?.full_name || 'User'}
-                    className="w-7 h-7 rounded-lg object-cover border border-gold-primary/20"
+                    className="w-7 h-7 rounded-lg object-cover border border-primary/20"
                   />
                 ) : (
-                  <div className="w-7 h-7 rounded-lg bg-gold-primary/10 flex items-center justify-center">
-                    <User className="h-3.5 w-3.5 text-gold-primary" />
+                  <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <User className="h-3.5 w-3.5 text-primary" />
                   </div>
                 )}
                 <div>
@@ -259,9 +259,9 @@ const Settings = () => {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
                   <div className={`w-6 h-6 rounded-md flex items-center justify-center ${
-                    theme === 'dark' ? 'bg-gold-primary/10' : 'bg-gold-primary/10'
+                    theme === 'dark' ? 'bg-primary/10' : 'bg-primary/10'
                   }`}>
-                    {theme === 'dark' ? <Moon className="h-3.5 w-3.5 text-gold-primary" /> : <Sun className="h-3.5 w-3.5 text-gold-primary" />}
+                    {theme === 'dark' ? <Moon className="h-3.5 w-3.5 text-primary" /> : <Sun className="h-3.5 w-3.5 text-primary" />}
                   </div>
                   <div>
                     <p className="text-xs font-semibold">{theme === 'dark' ? 'Dark' : 'Light'} Mode</p>
@@ -274,26 +274,26 @@ const Settings = () => {
                     setTheme(checked ? 'dark' : 'light');
                     toast({ title: checked ? "Dark Mode" : "Light Mode" });
                   }}
-                  className="h-5 w-9 data-[state=checked]:bg-gold-primary data-[state=unchecked]:bg-gold-primary/60"
+                  className="h-5 w-9 data-[state=checked]:bg-primary data-[state=unchecked]:bg-primary/60"
                 />
               </div>
               <div className="grid grid-cols-2 gap-1.5">
                 <button
                   onClick={() => { setTheme('light'); toast({ title: "Light Mode" }); }}
                   className={`p-2 rounded-md border transition-all ${
-                    theme === 'light' ? 'border-gold-primary bg-gold-primary/5' : 'border-border bg-muted/30'
+                    theme === 'light' ? 'border-primary bg-primary/5' : 'border-border bg-muted/30'
                   }`}
                 >
-                  <Sun className={`h-4 w-4 mx-auto ${theme === 'light' ? 'text-gold-primary' : 'text-muted-foreground'}`} />
+                  <Sun className={`h-4 w-4 mx-auto ${theme === 'light' ? 'text-primary' : 'text-muted-foreground'}`} />
                   <p className="text-[10px] font-medium mt-0.5">Light</p>
                 </button>
                 <button
                   onClick={() => { setTheme('dark'); toast({ title: "Dark Mode" }); }}
                   className={`p-2 rounded-md border transition-all ${
-                    theme === 'dark' ? 'border-gold-primary bg-gold-primary/5' : 'border-border bg-muted/30'
+                    theme === 'dark' ? 'border-primary bg-primary/5' : 'border-border bg-muted/30'
                   }`}
                 >
-                  <Moon className={`h-4 w-4 mx-auto ${theme === 'dark' ? 'text-gold-primary' : 'text-muted-foreground'}`} />
+                  <Moon className={`h-4 w-4 mx-auto ${theme === 'dark' ? 'text-primary' : 'text-muted-foreground'}`} />
                   <p className="text-[10px] font-medium mt-0.5">Dark</p>
                 </button>
               </div>
@@ -355,7 +355,7 @@ const Settings = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-1 text-center">
                       <div className="p-1 rounded bg-background border">
-                        <p className="text-sm font-bold text-gold-primary">{cacheStats.queryCacheCount}</p>
+                        <p className="text-sm font-bold text-primary">{cacheStats.queryCacheCount}</p>
                         <p className="text-[8px] text-muted-foreground">Total</p>
                       </div>
                       <div className="p-1 rounded bg-background border">

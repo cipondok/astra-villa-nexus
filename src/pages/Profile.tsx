@@ -408,18 +408,18 @@ const Profile = () => {
             <div className="grid grid-cols-4 gap-3 mt-4">
               <button 
                 onClick={() => navigate('/membership')}
-                className="p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10 hover:bg-gold-primary/10 transition-colors text-left"
+                className="p-3 rounded-lg bg-primary/5 border border-primary/10 hover:bg-primary/10 transition-colors text-left"
               >
                 <p className="text-xs text-muted-foreground mb-0.5">{t.membership}</p>
                 <p className={cn("text-sm font-semibold", levelConfig.color)}>
                   {levelConfig.shortLabel}
                 </p>
               </button>
-              <div className="p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10">
+              <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
                 <p className="text-xs text-muted-foreground mb-0.5">{t.verification}</p>
                 <p className={cn(
                   "text-sm font-semibold flex items-center gap-1",
-                  verificationStatus === 'verified' ? 'text-gold-primary' : 'text-muted-foreground'
+                  verificationStatus === 'verified' ? 'text-primary' : 'text-muted-foreground'
                 )}>
                   {verificationStatus === 'verified' ? (
                     <><CheckCircle className="h-3.5 w-3.5" /> {t.verified}</>
@@ -428,21 +428,21 @@ const Profile = () => {
                   )}
                 </p>
               </div>
-              <div className="p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10">
+              <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
                 <p className="text-xs text-muted-foreground mb-0.5">
                   {language === 'id' ? 'Bergabung' : 'Member Since'}
                 </p>
-                <p className="text-sm font-semibold text-gold-primary flex items-center gap-1">
+                <p className="text-sm font-semibold text-primary flex items-center gap-1">
                   <Calendar className="h-3.5 w-3.5" />
                   {profile?.created_at ? formatMemberDuration(profile.created_at) : '< 1 Year'}
                 </p>
               </div>
               <button 
                 onClick={() => setActiveTab('roles')}
-                className="p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10 hover:bg-gold-primary/10 transition-colors text-left"
+                className="p-3 rounded-lg bg-primary/5 border border-primary/10 hover:bg-primary/10 transition-colors text-left"
               >
                 <p className="text-xs text-muted-foreground mb-0.5">{t.roles}</p>
-                <p className="text-sm font-semibold text-gold-primary flex items-center gap-1">
+                <p className="text-sm font-semibold text-primary flex items-center gap-1">
                   <Sparkles className="h-3.5 w-3.5" /> Upgrade
                 </p>
               </button>
