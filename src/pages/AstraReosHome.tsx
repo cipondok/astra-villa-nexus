@@ -676,7 +676,7 @@ export default function AstraReosHome() {
                     const img = p.cover_image || p.images?.[0] || heroImg;
                     return (
                       <motion.div key={p.id} variants={fadeUp} whileHover={{ y: -3 }} className="reos-card-2 overflow-hidden group">
-                        <Link to={`/property/${p.slug ?? p.id}`}>
+                        <Link to={`/properties/${p.slug ?? p.id}`}>
                           <div className="relative h-28 overflow-hidden">
                             <img src={img} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                             <span className={`absolute top-2 left-2 text-[9px] font-bold tracking-wider px-1.5 py-0.5 rounded ${badgeColor[p._badge]}`}>{p._badge}</span>
