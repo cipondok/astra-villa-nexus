@@ -633,14 +633,14 @@ const Profile = () => {
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <Button onClick={handleSave} disabled={isSaving} className="flex-1 h-9 bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20">
+                      <AstraButton onClick={handleSave} disabled={isSaving} className="flex-1 h-9">
                         <Save className="h-4 w-4 mr-1.5" />
                         {isSaving ? t.saving : t.save}
-                      </Button>
-                      <Button variant="outline" onClick={handleCancel} disabled={isSaving} className="flex-1 h-9">
+                      </AstraButton>
+                      <AstraButton variant="outline" onClick={handleCancel} disabled={isSaving} className="flex-1 h-9">
                         <X className="h-4 w-4 mr-1.5" />
                         {t.cancel}
-                      </Button>
+                      </AstraButton>
                     </div>
                   </div>
                 ) : (
