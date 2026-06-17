@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Search, Bell, Globe, Heart, Sparkles, ChevronDown, ChevronRight,
   LayoutDashboard, Building2, TrendingUp, Banknote, Scale, Wrench,
   Store, Cpu, MoreHorizontal, Eye, BookmarkPlus, Wallet, MessageSquare,
   ArrowLeftRight, Calendar, FileText, LifeBuoy, Crown, ArrowUpRight,
   MapPin, BedDouble, Bath, Maximize, Shield, BarChart3, Loader2, X,
-  Sliders, Plus, Minus, CheckCircle2,
+  Sliders, Plus, Minus, CheckCircle2, Sun, Moon, Menu, LogOut, User,
 } from "lucide-react";
 import {
   LineChart, Line, ResponsiveContainer,
@@ -16,6 +16,8 @@ import heroImg from "@/assets/reos-hero.jpg";
 import { useReosMarket, formatIDR } from "@/hooks/useReosMarket";
 import { useReosAiSearch } from "@/hooks/useReosAiSearch";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/components/ThemeProvider";
 import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 
 
