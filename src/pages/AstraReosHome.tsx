@@ -258,13 +258,23 @@ export default function AstraReosHome() {
               <button className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center">
                 <Heart className="h-4 w-4 text-[var(--text-2)]" />
               </button>
-              <div className="h-9 pl-1.5 pr-3 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">M</div>
-                <div className="leading-none">
-                  <div className="text-[12px] font-medium">Michael Tan</div>
-                  <div className="text-[9px] reos-gold mt-0.5">Premium Investor</div>
+              {user ? (
+                <div className="h-9 pl-1.5 pr-3 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">{(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}</div>
+                  <div className="leading-none">
+                    <div className="text-[12px] font-medium truncate max-w-[120px]">{profile?.full_name || user.email}</div>
+                    <div className="text-[9px] reos-gold mt-0.5">Premium Investor</div>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <>
+                  <button onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-9 px-4 rounded-lg text-[12.5px] hover:bg-[var(--surface)] text-[var(--text)] transition">Sign in</button>
+                  <button onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-9 px-4 rounded-lg reos-cta text-[12.5px] inline-flex items-center gap-1.5">
+                    Get Started <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </>
+              )}
+
             </div>
           </div>
 
