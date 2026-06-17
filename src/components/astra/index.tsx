@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button, ButtonProps } from "@/components/ui/button";
-import { Input, InputProps } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 /**
@@ -51,7 +51,7 @@ export function AstraButton({ className, size, ...props }: ButtonProps) {
 }
 
 /** ASTRA Input — rounded, primary-tinted focus ring. */
-export function AstraInput({ className, ...props }: InputProps) {
+export function AstraInput({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <Input
       className={cn(
