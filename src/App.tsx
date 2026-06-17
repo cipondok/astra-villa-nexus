@@ -865,17 +865,34 @@ const AppContent = () => {
           </PageTransition>
         </AnimatePresence>
       </main>
-      {!hideAppShell && (
-        <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '180px' }} />}>
-          {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
-        </Suspense>
-      )}
-
       {/* Mobile bottom tab bar — legacy only; luxe routes use LuxeMobileDock */}
-      {!hideAppShell && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
-    </div>
+      {!hideAppShell && !isAppRoute && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
+
+      {/* ASTRA V3: unified footer rendered on every route */}
+      <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '120px' }} />}>
+        <GlobalFooter />
+      </Suspense>
+      </div>
+    </SidebarProviderConditional>
   );
 };
+
+function SidebarProviderConditional({
+  enabled,
+  children,
+}: {
+  enabled: boolean;
+  children: React.ReactNode;
+}) {
+  if (!enabled) return <>{children}</>;
+  // Lazy import to avoid SSR/circular issues
+  const { SidebarProvider } = require('@/components/ui/sidebar');
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">{children}</div>
+    </SidebarProvider>
+  );
+}
 
 // Create QueryClient instance outside component to avoid recreation on every render
 const queryClient = new QueryClient({
