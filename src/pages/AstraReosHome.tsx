@@ -77,6 +77,10 @@ const tokens = `
     --promo-gradient: linear-gradient(180deg, #2A1F0A, #1A1408);
     --promo-gradient-diag: linear-gradient(135deg, #2A1F0A, #1A1408);
     --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(176,138,62,0.10), transparent 70%), #F3EFE6;
+    /* Keep hero overlay dark in light mode too so white text on hero image stays readable */
+    --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.88) 0%, rgba(11,11,12,0.55) 55%, rgba(11,11,12,0.15) 100%);
+    --hero-text: #FFFFFF;
+    --hero-text-2: #E8E2D2;
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
