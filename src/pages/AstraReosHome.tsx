@@ -120,10 +120,10 @@ const sideNav = [
 const hubs = [
   { icon: Building2,  title: "Properties\nMarketplace", desc: "10,234+ Listings", to: "/properties" },
   { icon: BarChart3,  title: "Investment\nHub", desc: "High ROI Opportunities", to: "/investment" },
-  { icon: Scale,      title: "Finance\nHub", desc: "KPR & Funding Solutions", to: "/finance" },
-  { icon: Shield,     title: "Legal\nHub", desc: "Verified & Secure", to: "/legal" },
-  { icon: Sparkles,   title: "AI Investment\nAdvisor", desc: "Smart Recommendations", to: "/ai" },
-  { icon: Wrench,     title: "Property\nManagement", desc: "Manage Your Assets", to: "/management" },
+  { icon: Scale,      title: "Finance\nHub", desc: "KPR & Funding Solutions", to: "/wallet" },
+  { icon: Shield,     title: "Legal\nHub", desc: "Verified & Secure", to: "/legal-services" },
+  { icon: Sparkles,   title: "AI Investment\nAdvisor", desc: "Smart Recommendations", to: "/ai-search" },
+  { icon: Wrench,     title: "Property\nManagement", desc: "Manage Your Assets", to: "/agent-dashboard" },
 ];
 
 /* ---------- Search tabs ---------- */
@@ -756,7 +756,7 @@ export default function AstraReosHome() {
                 <Section className="reos-card p-5">
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-[13px] font-semibold">AI Recommendation</div>
-                    <Link to="/ai" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                    <Link to="/ai-search" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
                   </div>
                   <div className="space-y-3">
                     {aiRecs.map(r => (
@@ -779,7 +779,7 @@ export default function AstraReosHome() {
                 <Section className="reos-card p-5">
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-[13px] font-semibold">Market Intelligence</div>
-                    <Link to="/intelligence" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                    <Link to="/market-heatmap" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
                   </div>
                   <div className="space-y-2.5">
                     {marketReports.map(r => (
