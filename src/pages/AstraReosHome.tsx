@@ -564,11 +564,20 @@ export default function AstraReosHome() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {locationChips.map(c => (
-                        <button key={c} onClick={() => { setAiQuery(`Properties in ${c}`); }} className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur">
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => navigate(`/search?q=${encodeURIComponent(`Properties in ${c}`)}`)}
+                          className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur"
+                        >
                           {c}
                         </button>
                       ))}
-                      <button className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur inline-flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => navigate("/search-advanced")}
+                        className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur inline-flex items-center gap-1"
+                      >
                         More <ChevronDown className="h-3 w-3" />
                       </button>
                     </div>
