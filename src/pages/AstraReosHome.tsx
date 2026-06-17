@@ -790,7 +790,7 @@ export default function AstraReosHome() {
                 </div>
                 <div className="mt-3 flex items-center justify-between text-[10px] text-[var(--text-2)]">
                   <span>Low ROI</span>
-                  <div className="flex-1 mx-3 h-1.5 rounded-full" style={{ background: "linear-gradient(90deg, rgba(200,169,106,0.15), var(--gold))" }} />
+                  <div className="flex-1 mx-3 h-1.5 rounded-full" style={{ background: "linear-gradient(90deg, var(--gold-soft), var(--gold))" }} />
                   <span>High ROI</span>
                 </div>
               </Section>
