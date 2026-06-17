@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { isSessionCheckSuppressed } from '@/hooks/useSessionMonitor';
 import { isValidUUID } from '@/utils/uuid-validation';
 import { validateUUIDWithLogging } from '@/utils/uuid-validation-logger';
+import { logAuthFailure } from '@/utils/globalErrorReporter';
 
 export type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service' | 'super_admin';
 
@@ -359,7 +360,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('Sign in error:', error);
         setLoading(false);
-        
+        void logAuthFailure('sign_in', error, { email });
+
         // Provide specific error messages
         if (error.message.includes('Invalid login credentials')) {
           return { 
@@ -379,7 +381,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       console.error('Sign in error:', error);
       setLoading(false);
-      
+      void logAuthFailure('sign_in', error, { email });
+
       // Handle specific network errors
       if (error.name === 'AbortError') {
         return { error: { message: 'Login timeout. Please check your connection and try again.' }, success: false };
@@ -411,6 +414,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('Google sign in error:', error);
         setLoading(false);
+        void logAuthFailure('oauth', error, { provider: 'google' });
         return { error, success: false };
       }
 
@@ -420,6 +424,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       console.error('Google sign in error:', error);
       setLoading(false);
+      void logAuthFailure('oauth', error, { provider: 'google' });
       return { error: { message: 'Google sign in failed. Please try again.' }, success: false };
     }
   };
@@ -487,6 +492,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         console.error('Sign up error:', error);
         setLoading(false);
+        void logAuthFailure('sign_up', error, { email });
         return { error, success: false };
       }
 
@@ -496,7 +502,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       console.error('Sign up error:', error);
       setLoading(false);
-      
+      void logAuthFailure('sign_up', error, { email });
+
       // Handle specific network errors
       if (error.name === 'AbortError') {
         return { error: { message: 'Registration timeout. Please check your connection and try again.' }, success: false };

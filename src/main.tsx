@@ -3,6 +3,11 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { initGlobalErrorReporter } from "./utils/globalErrorReporter";
+
+// Initialize global error capture (console errors, unhandled rejections, fetch failures)
+initGlobalErrorReporter();
+
 
 // Performance monitoring
 if (typeof window !== 'undefined' && 'performance' in window) {

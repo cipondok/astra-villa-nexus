@@ -59,17 +59,26 @@ export default function ErrorMonitoringDashboard() {
   const { data: stats } = useQuery({
     queryKey: ['error-stats'],
     queryFn: async () => {
-      const [newErrors, criticalErrors, todayErrors] = await Promise.all([
+      const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const [newErrors, criticalErrors, todayErrors, authErrors, notFound, networkErrors, consoleErrors] = await Promise.all([
         supabase.from('error_logs').select('*', { count: 'exact', head: true }).eq('status', 'new'),
         supabase.from('error_logs').select('*', { count: 'exact', head: true }).eq('severity', 'critical'),
-        supabase.from('error_logs').select('*', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        supabase.from('error_logs').select('*', { count: 'exact', head: true }).gte('created_at', since24h),
+        supabase.from('error_logs').select('*', { count: 'exact', head: true }).eq('error_type', 'auth_failure').gte('created_at', since24h),
+        supabase.from('error_logs').select('*', { count: 'exact', head: true }).eq('error_type', '404').gte('created_at', since24h),
+        supabase.from('error_logs').select('*', { count: 'exact', head: true }).in('error_type', ['network_error', 'api_error']).gte('created_at', since24h),
+        supabase.from('error_logs').select('*', { count: 'exact', head: true }).in('error_type', ['console_error', 'unhandled_rejection', 'component_error']).gte('created_at', since24h),
       ]);
 
       return {
         new: newErrors.count || 0,
         critical: criticalErrors.count || 0,
         today: todayErrors.count || 0,
-        total: errorLogs?.length || 0
+        total: errorLogs?.length || 0,
+        auth: authErrors.count || 0,
+        notFound: notFound.count || 0,
+        network: networkErrors.count || 0,
+        console: consoleErrors.count || 0,
       };
     },
     refetchInterval: 10000,
@@ -199,6 +208,34 @@ export default function ErrorMonitoringDashboard() {
             <CardTitle className="text-3xl font-bold">
               {errorLogs?.length || 0}
             </CardTitle>
+          </CardHeader>
+        </Card>
+      </div>
+
+      {/* Category breakdown (last 24h) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Auth Failures (24h)</CardDescription>
+            <CardTitle className="text-2xl font-bold">{stats?.auth || 0}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>404s (24h)</CardDescription>
+            <CardTitle className="text-2xl font-bold">{stats?.notFound || 0}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Network / API (24h)</CardDescription>
+            <CardTitle className="text-2xl font-bold">{stats?.network || 0}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Console / Runtime (24h)</CardDescription>
+            <CardTitle className="text-2xl font-bold">{stats?.console || 0}</CardTitle>
           </CardHeader>
         </Card>
       </div>
