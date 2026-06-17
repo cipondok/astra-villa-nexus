@@ -15,6 +15,8 @@ const PropertyListingMapView = lazy(() => import('@/components/property/Property
 import SearchAlertSubscribeButton from '@/components/search/SearchAlertSubscribeButton';
 import PropertyCardSkeleton from '@/components/property/PropertyCardSkeleton';
 import { useTranslation } from '@/i18n/useTranslation';
+import AISearchBar from '@/components/search/AISearchBar';
+import { NLPFilters } from '@/hooks/useNLPSearch';
 
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
@@ -204,6 +206,14 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
     }
   };
 
+  const handleAIFilters = async (nlp: NLPFilters, raw: string) => {
+    if (nlp.city) setFilters((f) => ({ ...f, city: nlp.city! }));
+    if (nlp.property_type) setFilters((f) => ({ ...f, propertyType: nlp.property_type! }));
+    setSearchQuery(nlp.city || nlp.state || raw);
+    // Defer to next tick so state is in place for handleSearch reads via setState callbacks
+    setTimeout(() => handleSearch(), 0);
+  };
+
   const activeFiltersCount = [
     filters.propertyType !== 'all',
     filters.city !== 'all',
@@ -264,7 +274,11 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
 
       {/* Search + Filters */}
       <div className="border-b border-border/30 bg-muted/30">
-        <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-3">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-3 space-y-3">
+          <AISearchBar
+            onFiltersExtracted={handleAIFilters}
+            source={`marketplace_${pageType}`}
+          />
           <div className="flex gap-2">
             <div className="relative flex-1">
                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

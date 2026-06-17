@@ -1,8 +1,12 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin, ArrowUpRight, Compass, Globe2, Mountain, Waves } from "lucide-react";
+import { MapPin, ArrowUpRight, Compass, Globe2, Mountain, Waves, Building2 } from "lucide-react";
 import { LuxeLayout, LuxeSection, LuxeSectionHead, LuxeCard, LuxeButton } from "@/components/luxe";
 import { SEOHead } from "@/components/SEOHead";
+import AstraPropertyMap, { MapMarker } from "@/components/maps/AstraPropertyMap";
+import { supabase } from "@/integrations/supabase/client";
+import { formatCurrencyIDRShort } from "@/lib/indonesianFormat";
 import { cn } from "@/lib/utils";
 
 import baliImg from "@/assets/luxe-loc-bali.jpg";
@@ -164,19 +168,19 @@ export default function Locations() {
         </div>
       </LuxeSection>
 
-      {/* ============ CINEMATIC MAP PANEL ============ */}
+      {/* ============ INTERACTIVE MAP PANEL ============ */}
       <LuxeSection id="map" className="pb-24">
         <LuxeSectionHead
-          eyebrow="— Cinematic map"
-          title="The Bali map, reimagined"
-          description="A live constellation of villas, scored and ranked by the ASTRA AI engine."
+          eyebrow="— Interactive map"
+          title="Live constellation of properties"
+          description="Pan, zoom and hover to explore active listings — synced with the destinations list in real time."
         />
 
-        <CinematicMap />
+        <InteractiveLocationMap />
 
         <div className="mt-8 text-center">
-          <LuxeButton to="/location-map" variant="gold">
-            Launch full interactive map
+          <LuxeButton to="/properties" variant="gold">
+            Browse all properties
           </LuxeButton>
         </div>
       </LuxeSection>
@@ -270,106 +274,111 @@ function RegionCard({
 }
 
 /* ============================================================
-   Cinematic Map — stylized SVG constellation of Bali villas.
-   Lightweight + GPU-friendly; no external map deps here.
-   For the full interactive map use /location-map.
+   Interactive Location Map — Google Maps with property markers
+   synced to a hover/click list.
    ============================================================ */
-const MAP_POINTS = [
-  { x: 18, y: 62, name: "Tabanan",  count: 14 },
-  { x: 28, y: 48, name: "Canggu",   count: 38 },
-  { x: 32, y: 70, name: "Uluwatu",  count: 47 },
-  { x: 44, y: 52, name: "Seminyak", count: 31 },
-  { x: 50, y: 38, name: "Ubud",     count: 52 },
-  { x: 62, y: 60, name: "Sanur",    count: 22 },
-  { x: 76, y: 46, name: "Karangasem", count: 9 },
-  { x: 86, y: 32, name: "Lovina",   count: 6 },
-];
+type MarkerProperty = {
+  id: string;
+  title: string;
+  city: string | null;
+  location: string | null;
+  price: number | null;
+  latitude: number | null;
+  longitude: number | null;
+};
 
-function CinematicMap() {
+function InteractiveLocationMap() {
+  const [items, setItems] = useState<MarkerProperty[]>([]);
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("properties")
+        .select("id,title,city,location,price,latitude,longitude")
+        .eq("status", "active")
+        .gt("price", 0)
+        .not("latitude", "is", null)
+        .not("longitude", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(80);
+      if (cancelled) return;
+      setItems((data ?? []) as MarkerProperty[]);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const markers = useMemo<MapMarker[]>(
+    () =>
+      items.map((p) => ({
+        id: p.id,
+        lat: p.latitude as number,
+        lng: p.longitude as number,
+        title: p.title,
+        subtitle: p.price ? formatCurrencyIDRShort(p.price) : undefined,
+      })),
+    [items],
+  );
+
   return (
-    <div className="relative rounded-3xl overflow-hidden border border-luxe luxe-glass-card">
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(80% 100% at 50% 50%, rgba(200,169,107,0.10) 0%, transparent 60%), linear-gradient(180deg, #0a0a0c, #050505)",
-        }}
-      />
-      {/* Lat/lon grid */}
-      <svg
-        viewBox="0 0 100 70"
-        preserveAspectRatio="none"
-        className="absolute inset-0 w-full h-full opacity-30"
-        aria-hidden
-      >
-        {Array.from({ length: 11 }).map((_, i) => (
-          <line key={`v${i}`} x1={i * 10} y1={0} x2={i * 10} y2={70} stroke="rgba(200,169,107,0.18)" strokeWidth="0.1" />
-        ))}
-        {Array.from({ length: 8 }).map((_, i) => (
-          <line key={`h${i}`} x1={0} y1={i * 10} x2={100} y2={i * 10} stroke="rgba(200,169,107,0.18)" strokeWidth="0.1" />
-        ))}
-      </svg>
-
-      {/* Connecting lines */}
-      <svg viewBox="0 0 100 70" preserveAspectRatio="none" className="absolute inset-0 w-full h-full" aria-hidden>
-        {MAP_POINTS.slice(0, -1).map((p, i) => {
-          const next = MAP_POINTS[i + 1];
-          return (
-            <line
-              key={i}
-              x1={p.x}
-              y1={p.y}
-              x2={next.x}
-              y2={next.y}
-              stroke="rgba(200,169,107,0.35)"
-              strokeWidth="0.15"
-              strokeDasharray="0.6 0.6"
-            />
-          );
-        })}
-      </svg>
-
-      {/* Hotspots */}
-      <div className="relative aspect-[2/1] md:aspect-[16/7]">
-        {MAP_POINTS.map((p) => (
-          <Link
-            key={p.name}
-            to={`/properties?location=${encodeURIComponent(p.name)}`}
-            className="absolute -translate-x-1/2 -translate-y-1/2 group/hot"
-            style={{ left: `${p.x}%`, top: `${p.y}%` }}
-          >
-            <span
-              className={cn(
-                "block w-2.5 h-2.5 rounded-full bg-[color:var(--luxe-gold)]",
-                "shadow-[0_0_0_4px_rgba(200,169,107,0.18),0_0_18px_rgba(200,169,107,0.55)]",
-                "transition-transform duration-500 group-hover/hot:scale-150"
-              )}
-            />
-            <span className="absolute left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap opacity-0 group-hover/hot:opacity-100 transition-opacity duration-300 px-2 py-1 rounded-md luxe-glass-card text-[10px] tracking-wide">
-              {p.name} · {p.count}
-            </span>
-            {/* Pulse ring */}
-            <span
-              aria-hidden
-              className="absolute inset-0 rounded-full animate-ping"
-              style={{
-                background: "radial-gradient(circle, rgba(200,169,107,0.5) 0%, transparent 70%)",
-                animationDuration: "3s",
-              }}
-            />
-          </Link>
-        ))}
-
-        {/* Compass */}
-        <div className="absolute top-4 right-4 w-10 h-10 rounded-full border border-[color:var(--luxe-gold)]/40 grid place-items-center">
-          <Compass className="w-4 h-4 text-luxe-gold" />
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      <div className="lg:col-span-3">
+        <AstraPropertyMap
+          markers={markers}
+          highlightedId={highlightedId}
+          onMarkerHover={setHighlightedId}
+          onMarkerClick={(id) => {
+            setHighlightedId(id);
+            document.getElementById(`loc-prop-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }}
+          className="h-[460px] lg:h-[560px]"
+        />
+      </div>
+      <div className="lg:col-span-2">
+        <div className="flex items-center justify-between mb-2 px-1">
+          <h3 className="text-sm font-semibold text-luxe-fg">Live listings</h3>
+          <span className="text-[11px] text-luxe-mut">{items.length} pinned</span>
         </div>
-
-        {/* Legend */}
-        <div className="absolute bottom-4 left-4 flex items-center gap-3 px-3 py-2 rounded-full luxe-glass-card text-[10px] tracking-[0.2em] uppercase text-luxe-fg/80">
-          <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-gold)]" />
-          Active villa cluster
+        <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
+          {loading && (
+            <div className="text-xs text-luxe-mut p-3">Loading geo-tagged properties…</div>
+          )}
+          {!loading && items.length === 0 && (
+            <div className="text-xs text-luxe-mut p-3">
+              No geo-tagged listings yet. Add latitude/longitude to properties to see them here.
+            </div>
+          )}
+          {items.map((p) => (
+            <Link
+              key={p.id}
+              id={`loc-prop-${p.id}`}
+              to={`/property/${p.id}`}
+              onMouseEnter={() => setHighlightedId(p.id)}
+              onMouseLeave={() => setHighlightedId(null)}
+              className={cn(
+                "flex items-center gap-3 p-2.5 rounded-xl border transition-all",
+                highlightedId === p.id
+                  ? "border-[color:var(--luxe-gold)] bg-[color:var(--luxe-gold)]/5"
+                  : "border-luxe hover:border-[color:var(--luxe-gold)]/50",
+              )}
+            >
+              <div className="h-10 w-10 rounded-lg bg-[color:var(--luxe-gold)]/10 grid place-items-center shrink-0">
+                <Building2 className="h-4 w-4 text-luxe-gold" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-semibold text-luxe-fg truncate">{p.title}</p>
+                <p className="text-[11px] text-luxe-mut truncate">{p.location || p.city || "—"}</p>
+              </div>
+              <span className="text-[12px] font-bold text-luxe-gold shrink-0">
+                {p.price ? formatCurrencyIDRShort(p.price) : "—"}
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
