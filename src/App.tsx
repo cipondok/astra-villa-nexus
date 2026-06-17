@@ -34,10 +34,13 @@ import { useAdminCheck } from '@/hooks/useAdminCheck';
 import MaintenancePage from '@/pages/MaintenancePage';
 import { NetworkStatusIndicator } from '@/components/NetworkStatusIndicator';
 import { DataSaverProvider } from '@/contexts/DataSaverContext';
+import { SidebarProvider } from '@/components/ui/sidebar';
 // Lazy load all non-critical shell components — reduces initial parse time
 const Navigation = lazy(() => import('@/components/Navigation'));
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
+const GlobalFooter = lazy(() => import('@/components/layout/GlobalFooter'));
+const AppSidebar = lazy(() => import('@/components/layout/AppSidebar'));
 const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingIndicator'));
 
 
@@ -404,6 +407,9 @@ const AppContent = () => {
     path.startsWith('/properties/') ||
     path.startsWith('/property/');
   const hideAppShell = isAdminRoute || isLuxeRoute;
+  // ASTRA V3: routes that get the unified app sidebar (auth/workspace surfaces)
+  const APP_ROUTE_PREFIXES = ['/dashboard', '/admin', '/admin-dashboard', '/settings', '/profile', '/my-properties', '/my-rental-inquiries', '/favorites', '/vendor-marketplace', '/ai-center'];
+  const isAppRoute = APP_ROUTE_PREFIXES.some((p) => path === p || path.startsWith(p + '/'));
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
@@ -413,12 +419,21 @@ const AppContent = () => {
     return <MaintenancePage message={maintenanceMessage} />;
   }
 
-  return (
-    <div className="min-h-screen bg-background text-foreground">
+  const shellInner = (
+    <>
       <NetworkStatusIndicator />
       <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
-      {!hideAppShell && <Suspense fallback={null}><Navigation /></Suspense>}
+      {!hideAppShell && !isAppRoute && <Suspense fallback={null}><Navigation /></Suspense>}
+      </>
+  );
+
+  return (
+    <SidebarProviderConditional enabled={isAppRoute}>
+      {isAppRoute && <Suspense fallback={null}><AppSidebar /></Suspense>}
+      <div className="min-h-screen bg-background text-foreground flex-1 flex flex-col w-full">
+      {shellInner}
+      
       
       <main className={hideAppShell ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
 
@@ -851,17 +866,32 @@ const AppContent = () => {
           </PageTransition>
         </AnimatePresence>
       </main>
-      {!hideAppShell && (
-        <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '180px' }} />}>
-          {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
-        </Suspense>
-      )}
-
       {/* Mobile bottom tab bar — legacy only; luxe routes use LuxeMobileDock */}
-      {!hideAppShell && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
-    </div>
+      {!hideAppShell && !isAppRoute && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
+
+      {/* ASTRA V3: unified footer rendered on every route */}
+      <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '120px' }} />}>
+        <GlobalFooter />
+      </Suspense>
+      </div>
+    </SidebarProviderConditional>
   );
 };
+
+function SidebarProviderConditional({
+  enabled,
+  children,
+}: {
+  enabled: boolean;
+  children: React.ReactNode;
+}) {
+  if (!enabled) return <>{children}</>;
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">{children}</div>
+    </SidebarProvider>
+  );
+}
 
 // Create QueryClient instance outside component to avoid recreation on every render
 const queryClient = new QueryClient({
