@@ -1,0 +1,396 @@
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Search, Bell, Globe, Heart, Sparkles, ChevronDown, ChevronRight,
+  LayoutDashboard, Building2, TrendingUp, Banknote, Scale, Wrench,
+  Store, Cpu, MoreHorizontal, Eye, BookmarkPlus, Wallet, MessageSquare,
+  ArrowLeftRight, Calendar, FileText, LifeBuoy, Shield, BarChart3,
+  Sliders, CheckCircle2, Sun, Moon, Menu, LogOut, User, X,
+} from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/components/ThemeProvider";
+import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
+import { useBrandingLogo } from "@/hooks/useBrandingLogo";
+
+/* ============================================================
+   ReosShell — Shared "Bloomberg Terminal" Black/Gold layout
+   Provides theme tokens, sticky header, and footer used across
+   the marketing surfaces (home, properties, etc.)
+   ============================================================ */
+
+export const reosTokens = `
+  .reos {
+    --bg: #0B0B0C;
+    --bg-2: #0F0F11;
+    --surface: #121214;
+    --surface-2: #17171A;
+    --line: rgba(200,169,106,0.14);
+    --line-strong: rgba(200,169,106,0.32);
+    --gold: #C8A96A;
+    --gold-2: #E0C384;
+    --gold-soft: rgba(200,169,106,0.10);
+    --text: #F4F1EA;
+    --text-2: #9A958A;
+    --text-3: #6B6760;
+    --success: #4ADE80;
+    --danger: #F87171;
+    --gold-fg: #161208;
+    --promo-gradient: linear-gradient(180deg, #1a1408, #0e0a04);
+    --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%);
+    color: var(--text);
+    background: var(--bg);
+    font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+    letter-spacing: -0.005em;
+  }
+  html:not(.dark) .reos {
+    --bg: #FAF8F3;
+    --bg-2: #F3EFE6;
+    --surface: #FFFFFF;
+    --surface-2: #F7F3EA;
+    --line: rgba(120,95,40,0.16);
+    --line-strong: rgba(120,95,40,0.34);
+    --gold: #B08A3E;
+    --gold-2: #8A6B25;
+    --gold-soft: rgba(176,138,62,0.10);
+    --text: #1A1814;
+    --text-2: #5A554B;
+    --text-3: #8A8478;
+    --success: #15803D;
+    --danger: #B91C1C;
+    --gold-fg: #161208;
+  }
+  .reos *::selection { background: var(--gold); color: #fff; }
+  .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
+  .reos-card-2 { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
+  .reos-gold { color: var(--gold-2); }
+  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: var(--gold-fg); font-weight: 600; border: 1px solid var(--line-strong); }
+  .reos-cta:hover { filter: brightness(1.06); }
+  .reos-outline { border: 1px solid var(--line-strong); }
+  .reos-chip { border: 1px solid var(--line); color: var(--text-2); }
+  .reos-chip:hover { border-color: var(--line-strong); color: var(--text); }
+  .reos-tab-active { color: var(--gold-2); }
+  .reos-tab-active::after { content:''; position:absolute; left:50%; bottom:-10px; transform:translateX(-50%); width: 28px; height: 2px; background: var(--gold); border-radius: 2px; }
+  .reos-divider { background-image: linear-gradient(90deg, transparent, var(--line-strong), transparent); height: 1px; }
+  .reos-scrollbar::-webkit-scrollbar{width:6px;height:6px}
+  .reos-scrollbar::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:3px}
+`;
+
+const topTabs = [
+  { icon: LayoutDashboard, label: "Dashboard", to: "/" },
+  { icon: Building2, label: "Properties", to: "/properties" },
+  { icon: TrendingUp, label: "Investment", to: "/investment" },
+  { icon: Banknote, label: "Finance", to: "/wallet" },
+  { icon: Scale, label: "Legal", to: "/legal-services" },
+  { icon: Wrench, label: "Management", to: "/agent-dashboard" },
+  { icon: Store, label: "Vendors", to: "/services" },
+  { icon: Cpu, label: "AI Center", to: "/ai-search" },
+  { icon: MoreHorizontal, label: "More", to: "/search" },
+];
+
+const sideNav = [
+  { icon: Eye, label: "Overview", to: "/" },
+  { icon: BarChart3, label: "Market Intelligence", to: "/market-heatmap" },
+  { icon: BookmarkPlus, label: "Watchlist", to: "/favorites" },
+  { icon: Wallet, label: "My Portfolio", to: "/investment-performance" },
+  { icon: MessageSquare, label: "Messages", to: "/messages", badge: 12 as number | undefined },
+  { icon: ArrowLeftRight, label: "Transactions", to: "/wallet" },
+  { icon: Calendar, label: "Calendar", to: "/profile" },
+  { icon: FileText, label: "Documents", to: "/documents" },
+  { icon: LifeBuoy, label: "Support Center", to: "/support" },
+];
+
+const banks = ["BCA", "Mandiri", "CIMB NIAGA", "HSBC", "DBS", "Maybank", "UOB", "OCBC NISP", "BNI", "BRI"];
+
+export function ReosHeader() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { user, profile, signOut } = useAuth();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
+  const { logoUrl: headerLogo } = useBrandingLogo("headerLogo", "/astra-logo.png");
+
+  const [aiQuery, setAiQuery] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [authInitial, setAuthInitial] = useState<"login" | "register">("login");
+
+  const langRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (langRef.current && !langRef.current.contains(t)) setLangOpen(false);
+      if (profileRef.current && !profileRef.current.contains(t)) setProfileOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+  const runSearch = () => {
+    if (!aiQuery.trim()) return navigate("/search");
+    navigate(`/search?q=${encodeURIComponent(aiQuery)}`);
+  };
+
+  const languages: { code: any; label: string }[] = [
+    { code: "en", label: "EN" }, { code: "id", label: "ID" }, { code: "zh", label: "ZH" },
+    { code: "ja", label: "JA" }, { code: "ko", label: "KO" }, { code: "ru", label: "RU" },
+  ];
+
+  const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
+
+  return (
+    <>
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-[var(--bg)]/80 border-b border-[var(--line)]">
+        <div className="mx-auto max-w-[1600px] px-6 h-[68px] flex items-center gap-4 md:gap-6">
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open menu"
+            className="lg:hidden h-10 w-10 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
+          >
+            <Menu className="h-5 w-5 text-[var(--text)]" />
+          </button>
+
+          <Link to="/" aria-label="ASTRA Villa home" className="flex items-center gap-2.5 shrink-0">
+            <img src={headerLogo} alt="ASTRA Villa" className="h-9 w-9 rounded-full object-contain shadow-sm" />
+            <div className="leading-none hidden sm:block">
+              <div className="font-semibold tracking-[0.18em] text-[15px]">ASTRA<span className="reos-gold ml-1">VILLA</span></div>
+              <div className="text-[9px] tracking-[0.28em] text-[var(--text-3)] mt-1">REAL ESTATE OPERATING SYSTEM</div>
+            </div>
+          </Link>
+
+          <div className="flex-1 max-w-3xl mx-auto relative hidden md:block">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
+            <input
+              value={aiQuery}
+              onChange={(e) => setAiQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") runSearch(); }}
+              placeholder="AI Search: Properties, Locations, ROI, Developers, Laws…"
+              aria-label="Search"
+              className="w-full h-11 pl-11 pr-12 rounded-xl bg-[var(--surface)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
+            />
+            <button
+              type="button"
+              onClick={() => navigate("/search-advanced")}
+              aria-label="Advanced search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-md hover:bg-[var(--surface-2)] flex items-center justify-center"
+            >
+              <Sliders className="h-3.5 w-3.5 text-[var(--text-2)]" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1 md:gap-2 shrink-0 ml-auto">
+            <div className="relative" ref={langRef}>
+              <button
+                type="button"
+                onClick={() => setLangOpen(o => !o)}
+                className="h-9 px-3 rounded-lg inline-flex items-center gap-1.5 text-xs hover:bg-[var(--surface)] text-[var(--text-2)]"
+              >
+                <Globe className="h-4 w-4" /> {language.toUpperCase()} <ChevronDown className="h-3 w-3" />
+              </button>
+              {langOpen && (
+                <div role="menu" className="absolute right-0 mt-2 w-32 reos-card p-1 z-50 shadow-2xl">
+                  {languages.map(l => (
+                    <button
+                      key={l.code}
+                      type="button"
+                      onClick={() => { setLanguage(l.code); setLangOpen(false); }}
+                      className={`w-full text-left px-3 py-2 rounded-md text-[12px] hover:bg-[var(--surface-2)] ${language === l.code ? "reos-gold" : "text-[var(--text)]"}`}
+                    >
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4 text-[var(--text-2)]" /> : <Moon className="h-4 w-4 text-[var(--text-2)]" />}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate("/notifications")}
+              aria-label="Notifications"
+              className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
+            >
+              <Bell className="h-4 w-4 text-[var(--text-2)]" />
+              <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">3</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/favorites")}
+              aria-label="Saved"
+              className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
+            >
+              <Heart className="h-4 w-4 text-[var(--text-2)]" />
+            </button>
+
+            {user ? (
+              <div className="relative" ref={profileRef}>
+                <button
+                  type="button"
+                  onClick={() => setProfileOpen(o => !o)}
+                  className="h-9 pl-1.5 pr-3 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-2 hover:border-[var(--line-strong)]"
+                >
+                  <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">
+                    {(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}
+                  </div>
+                  <div className="leading-none hidden md:block">
+                    <div className="text-[12px] font-medium truncate max-w-[120px] text-left text-[var(--text)]">{profile?.full_name || user.email}</div>
+                    <div className="text-[9px] reos-gold mt-0.5 text-left">Premium Investor</div>
+                  </div>
+                  <ChevronDown className="h-3 w-3 text-[var(--text-2)]" />
+                </button>
+                {profileOpen && (
+                  <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-2xl">
+                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> My Profile</button>
+                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> Wallet</button>
+                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> Saved</button>
+                    <div className="reos-divider my-1" />
+                    <button type="button" onClick={async () => { setProfileOpen(false); await signOut(); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] text-[var(--danger)] inline-flex items-center gap-2"><LogOut className="h-3.5 w-3.5" /> Sign out</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-9 px-4 rounded-lg text-[12.5px] hover:bg-[var(--surface)] text-[var(--text)] transition">Sign in</button>
+                <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-9 px-4 rounded-lg reos-cta text-[12.5px] inline-flex items-center gap-1.5">
+                  Get Started <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="border-t border-[var(--line)]">
+          <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-8 overflow-x-auto reos-scrollbar">
+            {topTabs.map(t => {
+              const active = isActive(t.to);
+              return (
+                <Link
+                  key={t.label}
+                  to={t.to}
+                  className={`relative inline-flex items-center gap-2 text-[13px] whitespace-nowrap transition-colors ${active ? "reos-tab-active font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
+                >
+                  <t.icon className="h-4 w-4" /> {t.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </header>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <motion.aside
+              initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
+              transition={{ type: "spring", stiffness: 280, damping: 32 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-[82%] max-w-[320px] h-full overflow-y-auto reos-scrollbar border-r border-[var(--line-strong)] p-4"
+              style={{ background: "var(--bg)" }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <img src={headerLogo} alt="ASTRA Villa" className="h-8 w-8 rounded-full object-contain shadow-sm" />
+                  <span className="font-semibold tracking-[0.18em] text-[14px]">ASTRA<span className="reos-gold ml-1">VILLA</span></span>
+                </div>
+                <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
+              </div>
+              <div className="space-y-1">
+                {topTabs.map(t => (
+                  <Link key={t.label} to={t.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                    <t.icon className="h-4 w-4" /> {t.label}
+                  </Link>
+                ))}
+                <div className="reos-divider my-3" />
+                {sideNav.map(n => (
+                  <Link key={n.label} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                    <n.icon className="h-4 w-4" /><span className="flex-1">{n.label}</span>
+                    {n.badge && <span className="text-[10px] bg-[var(--gold)] text-[var(--gold-fg)] font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
+                  </Link>
+                ))}
+              </div>
+            </motion.aside>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <ReosAuthModal open={showAuth} onOpenChange={setShowAuth} initialMode={authInitial} />
+    </>
+  );
+}
+
+export function ReosFooter() {
+  return (
+    <footer className="mx-auto max-w-[1600px] px-6 pb-10 pt-4">
+      <div className="reos-card p-5">
+        <div className="flex items-center flex-wrap gap-5 justify-between">
+          <div className="text-[12px] text-[var(--text-2)]">Trusted By Thousands</div>
+          <div className="flex items-center flex-wrap gap-x-7 gap-y-2">
+            {banks.map(b => (
+              <span key={b} className="text-[12px] font-bold tracking-wider text-[var(--text-2)]/70 hover:text-[var(--text)] transition">{b}</span>
+            ))}
+          </div>
+          <div className="flex items-center gap-5 text-[11px]">
+            {[
+              { icon: CheckCircle2, label: "Verified Properties", sub: "100% Verified" },
+              { icon: Shield, label: "Secure Transactions", sub: "Bank-Level Security" },
+              { icon: LifeBuoy, label: "Expert Support", sub: "24/7 Assistance" },
+            ].map(t => (
+              <div key={t.label} className="flex items-center gap-2">
+                <t.icon className="h-4 w-4 reos-gold" />
+                <div className="leading-tight">
+                  <div className="text-[11px] font-medium text-[var(--text)]">{t.label}</div>
+                  <div className="text-[9px] text-[var(--text-2)]">{t.sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="text-center text-[11px] text-[var(--text-3)] py-6">
+        © {new Date().getFullYear()} ASTRA Villa REOS · Built for ASEAN · Enterprise-grade
+      </div>
+    </footer>
+  );
+}
+
+interface ReosShellProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export default function ReosShell({ children, className = "" }: ReosShellProps) {
+  useEffect(() => {
+    document.documentElement.setAttribute("data-reos-theme", "on");
+    return () => document.documentElement.removeAttribute("data-reos-theme");
+  }, []);
+
+  return (
+    <>
+      <style>{reosTokens}</style>
+      <div className={`reos min-h-screen flex flex-col ${className}`}>
+        <ReosHeader />
+        <main className="flex-1">{children}</main>
+        <ReosFooter />
+      </div>
+    </>
+  );
+}
