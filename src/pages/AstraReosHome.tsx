@@ -589,7 +589,31 @@ export default function AstraReosHome() {
               <motion.div variants={fadeUp} className="col-span-12 lg:col-span-3 reos-card p-5">
                 <div className="flex items-center justify-between">
                   <div className="text-[14px] font-semibold">Market Overview</div>
-                  <button className="text-[11px] text-[var(--text-2)] inline-flex items-center gap-1 hover:text-[var(--text)]">Indonesia <ChevronDown className="h-3 w-3" /></button>
+                  <div className="relative" ref={countryRef}>
+                    <button
+                      type="button"
+                      onClick={() => setCountryOpen(o => !o)}
+                      className="text-[11px] text-[var(--text-2)] inline-flex items-center gap-1 hover:text-[var(--text)]"
+                      aria-haspopup="menu"
+                      aria-expanded={countryOpen}
+                    >
+                      {country} <ChevronDown className="h-3 w-3" />
+                    </button>
+                    {countryOpen && (
+                      <div role="menu" className="absolute right-0 mt-2 w-40 reos-card p-1 z-30 shadow-2xl">
+                        {countries.map(c => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => { setCountry(c); setCountryOpen(false); }}
+                            className={`w-full text-left px-3 py-2 rounded-md text-[12px] hover:bg-[var(--surface-2)] ${country === c ? "reos-gold" : "text-[var(--text)]"}`}
+                          >
+                            {c}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="mt-4 space-y-4">
                   {marketKPIs.map(k => (
@@ -608,7 +632,11 @@ export default function AstraReosHome() {
                     </div>
                   ))}
                 </div>
-                <button className="mt-5 text-[12px] reos-gold inline-flex items-center gap-1 hover:underline">
+                <button
+                  type="button"
+                  onClick={() => navigate("/market-heatmap")}
+                  className="mt-5 text-[12px] reos-gold inline-flex items-center gap-1 hover:underline"
+                >
                   View Full Market Report <ArrowUpRight className="h-3 w-3" />
                 </button>
               </motion.div>
