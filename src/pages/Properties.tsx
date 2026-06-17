@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -9,17 +9,15 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 import { cn } from "@/lib/utils";
-import {
-  LuxeLayout, LuxeSection, LuxeSectionHead, LuxeCard, LuxeButton, LuxeSearchBar,
-} from "@/components/luxe";
+import ReosShell from "@/components/reos/ReosShell";
 import villaFallback1 from "@/assets/luxe-villa-1.jpg";
 import villaFallback2 from "@/assets/luxe-villa-2.jpg";
 import villaFallback3 from "@/assets/luxe-villa-3.jpg";
 
 /* ============================================================
-   ASTRA Villa — Properties (Luxe Migration)
-   Built on the global LuxeLayout foundation. Replaces the
-   legacy Properties.tsx (archived under src/_archived/pages/).
+   ASTRA Villa — Properties (REOS shell)
+   Now uses the shared ReosShell so the header, footer and color
+   scheme match the home page (/) exactly.
    ============================================================ */
 
 const FALLBACK_IMGS = [villaFallback1, villaFallback2, villaFallback3];
@@ -72,7 +70,6 @@ const SORT_OPTIONS = [
   { id: "score",     label: "AI Score" },
 ] as const;
 
-/** Path-based preset filters (legacy URLs kept intact, but routed to luxe Properties) */
 const PATH_PRESETS: Record<string, { listingType?: string; collection?: string; heading?: string }> = {
   "/dijual":        { listingType: "sale", heading: "Villas Dijual" },
   "/buy":           { listingType: "sale", heading: "Properties for Sale" },
@@ -86,6 +83,7 @@ const PATH_PRESETS: Record<string, { listingType?: string; collection?: string; 
 
 export default function Properties() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const preset = PATH_PRESETS[pathname] ?? {};
   const [params, setParams] = useSearchParams();
 
@@ -101,14 +99,18 @@ export default function Properties() {
   const listingType = (params.get("listing_type") || preset.listingType || "").toLowerCase();
 
   const [filterOpen, setFilterOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState(q);
+  const [locationInput, setLocationInput] = useState(location);
 
-  // Scroll to top on filter change
+  useEffect(() => { setSearchInput(q); }, [q]);
+  useEffect(() => { setLocationInput(location); }, [location]);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [q, location, tag, collection, intent, type, sort, listingType, pathname]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["luxe-properties", { q, location, tag, collection, intent, type, sort, listingType }],
+    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType }],
     queryFn: async (): Promise<Listing[]> => {
       let query = supabase
         .from("properties")
@@ -123,14 +125,12 @@ export default function Properties() {
       if (type !== "all") query = query.eq("property_type", type);
       if (listingType) query = query.eq("listing_type", listingType);
 
-      // Map URL collection -> DB development_status
       const COLLECTION_TO_DEV: Record<string, string[]> = {
         "pre-launch":   ["pre_launch", "pre-launch", "prelaunch"],
         "new-projects": ["new_project", "new-projects", "new_projects"],
       };
       const devStatuses = collection ? COLLECTION_TO_DEV[collection] : null;
       if (devStatuses?.length) query = query.in("development_status", devStatuses);
-
 
       switch (sort) {
         case "price-asc":  query = query.order("price", { ascending: true,  nullsFirst: false } as any); break;
@@ -154,7 +154,7 @@ export default function Properties() {
     if (collectionTitle) return collectionTitle;
     if (tag)             return `${tag[0].toUpperCase()}${tag.slice(1)} Villas`;
     if (intent === "investment") return "Investment Villas";
-    if (q)               return `Results for “${q}”`;
+    if (q)               return `Results for "${q}"`;
     if (location)        return `Villas in ${location}`;
     return "All Villas";
   }, [preset.heading, collectionTitle, tag, intent, q, location]);
@@ -164,18 +164,18 @@ export default function Properties() {
     if (location) parts.push(location);
     if (when)     parts.push(`for ${when}`);
     if (guests)   parts.push(`${guests} guest${Number(guests) > 1 ? "s" : ""}`);
-    if (!parts.length) return "Hand-picked sanctuaries across Bali, ranked by AI.";
+    if (!parts.length) return "Hand-picked sanctuaries across ASEAN, ranked by ASTRA AI.";
     return parts.join(" · ");
   }, [location, when, guests]);
 
   const clearAll = () => setParams({});
 
   const activeChips: { key: string; label: string }[] = [];
-  if (q)          activeChips.push({ key: "q",          label: `“${q}”` });
+  if (q)          activeChips.push({ key: "q",          label: `"${q}"` });
   if (location)   activeChips.push({ key: "location",   label: location });
   if (tag)        activeChips.push({ key: "tag",        label: tag });
   if (collection) activeChips.push({ key: "collection", label: collectionTitle ?? collection });
-  if (intent)    activeChips.push({ key: "intent",     label: intent });
+  if (intent)     activeChips.push({ key: "intent",     label: intent });
   if (type !== "all") activeChips.push({ key: "type", label: type });
 
   const removeParam = (key: string) => {
@@ -191,45 +191,73 @@ export default function Properties() {
     setParams(next);
   };
 
+  const submitSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const next = new URLSearchParams(params);
+    if (searchInput.trim()) next.set("q", searchInput.trim()); else next.delete("q");
+    if (locationInput.trim()) next.set("location", locationInput.trim()); else next.delete("location");
+    setParams(next);
+  };
+
   const results = data ?? [];
+  const titleHead = heading.split(" ")[0];
+  const titleTail = heading.split(" ").slice(1).join(" ") || "Villas";
 
   return (
-    <LuxeLayout>
+    <ReosShell>
       <SEOHead
         title={`${heading} · ASTRA Villa`}
-        description="Curated luxury villas in Bali — search by location, dates and guests, ranked by ASTRA AI."
+        description="Curated luxury villas across ASEAN — search by location, type and intent, ranked by ASTRA AI."
       />
 
-      {/* Hero */}
-      <LuxeSection pad="lg" className="pt-32 md:pt-40">
-        <LuxeSectionHead
-          eyebrow="Discover · The Collection"
-          title={
-            <>
-              {heading.split(" ")[0]}{" "}
-              <em className="text-luxe-gold not-italic">{heading.split(" ").slice(1).join(" ") || "Villas"}</em>
-            </>
-          }
-          description={subheading}
-        />
-
-        <div className="mt-10">
-          <LuxeSearchBar
-            defaultLocation={location}
-            defaultType={type !== "all" ? type : "all"}
-            defaultQuery={q}
-            action="/properties"
-          />
-
+      <section className="mx-auto max-w-[1600px] px-6 pt-10 md:pt-14 pb-6">
+        <div className="max-w-3xl">
+          <div className="text-[11px] uppercase tracking-[0.28em] reos-gold mb-3">
+            Discover · The Collection
+          </div>
+          <h1 className="text-[34px] md:text-[44px] leading-[1.05] font-semibold tracking-tight text-[var(--text)]">
+            {titleHead} <em className="reos-gold not-italic">{titleTail}</em>
+          </h1>
+          <p className="mt-4 text-[14px] text-[var(--text-2)] leading-relaxed">{subheading}</p>
         </div>
 
+        {/* Search bar */}
+        <form onSubmit={submitSearch} className="mt-8 reos-card p-2 flex flex-col md:flex-row gap-2">
+          <div className="flex-1 relative">
+            <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
+            <input
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search villas, projects or developers…"
+              aria-label="Search properties"
+              className="w-full h-11 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
+            />
+          </div>
+          <div className="flex-1 relative">
+            <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
+            <input
+              value={locationInput}
+              onChange={(e) => setLocationInput(e.target.value)}
+              placeholder="Location: Bali, Jakarta, Phuket…"
+              aria-label="Location"
+              className="w-full h-11 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
+            />
+          </div>
+          <button
+            type="submit"
+            className="h-11 px-6 rounded-xl reos-cta text-[13px] inline-flex items-center justify-center gap-1.5 shrink-0"
+          >
+            <SearchIcon className="h-4 w-4" /> Search
+          </button>
+        </form>
+
         {/* Active filter chips + controls */}
-        <div className="mt-8 flex flex-wrap items-center gap-2">
+        <div className="mt-6 flex flex-wrap items-center gap-2">
           {activeChips.map((chip) => (
             <button
               key={chip.key}
               onClick={() => removeParam(chip.key)}
-              className="luxe-glass-card inline-flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full text-[11px] uppercase tracking-[0.16em] text-luxe-fg/80 hover:text-luxe-gold transition-colors"
+              className="reos-chip inline-flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full text-[11px] uppercase tracking-[0.16em] transition-colors"
             >
               {chip.label}
               <X className="w-3 h-3" />
@@ -238,27 +266,26 @@ export default function Properties() {
           {activeChips.length > 0 && (
             <button
               onClick={clearAll}
-              className="text-[11px] uppercase tracking-[0.2em] text-luxe-mut hover:text-luxe-gold transition-colors"
+              className="text-[11px] uppercase tracking-[0.2em] text-[var(--text-3)] hover:reos-gold transition-colors"
             >
               Clear all
             </button>
           )}
           <div className="ml-auto flex items-center gap-2">
-            <LuxeButton
-              variant="ghost"
-              size="sm"
-              iconLeft={<SlidersHorizontal className="w-3.5 h-3.5" />}
+            <button
+              type="button"
               onClick={() => setFilterOpen((v) => !v)}
+              className="h-9 px-3 rounded-lg reos-chip inline-flex items-center gap-1.5 text-[12px]"
             >
-              Filters
-            </LuxeButton>
+              <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
+            </button>
             <select
               value={sort}
               onChange={(e) => updateParam("sort", e.target.value)}
-              className="luxe-glass-card text-[12px] rounded-full px-4 py-2 bg-transparent text-luxe-fg/85 border-luxe focus:outline-none focus:border-[color:var(--luxe-gold)]/60"
+              className="reos-chip text-[12px] rounded-lg h-9 px-3 bg-[var(--surface)] focus:outline-none"
             >
               {SORT_OPTIONS.map((o) => (
-                <option key={o.id} value={o.id} className="bg-luxe-surface text-luxe-fg">
+                <option key={o.id} value={o.id} className="bg-[var(--surface)] text-[var(--text)]">
                   {o.label}
                 </option>
               ))}
@@ -267,8 +294,8 @@ export default function Properties() {
         </div>
 
         {filterOpen && (
-          <LuxeCard className="mt-5 p-5" variant="glass">
-            <div className="luxe-eyebrow mb-3">Property Type</div>
+          <div className="mt-5 reos-card p-5">
+            <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)] mb-3">Property Type</div>
             <div className="flex flex-wrap gap-2">
               {PROPERTY_TYPES.map((t) => (
                 <button
@@ -277,20 +304,20 @@ export default function Properties() {
                   className={cn(
                     "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
                     type === t
-                      ? "bg-[color:var(--luxe-gold)]/15 border-[color:var(--luxe-gold)]/55 text-luxe-gold"
-                      : "border-luxe text-luxe-fg/70 hover:border-[color:var(--luxe-gold)]/60 hover:text-luxe-gold"
+                      ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
+                      : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
                   )}
                 >
                   {t}
                 </button>
               ))}
             </div>
-          </LuxeCard>
+          </div>
         )}
-      </LuxeSection>
+      </section>
 
       {/* Results grid */}
-      <LuxeSection pad="md" cv>
+      <section className="mx-auto max-w-[1600px] px-6 pb-12">
         {isLoading ? (
           <ResultsSkeleton />
         ) : isError ? (
@@ -303,18 +330,22 @@ export default function Properties() {
             title="No villas match this search yet"
             description="Try broadening your filters, or ask our AI concierge to curate something for you."
             action={
-              <LuxeButton to="/wealth-advisor" variant="gold" iconLeft={<Sparkles className="w-4 h-4" />}>
-                Ask AI Concierge
-              </LuxeButton>
+              <button
+                type="button"
+                onClick={() => navigate("/wealth-advisor")}
+                className="h-10 px-5 rounded-lg reos-cta text-[13px] inline-flex items-center gap-1.5"
+              >
+                <Sparkles className="w-4 h-4" /> Ask AI Concierge
+              </button>
             }
           />
         ) : (
           <>
             <div className="flex items-end justify-between mb-6">
-              <p className="text-[12px] text-luxe-mut uppercase tracking-[0.2em] font-mono-l">
+              <p className="text-[12px] text-[var(--text-2)] uppercase tracking-[0.2em]">
                 {results.length} villa{results.length === 1 ? "" : "s"}
               </p>
-              <Link to="/wealth-advisor" className="text-[12px] text-luxe-gold hover:underline inline-flex items-center gap-1.5">
+              <Link to="/wealth-advisor" className="text-[12px] reos-gold hover:underline inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" /> Curate with AI
               </Link>
             </div>
@@ -326,8 +357,8 @@ export default function Properties() {
             </div>
           </>
         )}
-      </LuxeSection>
-    </LuxeLayout>
+      </section>
+    </ReosShell>
   );
 }
 
@@ -355,7 +386,7 @@ function VillaCard({ listing, index }: { listing: Listing; index: number }) {
       transition={{ duration: 0.55, delay: Math.min(index * 0.05, 0.3), ease: [0.22, 1, 0.36, 1] }}
     >
       <Link to={`/properties/${listing.id}`} className="block group">
-        <LuxeCard variant="glass" radius="lg" glow interactive className="overflow-hidden flex flex-col h-full">
+        <div className="reos-card overflow-hidden flex flex-col h-full transition-all duration-300 hover:border-[var(--line-strong)] hover:shadow-[0_24px_60px_-28px_rgba(200,169,106,0.25)]">
           <div className="relative aspect-[4/5] overflow-hidden">
             <img
               src={img}
@@ -366,43 +397,41 @@ function VillaCard({ listing, index }: { listing: Listing; index: number }) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-            {/* Top badges */}
             <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
               {listing.is_featured && (
-                <span className="luxe-glass-card px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] text-luxe-gold border border-[color:var(--luxe-gold)]/40">
+                <span className="px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] bg-black/40 backdrop-blur reos-gold border border-[var(--line-strong)]">
                   Editor's Pick
                 </span>
               )}
               {score != null && score >= 85 && (
-                <span className="luxe-glass-card px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] text-[#7be0b3] border border-[#7be0b3]/30 inline-flex items-center gap-1">
+                <span className="px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] bg-black/40 backdrop-blur text-[#7be0b3] border border-[#7be0b3]/30 inline-flex items-center gap-1">
                   <TrendingUp className="w-3 h-3" /> {score}
                 </span>
               )}
             </div>
 
-            {/* Price */}
             <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-luxe-fg/60">From</p>
-                <p className="font-serif-l text-[22px] leading-none mt-1 text-luxe-fg truncate">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-white/70">From</p>
+                <p className="text-[22px] leading-none mt-1 text-white font-semibold truncate">
                   {formatPrice(priceNum)}
                 </p>
               </div>
-              <span className="w-9 h-9 grid place-items-center rounded-full luxe-glass-card border border-[color:var(--luxe-gold)]/40 text-luxe-gold opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="w-9 h-9 grid place-items-center rounded-full bg-black/40 backdrop-blur border border-[var(--line-strong)] reos-gold opacity-0 group-hover:opacity-100 transition-opacity">
                 <ArrowUpRight className="w-4 h-4" />
               </span>
             </div>
           </div>
 
           <div className="p-4 md:p-5 flex flex-col gap-3 flex-1">
-            <h3 className="font-serif-l text-[18px] leading-tight tracking-tight text-luxe-fg line-clamp-1 group-hover:text-luxe-gold transition-colors">
+            <h3 className="text-[18px] leading-tight tracking-tight text-[var(--text)] font-semibold line-clamp-1 group-hover:reos-gold transition-colors">
               {listing.title ?? "Untitled Villa"}
             </h3>
-            <p className="text-[12px] text-luxe-mut inline-flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-luxe-gold" /> {area}
+            <p className="text-[12px] text-[var(--text-2)] inline-flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 reos-gold" /> {area}
             </p>
 
-            <div className="mt-auto pt-3 border-t border-luxe flex items-center justify-between text-[11px] text-luxe-mut">
+            <div className="mt-auto pt-3 border-t border-[var(--line)] flex items-center justify-between text-[11px] text-[var(--text-2)]">
               <div className="flex items-center gap-3">
                 {listing.bedrooms != null && (
                   <span className="inline-flex items-center gap-1"><Bed className="w-3.5 h-3.5" /> {listing.bedrooms}</span>
@@ -415,11 +444,11 @@ function VillaCard({ listing, index }: { listing: Listing; index: number }) {
                 )}
               </div>
               {roi != null && (
-                <span className="text-luxe-gold font-mono-l">{roi.toFixed(1)}% ROI</span>
+                <span className="reos-gold font-semibold">{roi.toFixed(1)}% ROI</span>
               )}
             </div>
           </div>
-        </LuxeCard>
+        </div>
       </Link>
     </motion.div>
   );
@@ -429,14 +458,14 @@ function ResultsSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
       {Array.from({ length: 6 }).map((_, i) => (
-        <LuxeCard key={i} variant="glass" radius="lg" className="overflow-hidden">
-          <div className="aspect-[4/5] luxe-shimmer" />
+        <div key={i} className="reos-card overflow-hidden">
+          <div className="aspect-[4/5] bg-[var(--surface-2)] animate-pulse" />
           <div className="p-5 space-y-3">
-            <div className="h-4 w-2/3 luxe-shimmer rounded" />
-            <div className="h-3 w-1/2 luxe-shimmer rounded" />
-            <div className="h-3 w-1/3 luxe-shimmer rounded" />
+            <div className="h-4 w-2/3 bg-[var(--surface-2)] rounded animate-pulse" />
+            <div className="h-3 w-1/2 bg-[var(--surface-2)] rounded animate-pulse" />
+            <div className="h-3 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
           </div>
-        </LuxeCard>
+        </div>
       ))}
     </div>
   );
@@ -446,13 +475,13 @@ function EmptyState({
   title, description, action,
 }: { title: string; description?: string; action?: React.ReactNode }) {
   return (
-    <LuxeCard variant="glass" radius="lg" className="p-12 md:p-20 text-center">
-      <div className="w-14 h-14 mx-auto rounded-full luxe-glass-card grid place-items-center border-[color:var(--luxe-gold)]/30">
-        <SearchIcon className="w-5 h-5 text-luxe-gold" />
+    <div className="reos-card p-12 md:p-20 text-center">
+      <div className="w-14 h-14 mx-auto rounded-full bg-[var(--gold-soft)] grid place-items-center border border-[var(--line-strong)]">
+        <SearchIcon className="w-5 h-5 reos-gold" />
       </div>
-      <h3 className="font-serif-l text-[28px] mt-6">{title}</h3>
-      {description && <p className="mt-3 text-[13px] text-luxe-mut max-w-md mx-auto leading-relaxed">{description}</p>}
+      <h3 className="text-[28px] mt-6 text-[var(--text)] font-semibold">{title}</h3>
+      {description && <p className="mt-3 text-[13px] text-[var(--text-2)] max-w-md mx-auto leading-relaxed">{description}</p>}
       {action && <div className="mt-7 flex justify-center">{action}</div>}
-    </LuxeCard>
+    </div>
   );
 }
