@@ -294,6 +294,20 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
             )}
             {configuredCount}/{totalCount} set
           </Badge>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleClearAllLogos}
+            disabled={loading || deleting === '__all__' || configuredCount === 0}
+            className="h-8 text-xs px-3 text-destructive hover:text-destructive border-destructive/40 hover:bg-destructive/10"
+          >
+            {deleting === '__all__' ? (
+              <RefreshCw className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+            )}
+            Clear All
+          </Button>
           <Button size="sm" onClick={onSave} disabled={loading} className="h-8 text-xs px-4">
             <Save className="h-3.5 w-3.5 mr-1.5" />
             {loading ? 'Saving...' : 'Save All'}
