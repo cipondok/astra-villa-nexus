@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-/** Generic placeholder shown when no logo is configured in Branding Settings */
-export const LOGO_PLACEHOLDER =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 48' fill='none'%3E%3Crect width='120' height='48' rx='8' fill='%23e2e8f0'/%3E%3Ctext x='60' y='30' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='600' fill='%2394a3b8'%3ELOGO%3C/text%3E%3C/svg%3E";
+/** Default ASTRA Villa logo shown when no custom logo is configured */
+export const LOGO_PLACEHOLDER = "/astra-logo.png";
 
 // All known branding keys — fetched in a single batch query
 const BRANDING_KEYS = [
