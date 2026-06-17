@@ -194,10 +194,22 @@ export default function AstraReosHome() {
   const [showAiSheet, setShowAiSheet] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authInitial, setAuthInitial] = useState<"login" | "register">("login");
-  const { user, profile } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [country, setCountry] = useState("Indonesia");
+  const [hotspotZoom, setHotspotZoom] = useState(1);
+  const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const { data: market, loading: marketLoading } = useReosMarket();
   const { search, data: aiData, loading: aiLoading, error: aiError, reset: resetAi } = useReosAiSearch();
 
+  const langRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+  const countryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.title = "ASTRA Villa REOS — AI Real Estate Operating System";
@@ -205,11 +217,43 @@ export default function AstraReosHome() {
     return () => document.documentElement.removeAttribute("data-reos-theme");
   }, []);
 
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (langRef.current && !langRef.current.contains(t)) setLangOpen(false);
+      if (profileRef.current && !profileRef.current.contains(t)) setProfileOpen(false);
+      if (countryRef.current && !countryRef.current.contains(t)) setCountryOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
   const submitAi = async () => {
     if (!aiQuery.trim()) return;
     setShowAiSheet(true);
     await search(aiQuery);
   };
+
+  const runSearch = () => {
+    if (!aiQuery.trim()) {
+      navigate("/search");
+      return;
+    }
+    navigate(`/search?q=${encodeURIComponent(aiQuery)}`);
+  };
+
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+
+  const languages: { code: any; label: string }[] = [
+    { code: "en", label: "EN" },
+    { code: "id", label: "ID" },
+    { code: "zh", label: "ZH" },
+    { code: "ja", label: "JA" },
+    { code: "ko", label: "KO" },
+    { code: "ru", label: "RU" },
+  ];
+  const countries = ["Indonesia", "Singapore", "Malaysia", "Thailand", "Vietnam", "Philippines"];
+
 
   const featured = useMemo(() => {
     const base = market?.featured ?? [];
