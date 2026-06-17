@@ -912,7 +912,7 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <Router key="app" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <ThemeProvider defaultTheme="astra-black-gold" storageKey="astra-villa-theme">
+          <ThemeProvider defaultTheme="system" storageKey="astra-villa-theme">
             <DesignSystemProvider>
               <LanguageProvider>
                 <CurrencyProvider>
