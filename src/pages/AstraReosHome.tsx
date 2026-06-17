@@ -211,13 +211,6 @@ export default function AstraReosHome() {
                 </motion.button>
               ))}
             </nav>
-            <div className="mt-auto p-4">
-              <motion.div whileHover={{ y: -2 }} className="reos-card p-4">
-                <div className="flex items-center gap-2 text-xs reos-gold"><Crown className="h-3.5 w-3.5" /> Investor Club</div>
-                <div className="mt-1 text-sm">Unlock Platinum reports</div>
-                <button className="mt-3 w-full h-8 text-xs reos-cta rounded-md">Upgrade</button>
-              </motion.div>
-            </div>
           </aside>
 
           {/* MAIN */}
