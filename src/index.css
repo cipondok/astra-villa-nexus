@@ -2400,3 +2400,51 @@ html, body {
 .reduce-motion .animate-spin {
   animation: none !important;
 }
+
+/* ═══ Glossy Titanium Button (Light Blue, theme-aware) ═══ */
+:root {
+  --titanium-grad: linear-gradient(135deg, #e8f4ff 0%, #b8dcf5 28%, #7fbde8 55%, #5aa3d4 78%, #4090c8 100%);
+  --titanium-grad-hover: linear-gradient(135deg, #f2f9ff 0%, #c9e6fb 28%, #91cbef 55%, #6cb1dc 78%, #4a9cd0 100%);
+  --titanium-text: #0b3a5c;
+  --titanium-border: rgba(255,255,255,0.65);
+  --titanium-shadow: 0 6px 18px -6px rgba(64,144,200,0.55), inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.08);
+  --titanium-icon-bg: linear-gradient(135deg, #ffffff 0%, #d8ecfb 60%, #a8cee8 100%);
+  --titanium-icon-border: rgba(255,255,255,0.9);
+  --titanium-icon-color: #0b3a5c;
+}
+.dark {
+  --titanium-grad: linear-gradient(135deg, #1d3a55 0%, #2a5878 30%, #3a7aa3 60%, #4a93c2 85%, #5aa8d6 100%);
+  --titanium-grad-hover: linear-gradient(135deg, #25455f 0%, #356684 30%, #4688b0 60%, #57a1cc 85%, #6bb5dd 100%);
+  --titanium-text: #e6f3ff;
+  --titanium-border: rgba(180,220,250,0.35);
+  --titanium-shadow: 0 6px 18px -6px rgba(0,0,0,0.6), inset 0 1px 0 rgba(180,220,250,0.35), inset 0 -1px 0 rgba(0,0,0,0.4);
+  --titanium-icon-bg: linear-gradient(135deg, #4a93c2 0%, #2a5878 60%, #1d3a55 100%);
+  --titanium-icon-border: rgba(180,220,250,0.45);
+  --titanium-icon-color: #e6f3ff;
+}
+.btn-titanium {
+  background: var(--titanium-grad);
+  color: var(--titanium-text);
+  border: 1px solid var(--titanium-border);
+  box-shadow: var(--titanium-shadow);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+.btn-titanium::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0) 60%);
+  pointer-events: none;
+}
+.btn-titanium:hover {
+  background: var(--titanium-grad-hover);
+  transform: translateY(-1px);
+}
+.btn-titanium .titanium-icon {
+  background: var(--titanium-icon-bg);
+  border: 1px solid var(--titanium-icon-border);
+  color: var(--titanium-icon-color);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.15);
+}
