@@ -168,19 +168,19 @@ export default function Locations() {
         </div>
       </LuxeSection>
 
-      {/* ============ CINEMATIC MAP PANEL ============ */}
+      {/* ============ INTERACTIVE MAP PANEL ============ */}
       <LuxeSection id="map" className="pb-24">
         <LuxeSectionHead
-          eyebrow="— Cinematic map"
-          title="The Bali map, reimagined"
-          description="A live constellation of villas, scored and ranked by the ASTRA AI engine."
+          eyebrow="— Interactive map"
+          title="Live constellation of properties"
+          description="Pan, zoom and hover to explore active listings — synced with the destinations list in real time."
         />
 
-        <CinematicMap />
+        <InteractiveLocationMap />
 
         <div className="mt-8 text-center">
-          <LuxeButton to="/location-map" variant="gold">
-            Launch full interactive map
+          <LuxeButton to="/properties" variant="gold">
+            Browse all properties
           </LuxeButton>
         </div>
       </LuxeSection>
