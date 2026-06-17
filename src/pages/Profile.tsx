@@ -544,7 +544,7 @@ const Profile = () => {
                             <Badge variant="outline" className="text-[9px] px-1 py-0 text-destructive border-destructive/30">Locked</Badge>
                           )}
                         </Label>
-                        <Input
+                        <AstraInput
                           id="phone"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
