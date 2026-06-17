@@ -663,7 +663,7 @@ const Profile = () => {
                   />
                 )}
               </CardContent>
-            </Card>
+            </AstraCard>
 
             {/* Profile Completion Status */}
             <ProfileCompletionStatus
