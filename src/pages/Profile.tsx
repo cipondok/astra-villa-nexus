@@ -587,9 +587,9 @@ const Profile = () => {
                       )}
                       
                       {/* Location & Address Section */}
-                       <div className="space-y-1.5 p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10">
+                       <div className="space-y-1.5 p-3 rounded-lg bg-primary/5 border border-primary/10">
                         <div className="flex items-center gap-2 mb-2">
-                          <MapPin className="h-4 w-4 text-gold-primary" />
+                          <MapPin className="h-4 w-4 text-primary" />
                           <Label className="text-xs font-medium">{t.address}</Label>
                         </div>
                         <ProfileLocationSelector
