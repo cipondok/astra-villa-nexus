@@ -335,6 +335,9 @@ const UserDashboardPage = () => {
           ))}
         </div>
 
+        {/* Role-based Widgets */}
+        <RoleDashboardWidgets roles={userRoles} />
+
         {/* Application Status */}
         <ApplicationStatusBar />
 
