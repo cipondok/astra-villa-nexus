@@ -313,27 +313,158 @@ export default function Properties() {
         </div>
 
         {filterOpen && (
-          <div className="mt-5 reos-card p-5">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)] mb-3">Property Type</div>
-            <div className="flex flex-wrap gap-2">
-              {PROPERTY_TYPES.map((t) => (
+          <div className="mt-5 reos-card p-5 space-y-6">
+            {/* Property Type */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Property Type</div>
+                {type !== "all" && (
+                  <button
+                    onClick={() => removeParam("type")}
+                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" /> Reset
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {PROPERTY_TYPES.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => updateParam("type", t)}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
+                      type === t
+                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
+                        : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
+                    )}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Listing Type */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Listing Type</div>
+                {listingType && (
+                  <button
+                    onClick={() => removeParam("listing_type")}
+                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" /> Reset
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {LISTING_TYPES.map((l) => (
+                  <button
+                    key={l.id || "any"}
+                    onClick={() => updateParam("listing_type", l.id)}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
+                      listingType === l.id
+                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
+                        : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
+                    )}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Location */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Location (state, city or area)</div>
+                {location && (
+                  <button
+                    onClick={() => { removeParam("location"); setLocationInput(""); }}
+                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" /> Reset
+                  </button>
+                )}
+              </div>
+              <div className="relative max-w-md">
+                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
+                <input
+                  value={locationInput}
+                  onChange={(e) => setLocationInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      updateParam("location", locationInput.trim());
+                    }
+                  }}
+                  onBlur={() => {
+                    if (locationInput.trim() !== location) updateParam("location", locationInput.trim());
+                  }}
+                  placeholder="e.g. Bali, Canggu, Jakarta…"
+                  aria-label="Filter by location"
+                  className="w-full h-10 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
+                />
+              </div>
+            </div>
+
+            {/* Price Range */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Price Range</div>
+                {priceRangeId && (
+                  <button
+                    onClick={() => removeParam("price")}
+                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" /> Reset
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {PRICE_RANGES.map((r) => (
+                  <button
+                    key={r.id || "any"}
+                    onClick={() => updateParam("price", r.id)}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
+                      priceRangeId === r.id
+                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
+                        : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
+                    )}
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer controls */}
+            <div className="pt-4 border-t border-[var(--line)] flex flex-wrap items-center justify-between gap-3">
+              <p className="text-[11px] text-[var(--text-3)] uppercase tracking-[0.18em]">
+                {activeChips.length} active filter{activeChips.length === 1 ? "" : "s"}
+              </p>
+              <div className="flex items-center gap-2">
                 <button
-                  key={t}
-                  onClick={() => updateParam("type", t)}
-                  className={cn(
-                    "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
-                    type === t
-                      ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
-                      : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
-                  )}
+                  onClick={clearAll}
+                  className="h-9 px-4 rounded-lg reos-chip text-[12px] uppercase tracking-[0.16em] inline-flex items-center gap-1.5"
                 >
-                  {t}
+                  <X className="w-3.5 h-3.5" /> Reset All
                 </button>
-              ))}
+                <button
+                  onClick={() => setFilterOpen(false)}
+                  className="h-9 px-4 rounded-lg reos-cta text-[12px] uppercase tracking-[0.16em]"
+                >
+                  Done
+                </button>
+              </div>
             </div>
           </div>
         )}
       </section>
+
 
       {/* Results grid */}
       <section className="mx-auto max-w-[1600px] px-6 pb-12">
