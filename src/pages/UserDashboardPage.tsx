@@ -25,6 +25,7 @@ import {
 import CustomerServiceDashboard from '@/components/dashboard/CustomerServiceDashboard';
 import ProfileUpgradeCard from '@/components/ProfileUpgradeCard';
 import ApplicationStatusBar from '@/components/dashboard/ApplicationStatusBar';
+import RoleDashboardWidgets from '@/components/dashboard/RoleDashboardWidgets';
 import AstraWalletCard from '@/components/dashboard/AstraWalletCard';
 import SavedPropertiesTab from '@/components/dashboard/tabs/SavedPropertiesTab';
 import SearchHistoryTab from '@/components/dashboard/tabs/SearchHistoryTab';
@@ -333,6 +334,9 @@ const UserDashboardPage = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Role-based Widgets */}
+        <RoleDashboardWidgets roles={userRoles} />
 
         {/* Application Status */}
         <ApplicationStatusBar />

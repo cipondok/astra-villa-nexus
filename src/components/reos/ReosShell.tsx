@@ -13,6 +13,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
 import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
+import { useUserRoles } from "@/hooks/useUserRoles";
+import { resolveDashboardPath } from "@/lib/dashboardRoute";
 
 /* ============================================================
    ReosShell — Shared "Bloomberg Terminal" Black/Gold layout
@@ -110,6 +112,8 @@ export function ReosHeader() {
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { logoUrl: headerLogo } = useBrandingLogo("headerLogo", "/astra-logo.png");
+  const { data: userRoles = [] } = useUserRoles();
+  const dashboardPath = resolveDashboardPath(userRoles);
 
   const [aiQuery, setAiQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -318,7 +322,7 @@ export function ReosHeader() {
                 </button>
                 {profileOpen && (
                   <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-2xl">
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/dashboard"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> Dashboard</button>
+                    <button type="button" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> Dashboard</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> My Profile</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> Wallet</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> Saved</button>
@@ -340,7 +344,8 @@ export function ReosHeader() {
 
         <div className="border-t border-[var(--line)]">
           <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-8 overflow-x-auto reos-scrollbar">
-            {topTabs.map(t => {
+            {topTabs.map(tab => {
+              const t = tab.label === "Dashboard" ? { ...tab, to: dashboardPath } : tab;
               const active = isActive(t.to);
               return (
                 <Link
@@ -378,11 +383,14 @@ export function ReosHeader() {
                 <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
               </div>
               <div className="space-y-1">
-                {topTabs.map(t => (
-                  <Link key={t.label} to={t.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
-                    <t.icon className="h-4 w-4" /> {t.label}
-                  </Link>
-                ))}
+                {topTabs.map(tab => {
+                  const t = tab.label === "Dashboard" ? { ...tab, to: dashboardPath } : tab;
+                  return (
+                    <Link key={t.label} to={t.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                      <t.icon className="h-4 w-4" /> {t.label}
+                    </Link>
+                  );
+                })}
                 <div className="reos-divider my-3" />
                 {sideNav.map(n => (
                   <Link key={n.label} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
