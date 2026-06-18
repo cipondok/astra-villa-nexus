@@ -136,6 +136,7 @@ export function ReosHeader() {
       const t = e.target as Node;
       if (langRef.current && !langRef.current.contains(t)) setLangOpen(false);
       if (notifRef.current && !notifRef.current.contains(t)) setNotifOpen(false);
+      if (savedRef.current && !savedRef.current.contains(t)) setSavedOpen(false);
       if (profileRef.current && !profileRef.current.contains(t)) setProfileOpen(false);
     };
     document.addEventListener("mousedown", onClick);
