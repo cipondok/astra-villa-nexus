@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import PillToggleGroup from "@/components/ui/PillToggleGroup";
 import InvestorAuthSection from "@/components/auth/InvestorAuthSection";
 import InvestmentAnalysisTools from "@/components/investment/InvestmentAnalysisTools";
+import ReosShell from "@/components/reos/ReosShell";
 
 // WNA components
 import WelcomingCountriesList from "@/components/wna/WelcomingCountriesList";
