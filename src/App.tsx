@@ -37,6 +37,7 @@ import { DataSaverProvider } from '@/contexts/DataSaverContext';
 import { SidebarProvider } from '@/components/ui/sidebar';
 // Lazy load all non-critical shell components — reduces initial parse time
 const Navigation = lazy(() => import('@/components/Navigation'));
+import { ReosHeader, ReosFooter, reosTokens } from '@/components/reos/ReosShell';
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
 const GlobalFooter = lazy(() => import('@/components/layout/GlobalFooter'));
