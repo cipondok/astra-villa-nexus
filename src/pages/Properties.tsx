@@ -122,10 +122,10 @@ export default function Properties() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [q, location, tag, collection, intent, type, sort, listingType, pathname]);
+  }, [q, location, tag, collection, intent, type, sort, listingType, priceRangeId, pathname]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType }],
+    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType, priceRangeId }],
     queryFn: async (): Promise<Listing[]> => {
       let query = supabase
         .from("properties")
@@ -139,6 +139,8 @@ export default function Properties() {
       }
       if (type !== "all") query = query.eq("property_type", type);
       if (listingType) query = query.eq("listing_type", listingType);
+      if (priceRange?.min != null) query = query.gte("price", priceRange.min);
+      if (priceRange?.max != null) query = query.lte("price", priceRange.max);
 
       const COLLECTION_TO_DEV: Record<string, string[]> = {
         "pre-launch":   ["pre_launch", "pre-launch", "prelaunch"],
