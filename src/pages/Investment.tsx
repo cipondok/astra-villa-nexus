@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import PillToggleGroup from "@/components/ui/PillToggleGroup";
 import InvestorAuthSection from "@/components/auth/InvestorAuthSection";
 import InvestmentAnalysisTools from "@/components/investment/InvestmentAnalysisTools";
+import ReosShell from "@/components/reos/ReosShell";
 
 // WNA components
 import WelcomingCountriesList from "@/components/wna/WelcomingCountriesList";
@@ -214,55 +215,41 @@ const Investment = () => {
   const copy = t[language] || t.en;
 
   return (
-    <div className="min-h-screen bg-background">
+    <ReosShell>
       <SEOHead
         title={translate('seo.investment.title')}
         description={translate('seo.investment.description')}
         keywords="investasi properti asing indonesia, WNA beli properti, WNI overseas, foreign property investment indonesia"
       />
 
-      {/* Sticky Header */}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
-        <div className="container mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link to="/">
-              <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
-                <ArrowLeft className="h-4 w-4 mr-1" />
-                <span className="hidden sm:inline">Back</span>
-              </Button>
-            </Link>
-            <h1 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-foreground">
-              <Globe className="h-5 w-5 text-primary" />
-              <span className="hidden sm:inline">{copy.title}</span>
-              <span className="sm:hidden">Investment</span>
-            </h1>
+      {/* Hero */}
+      <section className="mx-auto max-w-[1600px] px-6 pt-10 md:pt-14 pb-6">
+        <div className="max-w-3xl">
+          <div className="text-[11px] uppercase tracking-[0.28em] reos-gold mb-3 inline-flex items-center gap-2">
+            <Globe className="h-3 w-3" /> {copy.badge}
           </div>
-          {!user && (
-            <Button
-              onClick={() => navigate('/auth')}
-              size="sm"
-              className="h-8 sm:h-9 px-3 sm:px-4 text-xs sm:text-sm bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              {copy.signIn}
-            </Button>
-          )}
-        </div>
-      </header>
+          <h1 className="text-[34px] md:text-[44px] leading-[1.05] font-semibold tracking-tight text-[var(--text)]">
+            {copy.title.split(" ")[0]}{" "}
+            <em className="reos-gold not-italic">
+              {copy.title.split(" ").slice(1).join(" ") || "Guide"}
+            </em>
+          </h1>
+          <p className="mt-4 text-[14px] text-[var(--text-2)] leading-relaxed">{copy.subtitle}</p>
 
-      <div className="container mx-auto px-3 sm:px-4 py-4 md:py-8 space-y-6">
-        {/* Hero */}
-        <div className="text-center space-y-4">
-          <Badge className="px-3 py-1.5 text-xs sm:text-sm font-medium bg-primary/10 text-primary border-primary/20">
-            <Globe className="h-3.5 w-3.5 inline mr-1.5" />
-            {copy.badge}
-          </Badge>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            {copy.subtitle}
-          </p>
+          {!user && (
+            <div className="mt-6">
+              <Button
+                onClick={() => navigate('/auth')}
+                className="h-11 px-6 rounded-xl reos-cta text-[13px]"
+              >
+                {copy.signIn}
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Section Selector */}
-        <div className="flex justify-center">
+        <div className="mt-8 flex justify-center">
           <PillToggleGroup
             options={sectionOptions}
             value={activeSection}
@@ -272,12 +259,18 @@ const Investment = () => {
         </div>
 
         {/* Notice */}
-        <Alert className="border-primary/20 bg-primary/5">
-          <AlertCircle className="h-4 w-4 text-primary" />
-          <AlertTitle className="text-sm sm:text-base font-semibold text-foreground">{copy.noticeTitle}</AlertTitle>
-          <AlertDescription className="text-xs sm:text-sm text-muted-foreground">{copy.noticeDesc}</AlertDescription>
-        </Alert>
+        <div className="mt-6 reos-card p-5 flex gap-3 items-start">
+          <div className="w-9 h-9 grid place-items-center rounded-full bg-[var(--gold-soft)] border border-[var(--line-strong)] shrink-0">
+            <AlertCircle className="h-4 w-4 reos-gold" />
+          </div>
+          <div>
+            <h3 className="text-[14px] font-semibold text-[var(--text)]">{copy.noticeTitle}</h3>
+            <p className="mt-1 text-[12px] text-[var(--text-2)] leading-relaxed">{copy.noticeDesc}</p>
+          </div>
+        </div>
+      </section>
 
+      <section className="mx-auto max-w-[1600px] px-6 pb-12 space-y-6">
         {/* ===================== ALL INVESTMENT SECTION ===================== */}
         {activeSection === 'all' && (
           <AllInvestmentSection copy={copy} navigate={navigate} contactDialogOpen={contactDialogOpen} setContactDialogOpen={setContactDialogOpen} />
@@ -302,10 +295,10 @@ const Investment = () => {
         {activeSection === 'dashboard' && user && (
           <UserInvestmentDashboard />
         )}
-      </div>
+      </section>
 
       <ForeignInvestmentContactDialog open={contactDialogOpen} onOpenChange={setContactDialogOpen} />
-    </div>
+    </ReosShell>
   );
 };
 
