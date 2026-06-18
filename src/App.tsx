@@ -401,6 +401,7 @@ const AppContent = () => {
     '/dijual', '/buy', '/disewa', '/rent', '/sewa',
     '/pre-launching', '/pre-launch', '/new-projects',
     '/location', '/locations',
+    '/investment',
   ]);
   const isLuxeRoute =
     LUXE_PATHS.has(path) ||
