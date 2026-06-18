@@ -110,6 +110,8 @@ export default function Properties() {
   const guests     = params.get("guests") || "";
   const when       = params.get("when") || "";
   const listingType = (params.get("listing_type") || preset.listingType || "").toLowerCase();
+  const priceRangeId = (params.get("price") || "").toLowerCase();
+  const priceRange = PRICE_RANGES.find((r) => r.id === priceRangeId);
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(q);
