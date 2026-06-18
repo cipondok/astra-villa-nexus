@@ -875,12 +875,16 @@ const AppContent = () => {
         </AnimatePresence>
       </main>
       {/* Mobile bottom tab bar — legacy only; luxe routes use LuxeMobileDock */}
-      {!hideAppShell && !isAppRoute && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
+      {!hideAppShell && !isAppRoute && !useReosChrome && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
 
-      {/* ASTRA V3: unified footer rendered on every route */}
-      <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '120px' }} />}>
-        <GlobalFooter />
-      </Suspense>
+      {useReosChrome ? (
+        <ReosFooter />
+      ) : (
+        /* ASTRA V3: unified footer rendered on every non-Reos route */
+        <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '120px' }} />}>
+          <GlobalFooter />
+        </Suspense>
+      )}
       </div>
     </SidebarProviderConditional>
   );
