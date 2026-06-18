@@ -383,11 +383,14 @@ export function ReosHeader() {
                 <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
               </div>
               <div className="space-y-1">
-                {topTabs.map(t => (
-                  <Link key={t.label} to={t.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
-                    <t.icon className="h-4 w-4" /> {t.label}
-                  </Link>
-                ))}
+                {topTabs.map(tab => {
+                  const t = tab.label === "Dashboard" ? { ...tab, to: dashboardPath } : tab;
+                  return (
+                    <Link key={t.label} to={t.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                      <t.icon className="h-4 w-4" /> {t.label}
+                    </Link>
+                  );
+                })}
                 <div className="reos-divider my-3" />
                 {sideNav.map(n => (
                   <Link key={n.label} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
