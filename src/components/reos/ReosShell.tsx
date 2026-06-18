@@ -114,17 +114,20 @@ export function ReosHeader() {
   const [aiQuery, setAiQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authInitial, setAuthInitial] = useState<"login" | "register">("login");
 
   const langRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const t = e.target as Node;
       if (langRef.current && !langRef.current.contains(t)) setLangOpen(false);
+      if (notifRef.current && !notifRef.current.contains(t)) setNotifOpen(false);
       if (profileRef.current && !profileRef.current.contains(t)) setProfileOpen(false);
     };
     document.addEventListener("mousedown", onClick);
@@ -137,10 +140,22 @@ export function ReosHeader() {
     navigate(`/search?q=${encodeURIComponent(aiQuery)}`);
   };
 
-  const languages: { code: any; label: string }[] = [
-    { code: "en", label: "EN" }, { code: "id", label: "ID" }, { code: "zh", label: "ZH" },
-    { code: "ja", label: "JA" }, { code: "ko", label: "KO" }, { code: "ru", label: "RU" },
+  const languages: { code: any; label: string; native: string }[] = [
+    { code: "en", label: "EN", native: "English" },
+    { code: "id", label: "ID", native: "Bahasa Indonesia" },
+    { code: "zh", label: "ZH", native: "中文" },
+    { code: "ja", label: "JA", native: "日本語" },
+    { code: "ko", label: "KO", native: "한국어" },
+    { code: "ru", label: "RU", native: "Русский" },
   ];
+
+  const notifications = [
+    { id: 1, title: "New villa match in Canggu", desc: "Villa Asteria · IDR 8.5B · 92 AI score", time: "2m", unread: true, to: "/properties" },
+    { id: 2, title: "Price drop on your watchlist", desc: "Seminyak Cliff Estate · −5%", time: "1h", unread: true, to: "/favorites" },
+    { id: 3, title: "Offer accepted", desc: "Your bid on Ubud Sanctuary was approved.", time: "3h", unread: true, to: "/investment-performance" },
+    { id: 4, title: "Market report ready", desc: "Q2 Bali liquidity report is now available.", time: "1d", unread: false, to: "/investor-reports" },
+  ];
+  const unreadCount = notifications.filter(n => n.unread).length;
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
