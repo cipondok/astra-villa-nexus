@@ -306,14 +306,52 @@ export function ReosHeader() {
                 </div>
               )}
             </div>
-            <button
-              type="button"
-              onClick={() => navigate("/favorites")}
-              aria-label="Saved"
-              className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
-            >
-              <Heart className="h-4 w-4 text-[var(--text-2)]" />
-            </button>
+            <div className="relative" ref={savedRef}>
+              <button
+                type="button"
+                onClick={() => { setSavedOpen(o => !o); setLangOpen(false); setNotifOpen(false); setProfileOpen(false); }}
+                aria-label="Saved"
+                aria-haspopup="menu"
+                aria-expanded={savedOpen}
+                className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
+              >
+                <Heart className="h-4 w-4 text-[var(--text-2)]" />
+                {savedCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 h-4 min-w-[16px] px-1 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">{savedCount}</span>
+                )}
+              </button>
+              {savedOpen && (
+                <div role="menu" className="absolute right-0 mt-2 w-[320px] reos-card p-0 z-50 shadow-2xl overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
+                    <div className="text-[12.5px] font-semibold text-[var(--text)]">Saved</div>
+                    <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{savedCount} items</span>
+                  </div>
+                  <div className="max-h-[340px] overflow-y-auto reos-scrollbar">
+                    {savedItems.map(s => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => { setSavedOpen(false); navigate(s.to); }}
+                        className="w-full text-left px-4 py-3 flex gap-3 items-start hover:bg-[var(--surface-2)] border-b border-[var(--line)] last:border-b-0 transition-colors"
+                      >
+                        <Heart className="mt-1 h-3.5 w-3.5 shrink-0 text-[var(--gold)]" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[12.5px] font-medium text-[var(--text)] truncate">{s.title}</div>
+                          <div className="text-[11.5px] text-[var(--text-2)] mt-0.5 line-clamp-2">{s.desc}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setSavedOpen(false); navigate("/favorites"); }}
+                    className="w-full text-[12px] text-center py-3 reos-gold hover:bg-[var(--surface-2)] border-t border-[var(--line)]"
+                  >
+                    View all saved
+                  </button>
+                </div>
+              )}
+            </div>
 
 
             {user ? (
