@@ -204,21 +204,28 @@ export function ReosHeader() {
             <div className="relative" ref={langRef}>
               <button
                 type="button"
-                onClick={() => setLangOpen(o => !o)}
+                onClick={() => { setLangOpen(o => !o); setNotifOpen(false); setProfileOpen(false); }}
                 className="h-9 px-3 rounded-lg inline-flex items-center gap-1.5 text-xs hover:bg-[var(--surface)] text-[var(--text-2)]"
+                aria-haspopup="menu"
+                aria-expanded={langOpen}
               >
                 <Globe className="h-4 w-4" /> {language.toUpperCase()} <ChevronDown className="h-3 w-3" />
               </button>
               {langOpen && (
-                <div role="menu" className="absolute right-0 mt-2 w-32 reos-card p-1 z-50 shadow-2xl">
+                <div role="menu" className="absolute right-0 mt-2 w-56 reos-card p-1 z-50 shadow-2xl">
+                  <div className="px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)]">Language</div>
                   {languages.map(l => (
                     <button
                       key={l.code}
                       type="button"
                       onClick={() => { setLanguage(l.code); setLangOpen(false); }}
-                      className={`w-full text-left px-3 py-2 rounded-md text-[12px] hover:bg-[var(--surface-2)] ${language === l.code ? "reos-gold" : "text-[var(--text)]"}`}
+                      className={`w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] flex items-center justify-between gap-2 ${language === l.code ? "reos-gold" : "text-[var(--text)]"}`}
                     >
-                      {l.label}
+                      <span className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold w-7 text-[var(--text-2)]">{l.label}</span>
+                        <span>{l.native}</span>
+                      </span>
+                      {language === l.code && <CheckCircle2 className="h-3.5 w-3.5 reos-gold" />}
                     </button>
                   ))}
                 </div>
@@ -234,15 +241,55 @@ export function ReosHeader() {
               {theme === "dark" ? <Sun className="h-4 w-4 text-[var(--text-2)]" /> : <Moon className="h-4 w-4 text-[var(--text-2)]" />}
             </button>
 
-            <button
-              type="button"
-              onClick={() => navigate("/notifications")}
-              aria-label="Notifications"
-              className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
-            >
-              <Bell className="h-4 w-4 text-[var(--text-2)]" />
-              <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">3</span>
-            </button>
+            <div className="relative" ref={notifRef}>
+              <button
+                type="button"
+                onClick={() => { setNotifOpen(o => !o); setLangOpen(false); setProfileOpen(false); }}
+                aria-label="Notifications"
+                aria-haspopup="menu"
+                aria-expanded={notifOpen}
+                className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
+              >
+                <Bell className="h-4 w-4 text-[var(--text-2)]" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 h-4 min-w-[16px] px-1 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">{unreadCount}</span>
+                )}
+              </button>
+              {notifOpen && (
+                <div role="menu" className="absolute right-0 mt-2 w-[340px] reos-card p-0 z-50 shadow-2xl overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
+                    <div className="text-[12.5px] font-semibold text-[var(--text)]">Notifications</div>
+                    <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{unreadCount} new</span>
+                  </div>
+                  <div className="max-h-[340px] overflow-y-auto reos-scrollbar">
+                    {notifications.map(n => (
+                      <button
+                        key={n.id}
+                        type="button"
+                        onClick={() => { setNotifOpen(false); navigate(n.to); }}
+                        className="w-full text-left px-4 py-3 flex gap-3 items-start hover:bg-[var(--surface-2)] border-b border-[var(--line)] last:border-b-0 transition-colors"
+                      >
+                        <span className={`mt-1.5 h-2 w-2 rounded-full shrink-0 ${n.unread ? "bg-[var(--gold)]" : "bg-[var(--text-3)]/40"}`} />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="text-[12.5px] font-medium text-[var(--text)] truncate">{n.title}</div>
+                            <div className="text-[10px] text-[var(--text-3)] shrink-0">{n.time}</div>
+                          </div>
+                          <div className="text-[11.5px] text-[var(--text-2)] mt-0.5 line-clamp-2">{n.desc}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setNotifOpen(false); navigate("/notifications"); }}
+                    className="w-full text-[12px] text-center py-3 reos-gold hover:bg-[var(--surface-2)] border-t border-[var(--line)]"
+                  >
+                    View all notifications
+                  </button>
+                </div>
+              )}
+            </div>
             <button
               type="button"
               onClick={() => navigate("/favorites")}
@@ -251,6 +298,7 @@ export function ReosHeader() {
             >
               <Heart className="h-4 w-4 text-[var(--text-2)]" />
             </button>
+
 
             {user ? (
               <div className="relative" ref={profileRef}>
