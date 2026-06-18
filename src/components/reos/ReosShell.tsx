@@ -166,6 +166,13 @@ export function ReosHeader() {
   ];
   const unreadCount = notifications.filter(n => n.unread).length;
 
+  const savedItems = [
+    { id: 1, title: "Villa Asteria", desc: "Canggu · IDR 8.5B · 92 AI score", to: "/properties" },
+    { id: 2, title: "Seminyak Cliff Estate", desc: "Seminyak · IDR 12B · Villa", to: "/properties" },
+    { id: 3, title: "Ubud Sanctuary", desc: "Ubud · IDR 4.2B · Estate", to: "/properties" },
+  ];
+  const savedCount = savedItems.length;
+
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   return (
