@@ -37,6 +37,7 @@ import { DataSaverProvider } from '@/contexts/DataSaverContext';
 import { SidebarProvider } from '@/components/ui/sidebar';
 // Lazy load all non-critical shell components — reduces initial parse time
 const Navigation = lazy(() => import('@/components/Navigation'));
+import { ReosHeader, ReosFooter, reosTokens } from '@/components/reos/ReosShell';
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
 const GlobalFooter = lazy(() => import('@/components/layout/GlobalFooter'));
@@ -420,23 +421,29 @@ const AppContent = () => {
     return <MaintenancePage message={maintenanceMessage} />;
   }
 
+  // Unified marketing chrome: every non-admin / non-app route gets the SAME
+  // ReosHeader + ReosFooter so there is no duplicate or per-page header drift.
+  const useReosChrome = !isAdminRoute && !isAppRoute;
+
   const shellInner = (
     <>
       <NetworkStatusIndicator />
       <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
-      {!hideAppShell && !isAppRoute && <Suspense fallback={null}><Navigation /></Suspense>}
-      </>
+      {useReosChrome && <ReosHeader />}
+    </>
   );
 
   return (
     <SidebarProviderConditional enabled={isAppRoute}>
+      {useReosChrome && <style>{reosTokens}</style>}
       {isAppRoute && <Suspense fallback={null}><AppSidebar /></Suspense>}
-      <div className="min-h-screen bg-background text-foreground flex-1 flex flex-col w-full">
+      <div className={`min-h-screen bg-background text-foreground flex-1 flex flex-col w-full ${useReosChrome ? 'reos' : ''}`}>
       {shellInner}
       
       
-      <main className={hideAppShell ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
+      <main className={useReosChrome ? 'flex-1' : (hideAppShell ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0')}>
+
 
         <AnimatePresence mode="popLayout" initial={false}>
           <PageTransition key={location.pathname}>
@@ -868,12 +875,16 @@ const AppContent = () => {
         </AnimatePresence>
       </main>
       {/* Mobile bottom tab bar — legacy only; luxe routes use LuxeMobileDock */}
-      {!hideAppShell && !isAppRoute && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
+      {!hideAppShell && !isAppRoute && !useReosChrome && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
 
-      {/* ASTRA V3: unified footer rendered on every route */}
-      <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '120px' }} />}>
-        <GlobalFooter />
-      </Suspense>
+      {useReosChrome ? (
+        <ReosFooter />
+      ) : (
+        /* ASTRA V3: unified footer rendered on every non-Reos route */
+        <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '120px' }} />}>
+          <GlobalFooter />
+        </Suspense>
+      )}
       </div>
     </SidebarProviderConditional>
   );
