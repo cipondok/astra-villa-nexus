@@ -458,6 +458,49 @@ export function ReosHeader() {
 }
 
 export function ReosFooter() {
+  const footerLinks: { title: string; links: { label: string; to: string }[] }[] = [
+    {
+      title: "Explore",
+      links: [
+        { label: "Home", to: "/" },
+        { label: "Properties", to: "/properties" },
+        { label: "Market Intelligence", to: "/market-intelligence" },
+        { label: "Wealth Advisor", to: "/wealth-advisor" },
+        { label: "Investment Fund", to: "/investment" },
+      ],
+    },
+    {
+      title: "Services",
+      links: [
+        { label: "Buy", to: "/properties?intent=buy" },
+        { label: "Rent", to: "/properties?intent=rent" },
+        { label: "Sell with Us", to: "/sell" },
+        { label: "Agents", to: "/agents" },
+        { label: "Vendors", to: "/vendors" },
+      ],
+    },
+    {
+      title: "Company",
+      links: [
+        { label: "About", to: "/about" },
+        { label: "Contact", to: "/contact" },
+        { label: "Careers", to: "/careers" },
+        { label: "Press", to: "/press" },
+        { label: "Blog", to: "/blog" },
+      ],
+    },
+    {
+      title: "Legal",
+      links: [
+        { label: "Terms of Service", to: "/terms" },
+        { label: "Privacy Policy", to: "/privacy" },
+        { label: "Cookie Policy", to: "/cookies" },
+        { label: "Compliance", to: "/compliance" },
+        { label: "Help Center", to: "/help" },
+      ],
+    },
+  ];
+
   return (
     <footer className="mx-auto max-w-[1600px] px-6 pb-10 pt-4">
       <div className="reos-card p-5">
@@ -485,6 +528,32 @@ export function ReosFooter() {
           </div>
         </div>
       </div>
+
+      {/* Sitemap weblinks */}
+      <div className="mt-4 reos-card p-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {footerLinks.map((col) => (
+            <div key={col.title}>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] reos-gold mb-3">
+                {col.title}
+              </div>
+              <ul className="space-y-2">
+                {col.links.map((l) => (
+                  <li key={l.label}>
+                    <Link
+                      to={l.to}
+                      className="text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="text-center text-[11px] text-[var(--text-3)] py-6">
         © {new Date().getFullYear()} ASTRA Villa REOS · Built for ASEAN · Enterprise-grade
       </div>
