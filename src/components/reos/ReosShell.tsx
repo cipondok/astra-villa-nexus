@@ -383,13 +383,14 @@ export default function ReosShell({ children, className = "" }: ReosShellProps) 
     return () => document.documentElement.removeAttribute("data-reos-theme");
   }, []);
 
+  // ReosHeader + ReosFooter are rendered globally in App.tsx so every page
+  // shares the exact same chrome. ReosShell only ensures the .reos tokens are
+  // applied to its subtree (safe to nest when global layout already supplies them).
   return (
     <>
       <style>{reosTokens}</style>
-      <div className={`reos min-h-screen flex flex-col ${className}`}>
-        <ReosHeader />
-        <main className="flex-1">{children}</main>
-        <ReosFooter />
+      <div className={`reos flex-1 flex flex-col ${className}`}>
+        <div className="flex-1">{children}</div>
       </div>
     </>
   );
