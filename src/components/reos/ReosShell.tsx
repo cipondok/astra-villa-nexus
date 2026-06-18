@@ -322,7 +322,7 @@ export function ReosHeader() {
                 </button>
                 {profileOpen && (
                   <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-2xl">
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/dashboard"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> Dashboard</button>
+                    <button type="button" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> Dashboard</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> My Profile</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> Wallet</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> Saved</button>
