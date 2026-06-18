@@ -81,7 +81,6 @@ export const reosTokens = `
 
 const topTabs = [
   { icon: Home, label: "Home", to: "/" },
-  { icon: LayoutDashboard, label: "Dashboard", to: "/" },
   { icon: Building2, label: "Properties", to: "/properties" },
   { icon: TrendingUp, label: "Investment", to: "/investment" },
   { icon: Banknote, label: "Finance", to: "/wallet" },
