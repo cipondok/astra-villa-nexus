@@ -194,6 +194,8 @@ export default function Properties() {
   if (collection) activeChips.push({ key: "collection", label: collectionTitle ?? collection });
   if (intent)     activeChips.push({ key: "intent",     label: intent });
   if (type !== "all") activeChips.push({ key: "type", label: type });
+  if (listingType)    activeChips.push({ key: "listing_type", label: listingType === "sale" ? "For Sale" : "For Rent" });
+  if (priceRange)     activeChips.push({ key: "price", label: priceRange.label });
 
   const removeParam = (key: string) => {
     const next = new URLSearchParams(params);
