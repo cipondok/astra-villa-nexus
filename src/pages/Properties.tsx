@@ -62,7 +62,20 @@ const COLLECTION_LABELS: Record<string, string> = {
   curated:   "Curated Worlds",
 };
 
-const PROPERTY_TYPES = ["all", "villa", "house", "apartment", "land"] as const;
+const PROPERTY_TYPES = ["all", "villa", "house", "apartment", "townhouse", "condo", "land", "commercial"] as const;
+const LISTING_TYPES = [
+  { id: "",     label: "Any" },
+  { id: "sale", label: "For Sale" },
+  { id: "rent", label: "For Rent" },
+] as const;
+const PRICE_RANGES: { id: string; label: string; min?: number; max?: number }[] = [
+  { id: "",            label: "Any Price" },
+  { id: "0-1b",        label: "Up to Rp 1B",       min: 0,             max: 1_000_000_000 },
+  { id: "1b-3b",       label: "Rp 1B – 3B",        min: 1_000_000_000, max: 3_000_000_000 },
+  { id: "3b-5b",       label: "Rp 3B – 5B",        min: 3_000_000_000, max: 5_000_000_000 },
+  { id: "5b-10b",      label: "Rp 5B – 10B",       min: 5_000_000_000, max: 10_000_000_000 },
+  { id: "10b-plus",    label: "Rp 10B+",           min: 10_000_000_000 },
+];
 const SORT_OPTIONS = [
   { id: "newest",    label: "Newest" },
   { id: "price-asc", label: "Price ↑" },
