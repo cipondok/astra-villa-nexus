@@ -421,23 +421,29 @@ const AppContent = () => {
     return <MaintenancePage message={maintenanceMessage} />;
   }
 
+  // Unified marketing chrome: every non-admin / non-app route gets the SAME
+  // ReosHeader + ReosFooter so there is no duplicate or per-page header drift.
+  const useReosChrome = !isAdminRoute && !isAppRoute;
+
   const shellInner = (
     <>
       <NetworkStatusIndicator />
       <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
-      {!hideAppShell && !isAppRoute && <Suspense fallback={null}><Navigation /></Suspense>}
-      </>
+      {useReosChrome && <ReosHeader />}
+    </>
   );
 
   return (
     <SidebarProviderConditional enabled={isAppRoute}>
+      {useReosChrome && <style>{reosTokens}</style>}
       {isAppRoute && <Suspense fallback={null}><AppSidebar /></Suspense>}
-      <div className="min-h-screen bg-background text-foreground flex-1 flex flex-col w-full">
+      <div className={`min-h-screen bg-background text-foreground flex-1 flex flex-col w-full ${useReosChrome ? 'reos' : ''}`}>
       {shellInner}
       
       
-      <main className={hideAppShell ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
+      <main className={useReosChrome ? 'flex-1' : (hideAppShell ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0')}>
+
 
         <AnimatePresence mode="popLayout" initial={false}>
           <PageTransition key={location.pathname}>
