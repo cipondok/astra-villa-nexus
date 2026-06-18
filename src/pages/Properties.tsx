@@ -62,7 +62,20 @@ const COLLECTION_LABELS: Record<string, string> = {
   curated:   "Curated Worlds",
 };
 
-const PROPERTY_TYPES = ["all", "villa", "house", "apartment", "land"] as const;
+const PROPERTY_TYPES = ["all", "villa", "house", "apartment", "townhouse", "condo", "land", "commercial"] as const;
+const LISTING_TYPES = [
+  { id: "",     label: "Any" },
+  { id: "sale", label: "For Sale" },
+  { id: "rent", label: "For Rent" },
+] as const;
+const PRICE_RANGES: { id: string; label: string; min?: number; max?: number }[] = [
+  { id: "",            label: "Any Price" },
+  { id: "0-1b",        label: "Up to Rp 1B",       min: 0,             max: 1_000_000_000 },
+  { id: "1b-3b",       label: "Rp 1B – 3B",        min: 1_000_000_000, max: 3_000_000_000 },
+  { id: "3b-5b",       label: "Rp 3B – 5B",        min: 3_000_000_000, max: 5_000_000_000 },
+  { id: "5b-10b",      label: "Rp 5B – 10B",       min: 5_000_000_000, max: 10_000_000_000 },
+  { id: "10b-plus",    label: "Rp 10B+",           min: 10_000_000_000 },
+];
 const SORT_OPTIONS = [
   { id: "newest",    label: "Newest" },
   { id: "price-asc", label: "Price ↑" },
@@ -97,6 +110,8 @@ export default function Properties() {
   const guests     = params.get("guests") || "";
   const when       = params.get("when") || "";
   const listingType = (params.get("listing_type") || preset.listingType || "").toLowerCase();
+  const priceRangeId = (params.get("price") || "").toLowerCase();
+  const priceRange = PRICE_RANGES.find((r) => r.id === priceRangeId);
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(q);
@@ -107,10 +122,10 @@ export default function Properties() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [q, location, tag, collection, intent, type, sort, listingType, pathname]);
+  }, [q, location, tag, collection, intent, type, sort, listingType, priceRangeId, pathname]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType }],
+    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType, priceRangeId }],
     queryFn: async (): Promise<Listing[]> => {
       let query = supabase
         .from("properties")
@@ -124,6 +139,8 @@ export default function Properties() {
       }
       if (type !== "all") query = query.eq("property_type", type);
       if (listingType) query = query.eq("listing_type", listingType);
+      if (priceRange?.min != null) query = query.gte("price", priceRange.min);
+      if (priceRange?.max != null) query = query.lte("price", priceRange.max);
 
       const COLLECTION_TO_DEV: Record<string, string[]> = {
         "pre-launch":   ["pre_launch", "pre-launch", "prelaunch"],
@@ -177,6 +194,8 @@ export default function Properties() {
   if (collection) activeChips.push({ key: "collection", label: collectionTitle ?? collection });
   if (intent)     activeChips.push({ key: "intent",     label: intent });
   if (type !== "all") activeChips.push({ key: "type", label: type });
+  if (listingType)    activeChips.push({ key: "listing_type", label: listingType === "sale" ? "For Sale" : "For Rent" });
+  if (priceRange)     activeChips.push({ key: "price", label: priceRange.label });
 
   const removeParam = (key: string) => {
     const next = new URLSearchParams(params);
@@ -294,27 +313,158 @@ export default function Properties() {
         </div>
 
         {filterOpen && (
-          <div className="mt-5 reos-card p-5">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)] mb-3">Property Type</div>
-            <div className="flex flex-wrap gap-2">
-              {PROPERTY_TYPES.map((t) => (
+          <div className="mt-5 reos-card p-5 space-y-6">
+            {/* Property Type */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Property Type</div>
+                {type !== "all" && (
+                  <button
+                    onClick={() => removeParam("type")}
+                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" /> Reset
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {PROPERTY_TYPES.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => updateParam("type", t)}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
+                      type === t
+                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
+                        : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
+                    )}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Listing Type */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Listing Type</div>
+                {listingType && (
+                  <button
+                    onClick={() => removeParam("listing_type")}
+                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" /> Reset
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {LISTING_TYPES.map((l) => (
+                  <button
+                    key={l.id || "any"}
+                    onClick={() => updateParam("listing_type", l.id)}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
+                      listingType === l.id
+                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
+                        : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
+                    )}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Location */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Location (state, city or area)</div>
+                {location && (
+                  <button
+                    onClick={() => { removeParam("location"); setLocationInput(""); }}
+                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" /> Reset
+                  </button>
+                )}
+              </div>
+              <div className="relative max-w-md">
+                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
+                <input
+                  value={locationInput}
+                  onChange={(e) => setLocationInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      updateParam("location", locationInput.trim());
+                    }
+                  }}
+                  onBlur={() => {
+                    if (locationInput.trim() !== location) updateParam("location", locationInput.trim());
+                  }}
+                  placeholder="e.g. Bali, Canggu, Jakarta…"
+                  aria-label="Filter by location"
+                  className="w-full h-10 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
+                />
+              </div>
+            </div>
+
+            {/* Price Range */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Price Range</div>
+                {priceRangeId && (
+                  <button
+                    onClick={() => removeParam("price")}
+                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" /> Reset
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {PRICE_RANGES.map((r) => (
+                  <button
+                    key={r.id || "any"}
+                    onClick={() => updateParam("price", r.id)}
+                    className={cn(
+                      "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
+                      priceRangeId === r.id
+                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
+                        : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
+                    )}
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer controls */}
+            <div className="pt-4 border-t border-[var(--line)] flex flex-wrap items-center justify-between gap-3">
+              <p className="text-[11px] text-[var(--text-3)] uppercase tracking-[0.18em]">
+                {activeChips.length} active filter{activeChips.length === 1 ? "" : "s"}
+              </p>
+              <div className="flex items-center gap-2">
                 <button
-                  key={t}
-                  onClick={() => updateParam("type", t)}
-                  className={cn(
-                    "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
-                    type === t
-                      ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
-                      : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
-                  )}
+                  onClick={clearAll}
+                  className="h-9 px-4 rounded-lg reos-chip text-[12px] uppercase tracking-[0.16em] inline-flex items-center gap-1.5"
                 >
-                  {t}
+                  <X className="w-3.5 h-3.5" /> Reset All
                 </button>
-              ))}
+                <button
+                  onClick={() => setFilterOpen(false)}
+                  className="h-9 px-4 rounded-lg reos-cta text-[12px] uppercase tracking-[0.16em]"
+                >
+                  Done
+                </button>
+              </div>
             </div>
           </div>
         )}
       </section>
+
 
       {/* Results grid */}
       <section className="mx-auto max-w-[1600px] px-6 pb-12">
