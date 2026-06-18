@@ -730,36 +730,6 @@ export default function AstraReosHome() {
               </motion.div>
             </Section>
 
-            {/* ===== TRUSTED BY ===== */}
-            <Section className="reos-card p-5">
-              <div className="flex items-center flex-wrap gap-5 justify-between">
-                <div className="text-[12px] text-[var(--text-2)]">Trusted By Thousands</div>
-                <div className="flex items-center flex-wrap gap-x-7 gap-y-2">
-                  {banks.map(b => (
-                    <span key={b} className="text-[12px] font-bold tracking-wider text-[var(--text-2)]/70 hover:text-[var(--text)] transition">{b}</span>
-                  ))}
-                </div>
-                <div className="flex items-center gap-5 text-[11px]">
-                  {[
-                    { icon: CheckCircle2, label: "Verified Properties", sub: "100% Verified" },
-                    { icon: Shield, label: "Secure Transactions", sub: "Bank-Level Security" },
-                    { icon: LifeBuoy, label: "Expert Support", sub: "24/7 Assistance" },
-                  ].map(t => (
-                    <div key={t.label} className="flex items-center gap-2">
-                      <t.icon className="h-4 w-4 reos-gold" />
-                      <div className="leading-tight">
-                        <div className="text-[11px] font-medium">{t.label}</div>
-                        <div className="text-[9px] text-[var(--text-2)]">{t.sub}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Section>
-
-            <div className="text-center text-[11px] text-[var(--text-3)] py-6">
-              © {new Date().getFullYear()} ASTRA Villa REOS · Built for ASEAN · Enterprise-grade
-            </div>
           </main>
         </div>
 
