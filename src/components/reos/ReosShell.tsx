@@ -13,6 +13,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
 import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
+import { useUserRoles } from "@/hooks/useUserRoles";
+import { resolveDashboardPath } from "@/lib/dashboardRoute";
 
 /* ============================================================
    ReosShell — Shared "Bloomberg Terminal" Black/Gold layout
