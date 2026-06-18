@@ -344,7 +344,8 @@ export function ReosHeader() {
 
         <div className="border-t border-[var(--line)]">
           <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-8 overflow-x-auto reos-scrollbar">
-            {topTabs.map(t => {
+            {topTabs.map(tab => {
+              const t = tab.label === "Dashboard" ? { ...tab, to: dashboardPath } : tab;
               const active = isActive(t.to);
               return (
                 <Link
