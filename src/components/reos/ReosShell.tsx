@@ -124,8 +124,11 @@ export function ReosHeader() {
   const [showAuth, setShowAuth] = useState(false);
   const [authInitial, setAuthInitial] = useState<"login" | "register">("login");
 
+  const [savedOpen, setSavedOpen] = useState(false);
+
   const langRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
+  const savedRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
