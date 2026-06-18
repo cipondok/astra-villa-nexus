@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Building2, TrendingUp, Banknote, Scale, Wrench,
   Store, Cpu, MoreHorizontal, Eye, BookmarkPlus, Wallet, MessageSquare,
   ArrowLeftRight, Calendar, FileText, LifeBuoy, Shield, BarChart3,
-  Sliders, CheckCircle2, Sun, Moon, Menu, LogOut, User, X,
+  Sliders, CheckCircle2, Sun, Moon, Menu, LogOut, User, X, Home,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
