@@ -81,7 +81,6 @@ export const reosTokens = `
 
 const topTabs = [
   { icon: Home, label: "Home", to: "/" },
-  { icon: LayoutDashboard, label: "Dashboard", to: "/" },
   { icon: Building2, label: "Properties", to: "/properties" },
   { icon: TrendingUp, label: "Investment", to: "/investment" },
   { icon: Banknote, label: "Finance", to: "/wallet" },
@@ -395,15 +394,14 @@ export function ReosHeader() {
         <div className="border-t border-[var(--line)]">
           <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-8 overflow-x-auto reos-scrollbar">
             {topTabs.map(tab => {
-              const t = tab.label === "Dashboard" ? { ...tab, to: dashboardPath } : tab;
-              const active = isActive(t.to);
+              const active = isActive(tab.to);
               return (
                 <Link
-                  key={t.label}
-                  to={t.to}
+                  key={tab.label}
+                  to={tab.to}
                   className={`relative inline-flex items-center gap-2 text-[13px] whitespace-nowrap transition-colors ${active ? "reos-tab-active font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
                 >
-                  <t.icon className="h-4 w-4" /> {t.label}
+                  <tab.icon className="h-4 w-4" /> {tab.label}
                 </Link>
               );
             })}
