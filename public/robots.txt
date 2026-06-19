@@ -25,4 +25,7 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+Sitemap: https://astravilla.com/sitemap.xml
+Sitemap: https://astravilla.com/sitemap-en.xml
+Sitemap: https://astravilla.com/sitemap-id.xml
 Sitemap: https://zymrajuuyyfkzdmptebl.supabase.co/functions/v1/sitemap

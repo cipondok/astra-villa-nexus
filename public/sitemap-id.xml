@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://astravilla.com/?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/search?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/search?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/search?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/search" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/dijual?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/dijual?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/dijual?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/dijual" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/disewa?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/disewa?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/disewa?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/disewa" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/properties?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/properties?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/properties?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/properties" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/new-projects?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/new-projects?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/new-projects?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/new-projects" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/pre-launching?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/pre-launching?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/pre-launching?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/pre-launching" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/agents?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/agents?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/agents?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/agents" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/areas?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/areas?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/areas?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/areas" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/investment?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/investment?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/investment?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/investment" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/community?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/community?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/community?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/community" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/marketplace?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/marketplace?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/marketplace?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/marketplace" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/kpr-calculator?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/kpr-calculator?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/kpr-calculator?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/kpr-calculator" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/about?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/about?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/about?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/about" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/help?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/help?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/help?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/help" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/development?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/development?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/development?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/development" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/vr-tour?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/vr-tour?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/vr-tour?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/vr-tour" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/membership?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/membership?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/membership?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/membership" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/contact?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/contact?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/contact?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/contact" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/calculators/loan?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/calculators/loan?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/calculators/loan?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/calculators/loan" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/calculators/construction?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/calculators/construction?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/calculators/construction?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/calculators/construction" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/calculators/area?lang=id</loc>
+    <lastmod>2026-06-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/calculators/area?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/calculators/area?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/calculators/area" />
+  </url>
+</urlset>

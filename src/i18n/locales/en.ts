@@ -529,7 +529,7 @@ const en: TranslationMap = {
     faq2Q: 'How does fractional property investment work?',
     faq2A: 'Eligible properties are tokenized into fractional shares so investors can co-own premium real estate from a low entry point, earn proportional rental yields, and trade their share on our secondary liquidity exchange — all recorded transparently on-chain.',
     faq3Q: 'Is Astra Villa available for international investors?',
-    faq3AnsCleaner: 'Yes. We provide A-Z support for foreign investors including PMA company setup, legal documentation, banking, tax compliance, and ongoing asset management across Indonesia and Southeast Asia.',
+    
     faq3A: 'Yes. We provide A-Z support for foreign investors including PMA company setup, legal documentation, banking, tax compliance, and ongoing asset management across Indonesia and Southeast Asia.',
     faq4Q: 'How does the AI help me find or price a property?',
     faq4A: 'Our AI core delivers personalized property recommendations, automated valuations, predictive market and ROI analysis, and smart pricing signals — so buyers, sellers, and investors make decisions backed by real-time data.',
