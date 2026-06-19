@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { SEOHead } from "@/components/SEOHead";
+import { SEOHead, seoSchemas } from "@/components/SEOHead";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { HelpCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "@/components/ThemeProvider";
@@ -148,13 +150,55 @@ const About = () => {
     { number: "15+", label: t('about.statsCitiesCovered') },
   ];
 
+  const faqItems = [
+    { q: t('about.faq1Q'), a: t('about.faq1A') },
+    { q: t('about.faq2Q'), a: t('about.faq2A') },
+    { q: t('about.faq3Q'), a: t('about.faq3A') },
+    { q: t('about.faq4Q'), a: t('about.faq4A') },
+    { q: t('about.faq5Q'), a: t('about.faq5A') },
+    { q: t('about.faq6Q'), a: t('about.faq6A') },
+  ];
+
+  const canonicalUrl = 'https://astravilla.com/about';
+  const aboutJsonLd = [
+    seoSchemas.organization(),
+    seoSchemas.breadcrumb([
+      { name: language === 'id' ? 'Beranda' : 'Home', url: '/' },
+      { name: t('about.title'), url: '/about' },
+    ]),
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      inLanguage: language === 'id' ? 'id-ID' : 'en-US',
+      mainEntity: faqItems.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'AboutPage',
+      name: t('about.title'),
+      description: t('seo.about.description'),
+      url: canonicalUrl,
+      inLanguage: language === 'id' ? 'id-ID' : 'en-US',
+      isPartOf: { '@type': 'WebSite', name: 'ASTRA Villa Realty', url: 'https://astravilla.com' },
+    },
+  ];
+
+
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
         title={t('seo.about.title')}
         description={t('seo.about.description')}
-        keywords="tentang astra villa, platform properti indonesia, real estate premium, ai property ecosystem"
+        keywords="tentang astra villa, astra villa reos, ai property indonesia, fractional investment, southeast asia real estate operating system"
+        canonical={canonicalUrl}
+        ogType="website"
+        jsonLd={aboutJsonLd}
       />
+
       {isAuthenticated && (
         <AuthenticatedNavigation
           language={language}
@@ -379,7 +423,44 @@ const About = () => {
             </CardContent>
           </Card>
 
-          {/* Team */}
+          {/* FAQ */}
+          <section
+            aria-labelledby="about-faq-heading"
+            className="mb-8 sm:mb-12 md:mb-16"
+          >
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-primary/10 border border-gold-primary/20 mb-3">
+                <HelpCircle className="h-4 w-4 text-gold-primary" />
+                <span className="text-xs font-medium text-gold-primary">FAQ</span>
+              </div>
+              <h2
+                id="about-faq-heading"
+                className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2"
+              >
+                {t('about.faqTitle')}
+              </h2>
+              <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+                {t('about.faqSubtitle')}
+              </p>
+            </div>
+            <Card className="border-gold-primary/20 hover:border-gold-primary/40 transition-all duration-300">
+              <CardContent className="pt-4 sm:pt-6 pb-4 sm:pb-6">
+                <Accordion type="single" collapsible className="w-full">
+                  {faqItems.map((item, i) => (
+                    <AccordionItem key={i} value={`faq-${i}`}>
+                      <AccordionTrigger className="text-left text-sm sm:text-base font-semibold hover:text-gold-primary">
+                        {item.q}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                        {item.a}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </section>
+
           <Card className="border-gold-primary/20 hover:border-gold-primary/40 transition-all duration-300">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-center justify-center">
