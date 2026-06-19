@@ -877,6 +877,8 @@ const AppContent = () => {
       </main>
       {/* Mobile bottom tab bar — legacy only; luxe routes use LuxeMobileDock */}
       {!hideAppShell && !isAppRoute && !useReosChrome && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
+      {/* REOS unified mobile bottom nav (Home / Properties / Invest / AI / Profile) */}
+      {useReosChrome && <Suspense fallback={null}><ReosMobileBottomNav /></Suspense>}
 
       {useReosChrome ? (
         <ReosFooter />
