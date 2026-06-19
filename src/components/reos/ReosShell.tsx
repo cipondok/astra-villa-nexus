@@ -49,21 +49,22 @@ export const reosTokens = `
     letter-spacing: -0.005em;
   }
   html:not(.dark) .reos {
-    --bg: #F4F8FC;
-    --bg-2: #E8F1F9;
+    /* ASTRA Villa REOS — Luxury Light (Bloomberg × Apple × Private Banking) */
+    --bg: #F7F5F0;
+    --bg-2: #FCFCFC;
     --surface: #FFFFFF;
-    --surface-2: #F1F6FB;
-    --line: rgba(14,116,180,0.16);
-    --line-strong: rgba(14,116,180,0.34);
-    --gold: #0EA5E9;
-    --gold-2: #0369A1;
-    --gold-soft: rgba(14,165,233,0.10);
-    --text: #0F172A;
-    --text-2: #475569;
-    --text-3: #64748B;
-    --success: #15803D;
-    --danger: #B91C1C;
-    --gold-fg: #FFFFFF;
+    --surface-2: #FCFCFC;
+    --line: #E5E7EB;
+    --line-strong: rgba(212,175,55,0.34);
+    --gold: #D4AF37;
+    --gold-2: #B8941F;
+    --gold-soft: rgba(212,175,55,0.10);
+    --text: #111827;
+    --text-2: #6B7280;
+    --text-3: #9CA3AF;
+    --success: #22C55E;
+    --danger: #EF4444;
+    --gold-fg: #111827;
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }

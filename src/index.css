@@ -223,61 +223,61 @@ html, body {
   :root,
   .light,
   .astra-pearl-white {
-    /* ── ASTRA Pearl White ─────────────────────────────────────────────── */
-    --background: 42 47% 95%;          /* #F7F4EC warm ivory */
-    --foreground: 28 19% 9%;           /* #1B1612 deep warm near-black */
-    --card: 44 60% 98%;                /* #FFFCF5 */
-    --card-foreground: 28 19% 9%;
-    --popover: 44 60% 98%;
-    --popover-foreground: 28 19% 9%;
-    --primary: 205 90% 48%;            /* sky blue — light mode signature */
-    --primary-foreground: 0 0% 100%;   /* white on sky blue */
-    --secondary: 42 30% 90%;
-    --secondary-foreground: 28 19% 14%;
-    --muted: 42 30% 90%;
-    --muted-foreground: 32 14% 37%;    /* #6B6051 */
-    --accent: 200 95% 92%;             /* soft sky tint accent */
-    --accent-foreground: 205 90% 22%;
-    --destructive: 0 70% 45%;
-    --destructive-foreground: 44 60% 98%;
-    --border: 205 30% 86%;             /* cool sky-tinted border */
-    --input: 205 30% 86%;
-    --ring: 205 90% 48%;
+    /* ── ASTRA Pearl White — Luxury Ivory + Champagne Gold ─────────────── */
+    --background: 42 33% 95%;          /* #F7F5F0 warm ivory */
+    --foreground: 222 39% 11%;         /* #111827 graphite */
+    --card: 0 0% 100%;                 /* #FFFFFF */
+    --card-foreground: 222 39% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 39% 11%;
+    --primary: 46 65% 52%;             /* #D4AF37 luxury gold */
+    --primary-foreground: 222 39% 11%; /* graphite on gold for AA */
+    --secondary: 0 0% 99%;             /* #FCFCFC secondary card */
+    --secondary-foreground: 222 39% 11%;
+    --muted: 42 20% 93%;
+    --muted-foreground: 220 9% 46%;    /* #6B7280 */
+    --accent: 51 100% 50%;             /* #FFD700 accent gold */
+    --accent-foreground: 222 39% 11%;
+    --destructive: 0 84% 60%;          /* #EF4444 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;             /* #E5E7EB */
+    --input: 220 13% 91%;
+    --ring: 46 65% 52%;                /* gold focus ring */
     --radius: 14px;
 
-    /* ASTRA brand convenience tokens — sky-led in light mode */
-    --gold-primary: 205 90% 48%;
-    --gold-secondary: 200 85% 62%;
-    --navy-primary: 210 70% 30%;
-    --navy-secondary: 205 60% 40%;
-    --dark-bg: 42 47% 95%;
-    --dark-card: 44 60% 98%;
-    --text-light: 28 19% 9%;
-    --text-muted: 32 14% 37%;
+    /* ASTRA brand convenience tokens — gold-led in light mode */
+    --gold-primary: 46 65% 52%;        /* #D4AF37 */
+    --gold-secondary: 51 100% 50%;     /* #FFD700 */
+    --navy-primary: 222 39% 11%;
+    --navy-secondary: 220 9% 46%;
+    --dark-bg: 42 33% 95%;
+    --dark-card: 0 0% 100%;
+    --text-light: 222 39% 11%;
+    --text-muted: 220 9% 46%;
 
-    /* Hero gradients — Pearl White with sky wash */
-    --hero-from: 205 60% 96%;
-    --hero-via: 200 50% 94%;
-    --hero-to: 42 32% 92%;
-    --hero-mid: 205 40% 94%;
-    --hero-end: 42 25% 95%;
+    /* Hero gradients — Ivory wash */
+    --hero-from: 0 0% 100%;
+    --hero-via: 0 0% 99%;
+    --hero-to: 42 33% 95%;
+    --hero-mid: 42 25% 96%;
+    --hero-end: 42 33% 95%;
     --hero-fade: 42 22% 97%;
 
     /* Glass — Pearl White */
-    --glass-bg: 44 60% 98%;
-    --glass-border: 205 30% 84%;
-    --glass-shadow: 205 40% 30%;
+    --glass-bg: 0 0% 100%;
+    --glass-border: 220 13% 91%;
+    --glass-shadow: 222 39% 11%;
 
-    --titanium-light: 205 25% 92%;
+    --titanium-light: 42 20% 93%;
     --titanium-white: 0 0% 100%;
-    --samsung-blue-primary: 205 90% 48%;
+    --samsung-blue-primary: 46 65% 52%;
 
-    /* Charts — sky-led, warm gold support */
-    --chart-1: 205 90% 48%;     /* sky blue */
-    --chart-2: 200 85% 62%;     /* light sky */
-    --chart-3: 142 55% 35%;     /* emerald */
-    --chart-4: 36 39% 47%;      /* deep gold */
-    --chart-5: 0 65% 45%;       /* crimson */
+    /* Charts — gold-led, warm support */
+    --chart-1: 46 65% 52%;     /* luxury gold */
+    --chart-2: 51 100% 50%;    /* accent gold */
+    --chart-3: 142 71% 45%;    /* success green */
+    --chart-4: 222 39% 11%;    /* graphite */
+    --chart-5: 0 84% 60%;      /* danger red */
 
     --intel-blue: 205 90% 48%;
     --intel-blue-glow: 200 95% 60%;

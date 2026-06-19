@@ -59,26 +59,27 @@ const tokens = `
   }
   /* Light mode overrides — Pearl White + Gold */
   html:not(.dark) .reos {
-    --bg: #F4F8FC;
-    --bg-2: #E8F1F9;
+    /* ASTRA Villa REOS — Luxury Light (Bloomberg × Apple × Private Banking) */
+    --bg: #F7F5F0;             /* warm ivory */
+    --bg-2: #FCFCFC;
     --surface: #FFFFFF;
-    --surface-2: #F1F6FB;
-    --line: rgba(14,116,180,0.16);
-    --line-strong: rgba(14,116,180,0.34);
-    --gold: #0EA5E9;            /* sky blue (accent in light mode) */
-    --gold-2: #0369A1;          /* deep sky for strong text/CTAs */
-    --gold-soft: rgba(14,165,233,0.10);
-    --text: #0F172A;
-    --text-2: #475569;
-    --text-3: #64748B;
-    --success: #15803D;
-    --danger: #B91C1C;
-    --gold-fg: #FFFFFF;         /* white text on sky CTA */
-    --promo-gradient: linear-gradient(180deg, #0B1220, #0F172A);
-    --promo-gradient-diag: linear-gradient(135deg, #0B1220, #0F172A);
-    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(14,165,233,0.10), transparent 70%), #E8F1F9;
-    /* Keep hero overlay dark in light mode too so white text on hero image stays readable */
-    --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.88) 0%, rgba(11,11,12,0.55) 55%, rgba(11,11,12,0.15) 100%);
+    --surface-2: #FCFCFC;
+    --line: #E5E7EB;
+    --line-strong: rgba(212,175,55,0.34);
+    --gold: #D4AF37;           /* primary luxury gold */
+    --gold-2: #B8941F;         /* deeper gold for CTAs/strong text */
+    --gold-soft: rgba(212,175,55,0.10);
+    --text: #111827;
+    --text-2: #6B7280;
+    --text-3: #9CA3AF;
+    --success: #22C55E;
+    --danger: #EF4444;
+    --gold-fg: #111827;        /* dark text on gold CTA for AA contrast */
+    --promo-gradient: linear-gradient(180deg, #FFFFFF 0%, #FCFCFC 50%, #F7F5F0 100%);
+    --promo-gradient-diag: linear-gradient(135deg, #FFFFFF 0%, #FCFCFC 50%, #F7F5F0 100%);
+    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(212,175,55,0.12), transparent 70%), #FFFFFF;
+    /* Keep hero overlay dark so white hero text stays readable on imagery */
+    --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.82) 0%, rgba(11,11,12,0.48) 55%, rgba(11,11,12,0.12) 100%);
     --hero-text: #FFFFFF;
     --hero-text-2: #E8E2D2;
   }
