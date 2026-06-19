@@ -2564,3 +2564,128 @@ html:not(.dark) .bg-card > svg.lucide {
 }
 
 
+
+/* =============================================================
+   ASTRA Villa REOS — Phase 2: Unified Surface + Header System
+   Shared luxury primitives used across every page (light + dark).
+   ============================================================= */
+
+:root {
+  --reos-header-h: 64px;
+  --reos-bottomnav-h: 56px;
+  --shadow-luxe:
+    0 1px 2px rgba(17, 24, 39, 0.04),
+    0 8px 24px -12px rgba(17, 24, 39, 0.10);
+  --shadow-card:
+    0 1px 0 rgba(17, 24, 39, 0.04),
+    0 12px 32px -16px rgba(212, 175, 55, 0.18);
+  --gold-line: rgba(212, 175, 55, 0.28);
+}
+.dark {
+  --shadow-luxe:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  --shadow-card:
+    0 1px 0 rgba(0, 0, 0, 0.4),
+    0 12px 32px -16px rgba(212, 175, 55, 0.18);
+  --gold-line: rgba(212, 175, 55, 0.34);
+}
+@media (max-width: 767px) {
+  :root { --reos-header-h: 56px; }
+}
+
+html { scroll-padding-top: calc(var(--reos-header-h) + 8px); }
+
+.reos-card,
+.reos-surface {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+}
+.reos-card-quiet {
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: 16px;
+}
+.reos-divider {
+  height: 1px;
+  background-image: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
+}
+.reos-divider-gold {
+  height: 1px;
+  background-image: linear-gradient(90deg, transparent, var(--gold-line), transparent);
+}
+.reos-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 9999px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--card));
+}
+.reos-chip-gold {
+  border-color: var(--gold-line);
+  background: rgba(212, 175, 55, 0.08);
+  color: hsl(var(--primary));
+}
+.reos-stat {
+  font-family: var(--font-mono, "Geist Mono", "SF Mono", monospace);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: -0.01em;
+  color: hsl(var(--foreground));
+}
+.reos-kpi {
+  font-family: var(--font-mono, "Geist Mono", "SF Mono", monospace);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: hsl(var(--foreground));
+}
+.reos-kpi-label {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+.reos-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: var(--reos-header-h);
+  background: hsl(var(--card) / 0.78);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border-bottom: 1px solid hsl(var(--border));
+  box-shadow: var(--shadow-luxe);
+}
+
+.reos-cta-gold {
+  background: linear-gradient(180deg, hsl(var(--accent)), hsl(var(--primary)));
+  color: hsl(var(--primary-foreground));
+  border: 1px solid var(--gold-line);
+  border-radius: 12px;
+  font-weight: 600;
+  transition: filter 180ms ease, transform 180ms ease;
+}
+.reos-cta-gold:hover { filter: brightness(1.05); }
+.reos-cta-gold:active { transform: translateY(1px); }
+
+.reos-card-interactive {
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+.reos-card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 0 rgba(17, 24, 39, 0.04),
+    0 18px 44px -18px rgba(212, 175, 55, 0.28);
+  border-color: var(--gold-line);
+}
+
+header.reos-shell-header { height: var(--reos-header-h); }
