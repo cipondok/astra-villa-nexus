@@ -1,77 +1,108 @@
-import { useState, useRef, useCallback } from 'react';
-import React from 'react';
+import { useEffect, useRef, useState, useCallback } from "react";
 
-interface UsePullToRefreshOptions {
-  onRefresh: () => Promise<void>;
+interface Options {
+  /** Async callback fired when the gesture crosses the threshold. */
+  onRefresh: () => void | Promise<void>;
+  /** Pixels of pull required to trigger a refresh. Default 70. */
   threshold?: number;
+  /** Maximum visual offset in px. Default threshold * 1.6. */
+  maxPull?: number;
+  /** Disable the gesture entirely (e.g. desktop). */
+  disabled?: boolean;
 }
 
-export const usePullToRefresh = ({ onRefresh, threshold = 80 }: UsePullToRefreshOptions) => {
-  const [isPulling, setIsPulling] = useState(false);
-  const [pullDistance, setPullDistance] = useState(0);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const touchStartY = useRef(0);
+interface State {
+  pull: number;
+  refreshing: boolean;
+}
 
-  const indicatorOpacity = Math.min(pullDistance / threshold, 1);
-  const indicatorRotation = (pullDistance / threshold) * 360;
+/**
+ * Touch / pointer based pull-to-refresh.
+ * Only activates when the target's scrollTop === 0 and the user drags down.
+ * Respects prefers-reduced-motion (returns disabled state).
+ */
+export function usePullToRefresh<T extends HTMLElement = HTMLDivElement>(
+  opts: Options
+) {
+  const { onRefresh, threshold = 70, maxPull, disabled } = opts;
+  const cap = maxPull ?? threshold * 1.6;
 
-  const onTouchStart = useCallback((e: React.TouchEvent) => {
-    if (window.scrollY === 0) {
-      touchStartY.current = e.touches[0].clientY;
-      setIsPulling(true);
+  const ref = useRef<T | null>(null);
+  const startY = useRef<number | null>(null);
+  const active = useRef(false);
+  const [state, setState] = useState<State>({ pull: 0, refreshing: false });
+
+  const reducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const off = disabled || reducedMotion;
+
+  const trigger = useCallback(async () => {
+    setState({ pull: threshold, refreshing: true });
+    try {
+      await onRefresh();
+    } finally {
+      setState({ pull: 0, refreshing: false });
     }
-  }, []);
+  }, [onRefresh, threshold]);
 
-  const onTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isPulling || window.scrollY > 0) return;
+  useEffect(() => {
+    if (off) return;
+    const el = ref.current;
+    if (!el) return;
 
-    const distance = e.touches[0].clientY - touchStartY.current;
-    if (distance > 0) {
-      const resistedDistance = Math.min(distance * 0.5, threshold * 1.5);
-      setPullDistance(resistedDistance);
-      if (distance > 10) {
-        e.preventDefault();
+    const getScrollTop = () => {
+      // when ref is body/document scroll, fallback to window
+      if (el === document.body || el === document.documentElement) {
+        return window.scrollY || document.documentElement.scrollTop;
       }
-    }
-  }, [isPulling, threshold]);
+      return el.scrollTop;
+    };
 
-  const onTouchEnd = useCallback(async () => {
-    if (!isPulling) return;
-    setIsPulling(false);
+    const onTouchStart = (e: TouchEvent) => {
+      if (state.refreshing) return;
+      if (getScrollTop() > 0) return;
+      startY.current = e.touches[0].clientY;
+      active.current = true;
+    };
 
-    if (pullDistance >= threshold) {
-      setIsRefreshing(true);
-
-      if ('vibrate' in navigator) {
-        navigator.vibrate(50);
+    const onTouchMove = (e: TouchEvent) => {
+      if (!active.current || startY.current === null) return;
+      const dy = e.touches[0].clientY - startY.current;
+      if (dy <= 0) {
+        setState((s) => (s.pull === 0 ? s : { ...s, pull: 0 }));
+        return;
       }
+      // resistance curve
+      const eased = Math.min(cap, dy * 0.55);
+      setState((s) => ({ ...s, pull: eased }));
+    };
 
-      try {
-        await onRefresh();
-        setTimeout(() => {
-          setIsRefreshing(false);
-          setPullDistance(0);
-          if ('vibrate' in navigator) {
-            navigator.vibrate([30, 20, 30]);
-          }
-        }, 500);
-      } catch (error) {
-        console.error('Refresh failed:', error);
-        setIsRefreshing(false);
-        setPullDistance(0);
-      }
-    } else {
-      setPullDistance(0);
-    }
-  }, [isPulling, pullDistance, threshold, onRefresh]);
+    const onTouchEnd = () => {
+      if (!active.current) return;
+      active.current = false;
+      startY.current = null;
+      setState((s) => {
+        if (s.pull >= threshold && !s.refreshing) {
+          // fire & forget — trigger() will reset
+          void trigger();
+          return { ...s, pull: threshold };
+        }
+        return { ...s, pull: 0 };
+      });
+    };
 
-  return {
-    isPulling,
-    pullDistance,
-    isRefreshing,
-    indicatorOpacity,
-    indicatorRotation,
-    threshold,
-    handlers: { onTouchStart, onTouchMove, onTouchEnd },
-  };
-};
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    el.addEventListener("touchcancel", onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchEnd);
+    };
+  }, [off, cap, threshold, trigger, state.refreshing]);
+
+  return { ref, pull: state.pull, refreshing: state.refreshing, threshold };
+}
