@@ -59,24 +59,24 @@ const tokens = `
   }
   /* Light mode overrides — Pearl White + Gold */
   html:not(.dark) .reos {
-    --bg: #FAF8F3;
-    --bg-2: #F3EFE6;
+    --bg: #F4F8FC;
+    --bg-2: #E8F1F9;
     --surface: #FFFFFF;
-    --surface-2: #F7F3EA;
-    --line: rgba(120,95,40,0.16);
-    --line-strong: rgba(120,95,40,0.34);
-    --gold: #B08A3E;
-    --gold-2: #8A6B25;
-    --gold-soft: rgba(176,138,62,0.10);
-    --text: #1A1814;
-    --text-2: #5A554B;
-    --text-3: #8A8478;
+    --surface-2: #F1F6FB;
+    --line: rgba(14,116,180,0.16);
+    --line-strong: rgba(14,116,180,0.34);
+    --gold: #0EA5E9;            /* sky blue (accent in light mode) */
+    --gold-2: #0369A1;          /* deep sky for strong text/CTAs */
+    --gold-soft: rgba(14,165,233,0.10);
+    --text: #0F172A;
+    --text-2: #475569;
+    --text-3: #64748B;
     --success: #15803D;
     --danger: #B91C1C;
-    --gold-fg: #161208;
-    --promo-gradient: linear-gradient(180deg, #2A1F0A, #1A1408);
-    --promo-gradient-diag: linear-gradient(135deg, #2A1F0A, #1A1408);
-    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(176,138,62,0.10), transparent 70%), #F3EFE6;
+    --gold-fg: #FFFFFF;         /* white text on sky CTA */
+    --promo-gradient: linear-gradient(180deg, #0B1220, #0F172A);
+    --promo-gradient-diag: linear-gradient(135deg, #0B1220, #0F172A);
+    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(14,165,233,0.10), transparent 70%), #E8F1F9;
     /* Keep hero overlay dark in light mode too so white text on hero image stays readable */
     --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.88) 0%, rgba(11,11,12,0.55) 55%, rgba(11,11,12,0.15) 100%);
     --hero-text: #FFFFFF;

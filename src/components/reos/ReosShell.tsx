@@ -47,21 +47,21 @@ export const reosTokens = `
     letter-spacing: -0.005em;
   }
   html:not(.dark) .reos {
-    --bg: #FAF8F3;
-    --bg-2: #F3EFE6;
+    --bg: #F4F8FC;
+    --bg-2: #E8F1F9;
     --surface: #FFFFFF;
-    --surface-2: #F7F3EA;
-    --line: rgba(120,95,40,0.16);
-    --line-strong: rgba(120,95,40,0.34);
-    --gold: #B08A3E;
-    --gold-2: #8A6B25;
-    --gold-soft: rgba(176,138,62,0.10);
-    --text: #1A1814;
-    --text-2: #5A554B;
-    --text-3: #8A8478;
+    --surface-2: #F1F6FB;
+    --line: rgba(14,116,180,0.16);
+    --line-strong: rgba(14,116,180,0.34);
+    --gold: #0EA5E9;
+    --gold-2: #0369A1;
+    --gold-soft: rgba(14,165,233,0.10);
+    --text: #0F172A;
+    --text-2: #475569;
+    --text-3: #64748B;
     --success: #15803D;
     --danger: #B91C1C;
-    --gold-fg: #161208;
+    --gold-fg: #FFFFFF;
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
