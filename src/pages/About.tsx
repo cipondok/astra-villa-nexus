@@ -423,7 +423,44 @@ const About = () => {
             </CardContent>
           </Card>
 
-          {/* Team */}
+          {/* FAQ */}
+          <section
+            aria-labelledby="about-faq-heading"
+            className="mb-8 sm:mb-12 md:mb-16"
+          >
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-primary/10 border border-gold-primary/20 mb-3">
+                <HelpCircle className="h-4 w-4 text-gold-primary" />
+                <span className="text-xs font-medium text-gold-primary">FAQ</span>
+              </div>
+              <h2
+                id="about-faq-heading"
+                className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2"
+              >
+                {t('about.faqTitle')}
+              </h2>
+              <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+                {t('about.faqSubtitle')}
+              </p>
+            </div>
+            <Card className="border-gold-primary/20 hover:border-gold-primary/40 transition-all duration-300">
+              <CardContent className="pt-4 sm:pt-6 pb-4 sm:pb-6">
+                <Accordion type="single" collapsible className="w-full">
+                  {faqItems.map((item, i) => (
+                    <AccordionItem key={i} value={`faq-${i}`}>
+                      <AccordionTrigger className="text-left text-sm sm:text-base font-semibold hover:text-gold-primary">
+                        {item.q}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                        {item.a}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </section>
+
           <Card className="border-gold-primary/20 hover:border-gold-primary/40 transition-all duration-300">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-center justify-center">
