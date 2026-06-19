@@ -2452,3 +2452,115 @@ html, body {
   color: var(--titanium-icon-color);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.15);
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   LIGHT-MODE OVERRIDE LAYER
+   Neutralizes hardcoded dark-only utilities (text-white, bg-black, gray-*)
+   when they sit on a themed light surface, and standardizes icon stroke
+   color so SVGs remain visible against the new sky-blue palette.
+   Scope: html:not(.dark) only — dark mode is left untouched.
+   ════════════════════════════════════════════════════════════════════════ */
+/* Hardcoded white text on light surfaces → readable foreground */
+html:not(.dark) .bg-card .text-white,
+html:not(.dark) .bg-background .text-white,
+html:not(.dark) .bg-popover .text-white,
+html:not(.dark) .bg-muted .text-white,
+html:not(.dark) .bg-secondary .text-white,
+html:not(.dark) .bg-white .text-white {
+  color: hsl(var(--foreground));
+}
+
+/* Hardcoded black backgrounds inside themed containers → card surface */
+html:not(.dark) .bg-card .bg-black,
+html:not(.dark) .bg-background .bg-black,
+html:not(.dark) main .bg-black:not([class*="bg-black/"]) {
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+
+/* Gray-scale tailwind utilities → semantic muted/foreground */
+html:not(.dark) .text-gray-100,
+html:not(.dark) .text-gray-200,
+html:not(.dark) .text-gray-300,
+html:not(.dark) .text-zinc-100,
+html:not(.dark) .text-zinc-200,
+html:not(.dark) .text-zinc-300,
+html:not(.dark) .text-slate-100,
+html:not(.dark) .text-slate-200,
+html:not(.dark) .text-slate-300,
+html:not(.dark) .text-neutral-100,
+html:not(.dark) .text-neutral-200,
+html:not(.dark) .text-neutral-300 {
+  color: hsl(var(--foreground));
+}
+html:not(.dark) .text-gray-400,
+html:not(.dark) .text-gray-500,
+html:not(.dark) .text-zinc-400,
+html:not(.dark) .text-zinc-500,
+html:not(.dark) .text-slate-400,
+html:not(.dark) .text-slate-500,
+html:not(.dark) .text-neutral-400,
+html:not(.dark) .text-neutral-500 {
+  color: hsl(var(--muted-foreground));
+}
+html:not(.dark) .border-gray-700,
+html:not(.dark) .border-gray-800,
+html:not(.dark) .border-gray-900,
+html:not(.dark) .border-zinc-700,
+html:not(.dark) .border-zinc-800,
+html:not(.dark) .border-zinc-900,
+html:not(.dark) .border-slate-700,
+html:not(.dark) .border-slate-800,
+html:not(.dark) .border-slate-900 {
+  border-color: hsl(var(--border));
+}
+html:not(.dark) .bg-gray-800,
+html:not(.dark) .bg-gray-900,
+html:not(.dark) .bg-gray-950,
+html:not(.dark) .bg-zinc-800,
+html:not(.dark) .bg-zinc-900,
+html:not(.dark) .bg-zinc-950,
+html:not(.dark) .bg-slate-800,
+html:not(.dark) .bg-slate-900,
+html:not(.dark) .bg-slate-950,
+html:not(.dark) .bg-neutral-800,
+html:not(.dark) .bg-neutral-900,
+html:not(.dark) .bg-neutral-950 {
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+
+/* ── Icon / SVG stroke theming ──────────────────────────────────────────
+   Lucide icons default to currentColor; this promotes any hard-coded
+   white stroke/fill to the sky-blue primary token in light mode. */
+html:not(.dark) svg[stroke="#fff"],
+html:not(.dark) svg[stroke="#ffffff"],
+html:not(.dark) svg[stroke="white"],
+html:not(.dark) svg [stroke="white"],
+html:not(.dark) svg [stroke="#fff"],
+html:not(.dark) svg [stroke="#ffffff"] {
+  stroke: hsl(var(--primary));
+}
+html:not(.dark) svg[fill="#fff"]:not([fill-rule]),
+html:not(.dark) svg[fill="#ffffff"]:not([fill-rule]),
+html:not(.dark) svg[fill="white"]:not([fill-rule]) {
+  fill: hsl(var(--primary));
+}
+
+/* Icons inside active tabs/sidebar items pick up sky-blue accent */
+html:not(.dark) .icon-accent,
+html:not(.dark) [data-state="active"] > svg,
+html:not(.dark) [aria-current="page"] svg,
+html:not(.dark) .reos-tab-active svg {
+  color: hsl(var(--primary));
+  stroke: hsl(var(--primary));
+}
+
+/* Lucide icons directly on page surface use foreground */
+html:not(.dark) main > svg.lucide,
+html:not(.dark) .bg-background > svg.lucide,
+html:not(.dark) .bg-card > svg.lucide {
+  color: hsl(var(--foreground));
+}
+
+
