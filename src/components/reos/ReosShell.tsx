@@ -544,9 +544,10 @@ export function ReosFooter() {
                   <li key={l.label}>
                     <Link
                       to={l.to}
-                      className="text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
+                      className="group flex items-center gap-2 text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
                     >
-                      {l.label}
+                      <l.icon className="h-3.5 w-3.5 text-[var(--gold)] group-hover:text-[var(--gold-2)] transition shrink-0" />
+                      <span>{l.label}</span>
                     </Link>
                   </li>
                 ))}
