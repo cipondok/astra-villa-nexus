@@ -7,6 +7,8 @@ import {
   Store, Cpu, MoreHorizontal, Eye, BookmarkPlus, Wallet, MessageSquare,
   ArrowLeftRight, Calendar, FileText, LifeBuoy, Shield, BarChart3,
   Sliders, CheckCircle2, Sun, Moon, Menu, LogOut, User, X, Home,
+  Brain, PiggyBank, ShoppingCart, KeyRound, Tag, UsersRound, Briefcase,
+  Mail, Phone, Newspaper, BookOpen, ScrollText, Lock, Cookie, Gavel, HelpCircle,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -458,45 +460,45 @@ export function ReosHeader() {
 }
 
 export function ReosFooter() {
-  const footerLinks: { title: string; links: { label: string; to: string }[] }[] = [
+  const footerLinks: { title: string; links: { label: string; to: string; icon: typeof Home }[] }[] = [
     {
       title: "Explore",
       links: [
-        { label: "Home", to: "/" },
-        { label: "Properties", to: "/properties" },
-        { label: "Market Intelligence", to: "/market-intelligence" },
-        { label: "Wealth Advisor", to: "/wealth-advisor" },
-        { label: "Investment Fund", to: "/investment" },
+        { label: "Home", to: "/", icon: Home },
+        { label: "Properties", to: "/properties", icon: Building2 },
+        { label: "Market Intelligence", to: "/market-intelligence", icon: BarChart3 },
+        { label: "Wealth Advisor", to: "/wealth-advisor", icon: Brain },
+        { label: "Investment Fund", to: "/investment", icon: PiggyBank },
       ],
     },
     {
       title: "Services",
       links: [
-        { label: "Buy", to: "/properties?intent=buy" },
-        { label: "Rent", to: "/properties?intent=rent" },
-        { label: "Sell with Us", to: "/sell" },
-        { label: "Agents", to: "/agents" },
-        { label: "Vendors", to: "/vendors" },
+        { label: "Buy", to: "/properties?intent=buy", icon: ShoppingCart },
+        { label: "Rent", to: "/properties?intent=rent", icon: KeyRound },
+        { label: "Sell with Us", to: "/sell", icon: Tag },
+        { label: "Agents", to: "/agents", icon: UsersRound },
+        { label: "Vendors", to: "/vendors", icon: Store },
       ],
     },
     {
       title: "Company",
       links: [
-        { label: "About", to: "/about" },
-        { label: "Contact", to: "/contact" },
-        { label: "Careers", to: "/careers" },
-        { label: "Press", to: "/press" },
-        { label: "Blog", to: "/blog" },
+        { label: "About", to: "/about", icon: Briefcase },
+        { label: "Contact", to: "/contact", icon: Mail },
+        { label: "Careers", to: "/careers", icon: UsersRound },
+        { label: "Press", to: "/press", icon: Newspaper },
+        { label: "Blog", to: "/blog", icon: BookOpen },
       ],
     },
     {
       title: "Legal",
       links: [
-        { label: "Terms of Service", to: "/terms" },
-        { label: "Privacy Policy", to: "/privacy" },
-        { label: "Cookie Policy", to: "/cookies" },
-        { label: "Compliance", to: "/compliance" },
-        { label: "Help Center", to: "/help" },
+        { label: "Terms of Service", to: "/terms", icon: ScrollText },
+        { label: "Privacy Policy", to: "/privacy", icon: Lock },
+        { label: "Cookie Policy", to: "/cookies", icon: Cookie },
+        { label: "Compliance", to: "/compliance", icon: Gavel },
+        { label: "Help Center", to: "/help", icon: HelpCircle },
       ],
     },
   ];
@@ -542,9 +544,10 @@ export function ReosFooter() {
                   <li key={l.label}>
                     <Link
                       to={l.to}
-                      className="text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
+                      className="group flex items-center gap-2 text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
                     >
-                      {l.label}
+                      <l.icon className="h-3.5 w-3.5 text-[var(--gold)] group-hover:text-[var(--gold-2)] transition shrink-0" />
+                      <span>{l.label}</span>
                     </Link>
                   </li>
                 ))}
