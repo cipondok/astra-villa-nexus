@@ -38,6 +38,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 // Lazy load all non-critical shell components — reduces initial parse time
 const Navigation = lazy(() => import('@/components/Navigation'));
 import { ReosHeader, ReosFooter, reosTokens } from '@/components/reos/ReosShell';
+const ReosMobileBottomNav = lazy(() => import('@/components/reos/ReosMobileBottomNav'));
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
 const GlobalFooter = lazy(() => import('@/components/layout/GlobalFooter'));
@@ -876,6 +877,8 @@ const AppContent = () => {
       </main>
       {/* Mobile bottom tab bar — legacy only; luxe routes use LuxeMobileDock */}
       {!hideAppShell && !isAppRoute && !useReosChrome && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
+      {/* REOS unified mobile bottom nav (Home / Properties / Invest / AI / Profile) */}
+      {useReosChrome && <Suspense fallback={null}><ReosMobileBottomNav /></Suspense>}
 
       {useReosChrome ? (
         <ReosFooter />

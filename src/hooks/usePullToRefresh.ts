@@ -1,77 +1,105 @@
-import { useState, useRef, useCallback } from 'react';
-import React from 'react';
+import { useCallback, useRef, useState } from "react";
 
-interface UsePullToRefreshOptions {
-  onRefresh: () => Promise<void>;
+interface Options {
+  onRefresh: () => void | Promise<void>;
   threshold?: number;
+  maxPull?: number;
+  disabled?: boolean;
 }
 
-export const usePullToRefresh = ({ onRefresh, threshold = 80 }: UsePullToRefreshOptions) => {
-  const [isPulling, setIsPulling] = useState(false);
+/**
+ * Touch-based pull-to-refresh that exposes pointer/touch handlers
+ * for the consumer to spread on a scroll container.
+ *
+ * Triggers when the user drags down from the very top of the page.
+ * Respects prefers-reduced-motion (returns a no-op handler set).
+ */
+export function usePullToRefresh(opts: Options) {
+  const { onRefresh, threshold = 70, maxPull, disabled } = opts;
+  const cap = maxPull ?? threshold * 1.6;
+
+  const ref = useRef<HTMLDivElement | null>(null);
+  const startY = useRef<number | null>(null);
+  const active = useRef(false);
+
   const [pullDistance, setPullDistance] = useState(0);
+  const [isPulling, setIsPulling] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const touchStartY = useRef(0);
 
-  const indicatorOpacity = Math.min(pullDistance / threshold, 1);
-  const indicatorRotation = (pullDistance / threshold) * 360;
+  const reducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const off = disabled || reducedMotion;
 
-  const onTouchStart = useCallback((e: React.TouchEvent) => {
-    if (window.scrollY === 0) {
-      touchStartY.current = e.touches[0].clientY;
+  const atTop = () =>
+    (window.scrollY || document.documentElement.scrollTop || 0) <= 0;
+
+  const onTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (off || isRefreshing) return;
+      if (!atTop()) return;
+      startY.current = e.touches[0].clientY;
+      active.current = true;
+    },
+    [off, isRefreshing],
+  );
+
+  const onTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (!active.current || startY.current === null) return;
+      const dy = e.touches[0].clientY - startY.current;
+      if (dy <= 0) {
+        setPullDistance(0);
+        setIsPulling(false);
+        return;
+      }
+      const eased = Math.min(cap, dy * 0.55);
+      setPullDistance(eased);
       setIsPulling(true);
-    }
-  }, []);
+    },
+    [cap],
+  );
 
-  const onTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isPulling || window.scrollY > 0) return;
-
-    const distance = e.touches[0].clientY - touchStartY.current;
-    if (distance > 0) {
-      const resistedDistance = Math.min(distance * 0.5, threshold * 1.5);
-      setPullDistance(resistedDistance);
-      if (distance > 10) {
-        e.preventDefault();
-      }
-    }
-  }, [isPulling, threshold]);
-
-  const onTouchEnd = useCallback(async () => {
-    if (!isPulling) return;
-    setIsPulling(false);
-
-    if (pullDistance >= threshold) {
+  const finish = useCallback(async () => {
+    if (!active.current) return;
+    active.current = false;
+    startY.current = null;
+    if (pullDistance >= threshold && !isRefreshing) {
       setIsRefreshing(true);
-
-      if ('vibrate' in navigator) {
-        navigator.vibrate(50);
-      }
-
+      setPullDistance(threshold);
       try {
         await onRefresh();
-        setTimeout(() => {
-          setIsRefreshing(false);
-          setPullDistance(0);
-          if ('vibrate' in navigator) {
-            navigator.vibrate([30, 20, 30]);
-          }
-        }, 500);
-      } catch (error) {
-        console.error('Refresh failed:', error);
+      } finally {
         setIsRefreshing(false);
         setPullDistance(0);
+        setIsPulling(false);
       }
     } else {
       setPullDistance(0);
+      setIsPulling(false);
     }
-  }, [isPulling, pullDistance, threshold, onRefresh]);
+  }, [pullDistance, threshold, isRefreshing, onRefresh]);
+
+  const handlers = {
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd: finish,
+    onTouchCancel: finish,
+  };
+
+  const indicatorOpacity = Math.min(1, pullDistance / threshold);
+  const indicatorRotation = Math.min(360, (pullDistance / threshold) * 270);
 
   return {
-    isPulling,
+    ref,
+    handlers,
+    pull: pullDistance,
     pullDistance,
+    isPulling,
     isRefreshing,
+    refreshing: isRefreshing,
     indicatorOpacity,
     indicatorRotation,
     threshold,
-    handlers: { onTouchStart, onTouchMove, onTouchEnd },
   };
-};
+}
