@@ -1238,7 +1238,7 @@ const id: TranslationMap = {
     properties: { title: 'Semua Properti di Indonesia', description: 'Jelajahi ribuan properti dijual dan disewa di seluruh Indonesia. Filter berdasarkan lokasi, tipe, dan harga untuk menemukan properti ideal Anda.' },
     dijual: { title: 'Properti Dijual di Indonesia', description: 'Temukan rumah, villa, apartemen, dan properti dijual di seluruh Indonesia. Harga terbaik, pilihan terlengkap di ASTRA Villa Realty.' },
     disewa: { title: 'Properti Disewa di Indonesia', description: 'Sewa villa, apartemen, rumah, dan kos-kosan di seluruh Indonesia. Booking online mudah & cepat di ASTRA Villa Realty.' },
-    about: { title: 'Tentang Astra Villa', description: 'ASTRA Villa Realty adalah platform properti premium Indonesia. Kenali misi, visi, dan tim profesional kami yang berdedikasi.' },
+    about: { title: 'Tentang Astra Villa REOS', description: 'Kenali Astra Villa — Sistem Operasi Real Estate Berbasis AI untuk Asia Tenggara. Ekosistem investasi properti, marketplace villa mewah, manajemen properti cerdas, dan teknologi blockchain.' },
     contact: { title: 'Hubungi Kami', description: 'Hubungi tim ASTRA Villa Realty untuk pertanyaan properti, kerjasama, atau bantuan. Kami siap membantu Anda 24/7.' },
     help: { title: 'Bantuan & Dukungan', description: 'Temukan jawaban untuk pertanyaan umum seputar properti, akun, dan layanan ASTRA Villa Realty. Tim dukungan kami siap 24/7.' },
     auth: { title: 'Login & Daftar', description: 'Masuk atau daftar akun ASTRA Villa Realty untuk akses properti premium, simpan favorit, dan kelola transaksi Anda.' },
