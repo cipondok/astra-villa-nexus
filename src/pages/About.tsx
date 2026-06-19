@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { SEOHead } from "@/components/SEOHead";
+import { SEOHead, seoSchemas } from "@/components/SEOHead";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { HelpCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "@/components/ThemeProvider";
