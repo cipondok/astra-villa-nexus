@@ -179,8 +179,8 @@ export function ReosHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-[var(--bg)]/80 border-b border-[var(--line)]">
-        <div className="mx-auto max-w-[1600px] px-6 h-[68px] flex items-center gap-4 md:gap-6">
+      <header className="reos-shell-header sticky top-0 z-40 backdrop-blur-xl bg-[var(--bg)]/80 border-b border-[var(--line)] shadow-[var(--shadow-luxe)]">
+        <div className="mx-auto max-w-[1600px] px-4 md:px-6 h-full flex items-center gap-3 md:gap-6">
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
