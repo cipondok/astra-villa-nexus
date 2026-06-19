@@ -230,19 +230,19 @@ html, body {
     --card-foreground: 28 19% 9%;
     --popover: 44 60% 98%;
     --popover-foreground: 28 19% 9%;
-    --primary: 36 39% 47%;             /* #A8854B deep gold */
-    --primary-foreground: 44 60% 98%;  /* ivory on gold */
+    --primary: 205 90% 48%;            /* sky blue — light mode signature */
+    --primary-foreground: 0 0% 100%;   /* white on sky blue */
     --secondary: 42 30% 90%;
     --secondary-foreground: 28 19% 14%;
     --muted: 42 30% 90%;
     --muted-foreground: 32 14% 37%;    /* #6B6051 */
-    --accent: 39 45% 60%;              /* #C8A96A champagne (accent) */
-    --accent-foreground: 28 19% 9%;
+    --accent: 200 95% 92%;             /* soft sky tint accent */
+    --accent-foreground: 205 90% 22%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 44 60% 98%;
-    --border: 42 32% 84%;              /* #E3DBC8 warm beige line */
-    --input: 42 32% 84%;
-    --ring: 36 39% 47%;
+    --border: 205 30% 86%;             /* cool sky-tinted border */
+    --input: 205 30% 86%;
+    --ring: 205 90% 48%;
     --radius: 14px;
 
     /* ASTRA brand convenience tokens */
