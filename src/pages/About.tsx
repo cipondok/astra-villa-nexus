@@ -150,8 +150,46 @@ const About = () => {
     { number: "15+", label: t('about.statsCitiesCovered') },
   ];
 
+  const faqItems = [
+    { q: t('about.faq1Q'), a: t('about.faq1A') },
+    { q: t('about.faq2Q'), a: t('about.faq2A') },
+    { q: t('about.faq3Q'), a: t('about.faq3A') },
+    { q: t('about.faq4Q'), a: t('about.faq4A') },
+    { q: t('about.faq5Q'), a: t('about.faq5A') },
+    { q: t('about.faq6Q'), a: t('about.faq6A') },
+  ];
+
+  const canonicalUrl = 'https://astravilla.com/about';
+  const aboutJsonLd = [
+    seoSchemas.organization(),
+    seoSchemas.breadcrumb([
+      { name: language === 'id' ? 'Beranda' : 'Home', url: '/' },
+      { name: t('about.title'), url: '/about' },
+    ]),
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      inLanguage: language === 'id' ? 'id-ID' : 'en-US',
+      mainEntity: faqItems.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'AboutPage',
+      name: t('about.title'),
+      description: t('seo.about.description'),
+      url: canonicalUrl,
+      inLanguage: language === 'id' ? 'id-ID' : 'en-US',
+      isPartOf: { '@type': 'WebSite', name: 'ASTRA Villa Realty', url: 'https://astravilla.com' },
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
+
   const faqItems = [
     { q: t('about.faq1Q'), a: t('about.faq1A') },
     { q: t('about.faq2Q'), a: t('about.faq2A') },
