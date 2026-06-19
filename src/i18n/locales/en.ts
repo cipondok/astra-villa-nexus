@@ -1233,7 +1233,7 @@ const en: TranslationMap = {
     properties: { title: 'All Properties in Indonesia', description: 'Explore thousands of properties for sale and rent across Indonesia. Filter by location, type, and price to find your ideal property.' },
     dijual: { title: 'Properties for Sale in Indonesia', description: 'Find houses, villas, apartments, and properties for sale across Indonesia. Best prices, widest selection at ASTRA Villa Realty.' },
     disewa: { title: 'Properties for Rent in Indonesia', description: 'Rent villas, apartments, houses, and boarding rooms across Indonesia. Easy & fast online booking at ASTRA Villa Realty.' },
-    about: { title: 'About Astra Villa', description: 'ASTRA Villa Realty is Indonesia\'s premium property platform. Learn about our mission, vision, and dedicated professional team.' },
+    about: { title: 'About Astra Villa REOS', description: 'Discover Astra Villa — Southeast Asia\'s AI-Powered Real Estate Operating System. Property investment ecosystem, luxury villa marketplace, smart property management, and blockchain technology.' },
     contact: { title: 'Contact Us', description: 'Contact the ASTRA Villa Realty team for property inquiries, partnerships, or assistance. We\'re ready to help you 24/7.' },
     help: { title: 'Help & Support', description: 'Find answers to common questions about properties, accounts, and ASTRA Villa Realty services. Our support team is ready 24/7.' },
     auth: { title: 'Login & Register', description: 'Sign in or create an ASTRA Villa Realty account for premium property access, save favorites, and manage your transactions.' },
