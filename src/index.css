@@ -245,42 +245,42 @@ html, body {
     --ring: 205 90% 48%;
     --radius: 14px;
 
-    /* ASTRA brand convenience tokens */
-    --gold-primary: 36 39% 47%;
-    --gold-secondary: 39 45% 60%;
-    --navy-primary: 200 60% 30%;
-    --navy-secondary: 205 50% 38%;
+    /* ASTRA brand convenience tokens — sky-led in light mode */
+    --gold-primary: 205 90% 48%;
+    --gold-secondary: 200 85% 62%;
+    --navy-primary: 210 70% 30%;
+    --navy-secondary: 205 60% 40%;
     --dark-bg: 42 47% 95%;
     --dark-card: 44 60% 98%;
     --text-light: 28 19% 9%;
     --text-muted: 32 14% 37%;
 
-    /* Hero gradients — Pearl White */
-    --hero-from: 42 47% 95%;
-    --hero-via: 42 40% 93%;
-    --hero-to: 42 32% 90%;
-    --hero-mid: 42 28% 92%;
-    --hero-end: 42 25% 94%;
-    --hero-fade: 42 22% 96%;
+    /* Hero gradients — Pearl White with sky wash */
+    --hero-from: 205 60% 96%;
+    --hero-via: 200 50% 94%;
+    --hero-to: 42 32% 92%;
+    --hero-mid: 205 40% 94%;
+    --hero-end: 42 25% 95%;
+    --hero-fade: 42 22% 97%;
 
     /* Glass — Pearl White */
     --glass-bg: 44 60% 98%;
-    --glass-border: 42 32% 84%;
-    --glass-shadow: 32 14% 37%;
+    --glass-border: 205 30% 84%;
+    --glass-shadow: 205 40% 30%;
 
-    --titanium-light: 42 32% 90%;
-    --titanium-white: 44 60% 98%;
-    --samsung-blue-primary: 200 60% 30%;
+    --titanium-light: 205 25% 92%;
+    --titanium-white: 0 0% 100%;
+    --samsung-blue-primary: 205 90% 48%;
 
-    /* Charts — gold-led, works on ivory */
-    --chart-1: 36 39% 47%;     /* deep gold */
-    --chart-2: 39 45% 60%;     /* champagne */
-    --chart-3: 142 55% 35%;    /* emerald */
-    --chart-4: 28 19% 18%;     /* near-black */
-    --chart-5: 0 65% 45%;      /* crimson */
+    /* Charts — sky-led, warm gold support */
+    --chart-1: 205 90% 48%;     /* sky blue */
+    --chart-2: 200 85% 62%;     /* light sky */
+    --chart-3: 142 55% 35%;     /* emerald */
+    --chart-4: 36 39% 47%;      /* deep gold */
+    --chart-5: 0 65% 45%;       /* crimson */
 
-    --intel-blue: 217 65% 42%;
-    --intel-blue-glow: 217 65% 42%;
+    --intel-blue: 205 90% 48%;
+    --intel-blue-glow: 200 95% 60%;
     --intel-success: 160 70% 30%;
     --intel-success-soft: 160 70% 30%;
     --intel-warning: 38 92% 42%;
@@ -295,40 +295,40 @@ html, body {
 
     --intel-radius: 16px;
     --intel-radius-lg: 20px;
-    --shadow-intel: 0 4px 20px hsl(36 39% 47% / 0.08);
-    --shadow-intel-active: 0 8px 32px hsl(36 39% 47% / 0.15), 0 0 0 1px hsl(36 39% 47% / 0.1);
+    --shadow-intel: 0 4px 20px hsl(205 90% 48% / 0.10);
+    --shadow-intel-active: 0 8px 32px hsl(205 90% 48% / 0.18), 0 0 0 1px hsl(205 90% 48% / 0.12);
 
-    /* Admin panel — Pearl tokens */
+    /* Admin panel — Pearl tokens (sky accent) */
     --panel-bg: 42 40% 96%;
-    --panel-bg-elevated: 44 60% 98%;
-    --panel-border: 42 32% 84%;
-    --panel-border-subtle: 42 25% 88%;
-    --panel-hover: 42 30% 92%;
-    --panel-active: 42 28% 90%;
+    --panel-bg-elevated: 0 0% 100%;
+    --panel-border: 205 30% 86%;
+    --panel-border-subtle: 205 25% 90%;
+    --panel-hover: 205 50% 95%;
+    --panel-active: 205 55% 92%;
     --panel-text: 28 19% 9%;
     --panel-text-secondary: 32 14% 37%;
     --panel-text-muted: 32 10% 50%;
-    --panel-accent: 36 39% 47%;
-    --panel-accent-dim: 36 35% 40%;
+    --panel-accent: 205 90% 48%;
+    --panel-accent-dim: 205 80% 40%;
     --panel-success: 152 60% 32%;
     --panel-danger: 350 60% 42%;
     --panel-warning: 38 92% 42%;
-    --panel-info: 210 70% 42%;
+    --panel-info: 205 90% 48%;
     --panel-tooltip-bg: 28 19% 9%;
-    --panel-tooltip-border: 36 39% 47%;
-    --panel-tooltip-text: 44 60% 98%;
-    --panel-glow-accent: 36 39% 47%;
-    --panel-shadow: 0 1px 3px hsl(28 19% 9% / 0.06), 0 0 0 1px hsl(42 32% 84% / 0.8);
-    --panel-shadow-hover: 0 4px 12px hsl(28 19% 9% / 0.08), 0 0 0 1px hsl(36 39% 47% / 0.2);
+    --panel-tooltip-border: 205 90% 48%;
+    --panel-tooltip-text: 0 0% 100%;
+    --panel-glow-accent: 205 90% 55%;
+    --panel-shadow: 0 1px 3px hsl(205 40% 20% / 0.06), 0 0 0 1px hsl(205 30% 86% / 0.8);
+    --panel-shadow-hover: 0 4px 12px hsl(205 60% 30% / 0.10), 0 0 0 1px hsl(205 90% 48% / 0.22);
 
-    --sidebar-background: 44 60% 98%;
+    --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 28 19% 9%;
-    --sidebar-primary: 36 39% 47%;
-    --sidebar-primary-foreground: 44 60% 98%;
-    --sidebar-accent: 42 30% 92%;
-    --sidebar-accent-foreground: 28 19% 14%;
-    --sidebar-border: 42 32% 84%;
-    --sidebar-ring: 36 39% 47%;
+    --sidebar-primary: 205 90% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 205 60% 95%;
+    --sidebar-accent-foreground: 205 90% 22%;
+    --sidebar-border: 205 30% 86%;
+    --sidebar-ring: 205 90% 48%;
   }
 
 
