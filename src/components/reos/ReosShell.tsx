@@ -8,7 +8,7 @@ import {
   ArrowLeftRight, Calendar, FileText, LifeBuoy, Shield, BarChart3,
   Sliders, CheckCircle2, Sun, Moon, Menu, LogOut, User, X, Home,
   Brain, PiggyBank, ShoppingCart, KeyRound, Tag, UsersRound, Briefcase,
-  Mail, Phone, Newspaper, BookOpen, ScrollText, Lock, Cookie, GavelIcon, HelpCircle,
+  Mail, Phone, Newspaper, BookOpen, ScrollText, Lock, Cookie, Gavel, HelpCircle,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
