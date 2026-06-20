@@ -211,25 +211,16 @@ export function ReosHeader() {
             </div>
           </Link>
 
-          <div className="flex-1 max-w-3xl mx-auto relative hidden md:block">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
-            <input
-              value={aiQuery}
-              onChange={(e) => setAiQuery(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") runSearch(); }}
-              placeholder="AI Search: Properties, Locations, ROI, Developers, Laws…"
-              aria-label="Search"
-              className="w-full h-11 pl-11 pr-12 rounded-xl bg-[var(--surface)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
-            />
-            <button
-              type="button"
-              onClick={() => navigate("/search-advanced")}
-              aria-label="Advanced search"
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-md hover:bg-[var(--surface-2)] flex items-center justify-center"
+          <div className="flex-1 hidden md:flex items-center justify-center">
+            <Link
+              to="/add-property"
+              className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-[var(--gold)] text-[var(--bg)] text-sm font-semibold tracking-wide hover:opacity-90 transition shadow-[var(--shadow-soft)]"
             >
-              <Sliders className="h-3.5 w-3.5 text-[var(--text-2)]" />
-            </button>
+              <Plus className="h-4 w-4" />
+              Add Property
+            </Link>
           </div>
+
 
           <div className="flex items-center gap-1 md:gap-2 shrink-0 ml-auto">
             <div className="relative" ref={langRef}>
