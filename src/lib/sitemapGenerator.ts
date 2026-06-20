@@ -19,9 +19,17 @@ export interface SitemapRoute {
 // Public, indexable routes only. Keep in sync with src/App.tsx.
 export const PUBLIC_ROUTES: SitemapRoute[] = [
   { path: "/", changefreq: "daily", priority: "1.0" },
+  { path: "/buy", changefreq: "daily", priority: "0.9" },
+  { path: "/rent", changefreq: "daily", priority: "0.9" },
+  { path: "/sell", changefreq: "weekly", priority: "0.8" },
+  { path: "/new-projects", changefreq: "weekly", priority: "0.8" },
+  { path: "/investment", changefreq: "weekly", priority: "0.8" },
+  { path: "/investment-opportunities", changefreq: "weekly", priority: "0.7" },
+  { path: "/locations", changefreq: "weekly", priority: "0.7" },
   { path: "/search", changefreq: "daily", priority: "0.9" },
   { path: "/dijual", changefreq: "daily", priority: "0.9" },
   { path: "/disewa", changefreq: "daily", priority: "0.9" },
+  { path: "/blog", changefreq: "weekly", priority: "0.7" },
   { path: "/about", changefreq: "monthly", priority: "0.7" },
   { path: "/contact", changefreq: "monthly", priority: "0.6" },
   { path: "/help", changefreq: "monthly", priority: "0.6" },

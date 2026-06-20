@@ -573,9 +573,12 @@ const Index = () => {
         Skip to main content
       </a>
       <SEOHead
-        title={t('seo.home.title')}
-        description={t('seo.home.description')}
-        keywords="properti Indonesia, villa mewah, apartemen Jakarta, rumah dijual, properti Bali, investasi properti"
+        fullTitle="ASTRA Villa Property | Buy, Sell, Rent & Invest in Indonesian Real Estate"
+        description="Discover luxury villas, apartments, land, and investment properties across Indonesia with AI-powered search, virtual tours, and verified listings."
+        keywords="property indonesia, bali villa, luxury villa, real estate indonesia, property investment, villa for sale, villa rental, apartment indonesia, property marketplace, astra villa property"
+        ogTitle="ASTRA Villa Property | Indonesia's AI-Powered Real Estate Platform"
+        ogDescription="Buy, sell, rent, and invest in premium Indonesian properties with AI-powered search, virtual tours, and verified listings."
+        canonical="https://astravilla.com/"
         jsonLd={[seoSchemas.organization(), seoSchemas.realEstateAgent(), seoSchemas.searchAction()]}
       />
       {/* Network Status Indicator */}
