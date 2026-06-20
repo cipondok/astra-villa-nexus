@@ -17,8 +17,8 @@
 
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { en } from '../src/i18n/locales/en';
-import { id } from '../src/i18n/locales/id';
+import en from '../src/i18n/locales/en';
+import id from '../src/i18n/locales/id';
 
 type Lang = 'en' | 'id';
 
