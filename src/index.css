@@ -516,12 +516,30 @@ html, body {
 /* ═══ Smooth Dark/Light Theme Transitions ═══ */
 .theme-transitioning,
 .theme-transitioning * {
-  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              fill 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              stroke 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              fill 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Motion flash overlay for theme switch */
+.theme-motion-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(200,169,106,0.15), transparent 70%);
+  opacity: 0;
+  transform: scale(0.96);
+  animation: themeMotionFlash 0.35s ease-out forwards;
+}
+
+@keyframes themeMotionFlash {
+  0%   { opacity: 0.6; transform: scale(0.96); filter: blur(2px); }
+  60%  { opacity: 0.3; transform: scale(1.02); filter: blur(0px); }
+  100% { opacity: 0; transform: scale(1); filter: blur(0px); }
 }
 
 /* ═══ Enterprise Admin Density Utilities ═══ */
