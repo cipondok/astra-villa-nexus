@@ -145,6 +145,13 @@ export function ReosHeader() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
   const runSearch = () => {
     if (!aiQuery.trim()) return navigate("/search");
