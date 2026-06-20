@@ -114,7 +114,17 @@ export function ThemeProvider({
       if (next === preference) return;
       const root = window.document.documentElement;
       root.classList.add("theme-transitioning");
-      setTimeout(() => root.classList.remove("theme-transitioning"), 400);
+
+      // Inject motion flash overlay
+      const existingFlash = document.getElementById("theme-motion-flash");
+      if (existingFlash) existingFlash.remove();
+      const flash = document.createElement("div");
+      flash.id = "theme-motion-flash";
+      flash.className = "theme-motion-flash";
+      document.body.appendChild(flash);
+      setTimeout(() => flash.remove(), 400);
+
+      setTimeout(() => root.classList.remove("theme-transitioning"), 250);
       try {
         localStorage.setItem(storageKey, next);
       } catch {
