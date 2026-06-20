@@ -451,13 +451,12 @@ export default function AstraReosHome() {
                             </button>
                           ))}
                           <motion.div
-                            layoutId="activeSearchTab"
                             className="absolute top-1 bottom-1 rounded-full bg-[var(--surface)] shadow-md"
-                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                            style={{
-                              left: `calc(${searchTabs.indexOf(activeSearchTab)} * (100% / ${searchTabs.length}) + 4px)`,
-                              width: `calc(100% / ${searchTabs.length} - 8px)`,
+                            animate={{
+                              left: `${(searchTabs.indexOf(activeSearchTab) / searchTabs.length) * 100}%`,
+                              width: `${100 / searchTabs.length}%`,
                             }}
+                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
                           />
                         </div>
                         <div className="hidden md:flex items-center gap-1.5 ml-auto text-[10px] uppercase tracking-[0.2em] text-[var(--text-3)]">
