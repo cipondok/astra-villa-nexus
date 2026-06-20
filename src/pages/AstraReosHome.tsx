@@ -502,7 +502,7 @@ export default function AstraReosHome() {
                       {country} <ChevronDown className="h-3 w-3" />
                     </button>
                     {countryOpen && (
-                      <div role="menu" className="absolute right-0 mt-2 w-40 reos-card p-1 z-30 shadow-2xl">
+                      <div role="menu" className="absolute right-0 mt-2 w-40 reos-card p-1 z-30 shadow-[var(--shadow-popover)]">
                         {countries.map(c => (
                           <button
                             key={c}

@@ -243,7 +243,7 @@ export function ReosHeader() {
                 <Globe className="h-4 w-4" /> {language.toUpperCase()} <ChevronDown className="h-3 w-3" />
               </button>
               {langOpen && (
-                <div role="menu" className="absolute right-0 mt-2 w-56 reos-card p-1 z-50 shadow-2xl">
+                <div role="menu" className="absolute right-0 mt-2 w-56 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
                   <div className="px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)]">Language</div>
                   {languages.map(l => (
                     <button
@@ -287,7 +287,7 @@ export function ReosHeader() {
                 )}
               </button>
               {notifOpen && (
-                <div role="menu" className="absolute right-0 mt-2 w-[340px] reos-card p-0 z-50 shadow-2xl overflow-hidden">
+                <div role="menu" className="absolute right-0 mt-2 w-[340px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
                     <div className="text-[12.5px] font-semibold text-[var(--text)]">Notifications</div>
                     <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{unreadCount} new</span>
@@ -336,7 +336,7 @@ export function ReosHeader() {
                 )}
               </button>
               {savedOpen && (
-                <div role="menu" className="absolute right-0 mt-2 w-[320px] reos-card p-0 z-50 shadow-2xl overflow-hidden">
+                <div role="menu" className="absolute right-0 mt-2 w-[320px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
                     <div className="text-[12.5px] font-semibold text-[var(--text)]">Saved</div>
                     <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{savedCount} items</span>
@@ -386,7 +386,7 @@ export function ReosHeader() {
                   <ChevronDown className="h-3 w-3 text-[var(--text-2)]" />
                 </button>
                 {profileOpen && (
-                  <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-2xl">
+                  <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
                     <button type="button" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> Dashboard</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> My Profile</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> Wallet</button>
