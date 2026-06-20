@@ -440,13 +440,25 @@ export default function AstraReosHome() {
                   <div className="mt-6 md:mt-8 w-full max-w-2xl">
                     <div className="reos-card bg-transparent backdrop-blur-xl border border-[var(--line)]/40 shadow-[var(--shadow-soft)] p-3 md:p-4">
                       <div className="flex flex-wrap items-center gap-2 mb-2.5">
-                        <div className="inline-flex rounded-full p-1 bg-[var(--surface-2)]/40 backdrop-blur-md border border-[var(--line)]/30">
-                          {searchTabs.map(t => (
-                            <button key={t} onClick={() => setActiveSearchTab(t)}
-                              className={`relative text-[11px] md:text-[12px] px-3 md:px-3.5 h-7 rounded-full transition-all duration-200 ${activeSearchTab === t ? "bg-[var(--surface)] text-[var(--text)] font-medium shadow-md" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>
+                        <div className="relative inline-flex rounded-full p-1 bg-[var(--surface-2)]/50 backdrop-blur-md border border-[var(--line)]/25">
+                          {searchTabs.map((t) => (
+                            <button
+                              key={t}
+                              onClick={() => setActiveSearchTab(t)}
+                              className={`relative z-10 text-[11px] md:text-[12px] px-3 md:px-3.5 h-7 rounded-full transition-colors duration-200 ${activeSearchTab === t ? "text-[var(--text)] font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
+                            >
                               {t}
                             </button>
                           ))}
+                          <motion.div
+                            layoutId="activeSearchTab"
+                            className="absolute top-1 bottom-1 rounded-full bg-[var(--surface)] shadow-md"
+                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                            style={{
+                              left: `calc(${searchTabs.indexOf(activeSearchTab)} * (100% / ${searchTabs.length}) + 4px)`,
+                              width: `calc(100% / ${searchTabs.length} - 8px)`,
+                            }}
+                          />
                         </div>
                         <div className="hidden md:flex items-center gap-1.5 ml-auto text-[10px] uppercase tracking-[0.2em] text-[var(--text-3)]">
                           <Sparkles className="h-3 w-3 reos-gold" /> AI-Powered Property Search
