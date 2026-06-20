@@ -452,7 +452,7 @@ export default function AstraReosHome() {
                           <Sparkles className="h-3 w-3 reos-gold" /> AI-Powered Property Search
                         </div>
                       </div>
-                      <div className="relative flex items-center gap-2 bg-[var(--surface)]/50 backdrop-blur-md border border-[var(--line)]/30 rounded-full px-1.5 h-11">
+                      <div className="relative flex items-center gap-2 bg-[var(--surface)]/50 backdrop-blur-md border border-[var(--line)]/60 rounded-full px-1.5 h-11">
                         <Search className="h-4 w-4 text-[var(--text-2)] ml-3 shrink-0" />
                         <input
                           value={aiQuery}
