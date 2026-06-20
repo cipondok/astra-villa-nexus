@@ -125,8 +125,8 @@ export function ReosHeader() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authInitial, setAuthInitial] = useState<"login" | "register">("login");
-
   const [savedOpen, setSavedOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const langRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -143,6 +143,13 @@ export function ReosHeader() {
     };
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
@@ -179,7 +186,7 @@ export function ReosHeader() {
 
   return (
     <>
-      <header className="reos-shell-header sticky top-0 z-40 bg-[var(--bg)] border-b border-[var(--line)] shadow-[var(--shadow-luxe)]">
+      <header className={`reos-shell-header sticky top-0 z-40 bg-[var(--bg)] border-b border-[var(--line)] transition-shadow duration-300 ${scrolled ? "shadow-[0_8px_32px_rgba(0,0,0,0.35)]" : "shadow-[var(--shadow-luxe)]"}`}>
         <div className="mx-auto max-w-[1600px] px-4 md:px-6 h-full flex items-center gap-3 md:gap-6">
           <button
             type="button"
