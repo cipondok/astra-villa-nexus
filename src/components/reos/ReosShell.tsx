@@ -214,7 +214,7 @@ export function ReosHeader() {
           <div className="flex-1 hidden md:flex items-center justify-center">
             <Link
               to="/add-property"
-              className="btn-titanium inline-flex items-center gap-1.5 h-8 px-3.5 rounded-lg text-[11px] font-semibold tracking-wide hover:opacity-90 transition"
+              className="btn-titanium inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-[11px] font-semibold tracking-wide hover:opacity-90 transition"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Property
