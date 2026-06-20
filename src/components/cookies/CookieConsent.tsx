@@ -141,7 +141,8 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
                         Cookie Notice
                       </h3>
                       <p className="text-[10px] text-muted-foreground leading-tight">
-                        We use cookies to enhance your experience.
+                        We use cookies to enhance your experience.{" "}
+                        <a href="/cookies" className="underline hover:text-foreground">Learn more</a>
                       </p>
                     </div>
                     <Button
