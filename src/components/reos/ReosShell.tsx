@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Building2, TrendingUp, Banknote, Scale, Wrench,
   Store, Cpu, MoreHorizontal, Eye, BookmarkPlus, Wallet, MessageSquare,
   ArrowLeftRight, Calendar, FileText, LifeBuoy, Shield, BarChart3,
-  Sliders, CheckCircle2, Sun, Moon, Menu, LogOut, User, X, Home,
+  Sliders, CheckCircle2, Sun, Moon, Menu, LogOut, User, X, Home, Plus,
   Brain, PiggyBank, ShoppingCart, KeyRound, Tag, UsersRound, Briefcase,
   Mail, Phone, Newspaper, BookOpen, ScrollText, Lock, Cookie, Gavel, HelpCircle,
 } from "lucide-react";
