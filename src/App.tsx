@@ -12,6 +12,7 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/ui/PageTransition';
 import { Loader2 } from 'lucide-react';
+import { AstraInlineLoader } from '@/components/loaders/AstraLoaders';
 
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
@@ -363,12 +364,8 @@ const LiquidityScoringPage = lazy(() => import('@/pages/LiquidityScoringPage'));
 const VendorJobRoutingPage = lazy(() => import('@/pages/VendorJobRoutingPage'));
 const DealRiskDetectionPage = lazy(() => import('@/pages/DealRiskDetectionPage'));
 const AgentLeaderboardPage = lazy(() => import('@/pages/AgentLeaderboardPage'));
-// Minimal lazy loading fallback - just shows content area skeleton
-const PageLoader = () => (
-  <div className="min-h-[50vh] flex items-center justify-center">
-    <Loader2 className="h-6 w-6 animate-spin text-[hsl(var(--gold-primary))]" />
-  </div>
-);
+// Branded ASTRA loader — replaces default spinners for all lazy routes.
+const PageLoader = () => <AstraInlineLoader label="Loading ASTRA Villa..." />
 
 // Hook to check maintenance mode status from DB
 const useMaintenanceMode = () => {
