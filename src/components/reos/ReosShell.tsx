@@ -45,6 +45,7 @@ export const reosTokens = `
     --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%);
     --shadow-soft: 0 8px 32px rgba(0,0,0,0.35);
     --shadow-lift: 0 4px 16px rgba(0,0,0,0.25);
+    --shadow-popover: 0 25px 50px -12px rgba(0,0,0,0.5);
     color: var(--text);
     background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
@@ -69,6 +70,7 @@ export const reosTokens = `
     --gold-fg: #111827;
     --shadow-soft: 0 8px 30px rgba(0,0,0,0.06);
     --shadow-lift: 0 4px 14px rgba(0,0,0,0.05);
+    --shadow-popover: 0 20px 40px -12px rgba(0,0,0,0.08);
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
