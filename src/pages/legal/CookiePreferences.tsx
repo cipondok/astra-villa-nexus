@@ -100,13 +100,13 @@ export default function CookiePreferences() {
             Save preferences
           </button>
           <button
-            onClick={() => { setPrefs({ necessary: true, analytics: true, marketing: true }); }}
+            onClick={() => persist(allAcceptedPrefs)}
             className="text-xs px-4 py-2 rounded-lg border border-[var(--line)] hover:border-[var(--line-strong)]"
           >
             Accept all
           </button>
           <button
-            onClick={() => { setPrefs(defaultPrefs); }}
+            onClick={() => persist(defaultCookiePrefs)}
             className="text-xs px-4 py-2 rounded-lg border border-[var(--line)] hover:border-[var(--line-strong)]"
           >
             Reject all
