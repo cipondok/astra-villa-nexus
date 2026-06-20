@@ -112,7 +112,7 @@ export const SEOHead = ({
     return () => {
       document.title = SITE_NAME;
     };
-  }, [fullTitle, description, keywords, ogImage, ogType, canonical, noIndex, jsonLd]);
+  }, [fullTitle, description, keywords, ogTitle, ogDescription, ogImage, ogType, canonical, noIndex, jsonLd]);
 
   return null;
 };
