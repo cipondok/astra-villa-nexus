@@ -172,6 +172,105 @@ const hubs = [
 const searchTabs = ["All", "Properties", "Investments", "Locations", "Developers", "Vendors", "Laws"];
 const locationChips = ["Bali", "Jakarta", "Phuket", "Singapore", "Kuala Lumpur"];
 
+/* ---------- iOS-style swipeable segmented control ---------- */
+function SegmentedSearchTabs({
+  tabs,
+  value,
+  onChange,
+}: {
+  tabs: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [segWidth, setSegWidth] = useState(0);
+  const x = useMotionValue(0);
+  const draggingRef = useRef(false);
+
+  const activeIndex = Math.max(0, tabs.indexOf(value));
+
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const measure = () => {
+      // inner padding p-1 = 4px each side
+      const inner = el.clientWidth - 8;
+      setSegWidth(inner / tabs.length);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [tabs.length]);
+
+  useEffect(() => {
+    if (draggingRef.current) return;
+    const controls = animate(x, activeIndex * segWidth, {
+      type: "spring",
+      stiffness: 400,
+      damping: 32,
+    });
+    return controls.stop;
+  }, [activeIndex, segWidth, x]);
+
+  const maxX = Math.max(0, segWidth * (tabs.length - 1));
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative inline-flex rounded-full p-1 bg-[var(--surface-2)]/50 backdrop-blur-md border border-[var(--line)]/25 touch-none select-none"
+    >
+      {/* Sliding pill (draggable) */}
+      {segWidth > 0 && (
+        <motion.div
+          className="absolute top-1 bottom-1 rounded-full bg-[var(--surface)] shadow-md cursor-grab active:cursor-grabbing"
+          style={{ left: 4, width: segWidth, x, touchAction: "none" }}
+          drag="x"
+          dragConstraints={{ left: 0, right: maxX }}
+          dragElastic={0.12}
+          dragMomentum={false}
+          onDragStart={() => { draggingRef.current = true; }}
+          onDrag={(_, info) => {
+            const idx = Math.round(Math.min(maxX, Math.max(0, info.point.x - (containerRef.current?.getBoundingClientRect().left ?? 0) - 4 - segWidth / 2 + segWidth / 2)) / segWidth);
+            // soft live update of active label color
+            const clamped = Math.min(tabs.length - 1, Math.max(0, idx));
+            if (tabs[clamped] !== value) onChange(tabs[clamped]);
+          }}
+          onDragEnd={() => {
+            draggingRef.current = false;
+            const current = x.get();
+            const idx = Math.min(
+              tabs.length - 1,
+              Math.max(0, Math.round(current / segWidth))
+            );
+            onChange(tabs[idx]);
+            animate(x, idx * segWidth, { type: "spring", stiffness: 500, damping: 34 });
+          }}
+        />
+      )}
+
+      {tabs.map((t, i) => (
+        <button
+          key={t}
+          type="button"
+          onClick={() => {
+            onChange(t);
+            animate(x, i * segWidth, { type: "spring", stiffness: 500, damping: 34 });
+          }}
+          style={{ width: segWidth || undefined }}
+          className={`relative z-10 text-[11px] md:text-[12px] h-7 rounded-full transition-colors duration-200 ${
+            value === t
+              ? "text-[var(--text)] font-medium"
+              : "text-[var(--text-2)] hover:text-[var(--text)]"
+          }`}
+        >
+          {t}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /* ---------- Mock market sparklines (gold/green) ---------- */
 const spark = (seed: number) =>
   Array.from({ length: 24 }, (_, i) => ({ i, v: 50 + Math.sin(i / 2 + seed) * 8 + Math.cos(i / 3 + seed) * 6 + i * 0.4 }));
