@@ -193,8 +193,7 @@ function SegmentedSearchTabs({
     const el = containerRef.current;
     if (!el) return;
     const measure = () => {
-      // inner padding p-1 = 4px each side
-      const inner = el.clientWidth - 8;
+      const inner = el.clientWidth - 8; // subtract p-1 padding (4px each side)
       setSegWidth(inner / tabs.length);
     };
     measure();
@@ -207,10 +206,10 @@ function SegmentedSearchTabs({
     if (draggingRef.current) return;
     const controls = animate(x, activeIndex * segWidth, {
       type: "spring",
-      stiffness: 400,
-      damping: 32,
+      stiffness: 500,
+      damping: 35,
     });
-    return controls.stop;
+    return () => controls.stop();
   }, [activeIndex, segWidth, x]);
 
   const maxX = Math.max(0, segWidth * (tabs.length - 1));
@@ -218,34 +217,31 @@ function SegmentedSearchTabs({
   return (
     <div
       ref={containerRef}
-      className="relative inline-flex rounded-full p-1 bg-[var(--surface-2)]/50 backdrop-blur-md border border-[var(--line)]/25 touch-none select-none"
+      className="relative inline-flex rounded-full p-1 bg-[var(--surface-2)]/80 backdrop-blur-md border border-[var(--line)]/40 touch-none select-none"
     >
-      {/* Sliding pill (draggable) */}
+      {/* Sliding pill */}
       {segWidth > 0 && (
         <motion.div
-          className="absolute top-1 bottom-1 rounded-full bg-[var(--surface)] shadow-md cursor-grab active:cursor-grabbing"
-          style={{ left: 4, width: segWidth, x, touchAction: "none" }}
+          className="absolute top-1 bottom-1 rounded-full bg-[var(--surface)] border border-[var(--line)]/60 shadow-[0_2px_8px_rgba(0,0,0,0.15)] cursor-grab active:cursor-grabbing z-0"
+          style={{
+            left: 4,
+            width: segWidth,
+            x,
+            touchAction: "none",
+          }}
           drag="x"
           dragConstraints={{ left: 0, right: maxX }}
-          dragElastic={0.12}
+          dragElastic={0.05}
           dragMomentum={false}
           onDragStart={() => { draggingRef.current = true; }}
-          onDrag={() => {
+          onDragEnd={() => {
+            draggingRef.current = false;
             const idx = Math.min(
               tabs.length - 1,
               Math.max(0, Math.round(x.get() / segWidth))
             );
-            if (tabs[idx] !== value) onChange(tabs[idx]);
-          }}
-          onDragEnd={() => {
-            draggingRef.current = false;
-            const current = x.get();
-            const idx = Math.min(
-              tabs.length - 1,
-              Math.max(0, Math.round(current / segWidth))
-            );
             onChange(tabs[idx]);
-            animate(x, idx * segWidth, { type: "spring", stiffness: 500, damping: 34 });
+            animate(x, idx * segWidth, { type: "spring", stiffness: 500, damping: 35 });
           }}
         />
       )}
@@ -256,12 +252,12 @@ function SegmentedSearchTabs({
           type="button"
           onClick={() => {
             onChange(t);
-            animate(x, i * segWidth, { type: "spring", stiffness: 500, damping: 34 });
+            animate(x, i * segWidth, { type: "spring", stiffness: 500, damping: 35 });
           }}
           style={{ width: segWidth || undefined }}
-          className={`relative z-10 text-[11px] md:text-[12px] h-7 rounded-full transition-colors duration-200 ${
+          className={`relative z-10 text-[11px] md:text-[12px] h-7 rounded-full transition-colors duration-150 font-medium ${
             value === t
-              ? "text-[var(--text)] font-medium"
+              ? "text-[var(--text)]"
               : "text-[var(--text-2)] hover:text-[var(--text)]"
           }`}
         >
