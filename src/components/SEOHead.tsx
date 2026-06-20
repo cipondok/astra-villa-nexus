@@ -1,9 +1,21 @@
 import { useEffect } from 'react';
+import {
+  SITE_NAME as DEFAULT_SITE_NAME,
+  SITE_URL as DEFAULT_SITE_URL,
+  DEFAULT_DESCRIPTION,
+  HOME_FULL_TITLE,
+  OG_TITLE,
+  OG_DESCRIPTION,
+} from '@/lib/seoDefaults';
 
 interface SEOHeadProps {
   title?: string;
+  /** Skip the " | ASTRA Villa Property" suffix and use the exact string */
+  fullTitle?: string;
   description?: string;
   keywords?: string;
+  ogTitle?: string;
+  ogDescription?: string;
   ogImage?: string;
   ogType?: 'website' | 'article' | 'product';
   canonical?: string;
@@ -11,21 +23,26 @@ interface SEOHeadProps {
   jsonLd?: object | object[];
 }
 
-const SITE_NAME = 'ASTRA Villa Realty';
-const DEFAULT_OG_IMAGE = 'https://lovable.dev/opengraph-image-p98pqg.png';
-const SITE_URL = 'https://www.astravilla.com';
+const SITE_NAME = DEFAULT_SITE_NAME;
+const DEFAULT_OG_IMAGE = `${DEFAULT_SITE_URL}/icon-512.png`;
+const SITE_URL = DEFAULT_SITE_URL;
 
 export const SEOHead = ({
   title,
-  description = 'Platform properti premium Indonesia. Temukan villa, apartemen, dan rumah mewah dengan teknologi 3D & AI terdepan.',
+  fullTitle: fullTitleProp,
+  description = DEFAULT_DESCRIPTION,
   keywords,
+  ogTitle,
+  ogDescription,
   ogImage = DEFAULT_OG_IMAGE,
   ogType = 'website',
   canonical,
   noIndex = false,
   jsonLd,
 }: SEOHeadProps) => {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} - Platform Properti Premium Indonesia`;
+  const fullTitle =
+    fullTitleProp ??
+    (title ? `${title} | ${SITE_NAME}` : HOME_FULL_TITLE);
 
   useEffect(() => {
     // Title
