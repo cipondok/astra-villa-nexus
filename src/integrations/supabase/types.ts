@@ -55478,6 +55478,27 @@ export type Database = {
         }
         Relationships: []
       }
+      sitemap_cache: {
+        Row: {
+          file_name: string
+          generated_at: string
+          url_count: number
+          xml: string
+        }
+        Insert: {
+          file_name: string
+          generated_at?: string
+          url_count?: number
+          xml: string
+        }
+        Update: {
+          file_name?: string
+          generated_at?: string
+          url_count?: number
+          xml?: string
+        }
+        Relationships: []
+      }
       smart_city_demographics: {
         Row: {
           absorption_capacity: number | null
@@ -68859,6 +68880,10 @@ export type Database = {
       }
       recover_stalled_jobs: { Args: never; Returns: number }
       release_batch_lock: { Args: { p_job_type: string }; Returns: undefined }
+      reschedule_sitemap_job: {
+        Args: { cron_expression: string }
+        Returns: string
+      }
       reset_admin_password: { Args: { new_password: string }; Returns: string }
       reset_stuck_image_jobs: { Args: never; Returns: number }
       resolve_database_error: {
