@@ -505,6 +505,7 @@ export function ReosFooter() {
         { label: "Terms of Service", to: "/terms", icon: ScrollText },
         { label: "Privacy Policy", to: "/privacy", icon: Lock },
         { label: "Cookie Policy", to: "/cookies", icon: Cookie },
+        { label: "Cookie Settings", to: "/cookie-preferences", icon: Cookie },
         { label: "Compliance", to: "/compliance", icon: Gavel },
         { label: "Help Center", to: "/help", icon: HelpCircle },
       ],
