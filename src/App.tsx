@@ -253,6 +253,10 @@ const About = lazy(() => import('@/pages/About'));
 const Careers = lazy(() => import('@/pages/Careers'));
 const Press = lazy(() => import('@/pages/Press'));
 const Blog = lazy(() => import('@/pages/Blog'));
+const Terms = lazy(() => import('@/pages/legal/Terms'));
+const Privacy = lazy(() => import('@/pages/legal/Privacy'));
+const CookiesPage = lazy(() => import('@/pages/legal/Cookies'));
+const Compliance = lazy(() => import('@/pages/legal/Compliance'));
 const WNIPage = lazy(() => import('@/pages/investor/WNIPage'));
 const WNAPage = lazy(() => import('@/pages/investor/WNAPage'));
 const VerificationCenter = lazy(() => import('@/pages/VerificationCenter'));
@@ -735,6 +739,10 @@ const AppContent = () => {
                 <Route path="/careers" element={<Careers />} />
                 <Route path="/press" element={<Press />} />
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/cookies" element={<CookiesPage />} />
+                <Route path="/compliance" element={<Compliance />} />
                 <Route path="/support" element={<Contact />} />
                 <Route path="/investor/wni" element={<Navigate to="/investment?section=wni" replace />} />
                 <Route path="/investor/wna" element={<Navigate to="/investment?section=wna" replace />} />
