@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Search, Bell, Globe, Heart, Sparkles, ChevronDown, ChevronRight,
@@ -171,6 +171,106 @@ const hubs = [
 /* ---------- Search tabs ---------- */
 const searchTabs = ["All", "Properties", "Investments", "Locations", "Developers", "Vendors", "Laws"];
 const locationChips = ["Bali", "Jakarta", "Phuket", "Singapore", "Kuala Lumpur"];
+
+/* ---------- iOS-style swipeable segmented control ---------- */
+function SegmentedSearchTabs({
+  tabs,
+  value,
+  onChange,
+}: {
+  tabs: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [segWidth, setSegWidth] = useState(0);
+  const x = useMotionValue(0);
+  const draggingRef = useRef(false);
+
+  const activeIndex = Math.max(0, tabs.indexOf(value));
+
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const measure = () => {
+      // inner padding p-1 = 4px each side
+      const inner = el.clientWidth - 8;
+      setSegWidth(inner / tabs.length);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [tabs.length]);
+
+  useEffect(() => {
+    if (draggingRef.current) return;
+    const controls = animate(x, activeIndex * segWidth, {
+      type: "spring",
+      stiffness: 400,
+      damping: 32,
+    });
+    return controls.stop;
+  }, [activeIndex, segWidth, x]);
+
+  const maxX = Math.max(0, segWidth * (tabs.length - 1));
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative inline-flex rounded-full p-1 bg-[var(--surface-2)]/50 backdrop-blur-md border border-[var(--line)]/25 touch-none select-none"
+    >
+      {/* Sliding pill (draggable) */}
+      {segWidth > 0 && (
+        <motion.div
+          className="absolute top-1 bottom-1 rounded-full bg-[var(--surface)] shadow-md cursor-grab active:cursor-grabbing"
+          style={{ left: 4, width: segWidth, x, touchAction: "none" }}
+          drag="x"
+          dragConstraints={{ left: 0, right: maxX }}
+          dragElastic={0.12}
+          dragMomentum={false}
+          onDragStart={() => { draggingRef.current = true; }}
+          onDrag={() => {
+            const idx = Math.min(
+              tabs.length - 1,
+              Math.max(0, Math.round(x.get() / segWidth))
+            );
+            if (tabs[idx] !== value) onChange(tabs[idx]);
+          }}
+          onDragEnd={() => {
+            draggingRef.current = false;
+            const current = x.get();
+            const idx = Math.min(
+              tabs.length - 1,
+              Math.max(0, Math.round(current / segWidth))
+            );
+            onChange(tabs[idx]);
+            animate(x, idx * segWidth, { type: "spring", stiffness: 500, damping: 34 });
+          }}
+        />
+      )}
+
+      {tabs.map((t, i) => (
+        <button
+          key={t}
+          type="button"
+          onClick={() => {
+            onChange(t);
+            animate(x, i * segWidth, { type: "spring", stiffness: 500, damping: 34 });
+          }}
+          style={{ width: segWidth || undefined }}
+          className={`relative z-10 text-[11px] md:text-[12px] h-7 rounded-full transition-colors duration-200 ${
+            value === t
+              ? "text-[var(--text)] font-medium"
+              : "text-[var(--text-2)] hover:text-[var(--text)]"
+          }`}
+        >
+          {t}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 /* ---------- Mock market sparklines (gold/green) ---------- */
 const spark = (seed: number) =>
@@ -440,25 +540,11 @@ export default function AstraReosHome() {
                   <div className="mt-6 md:mt-8 w-full max-w-2xl">
                     <div className="reos-card bg-transparent backdrop-blur-xl border border-[var(--line)]/40 shadow-[var(--shadow-soft)] p-3 md:p-4">
                       <div className="flex flex-wrap items-center gap-2 mb-2.5">
-                        <div className="relative inline-flex rounded-full p-1 bg-[var(--surface-2)]/50 backdrop-blur-md border border-[var(--line)]/25">
-                          {searchTabs.map((t) => (
-                            <button
-                              key={t}
-                              onClick={() => setActiveSearchTab(t)}
-                              className={`relative z-10 text-[11px] md:text-[12px] px-3 md:px-3.5 h-7 rounded-full transition-colors duration-200 ${activeSearchTab === t ? "text-[var(--text)] font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
-                            >
-                              {t}
-                            </button>
-                          ))}
-                          <motion.div
-                            className="absolute top-1 bottom-1 rounded-full bg-[var(--surface)] shadow-md"
-                            animate={{
-                              left: `${(searchTabs.indexOf(activeSearchTab) / searchTabs.length) * 100}%`,
-                              width: `${100 / searchTabs.length}%`,
-                            }}
-                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                          />
-                        </div>
+                        <SegmentedSearchTabs
+                          tabs={searchTabs}
+                          value={activeSearchTab}
+                          onChange={setActiveSearchTab}
+                        />
                         <div className="hidden md:flex items-center gap-1.5 ml-auto text-[10px] uppercase tracking-[0.2em] text-[var(--text-3)]">
                           <Sparkles className="h-3 w-3 reos-gold" /> AI-Powered Property Search
                         </div>
