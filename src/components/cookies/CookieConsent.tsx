@@ -2,6 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, Cookie, Shield, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  allAcceptedPrefs,
+  defaultCookiePrefs,
+  loadCookiePrefs,
+  saveCookiePrefs,
+  subscribeCookiePrefs,
+  type CookiePrefs,
+} from '@/lib/cookiePreferences';
 
 interface CookieConsentProps {
   onAccept: () => void;
@@ -14,11 +22,10 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
   const [isClosing, setIsClosing] = useState(false);
   const [hasInteraction, setHasInteraction] = useState(false);
   const [countdown, setCountdown] = useState(5);
-  const [preferences, setPreferences] = useState({
-    necessary: true,
-    analytics: true,
-    marketing: true,
-  });
+  const [preferences, setPreferences] = useState<CookiePrefs>(() => loadCookiePrefs());
+
+  // Stay in sync with the preferences page or other tabs
+  useEffect(() => subscribeCookiePrefs(setPreferences), []);
 
   // Auto-close countdown after 5 seconds if no interaction
   useEffect(() => {
