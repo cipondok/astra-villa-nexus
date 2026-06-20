@@ -513,6 +513,17 @@ html, body {
   }
 }
 
+/* ═══ Smooth Dark/Light Theme Transitions ═══ */
+.theme-transitioning,
+.theme-transitioning * {
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              fill 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 /* ═══ Enterprise Admin Density Utilities ═══ */
 @layer utilities {
   /* Admin-specific density classes */
