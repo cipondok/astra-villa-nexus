@@ -436,56 +436,9 @@ export default function AstraReosHome() {
                   </h1>
                   <p className="mt-4 text-[15px] max-w-md" style={{ color: "var(--hero-text-2)" }}>Buy. Invest. Manage. Finance. Verify. Grow.</p>
 
-
-                  {/* Search box */}
-                  <motion.div variants={fadeUp} className="mt-8 max-w-xl">
-                    <div className="reos-card-2 p-1.5 inline-flex gap-1 mb-2.5 bg-[var(--surface)]/80 backdrop-blur">
-                      {searchTabs.map(t => (
-                        <button key={t} onClick={() => setActiveSearchTab(t)}
-                          className={`text-[12px] px-3 h-7 rounded-md transition ${activeSearchTab === t ? "bg-[var(--text)] text-[var(--bg)] font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>
-                          {t}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="reos-card-2 bg-[var(--surface)]/95 backdrop-blur p-1.5 flex items-center gap-2">
-                      <Search className="h-4 w-4 text-[var(--text-2)] ml-2" />
-                      <input
-                        value={aiQuery}
-                        onChange={(e) => setAiQuery(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === "Enter") submitAi(); }}
-                        placeholder="Search properties, locations, ROI, developers, laws…"
-                        className="flex-1 bg-transparent outline-none text-sm placeholder:text-[var(--text-2)] py-2"
-                      />
-                      <button onClick={submitAi} disabled={aiLoading} className="btn-titanium h-9 pl-1.5 pr-3.5 rounded-lg text-xs inline-flex items-center gap-1.5 font-semibold disabled:opacity-60">
-                        <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-md shrink-0">
-                          {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
-                        </span>
-                        <span className="relative">AI Search</span>
-                      </button>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {locationChips.map(c => (
-                        <button
-                          key={c}
-                          type="button"
-                          onClick={() => navigate(`/search?q=${encodeURIComponent(`Properties in ${c}`)}`)}
-                          className="btn-titanium text-[11px] px-3 py-1 rounded-full font-semibold"
-                        >
-                          {c}
-                        </button>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => navigate("/search-advanced")}
-                        className="btn-titanium text-[11px] px-3 py-1 rounded-full font-semibold inline-flex items-center gap-1"
-                      >
-                        More <ChevronDown className="h-3 w-3" />
-                      </button>
-
-                    </div>
-                  </motion.div>
                 </div>
               </motion.div>
+
 
               {/* Market overview */}
               <motion.div variants={fadeUp} className="col-span-12 lg:col-span-3 reos-card p-5">
