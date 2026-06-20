@@ -111,6 +111,10 @@ export function ThemeProvider({
 
   const setTheme = useCallback(
     (next: ThemePreference) => {
+      if (next === preference) return;
+      const root = window.document.documentElement;
+      root.classList.add("theme-transitioning");
+      setTimeout(() => root.classList.remove("theme-transitioning"), 400);
       try {
         localStorage.setItem(storageKey, next);
       } catch {
@@ -118,11 +122,15 @@ export function ThemeProvider({
       }
       setPreference(next);
     },
-    [storageKey]
+    [storageKey, preference]
   );
 
   const toggleTheme = useCallback(() => {
-    setTheme(astraTheme === "astra-black-gold" ? "astra-pearl-white" : "astra-black-gold");
+    setTheme(
+      astraTheme === "astra-black-gold"
+        ? "astra-pearl-white"
+        : "astra-black-gold"
+    );
   }, [astraTheme, setTheme]);
 
   return (
