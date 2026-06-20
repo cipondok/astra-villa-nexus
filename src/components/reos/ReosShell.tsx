@@ -179,7 +179,7 @@ export function ReosHeader() {
 
   return (
     <>
-      <header className="reos-shell-header sticky top-0 z-40 backdrop-blur-xl bg-[var(--bg)]/80 border-b border-[var(--line)] shadow-[var(--shadow-luxe)]">
+      <header className="reos-shell-header sticky top-0 z-40 bg-[var(--bg)] border-b border-[var(--line)] shadow-[var(--shadow-luxe)]">
         <div className="mx-auto max-w-[1600px] px-4 md:px-6 h-full flex items-center gap-3 md:gap-6">
           <button
             type="button"
@@ -394,7 +394,7 @@ export function ReosHeader() {
           </div>
         </div>
 
-        <div className="border-t border-[var(--line)]">
+        <div className="border-t border-[var(--line)] bg-[var(--bg)]">
           <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-8 overflow-x-auto reos-scrollbar">
             {topTabs.map(tab => {
               const active = isActive(tab.to);
