@@ -2430,17 +2430,17 @@ html, body {
   animation: none !important;
 }
 
-/* ═══ Glossy Titanium Button (Light Blue, theme-aware) ═══ */
+/* ═══ Glossy Titanium Button (theme-aware) ═══ */
 :root {
-  --titanium-grad: linear-gradient(135deg, #f5fbff 0%, #dff0ff 22%, #b8e0ff 48%, #96d0f8 72%, #72baf0 100%);
-  --titanium-grad-hover: linear-gradient(135deg, #ffffff 0%, #eaf6ff 22%, #c8eaff 48%, #a8dafb 72%, #84c8f5 100%);
-  --titanium-text: #0a4a7a;
-  --titanium-border: rgba(255,255,255,0.85);
-  --titanium-shadow: 0 6px 18px -6px rgba(90,170,230,0.45), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,60,120,0.06);
-  --titanium-icon-bg: linear-gradient(135deg, #ffffff 0%, #e8f5ff 55%, #bce0ff 100%);
-  --titanium-icon-border: rgba(255,255,255,0.95);
-  --titanium-icon-color: #0a4a7a;
-  --titanium-sheen: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.10) 45%, rgba(255,255,255,0) 60%);
+  --titanium-grad: linear-gradient(135deg, #2563a8 0%, #3480c2 25%, #4295d0 50%, #52a8db 75%, #64b8e4 100%);
+  --titanium-grad-hover: linear-gradient(135deg, #2e72b8 0%, #3e8fd2 25%, #4ca4e0 50%, #5cb7eb 75%, #6ec7f4 100%);
+  --titanium-text: #ffffff;
+  --titanium-border: rgba(255,255,255,0.45);
+  --titanium-shadow: 0 6px 18px -6px rgba(30,100,170,0.55), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,40,80,0.25);
+  --titanium-icon-bg: linear-gradient(135deg, #64b8e4 0%, #4295d0 60%, #2563a8 100%);
+  --titanium-icon-border: rgba(255,255,255,0.5);
+  --titanium-icon-color: #ffffff;
+  --titanium-sheen: linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.06) 45%, rgba(255,255,255,0) 60%);
 }
 .dark {
   --titanium-grad: linear-gradient(135deg, #1d3a55 0%, #2a5878 30%, #3a7aa3 60%, #4a93c2 85%, #5aa8d6 100%);
