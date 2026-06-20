@@ -250,6 +250,9 @@ const GlobalMacroIntelligencePage = lazy(() => import('@/pages/GlobalMacroIntell
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
+const Careers = lazy(() => import('@/pages/Careers'));
+const Press = lazy(() => import('@/pages/Press'));
+const Blog = lazy(() => import('@/pages/Blog'));
 const WNIPage = lazy(() => import('@/pages/investor/WNIPage'));
 const WNAPage = lazy(() => import('@/pages/investor/WNAPage'));
 const VerificationCenter = lazy(() => import('@/pages/VerificationCenter'));
