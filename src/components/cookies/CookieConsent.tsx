@@ -59,6 +59,8 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
 
   const handleAcceptAll = () => {
     setIsClosing(true);
+    saveCookiePrefs(allAcceptedPrefs);
+    setPreferences(allAcceptedPrefs);
     setTimeout(() => {
       onAccept();
       setIsClosing(false);
@@ -67,6 +69,8 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
 
   const handleReject = () => {
     setIsClosing(true);
+    saveCookiePrefs(defaultCookiePrefs);
+    setPreferences(defaultCookiePrefs);
     setTimeout(() => {
       onReject();
       setIsClosing(false);
@@ -75,8 +79,11 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
 
   const handleSavePreferences = () => {
     setIsClosing(true);
+    saveCookiePrefs(preferences);
     setTimeout(() => {
-      onAccept();
+      // Treat any non-essential opt-in as overall consent acceptance
+      if (preferences.analytics || preferences.marketing) onAccept();
+      else onReject();
       setShowCustomize(false);
       setIsClosing(false);
     }, 300);
