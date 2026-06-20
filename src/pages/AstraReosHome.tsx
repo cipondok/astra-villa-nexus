@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Search, Bell, Globe, Heart, Sparkles, ChevronDown, ChevronRight,
