@@ -198,4 +198,31 @@
     <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/calculators/area?lang=id" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/calculators/area" />
   </url>
+  <url>
+    <loc>https://astravilla.com/cookies?lang=id</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/cookies?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/cookies?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/cookies" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/compliance?lang=id</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/compliance?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/compliance?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/compliance" />
+  </url>
+  <url>
+    <loc>https://astravilla.com/cookie-preferences?lang=id</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://astravilla.com/cookie-preferences?lang=en" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://astravilla.com/cookie-preferences?lang=id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://astravilla.com/cookie-preferences" />
+  </url>
 </urlset>

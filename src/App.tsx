@@ -744,6 +744,7 @@ const AppContent = () => {
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/cookies" element={<CookiesPage />} />
                 <Route path="/compliance" element={<Compliance />} />
+                <Route path="/cookie-preferences" element={<CookiePreferences />} />
                 <Route path="/support" element={<Contact />} />
                 <Route path="/investor/wni" element={<Navigate to="/investment?section=wni" replace />} />
                 <Route path="/investor/wna" element={<Navigate to="/investment?section=wna" replace />} />
