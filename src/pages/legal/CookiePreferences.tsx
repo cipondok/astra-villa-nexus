@@ -3,35 +3,33 @@ import { SEOHead } from "@/components/SEOHead";
 import { Cookie, ShieldCheck, BarChart3, Megaphone, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
-
-const PREFS_KEY = "astra-villa-cookie-preferences";
-
-type Prefs = { necessary: true; analytics: boolean; marketing: boolean };
-
-const defaultPrefs: Prefs = { necessary: true, analytics: false, marketing: false };
-
-function loadPrefs(): Prefs {
-  try {
-    const raw = localStorage.getItem(PREFS_KEY);
-    if (raw) return { ...defaultPrefs, ...JSON.parse(raw) };
-  } catch {}
-  return defaultPrefs;
-}
+import {
+  allAcceptedPrefs,
+  defaultCookiePrefs,
+  loadCookiePrefs,
+  saveCookiePrefs,
+  subscribeCookiePrefs,
+  type CookiePrefs,
+} from "@/lib/cookiePreferences";
 
 export default function CookiePreferences() {
   const { hasConsented, acceptCookies, rejectCookies, resetConsent } = useCookieConsent();
-  const [prefs, setPrefs] = useState<Prefs>(defaultPrefs);
+  const [prefs, setPrefs] = useState<CookiePrefs>(() => loadCookiePrefs());
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { setPrefs(loadPrefs()); }, []);
+  // Live-sync with the banner / other tabs
+  useEffect(() => subscribeCookiePrefs(setPrefs), []);
 
-  const save = () => {
-    localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
-    if (prefs.analytics || prefs.marketing) acceptCookies();
+  const persist = (next: CookiePrefs) => {
+    setPrefs(next);
+    saveCookiePrefs(next);
+    if (next.analytics || next.marketing) acceptCookies();
     else rejectCookies();
     setSaved(true);
     setTimeout(() => setSaved(false), 2400);
   };
+
+  const save = () => persist(prefs);
 
   const Toggle = ({ icon: Icon, title, desc, value, onChange, disabled }: any) => (
     <div className="reos-card p-4 flex items-start gap-3">
@@ -102,13 +100,13 @@ export default function CookiePreferences() {
             Save preferences
           </button>
           <button
-            onClick={() => { setPrefs({ necessary: true, analytics: true, marketing: true }); }}
+            onClick={() => persist(allAcceptedPrefs)}
             className="text-xs px-4 py-2 rounded-lg border border-[var(--line)] hover:border-[var(--line-strong)]"
           >
             Accept all
           </button>
           <button
-            onClick={() => { setPrefs(defaultPrefs); }}
+            onClick={() => persist(defaultCookiePrefs)}
             className="text-xs px-4 py-2 rounded-lg border border-[var(--line)] hover:border-[var(--line-strong)]"
           >
             Reject all

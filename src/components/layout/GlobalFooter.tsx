@@ -141,6 +141,7 @@ export default function GlobalFooter() {
             <Link to="/terms" className="hover:text-foreground">Terms</Link>
             <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
             <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
+            <Link to="/cookie-preferences" className="hover:text-foreground">Cookie Settings</Link>
           </div>
         </div>
       </div>
