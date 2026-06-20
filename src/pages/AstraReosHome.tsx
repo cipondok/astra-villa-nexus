@@ -440,7 +440,7 @@ export default function AstraReosHome() {
                   <div className="mt-6 md:mt-8 w-full max-w-2xl">
                     <div className="reos-card bg-transparent backdrop-blur-xl border border-[var(--line)]/40 shadow-[var(--shadow-soft)] p-3 md:p-4">
                       <div className="flex flex-wrap items-center gap-2 mb-2.5">
-                        <div className="reos-card-2 p-1 inline-flex gap-1 bg-[var(--surface-2)]/80">
+                        <div className="reos-card-2 p-1 inline-flex gap-1 bg-transparent">
                           {searchTabs.map(t => (
                             <button key={t} onClick={() => setActiveSearchTab(t)}
                               className={`text-[11px] md:text-[12px] px-2.5 md:px-3 h-7 rounded-md transition ${activeSearchTab === t ? "bg-[var(--text)] text-[var(--bg)] font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>
