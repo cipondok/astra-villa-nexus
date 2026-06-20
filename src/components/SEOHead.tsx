@@ -66,17 +66,20 @@ export const SEOHead = ({
     if (noIndex) setMeta('meta[name="robots"]', 'name=robots', 'noindex, nofollow');
     else setMeta('meta[name="robots"]', 'name=robots', 'index, follow');
 
-    // Open Graph
-    setMeta('meta[property="og:title"]', 'property=og:title', fullTitle);
-    setMeta('meta[property="og:description"]', 'property=og:description', description);
+    // Open Graph (allows separate OG title/description from page title)
+    const ogTitleResolved = ogTitle ?? OG_TITLE;
+    const ogDescriptionResolved = ogDescription ?? OG_DESCRIPTION;
+    setMeta('meta[property="og:title"]', 'property=og:title', ogTitleResolved);
+    setMeta('meta[property="og:description"]', 'property=og:description', ogDescriptionResolved);
     setMeta('meta[property="og:type"]', 'property=og:type', ogType);
     setMeta('meta[property="og:image"]', 'property=og:image', ogImage);
     setMeta('meta[property="og:url"]', 'property=og:url', canonical || `${SITE_URL}${window.location.pathname}`);
     setMeta('meta[property="og:site_name"]', 'property=og:site_name', SITE_NAME);
+    setMeta('meta[property="og:locale"]', 'property=og:locale', 'id_ID');
 
     // Twitter Card
-    setMeta('meta[name="twitter:title"]', 'name=twitter:title', fullTitle);
-    setMeta('meta[name="twitter:description"]', 'name=twitter:description', description);
+    setMeta('meta[name="twitter:title"]', 'name=twitter:title', ogTitleResolved);
+    setMeta('meta[name="twitter:description"]', 'name=twitter:description', ogDescriptionResolved);
     setMeta('meta[name="twitter:image"]', 'name=twitter:image', ogImage);
     setMeta('meta[name="twitter:card"]', 'name=twitter:card', 'summary_large_image');
 
