@@ -512,6 +512,63 @@ export default function AstraReosHome() {
               ))}
             </Section>
 
+            {/* ===== STICKY AI SEARCH BAR (moved out of hero) ===== */}
+            <motion.div
+              variants={fadeUp}
+              className="sticky top-[calc(var(--reos-header-h,56px)+8px)] z-20 -mx-2 px-2 py-2"
+            >
+              <div className="reos-card bg-[var(--surface)]/85 backdrop-blur-xl border border-[var(--line-strong)] shadow-[var(--shadow-soft)] p-3 md:p-4">
+                <div className="flex flex-wrap items-center gap-2 mb-2.5">
+                  <div className="reos-card-2 p-1 inline-flex gap-1 bg-[var(--surface-2)]/80">
+                    {searchTabs.map(t => (
+                      <button key={t} onClick={() => setActiveSearchTab(t)}
+                        className={`text-[12px] px-3 h-7 rounded-md transition ${activeSearchTab === t ? "bg-[var(--text)] text-[var(--bg)] font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="hidden md:flex items-center gap-1.5 ml-auto text-[10px] uppercase tracking-[0.2em] text-[var(--text-3)]">
+                    <Sparkles className="h-3 w-3 reos-gold" /> AI-Powered Property Search
+                  </div>
+                </div>
+                <div className="reos-card-2 bg-[var(--surface)]/95 backdrop-blur p-1.5 flex items-center gap-2">
+                  <Search className="h-4 w-4 text-[var(--text-2)] ml-2" />
+                  <input
+                    value={aiQuery}
+                    onChange={(e) => setAiQuery(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") submitAi(); }}
+                    placeholder="Search properties, locations, ROI, developers, laws…"
+                    className="flex-1 bg-transparent outline-none text-sm placeholder:text-[var(--text-2)] py-2 min-w-0"
+                  />
+                  <button onClick={submitAi} disabled={aiLoading} className="btn-titanium h-9 pl-1.5 pr-3.5 rounded-lg text-xs inline-flex items-center gap-1.5 font-semibold disabled:opacity-60 shrink-0">
+                    <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-md shrink-0">
+                      {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+                    </span>
+                    <span className="relative">AI Search</span>
+                  </button>
+                </div>
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {locationChips.map(c => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => navigate(`/search?q=${encodeURIComponent(`Properties in ${c}`)}`)}
+                      className="btn-titanium text-[11px] px-3 py-1 rounded-full font-semibold"
+                    >
+                      {c}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => navigate("/search-advanced")}
+                    className="btn-titanium text-[11px] px-3 py-1 rounded-full font-semibold inline-flex items-center gap-1"
+                  >
+                    More <ChevronDown className="h-3 w-3" />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+
             {/* ===== FEATURED + HOTSPOTS + AI RECS ===== */}
             <div className="grid grid-cols-12 gap-5">
               {/* Featured Properties */}
