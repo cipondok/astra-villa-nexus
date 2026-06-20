@@ -82,6 +82,7 @@ export function ThemeProvider({
   const astraTheme: AstraTheme =
     normalized === "system" ? resolveSystem() : normalized;
   const theme: Theme = astraTheme === "astra-black-gold" ? "dark" : "light";
+  const initialMountRef = useRef(true);
 
   // Apply the resolved theme to <html>
   useEffect(() => {
@@ -96,6 +97,24 @@ export function ThemeProvider({
       root.setAttribute("data-theme", "astra-pearl-white");
     }
 
+    // Initial-load motion flash: only on first mount when a saved theme is being restored
+    if (initialMountRef.current) {
+      initialMountRef.current = false;
+      const saved = localStorage.getItem(storageKey);
+      // Only flash if there was a saved preference (not first-time default)
+      if (saved) {
+        root.classList.add("theme-transitioning");
+        const flash = document.createElement("div");
+        flash.id = "theme-motion-flash";
+        flash.className = "theme-motion-flash";
+        document.body.appendChild(flash);
+        setTimeout(() => {
+          root.classList.remove("theme-transitioning");
+          flash.remove();
+        }, 300);
+      }
+    }
+
     // Follow OS only when preference is 'system'
     if (normalized !== "system") return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -107,7 +126,7 @@ export function ThemeProvider({
     };
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
-  }, [astraTheme, normalized]);
+  }, [astraTheme, normalized, storageKey]);
 
   const setTheme = useCallback(
     (next: ThemePreference) => {
