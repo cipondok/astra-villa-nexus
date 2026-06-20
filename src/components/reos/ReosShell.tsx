@@ -179,7 +179,7 @@ export function ReosHeader() {
 
   return (
     <>
-      <header className="reos-shell-header sticky top-0 z-40 bg-[var(--bg)] border-b border-[var(--line)] shadow-[var(--shadow-luxe)]">
+      <header className={`reos-shell-header sticky top-0 z-40 bg-[var(--bg)] border-b border-[var(--line)] transition-shadow duration-300 ${scrolled ? "shadow-[0_8px_32px_rgba(0,0,0,0.35)]" : "shadow-[var(--shadow-luxe)]"}`}>
         <div className="mx-auto max-w-[1600px] px-4 md:px-6 h-full flex items-center gap-3 md:gap-6">
           <button
             type="button"
