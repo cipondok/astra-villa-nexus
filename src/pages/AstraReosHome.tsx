@@ -452,18 +452,27 @@ export default function AstraReosHome() {
                           <Sparkles className="h-3 w-3 reos-gold" /> AI-Powered Property Search
                         </div>
                       </div>
-                      <div className="reos-card-2 bg-transparent backdrop-blur p-1.5 flex items-center gap-2">
-                        <Search className="h-4 w-4 text-[var(--text-2)] ml-2" />
+                      <div className="relative flex items-center gap-2 bg-[var(--surface)]/50 backdrop-blur-md border border-[var(--line)]/30 rounded-full px-1.5 h-11">
+                        <Search className="h-4 w-4 text-[var(--text-2)] ml-3 shrink-0" />
                         <input
                           value={aiQuery}
                           onChange={(e) => setAiQuery(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === "Enter") submitAi(); }}
+                          onKeyDown={(e) => { if (e.key === "Enter") runSearch(); }}
                           placeholder="Search properties, locations, ROI, developers, laws…"
-                          className="flex-1 bg-transparent outline-none text-sm placeholder:text-[var(--text-2)] py-2 min-w-0"
+                          className="flex-1 bg-transparent outline-none text-sm placeholder:text-[var(--text-2)] min-w-0"
                         />
-                        <button onClick={submitAi} disabled={aiLoading} className="btn-titanium h-9 pl-1.5 pr-3.5 rounded-lg text-xs inline-flex items-center gap-1.5 font-semibold disabled:opacity-60 shrink-0">
-                          <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-md shrink-0">
-                            {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+                        {aiQuery && (
+                          <button
+                            type="button"
+                            onClick={() => setAiQuery("")}
+                            className="shrink-0 p-1 rounded-full hover:bg-[var(--surface-2)] text-[var(--text-3)] transition"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                        <button onClick={submitAi} disabled={aiLoading} className="btn-titanium h-8 pl-1.5 pr-3 rounded-full text-[11px] inline-flex items-center gap-1.5 font-semibold disabled:opacity-60 shrink-0">
+                          <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0">
+                            {aiLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
                           </span>
                           <span className="relative">AI Search</span>
                         </button>
