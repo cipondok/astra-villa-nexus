@@ -180,6 +180,7 @@ const Profile = lazy(() => import('@/pages/Profile'));
 const ProfileEditPage = lazy(() => import('@/pages/ProfileEditPage'));
 const Settings = lazy(() => import('@/pages/Settings'));
 const DesignSystemSettings = lazy(() => import('@/pages/admin/DesignSystemSettings'));
+const AdminSEOSettings = lazy(() => import('@/pages/admin/SEOSettings'));
 const AstraSupportDashboard = lazy(() => import('@/pages/admin/AstraSupportDashboard'));
 const AstraSupportAnalytics = lazy(() => import('@/pages/admin/AstraSupportAnalytics'));
 const Services = lazy(() => import('@/pages/Services'));
@@ -552,6 +553,8 @@ const AppContent = () => {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/admin/design-system" element={<DesignSystemSettings />} />
                 <Route path="/admin/style-settings" element={<DesignSystemSettings />} />
+                <Route path="/admin/seo" element={<AdminSEOSettings />} />
+                <Route path="/admin/seo-settings" element={<AdminSEOSettings />} />
                 <Route element={<AdminOnlyRoute />}>
                   <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
                   <Route path="/admin/listing-review" element={<AdminListingReview />} />
