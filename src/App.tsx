@@ -257,6 +257,7 @@ const Terms = lazy(() => import('@/pages/legal/Terms'));
 const Privacy = lazy(() => import('@/pages/legal/Privacy'));
 const CookiesPage = lazy(() => import('@/pages/legal/Cookies'));
 const Compliance = lazy(() => import('@/pages/legal/Compliance'));
+const CookiePreferences = lazy(() => import('@/pages/legal/CookiePreferences'));
 const WNIPage = lazy(() => import('@/pages/investor/WNIPage'));
 const WNAPage = lazy(() => import('@/pages/investor/WNAPage'));
 const VerificationCenter = lazy(() => import('@/pages/VerificationCenter'));
