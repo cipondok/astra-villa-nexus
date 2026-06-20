@@ -12,6 +12,7 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/ui/PageTransition';
 import { Loader2 } from 'lucide-react';
+import { AstraInlineLoader } from '@/components/loaders/AstraLoaders';
 
 import { PropertyComparisonProvider } from '@/contexts/PropertyComparisonContext';
 import { Toaster } from '@/components/ui/toaster';
