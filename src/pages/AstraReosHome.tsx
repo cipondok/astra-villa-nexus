@@ -539,25 +539,11 @@ export default function AstraReosHome() {
                   <div className="mt-6 md:mt-8 w-full max-w-2xl">
                     <div className="reos-card bg-transparent backdrop-blur-xl border border-[var(--line)]/40 shadow-[var(--shadow-soft)] p-3 md:p-4">
                       <div className="flex flex-wrap items-center gap-2 mb-2.5">
-                        <div className="relative inline-flex rounded-full p-1 bg-[var(--surface-2)]/50 backdrop-blur-md border border-[var(--line)]/25">
-                          {searchTabs.map((t) => (
-                            <button
-                              key={t}
-                              onClick={() => setActiveSearchTab(t)}
-                              className={`relative z-10 text-[11px] md:text-[12px] px-3 md:px-3.5 h-7 rounded-full transition-colors duration-200 ${activeSearchTab === t ? "text-[var(--text)] font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
-                            >
-                              {t}
-                            </button>
-                          ))}
-                          <motion.div
-                            className="absolute top-1 bottom-1 rounded-full bg-[var(--surface)] shadow-md"
-                            animate={{
-                              left: `${(searchTabs.indexOf(activeSearchTab) / searchTabs.length) * 100}%`,
-                              width: `${100 / searchTabs.length}%`,
-                            }}
-                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                          />
-                        </div>
+                        <SegmentedSearchTabs
+                          tabs={searchTabs}
+                          value={activeSearchTab}
+                          onChange={setActiveSearchTab}
+                        />
                         <div className="hidden md:flex items-center gap-1.5 ml-auto text-[10px] uppercase tracking-[0.2em] text-[var(--text-3)]">
                           <Sparkles className="h-3 w-3 reos-gold" /> AI-Powered Property Search
                         </div>
