@@ -4,6 +4,7 @@ import { Save, Search } from "lucide-react";
 import SEOSettingsHub from "@/components/admin/settings/SEOSettingsHub";
 import { useSystemSettings } from "@/hooks/useSystemSettings";
 import SitemapRegenerator from "@/components/admin/settings/SitemapRegenerator";
+import SitemapSchedule from "@/components/admin/settings/SitemapSchedule";
 
 export default function SEOSettings() {
   const { settings, loading, saveSettings, handleInputChange } = useSystemSettings();
@@ -41,6 +42,7 @@ export default function SEOSettings() {
         onSave={saveSettings}
       />
 
+      <SitemapSchedule />
       <SitemapRegenerator />
     </div>
   );
