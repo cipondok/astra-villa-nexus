@@ -43,6 +43,9 @@ export const reosTokens = `
     --gold-fg: #161208;
     --promo-gradient: linear-gradient(180deg, #1a1408, #0e0a04);
     --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%);
+    --shadow-soft: 0 8px 32px rgba(0,0,0,0.35);
+    --shadow-lift: 0 4px 16px rgba(0,0,0,0.25);
+    --shadow-popover: 0 25px 50px -12px rgba(0,0,0,0.5);
     color: var(--text);
     background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
@@ -65,6 +68,9 @@ export const reosTokens = `
     --success: #22C55E;
     --danger: #EF4444;
     --gold-fg: #111827;
+    --shadow-soft: 0 8px 30px rgba(0,0,0,0.06);
+    --shadow-lift: 0 4px 14px rgba(0,0,0,0.05);
+    --shadow-popover: 0 20px 40px -12px rgba(0,0,0,0.08);
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
@@ -186,7 +192,7 @@ export function ReosHeader() {
 
   return (
     <>
-      <header className={`reos-shell-header sticky top-0 z-40 bg-[var(--bg)] border-b border-[var(--line)] transition-shadow duration-300 ${scrolled ? "shadow-[0_8px_32px_rgba(0,0,0,0.35)]" : "shadow-[var(--shadow-luxe)]"}`}>
+      <header className={`reos-shell-header sticky top-0 z-40 bg-[var(--bg)] border-b border-[var(--line)] transition-shadow duration-300 ${scrolled ? "shadow-[var(--shadow-soft)]" : "shadow-[var(--shadow-lift)]"}`}>
         <div className="mx-auto max-w-[1600px] px-4 md:px-6 h-full flex items-center gap-3 md:gap-6">
           <button
             type="button"
@@ -237,7 +243,7 @@ export function ReosHeader() {
                 <Globe className="h-4 w-4" /> {language.toUpperCase()} <ChevronDown className="h-3 w-3" />
               </button>
               {langOpen && (
-                <div role="menu" className="absolute right-0 mt-2 w-56 reos-card p-1 z-50 shadow-2xl">
+                <div role="menu" className="absolute right-0 mt-2 w-56 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
                   <div className="px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)]">Language</div>
                   {languages.map(l => (
                     <button
@@ -281,7 +287,7 @@ export function ReosHeader() {
                 )}
               </button>
               {notifOpen && (
-                <div role="menu" className="absolute right-0 mt-2 w-[340px] reos-card p-0 z-50 shadow-2xl overflow-hidden">
+                <div role="menu" className="absolute right-0 mt-2 w-[340px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
                     <div className="text-[12.5px] font-semibold text-[var(--text)]">Notifications</div>
                     <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{unreadCount} new</span>
@@ -330,7 +336,7 @@ export function ReosHeader() {
                 )}
               </button>
               {savedOpen && (
-                <div role="menu" className="absolute right-0 mt-2 w-[320px] reos-card p-0 z-50 shadow-2xl overflow-hidden">
+                <div role="menu" className="absolute right-0 mt-2 w-[320px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
                     <div className="text-[12.5px] font-semibold text-[var(--text)]">Saved</div>
                     <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{savedCount} items</span>
@@ -380,7 +386,7 @@ export function ReosHeader() {
                   <ChevronDown className="h-3 w-3 text-[var(--text-2)]" />
                 </button>
                 {profileOpen && (
-                  <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-2xl">
+                  <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
                     <button type="button" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> Dashboard</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> My Profile</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> Wallet</button>
