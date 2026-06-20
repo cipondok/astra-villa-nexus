@@ -43,6 +43,8 @@ export const reosTokens = `
     --gold-fg: #161208;
     --promo-gradient: linear-gradient(180deg, #1a1408, #0e0a04);
     --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%);
+    --shadow-soft: 0 8px 32px rgba(0,0,0,0.35);
+    --shadow-lift: 0 4px 16px rgba(0,0,0,0.25);
     color: var(--text);
     background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
@@ -65,6 +67,8 @@ export const reosTokens = `
     --success: #22C55E;
     --danger: #EF4444;
     --gold-fg: #111827;
+    --shadow-soft: 0 8px 30px rgba(0,0,0,0.06);
+    --shadow-lift: 0 4px 14px rgba(0,0,0,0.05);
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
