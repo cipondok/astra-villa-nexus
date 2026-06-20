@@ -78,10 +78,10 @@ const tokens = `
     --promo-gradient: linear-gradient(180deg, #FFFFFF 0%, #FCFCFC 50%, #F7F5F0 100%);
     --promo-gradient-diag: linear-gradient(135deg, #FFFFFF 0%, #FCFCFC 50%, #F7F5F0 100%);
     --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(212,175,55,0.12), transparent 70%), #FFFFFF;
-    /* Keep hero overlay dark so white hero text stays readable on imagery */
-    --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.82) 0%, rgba(11,11,12,0.48) 55%, rgba(11,11,12,0.12) 100%);
-    --hero-text: #FFFFFF;
-    --hero-text-2: #E8E2D2;
+    /* Light mode: warm ivory overlay so the image shows through with dark text for contrast */
+    --hero-overlay: linear-gradient(110deg, rgba(247,245,240,0.92) 0%, rgba(247,245,240,0.55) 55%, rgba(247,245,240,0.15) 100%);
+    --hero-text: #1a1a1a;
+    --hero-text-2: #4B5563;
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
