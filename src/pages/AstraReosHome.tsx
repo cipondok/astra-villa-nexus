@@ -230,11 +230,12 @@ function SegmentedSearchTabs({
           dragElastic={0.12}
           dragMomentum={false}
           onDragStart={() => { draggingRef.current = true; }}
-          onDrag={(_, info) => {
-            const idx = Math.round(Math.min(maxX, Math.max(0, info.point.x - (containerRef.current?.getBoundingClientRect().left ?? 0) - 4 - segWidth / 2 + segWidth / 2)) / segWidth);
-            // soft live update of active label color
-            const clamped = Math.min(tabs.length - 1, Math.max(0, idx));
-            if (tabs[clamped] !== value) onChange(tabs[clamped]);
+          onDrag={() => {
+            const idx = Math.min(
+              tabs.length - 1,
+              Math.max(0, Math.round(x.get() / segWidth))
+            );
+            if (tabs[idx] !== value) onChange(tabs[idx]);
           }}
           onDragEnd={() => {
             draggingRef.current = false;
