@@ -185,7 +185,7 @@ function SegmentedSearchTabs({
   const containerRef = useRef<HTMLDivElement>(null);
   const [segWidth, setSegWidth] = useState(0);
   const x = useMotionValue(0);
-  const draggingRef = useRef(false);
+  const isDragging = useRef(false);
 
   const activeIndex = Math.max(0, tabs.indexOf(value));
 
@@ -193,7 +193,7 @@ function SegmentedSearchTabs({
     const el = containerRef.current;
     if (!el) return;
     const measure = () => {
-      const inner = el.clientWidth - 8; // subtract p-1 padding (4px each side)
+      const inner = el.clientWidth - 8;
       setSegWidth(inner / tabs.length);
     };
     measure();
@@ -203,7 +203,7 @@ function SegmentedSearchTabs({
   }, [tabs.length]);
 
   useEffect(() => {
-    if (draggingRef.current) return;
+    if (isDragging.current) return;
     const controls = animate(x, activeIndex * segWidth, {
       type: "spring",
       stiffness: 500,
@@ -212,52 +212,71 @@ function SegmentedSearchTabs({
     return () => controls.stop();
   }, [activeIndex, segWidth, x]);
 
-  const maxX = Math.max(0, segWidth * (tabs.length - 1));
+  const handlePointerDown = (e: React.PointerEvent) => {
+    const el = containerRef.current;
+    if (!el || segWidth <= 0) return;
+    const rect = el.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left - 4; // account for left padding
+    const idx = Math.min(tabs.length - 1, Math.max(0, Math.round(offsetX / segWidth)));
+
+    isDragging.current = true;
+    const startX = e.clientX;
+    const startIdx = idx;
+
+    const handleMove = (ev: PointerEvent) => {
+      const dx = ev.clientX - startX;
+      const currentX = startIdx * segWidth + dx;
+      const clamped = Math.min(Math.max(currentX, 0), segWidth * (tabs.length - 1));
+      x.set(clamped);
+    };
+
+    const handleUp = (ev: PointerEvent) => {
+      document.removeEventListener("pointermove", handleMove);
+      document.removeEventListener("pointerup", handleUp);
+      const finalOffset = ev.clientX - rect.left - 4;
+      const finalIdx = Math.min(tabs.length - 1, Math.max(0, Math.round(finalOffset / segWidth)));
+      onChange(tabs[finalIdx]);
+      animate(x, finalIdx * segWidth, { type: "spring", stiffness: 500, damping: 35 });
+      setTimeout(() => { isDragging.current = false; }, 50);
+    };
+
+    document.addEventListener("pointermove", handleMove);
+    document.addEventListener("pointerup", handleUp);
+  };
 
   return (
     <div
       ref={containerRef}
-      className="relative inline-flex rounded-full p-1 bg-[var(--surface-2)]/80 backdrop-blur-md border border-[var(--line)]/40 touch-none select-none"
+      onPointerDown={handlePointerDown}
+      className="relative inline-flex rounded-full p-1 bg-[var(--surface)]/60 backdrop-blur-md border border-[var(--line)]/50 touch-none select-none cursor-pointer"
     >
       {/* Sliding pill */}
       {segWidth > 0 && (
         <motion.div
-          className="absolute top-1 bottom-1 rounded-full bg-[var(--surface)] border border-[var(--line)]/60 shadow-[0_2px_8px_rgba(0,0,0,0.15)] cursor-grab active:cursor-grabbing z-0"
+          className="absolute top-1 bottom-1 rounded-full bg-[var(--gold)] z-0"
           style={{
             left: 4,
             width: segWidth,
             x,
-            touchAction: "none",
           }}
-          drag="x"
-          dragConstraints={{ left: 0, right: maxX }}
-          dragElastic={0.05}
-          dragMomentum={false}
-          onDragStart={() => { draggingRef.current = true; }}
-          onDragEnd={() => {
-            draggingRef.current = false;
-            const idx = Math.min(
-              tabs.length - 1,
-              Math.max(0, Math.round(x.get() / segWidth))
-            );
-            onChange(tabs[idx]);
-            animate(x, idx * segWidth, { type: "spring", stiffness: 500, damping: 35 });
-          }}
+          transition={{ type: "spring", stiffness: 500, damping: 35 }}
         />
       )}
 
-      {tabs.map((t, i) => (
+      {tabs.map((t) => (
         <button
           key={t}
           type="button"
           onClick={() => {
+            if (isDragging.current) return;
             onChange(t);
-            animate(x, i * segWidth, { type: "spring", stiffness: 500, damping: 35 });
+            const idx = tabs.indexOf(t);
+            animate(x, idx * segWidth, { type: "spring", stiffness: 500, damping: 35 });
           }}
           style={{ width: segWidth || undefined }}
-          className={`relative z-10 text-[11px] md:text-[12px] h-7 rounded-full transition-colors duration-150 font-medium ${
+          className={`relative z-10 text-[11px] md:text-[12px] h-7 rounded-full transition-colors duration-150 font-semibold ${
             value === t
-              ? "text-[var(--text)]"
+              ? "text-[var(--gold-fg)]"
               : "text-[var(--text-2)] hover:text-[var(--text)]"
           }`}
         >
