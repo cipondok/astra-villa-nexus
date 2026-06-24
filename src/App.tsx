@@ -23,6 +23,7 @@ import AdminOnlyRoute from '@/components/AdminOnlyRoute';
 import { DesignSystemProvider } from '@/components/DesignSystemProvider';
 import PageShell from '@/components/layout/PageShell';
 import CookieSystem from '@/components/cookies/CookieSystem';
+import { DynamicBrandingSync } from '@/components/branding/DynamicBrandingSync';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
@@ -953,6 +954,7 @@ function App() {
                     <NotificationProvider>
                       <DataSaverProvider>
                       <PropertyComparisonProvider>
+                        <DynamicBrandingSync />
                         <AppContent />
                         <Suspense fallback={null}>
                           {React.createElement(lazy(() => import('@/components/property/PropertyComparisonPanel')))}
