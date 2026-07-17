@@ -765,17 +765,30 @@ function Metric({
     ember: "var(--luxe-ember)",
     cyan: "var(--luxe-cyan)",
   }[tint || "gold"];
+  // Extract numeric progress for visual bar (0-100 clamp)
+  const numeric = parseFloat(value);
+  const pct = isFinite(numeric) ? Math.min(100, Math.max(0, numeric)) : 0;
   return (
     <LuxeCard variant="glass" radius="md" glow className="p-5">
-      <Icon className="h-4 w-4" style={{ color }} />
+      <div className="flex items-center justify-between">
+        <Icon className="h-4 w-4" style={{ color }} />
+        <span className="text-[9px] uppercase tracking-[0.22em] text-luxe-mut">AI</span>
+      </div>
       <div className="mt-4 flex items-baseline gap-1">
         <div className="font-serif-l text-[30px] leading-none">{value}</div>
         {unit && <div className="text-[11px] text-luxe-mut">{unit}</div>}
       </div>
       <div className="text-[10px] uppercase tracking-[0.22em] text-luxe-mut mt-2">{label}</div>
+      <div className="mt-4 h-[3px] w-full rounded-full bg-white/6 overflow-hidden">
+        <div
+          className="h-full rounded-full transition-[width] duration-1000 ease-out"
+          style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${color}, ${color}66)` }}
+        />
+      </div>
     </LuxeCard>
   );
 }
+
 
 function BookingField({
   label, icon: Icon, children,
