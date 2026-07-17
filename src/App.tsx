@@ -319,6 +319,7 @@ const InvestmentAssistantPage = lazy(() => import('@/pages/InvestmentAssistantPa
 const InvestmentAdvisorPage = lazy(() => import('@/pages/InvestmentAdvisorPage'));
 const AIInvestmentAdvisorChat = lazy(() => import('@/pages/AIInvestmentAdvisorChat'));
 const AISearchAssistantPage = lazy(() => import('@/pages/AISearchAssistantPage'));
+const AICenter = lazy(() => import('@/pages/AICenter'));
 const InvestmentLeaderboardPage = lazy(() => import('@/pages/InvestmentLeaderboardPage'));
 const VisualSearchPage = lazy(() => import('@/pages/VisualSearchPage'));
 const ListingPredictorPage = lazy(() => import('@/pages/ListingPredictorPage'));
@@ -790,6 +791,8 @@ const AppContent = () => {
                   <Route index element={<InvestorAlertsPage />} />
                 </Route>
                 <Route path="/ai-search" element={<AISearchAssistantPage />} />
+                <Route path="/ai-center" element={<AICenter />} />
+                <Route path="/ai-tools" element={<Navigate to="/ai-center" replace />} />
                 <Route path="/investment-leaderboard" element={<InvestmentLeaderboardPage />} />
                 <Route path="/price-drop-deals" element={<PriceDropDealsPage />} />
                 <Route path="/my-offers" element={<ProtectedRoute />}>
