@@ -208,7 +208,7 @@ export function AdminSidebar({
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Flyout backdrop (all breakpoints) */}
       {openCategory && (
         <div
           className="fixed inset-0 bg-black/30 z-[9998] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:duration-200"
@@ -217,14 +217,29 @@ export function AdminSidebar({
         />
       )}
 
+      {/* Mobile drawer overlay (below lg only) */}
+      <div
+        className={cn(
+          "fixed inset-0 z-[9997] bg-black/50 lg:hidden",
+          "motion-safe:transition-opacity motion-safe:duration-300 motion-reduce:transition-none",
+          mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}
+        onClick={() => onMobileClose?.()}
+        aria-hidden="true"
+      />
+
       <nav
         ref={sidebarRef}
         data-admin-sidebar
         className={cn(
           "fixed top-0 left-0 h-screen z-[9999] flex",
-          "motion-safe:transition-[width] motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none"
+          // Slide the drawer off-screen below `lg` when it is closed.
+          "motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          "lg:translate-x-0"
         )}
         aria-label="Admin navigation"
+        aria-hidden={!mobileOpen ? undefined : undefined}
       >
         {/* Main sidebar column */}
         <div className={cn(
@@ -239,14 +254,29 @@ export function AdminSidebar({
             </div>
             <span
               className={cn(
-                "ml-2.5 font-semibold text-sm text-sidebar-foreground tracking-tight whitespace-nowrap",
+                "ml-2.5 font-semibold text-sm text-sidebar-foreground tracking-tight whitespace-nowrap flex-1",
                 "motion-safe:transition-opacity motion-safe:duration-200 motion-reduce:transition-none",
-                showLabels ? "opacity-100" : "opacity-0 pointer-events-none"
+                // On mobile the drawer is always expanded; hide the label only
+                // at `lg` and up when the desktop rail is collapsed.
+                showLabels ? "opacity-100" : "opacity-100 lg:opacity-0 lg:pointer-events-none"
               )}
               aria-hidden={!showLabels}
             >
               ASTRA
             </span>
+            {/* Mobile close button */}
+            <button
+              type="button"
+              onClick={() => onMobileClose?.()}
+              aria-label="Close navigation"
+              className={cn(
+                "lg:hidden ml-auto w-8 h-8 rounded-md flex items-center justify-center",
+                "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              )}
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
           </div>
 
           {/* Nav items */}
