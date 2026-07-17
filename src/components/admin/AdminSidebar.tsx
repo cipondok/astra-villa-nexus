@@ -100,7 +100,9 @@ export function AdminSidebar({
     onSectionChange(key);
     // Selecting an item closes the flyout, focus returns to opener naturally on next tab.
     setOpenCategory(null);
-  }, [onSectionChange]);
+    // Also close the mobile drawer if it is open.
+    onMobileClose?.();
+  }, [onSectionChange, onMobileClose]);
 
   useEffect(() => { setFlyoutQuery(''); menuItemRefs.current = []; }, [openCategory]);
 
