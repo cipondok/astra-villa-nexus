@@ -4,58 +4,66 @@
    Default = LIGHT (warm editorial). `.dark` on <html> = DARK.
    ============================================================ */
 
-:root {
-  /* ---- LIGHT THEME (default) — Resort Sage × Apple Luxury ---- */
-  --luxe-bg:        #F5F0E8;   /* Ivory */
-  --luxe-bg-2:      #DCE5D4;   /* Sage Mist */
-  --luxe-bg-3:      #EDE7DC;   /* Champagne */
-  --luxe-surface:   #FFFFFF;   /* Card surface, pure paper */
+/* ============================================================
+   Luxe tokens are now ALIASES onto the official ASTRA design
+   system (see :root / :root.dark in src/index.css).
+   No page-specific colors, typography, radii or shadows —
+   everything resolves to the same tokens the Homepage uses,
+   so Property Detail / Luxe / Locations match the platform.
+   ============================================================ */
 
-  /* Brand (shared, light-tuned) */
-  --luxe-gold:        #D4AF37;
-  --luxe-gold-soft:   #E4C56A;
-  --luxe-gold-deep:   #B8941F;
-  --luxe-emerald:     #7D9B76;   /* Sage Deep — primary accent in light */
-  --luxe-sage:        #7D9B76;
-  --luxe-sage-soft:   #DCE5D4;
-  --luxe-cyan:        #3FA3B8;
-  --luxe-ember:       #C97A3E;
+:root {
+  /* Surfaces (map to astra background / card) */
+  --luxe-bg:        hsl(var(--background));
+  --luxe-bg-2:      hsl(var(--muted));
+  --luxe-bg-3:      hsl(var(--secondary));
+  --luxe-surface:   hsl(var(--card));
+
+  /* Brand — gold accent is astra --primary */
+  --luxe-gold:        hsl(var(--primary));
+  --luxe-gold-soft:   hsl(var(--accent));
+  --luxe-gold-deep:   hsl(var(--primary));
+  --luxe-emerald:     hsl(var(--primary));
+  --luxe-sage:        hsl(var(--primary));
+  --luxe-sage-soft:   hsl(var(--primary) / 0.15);
+  --luxe-cyan:        hsl(var(--primary));
+  --luxe-ember:       hsl(var(--primary));
 
   /* Foreground */
-  --luxe-fg:   #1C1C1C;
-  --luxe-mut:  #5E6660;
-  --luxe-sub:  #5E5A55;
-  --luxe-muted-fg: #7A746D;
-  --luxe-line: rgba(28,28,28,0.10);
+  --luxe-fg:        hsl(var(--foreground));
+  --luxe-mut:       hsl(var(--muted-foreground));
+  --luxe-sub:       hsl(var(--muted-foreground));
+  --luxe-muted-fg:  hsl(var(--muted-foreground));
+  --luxe-line:      hsl(var(--border));
 
-  /* Glass */
-  --luxe-glass:         rgba(255,255,255,0.72);
-  --luxe-glass-strong:  rgba(255,255,255,0.88);
+  /* Glass — derived from card token */
+  --luxe-glass:         hsl(var(--card) / 0.72);
+  --luxe-glass-strong:  hsl(var(--card) / 0.88);
   --luxe-blur:          blur(22px) saturate(150%);
   --luxe-blur-mobile:   blur(14px) saturate(135%);
 
-  /* Page composition */
+  /* Page composition — token-driven, no hardcoded hex */
   --luxe-page-bg:
-    radial-gradient(1200px 700px at 80% -10%, rgba(125,155,118,0.14), transparent 60%),
-    radial-gradient(900px 600px at -10% 30%, rgba(200,169,107,0.12), transparent 60%),
-    linear-gradient(180deg, #F5F0E8 0%, #EDE7DC 50%, #DCE5D4 100%);
-  --luxe-header-scrolled-bg:  rgba(245,240,232,0.82);
-  --luxe-mega-bg:             rgba(255,255,255,0.96);
-  --luxe-dock-bg:             linear-gradient(180deg, rgba(255,255,255,0.88), rgba(245,240,232,0.72));
-  --luxe-mobile-menu-bg:      radial-gradient(70% 60% at 50% 30%, #FFFFFF 0%, #DCE5D4 100%);
-  --luxe-boot-bg:             radial-gradient(60% 50% at 50% 50%, #FFFFFF 0%, #DCE5D4 100%);
-  --luxe-cta-bg:              linear-gradient(135deg, #FFFFFF 0%, #EDE7DC 52%, #DCE5D4 100%);
-  --luxe-hero-vignette:       linear-gradient(180deg, rgba(28,28,28,0.22) 0%, rgba(28,28,28,0.06) 42%, rgba(245,240,232,0.78) 100%);
-  --luxe-hero-floor:          radial-gradient(60% 50% at 50% 90%, rgba(245,240,232,0.82), transparent 70%);
-  --luxe-hero-depth:          linear-gradient(180deg, rgba(125,155,118,0.14) 0%, transparent 30%, transparent 60%, rgba(220,229,212,0.72) 100%);
-  --luxe-gold-btn-fg:         #1C1C1C;
-  --luxe-on-hover-tint:       rgba(28,28,28,0.04);
+    radial-gradient(1200px 700px at 80% -10%, hsl(var(--primary) / 0.10), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, hsl(var(--accent) / 0.08), transparent 60%),
+    hsl(var(--background));
+  --luxe-header-scrolled-bg:  hsl(var(--background) / 0.82);
+  --luxe-mega-bg:             hsl(var(--card) / 0.96);
+  --luxe-dock-bg:             linear-gradient(180deg, hsl(var(--card) / 0.88), hsl(var(--background) / 0.72));
+  --luxe-mobile-menu-bg:      hsl(var(--background));
+  --luxe-boot-bg:             hsl(var(--background));
+  --luxe-cta-bg:              linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%);
+  --luxe-hero-vignette:       linear-gradient(180deg, hsl(var(--foreground) / 0.22) 0%, hsl(var(--foreground) / 0.06) 42%, hsl(var(--background) / 0.78) 100%);
+  --luxe-hero-floor:          radial-gradient(60% 50% at 50% 90%, hsl(var(--background) / 0.82), transparent 70%);
+  --luxe-hero-depth:          linear-gradient(180deg, hsl(var(--primary) / 0.10) 0%, transparent 30%, transparent 60%, hsl(var(--muted) / 0.72) 100%);
+  --luxe-gold-btn-fg:         hsl(var(--primary-foreground));
+  --luxe-on-hover-tint:       hsl(var(--foreground) / 0.04);
 
-  /* Typography */
-  --luxe-serif: 'Cormorant Garamond','Playfair Display',ui-serif,Georgia,serif;
-  --luxe-sans:  'Inter','SF Pro Display',ui-sans-serif,system-ui,sans-serif;
-  --luxe-display: 'Sora','Inter',ui-sans-serif,system-ui,sans-serif;
-  --luxe-mono:  ui-monospace,SFMono-Regular,Menlo,monospace;
+  /* Typography — align with platform (no bespoke serif/display) */
+  --luxe-serif:    var(--font-sans, 'Inter','SF Pro Display',ui-sans-serif,system-ui,sans-serif);
+  --luxe-sans:     var(--font-sans, 'Inter','SF Pro Display',ui-sans-serif,system-ui,sans-serif);
+  --luxe-display:  var(--font-sans, 'Inter','SF Pro Display',ui-sans-serif,system-ui,sans-serif);
+  --luxe-mono:     ui-monospace,SFMono-Regular,Menlo,monospace;
 
   /* Motion */
   --luxe-ease:        cubic-bezier(0.22, 1, 0.36, 1);
@@ -64,72 +72,26 @@
   --luxe-dur-slow:    700ms;
   --luxe-dur-cinema:  1200ms;
 
-  /* Shadows — soft editorial depth */
-  --luxe-shadow-card:  0 1px 0 rgba(255,255,255,0.7) inset,
-                       0 2px 6px -2px rgba(50,40,20,0.08),
-                       0 24px 60px -28px rgba(70,55,30,0.22);
-  --luxe-shadow-float: 0 30px 80px -30px rgba(70,55,30,0.30);
-  --luxe-shadow-gold:  0 10px 28px -10px rgba(200,169,107,0.45);
+  /* Shadows — soft, token-driven */
+  --luxe-shadow-card:  var(--shadow-soft, 0 1px 2px hsl(var(--foreground) / 0.04), 0 8px 24px -12px hsl(var(--foreground) / 0.12));
+  --luxe-shadow-float: var(--shadow-lift, 0 24px 60px -28px hsl(var(--foreground) / 0.28));
+  --luxe-shadow-gold:  0 10px 28px -10px hsl(var(--primary) / 0.35);
 
   /* Rhythm */
-  --luxe-gutter:    20px;
-  --luxe-gutter-md: 40px;
-  --luxe-section-y: 96px;
+  --luxe-gutter:    16px;
+  --luxe-gutter-md: 24px;
+  --luxe-section-y: 64px;
 
-  /* Radius */
-  --luxe-radius-sm: 12px;
-  --luxe-radius-md: 20px;
-  --luxe-radius-lg: 28px;
+  /* Radius — inherits astra --radius */
+  --luxe-radius-sm: calc(var(--radius) - 4px);
+  --luxe-radius-md: var(--radius);
+  --luxe-radius-lg: calc(var(--radius) + 6px);
   --luxe-radius-pill: 9999px;
 }
 
+/* Dark mode inherits automatically because every value above is a
+   token reference; the astra :root.dark overrides propagate. */
 
-/* ---- DARK THEME ---- */
-:root.dark {
-  --luxe-bg:        #050505;
-  --luxe-bg-2:      #07090e;
-  --luxe-bg-3:      #0B1220;
-  --luxe-surface:   #0a0a0a;
-
-  --luxe-gold:        #C8A96B;
-  --luxe-gold-soft:   #E7CE96;
-  --luxe-gold-deep:   #8C6B2F;
-  --luxe-emerald:     #4FB286;
-  --luxe-sage:        #4FB286;
-  --luxe-sage-soft:   rgba(79,178,134,0.18);
-  --luxe-cyan:        #7CE7FF;
-  --luxe-ember:       #FFB27A;
-  --luxe-fg:   #ECE9E0;
-  --luxe-mut:  #8A8576;
-  --luxe-sub:  #B7B0A1;
-  --luxe-muted-fg: #8A8576;
-  --luxe-line: rgba(236,233,224,0.08);
-
-  --luxe-line: rgba(236,233,224,0.08);
-
-  --luxe-glass:        rgba(255,255,255,0.04);
-  --luxe-glass-strong: rgba(255,255,255,0.06);
-
-  --luxe-page-bg:
-    radial-gradient(1200px 700px at 80% -10%, rgba(200,169,107,0.10), transparent 60%),
-    radial-gradient(900px 600px at -10% 30%, rgba(79,178,134,0.08), transparent 60%),
-    linear-gradient(180deg, #050505 0%, #07090e 40%, #050709 100%);
-  --luxe-header-scrolled-bg:  rgba(8,8,10,0.72);
-  --luxe-mega-bg:             rgba(8,8,10,0.92);
-  --luxe-dock-bg:             linear-gradient(180deg, rgba(10,10,10,0.72), rgba(10,10,10,0.55));
-  --luxe-mobile-menu-bg:      radial-gradient(70% 60% at 50% 30%, #0c0c10 0%, #050505 100%);
-  --luxe-boot-bg:             radial-gradient(60% 50% at 50% 50%, #0b0b0b 0%, #050505 100%);
-  --luxe-cta-bg:              linear-gradient(135deg, #0B1220 0%, #050505 70%);
-  --luxe-hero-vignette:       linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.20) 45%, #050505 100%);
-  --luxe-hero-floor:          radial-gradient(60% 50% at 50% 90%, rgba(5,5,5,0.85), transparent 70%);
-  --luxe-hero-depth:          linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%);
-  --luxe-gold-btn-fg:         #0a0a0a;
-  --luxe-on-hover-tint:       rgba(255,255,255,0.04);
-
-  --luxe-shadow-card:  0 24px 60px -28px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04) inset;
-  --luxe-shadow-float: 0 30px 80px -30px rgba(0,0,0,0.85);
-  --luxe-shadow-gold:  0 10px 30px -10px rgba(200,169,107,0.55);
-}
 
 /* ---------- Smooth theme transition ---------- */
 :root,
