@@ -22,6 +22,7 @@ import MarketContextCard from "@/components/property/MarketContextCard";
 import NearbyInvestments from "@/components/property/NearbyInvestments";
 import AIRecommendedProperties from "@/components/property/AIRecommendedProperties";
 import InvestmentIntelligenceBadge from "@/components/property/InvestmentIntelligenceBadge";
+import { usePropertyCtaTracking, type CtaPlacement, type CtaKind } from "@/hooks/usePropertyCtaTracking";
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
 
