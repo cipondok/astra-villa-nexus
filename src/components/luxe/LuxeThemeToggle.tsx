@@ -70,7 +70,7 @@ export function LuxeThemeToggle({ className, variant = "icon" }: LuxeThemeToggle
       <span
         aria-hidden
         className={cn(
-          "absolute inset-0 grid place-items-center transition-all duration-500 ease-\[cubic-bezier(0.22,1,0.36,1)\]",
+          "absolute inset-0 grid place-items-center transition-all duration-500 ease-\\[cubic-bezier(0.22,1,0.36,1)\\]",
           isDark ? "rotate-0 opacity-100 scale-100" : "-rotate-90 opacity-0 scale-50"
         )}
       >
@@ -79,7 +79,7 @@ export function LuxeThemeToggle({ className, variant = "icon" }: LuxeThemeToggle
       <span
         aria-hidden
         className={cn(
-          "absolute inset-0 grid place-items-center transition-all duration-500 ease-\[cubic-bezier(0.22,1,0.36,1)\]",
+          "absolute inset-0 grid place-items-center transition-all duration-500 ease-\\[cubic-bezier(0.22,1,0.36,1)\\]",
           !isDark ? "rotate-0 opacity-100 scale-100" : "rotate-90 opacity-0 scale-50"
         )}
       >

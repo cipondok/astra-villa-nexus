@@ -135,7 +135,7 @@ const Navigation = () => {
     <>
       <nav 
         className={cn(
-          "fixed top-0 left-0 right-0 w-full z-[10000] transition-all duration-700 ease-\[cubic-bezier(0.22,1,0.36,1)\]",
+          "fixed top-0 left-0 right-0 w-full z-[10000] transition-all duration-700 ease-\\[cubic-bezier(0.22,1,0.36,1)\\]",
           isHomePage && !scrolled
             ? "bg-transparent border-b border-white/10 shadow-none"
             : scrolled && pastHero

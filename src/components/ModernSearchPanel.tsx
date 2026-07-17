@@ -338,7 +338,7 @@ const ModernSearchPanel = ({ language, onSearch, onLiveSearch }: ModernSearchPan
 
   // Smooth filter panel transition classes
   const filterAnimBase =
-    "transition-all duration-300 ease-\[cubic-bezier(0.55,0,0.1,1)\]";
+    "transition-all duration-300 ease-\\[cubic-bezier(0.55,0,0.1,1)\\]";
   const filterAnimVisible =
     "opacity-100 translate-y-0 pointer-events-auto scale-100";
   const filterAnimHidden =

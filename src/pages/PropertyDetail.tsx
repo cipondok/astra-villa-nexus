@@ -214,7 +214,7 @@ const PropertyDetail = () => {
           <div
             key={src + i}
             className={cn(
-              "absolute inset-0 transition-opacity duration-\[1200ms\] ease-out",
+              "absolute inset-0 transition-opacity duration-\\[1200ms\\] ease-out",
               i === idx ? "opacity-100" : "opacity-0",
             )}
             aria-hidden={i !== idx}
