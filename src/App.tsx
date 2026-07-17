@@ -93,6 +93,7 @@ const PropertyDetail = lazy(() => import('@/pages/PropertyDetail'));
 const Dijual = lazy(() => import('@/pages/Dijual'));
 const Disewa = lazy(() => import('@/pages/Disewa'));
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
+const LaunchReadinessPage = lazy(() => import('@/pages/LaunchReadinessPage'));
 const SystemHealthDashboard = lazy(() => import('@/pages/admin/SystemHealthDashboard'));
 const FeatureControlPanel = lazy(() => import('@/pages/admin/FeatureControlPanel'));
 const PlatformIntelligenceDashboard = lazy(() => import('@/pages/admin/PlatformIntelligenceDashboard'));
@@ -550,6 +551,7 @@ const AppContent = () => {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/dashboard/admin" element={<AdminDashboard />} />
+                <Route path="/admin/launch-readiness" element={<LaunchReadinessPage />} />
                 <Route path="/admin/analytics" element={<AdminAnalytics />} />
                 <Route path="/admin/conversion-analytics" element={<ConversionAnalyticsPage />} />
                 <Route path="/admin/ai-optimization" element={<AIOptimizationDashboard />} />
