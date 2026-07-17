@@ -12,7 +12,7 @@ import { useAIPropertyValuation } from "@/hooks/useAIPropertyValuation";
 import { useFavorites } from "@/hooks/useFavorites";
 import { shareProperty } from "@/utils/shareUtils";
 import { useToast } from "@/hooks/use-toast";
-import { SEOHead } from "@/components/SEOHead";
+import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import {
   LuxeLayout, LuxeSection, LuxeSectionHead, LuxeCard, LuxeButton,
 } from "@/components/luxe";
