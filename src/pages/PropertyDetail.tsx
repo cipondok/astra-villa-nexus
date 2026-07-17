@@ -214,12 +214,12 @@ const PropertyDetail = () => {
       />
 
       {/* ============ CINEMATIC HERO GALLERY ============ */}
-      <section className="relative w-full h-[78vh] md:h-[92vh] overflow-hidden luxe-grain">
+      <section className="relative w-full h-[70vh] md:h-[86vh] overflow-hidden luxe-grain">
         {images.map((src, i) => (
           <div
             key={src + i}
             className={cn(
-              "absolute inset-0 transition-opacity duration-\\[1200ms\\] ease-out",
+              "absolute inset-0 transition-opacity duration-[1200ms] ease-out",
               i === idx ? "opacity-100" : "opacity-0",
             )}
             aria-hidden={i !== idx}
@@ -274,7 +274,7 @@ const PropertyDetail = () => {
         <div className="absolute inset-x-0 bottom-0 z-10 px-5 md:px-10 pb-12 md:pb-20">
           <div className="max-w-[1440px] mx-auto">
             <span className="luxe-eyebrow">{property.property_type || "Private Villa"} · {property.listing_type === "rent" ? "Nightly Stay" : "For Sale"}</span>
-            <h1 className="font-serif-l mt-4 text-[40px] md:text-[88px] leading-[0.95] tracking-tight max-w-4xl">
+            <h1 className="mt-4 text-[36px] md:text-[64px] font-semibold leading-[0.98] tracking-tight max-w-4xl text-white">
               {property.title}
             </h1>
             <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-luxe-fg/80">
