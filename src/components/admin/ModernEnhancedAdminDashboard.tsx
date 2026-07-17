@@ -90,13 +90,13 @@ const ModernEnhancedAdminDashboard = () => {
         />
 
         {/* Main content area */}
-        <div className={`flex-1 flex flex-col min-h-screen transition-all duration-200 ${sidebarCollapsed ? 'ml-14' : 'ml-14 lg:ml-60'}`}>
+        <div className={`flex-1 flex flex-col min-h-screen min-w-0 transition-all duration-200 ${sidebarCollapsed ? 'ml-14' : 'ml-14 lg:ml-60'}`}>
           <AdminHeader
             activeSection={activeSection}
             onSectionChange={handleSectionChange}
           />
 
-          <main ref={contentRef} className="flex-1">
+          <main ref={contentRef} className="flex-1 min-w-0 overflow-x-hidden p-4 md:p-6">
             <AdminDashboardContent
               activeSection={activeSection}
               onSectionChange={handleSectionChange}
