@@ -38,15 +38,9 @@ const GlobalGrowthEngineDashboard: React.FC = () => {
   const { trajectory, isLoading: gLoad } = useGrowthTrajectory();
 
   if (aLoad || mLoad || gLoad || !signals || !strategy || !trajectory) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-3">
-          <Globe className="h-8 w-8 animate-pulse text-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Computing global growth intelligence…</p>
-        </div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
+
 
   const { funnel } = signals;
   const funnelStyle = HEALTH_BADGE[funnel.funnelHealth];
