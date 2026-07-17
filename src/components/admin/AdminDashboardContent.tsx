@@ -2,6 +2,7 @@ import React, { Suspense, useMemo } from "react";
 import { AdminCategoryTabs } from "./AdminCategoryTabs";
 import SectionErrorBoundary from "./shared/SectionErrorBoundary";
 import { sectionLabels, sectionRenderMap, AdminOverview } from "./adminSectionRegistry";
+import { AdminPageSkeleton } from "./AdminStates";
 
 interface AdminDashboardContentProps {
   activeSection: string;
@@ -9,31 +10,8 @@ interface AdminDashboardContentProps {
   prioritySections?: string[];
 }
 
-/* Enterprise skeleton — high density shimmer */
-const LoadingFallback = () => (
-  <div className="p-3 space-y-2 animate-in fade-in duration-150">
-    {/* KPI strip skeleton */}
-    <div className="admin-kpi-strip">
-      {[...Array(5)].map((_, i) => (
-        <div
-          key={i}
-          className="h-14 rounded-astra bg-muted/15 border border-border/10 animate-pulse"
-          style={{ animationDelay: `${i * 60}ms` }}
-        />
-      ))}
-    </div>
-    {/* Table skeleton */}
-    <div className="space-y-1 mt-2">
-      {[...Array(8)].map((_, i) => (
-        <div
-          key={i}
-          className="h-[42px] rounded-lg bg-muted/10 border border-border/8 animate-pulse"
-          style={{ animationDelay: `${i * 40}ms` }}
-        />
-      ))}
-    </div>
-  </div>
-);
+/* Standardized admin section skeleton — aligns with main content gutters */
+const LoadingFallback = () => <AdminPageSkeleton />;
 
 const renderSection = (
   section: string,
