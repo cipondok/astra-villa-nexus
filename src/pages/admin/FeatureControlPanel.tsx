@@ -47,11 +47,7 @@ const FeatureControlPanel: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
 
   const activeCount = controls.filter(c => c.status === 'active').length;
