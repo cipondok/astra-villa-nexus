@@ -790,6 +790,8 @@ const AppContent = () => {
                   <Route index element={<InvestorAlertsPage />} />
                 </Route>
                 <Route path="/ai-search" element={<AISearchAssistantPage />} />
+                <Route path="/ai-center" element={<AICenter />} />
+                <Route path="/ai-tools" element={<Navigate to="/ai-center" replace />} />
                 <Route path="/investment-leaderboard" element={<InvestmentLeaderboardPage />} />
                 <Route path="/price-drop-deals" element={<PriceDropDealsPage />} />
                 <Route path="/my-offers" element={<ProtectedRoute />}>
