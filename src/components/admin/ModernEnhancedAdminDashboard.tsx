@@ -43,6 +43,7 @@ const ModernEnhancedAdminDashboard = () => {
   const [investorMode, setInvestorMode] = useState(false);
   const [narrativeMode, setNarrativeMode] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  useAdminLayoutOverlapGuard();
 
   // Expose investor demo trigger globally for header
   useEffect(() => {
