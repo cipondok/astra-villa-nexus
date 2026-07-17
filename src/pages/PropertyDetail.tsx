@@ -22,6 +22,7 @@ import MarketContextCard from "@/components/property/MarketContextCard";
 import NearbyInvestments from "@/components/property/NearbyInvestments";
 import AIRecommendedProperties from "@/components/property/AIRecommendedProperties";
 import InvestmentIntelligenceBadge from "@/components/property/InvestmentIntelligenceBadge";
+import { usePropertyCtaTracking, type CtaPlacement, type CtaKind } from "@/hooks/usePropertyCtaTracking";
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
 
@@ -132,6 +133,22 @@ const PropertyDetail = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /* ----- CTA analytics tracking ----- */
+  const { registerImpression, trackClick } = usePropertyCtaTracking({
+    propertyId: property?.id,
+    city: property?.city,
+    price: property?.price,
+    listingType: property?.listing_type,
+  });
+
+  /** Ref callback factory that fires an impression event once visible. */
+  const ctaRef = useCallback(
+    (cta: CtaKind, placement: CtaPlacement) => (el: HTMLElement | null) => {
+      registerImpression(el, { cta, placement });
+    },
+    [registerImpression],
+  );
 
   const { toggleFavorite, isFavorite } = useFavorites({
     title: property?.title,
@@ -352,16 +369,29 @@ const PropertyDetail = () => {
               {/* Primary CTAs */}
               <div className="flex md:flex-col gap-2 md:w-[180px]">
                 <button
+                  ref={ctaRef("reserve", "hero")}
                   onClick={() => {
                     const params = new URLSearchParams({ ...(checkIn && { checkIn }), ...(checkOut && { checkOut }), guests: String(guests) });
+                    trackClick({
+                      cta: "reserve",
+                      placement: "hero",
+                      outcome: "booking_initiated",
+                      extra: { has_dates: Boolean(checkIn && checkOut), guests },
+                    });
                     navigate(`/booking/${property.id}?${params.toString()}`);
                   }}
                   className="luxe-gold-btn flex-1 rounded-full py-3 text-[12px] font-medium"
                 >
                   Reserve
                 </button>
-                <a href={whatsappLink} target="_blank" rel="noreferrer"
-                   className="luxe-ghost-btn flex-1 rounded-full py-3 text-[12px] inline-flex items-center justify-center gap-1.5">
+                <a
+                  ref={ctaRef("contact", "hero")}
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => trackClick({ cta: "contact", placement: "hero", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+                  className="luxe-ghost-btn flex-1 rounded-full py-3 text-[12px] inline-flex items-center justify-center gap-1.5"
+                >
                   <MessageCircle className="h-3.5 w-3.5" /> Concierge
                 </a>
               </div>
@@ -432,7 +462,11 @@ const PropertyDetail = () => {
             </div>
             <div className="font-serif-l text-[18px] leading-none whitespace-nowrap">{fmtIDR(property.price)}</div>
             <button
-              onClick={() => navigate(`/booking/${property.id}`)}
+              ref={scrolled ? ctaRef("reserve", "mini_bar") : undefined}
+              onClick={() => {
+                trackClick({ cta: "reserve", placement: "mini_bar", outcome: "booking_initiated" });
+                navigate(`/booking/${property.id}`);
+              }}
               className="luxe-gold-btn rounded-full px-5 py-2 text-[12px] font-medium whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
               tabIndex={scrolled ? 0 : -1}
             >
@@ -691,12 +725,20 @@ const PropertyDetail = () => {
               </div>
 
               <button
+                ref={ctaRef("reserve", "sidebar")}
                 onClick={() => {
                   if (!checkIn || !checkOut) {
+                    trackClick({ cta: "reserve", placement: "sidebar", extra: { blocked: "missing_dates" } });
                     toast({ title: "Select dates", description: "Please choose check-in and check-out." });
                     return;
                   }
                   const params = new URLSearchParams({ checkIn, checkOut, guests: String(guests) });
+                  trackClick({
+                    cta: "reserve",
+                    placement: "sidebar",
+                    outcome: "booking_initiated",
+                    extra: { has_dates: true, guests },
+                  });
                   navigate(`/booking/${property.id}?${params.toString()}`);
                 }}
                 className="luxe-gold-btn w-full rounded-full py-3.5 text-[13px] font-medium mt-6"
@@ -704,8 +746,14 @@ const PropertyDetail = () => {
                 Reserve
               </button>
 
-              <a href={whatsappLink} target="_blank" rel="noreferrer"
-                 className="luxe-ghost-btn w-full rounded-full py-3.5 text-[12px] mt-3 inline-flex items-center justify-center gap-2">
+              <a
+                ref={ctaRef("contact", "sidebar")}
+                href={whatsappLink}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => trackClick({ cta: "contact", placement: "sidebar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+                className="luxe-ghost-btn w-full rounded-full py-3.5 text-[12px] mt-3 inline-flex items-center justify-center gap-2"
+              >
                 <MessageCircle className="h-3.5 w-3.5" /> WhatsApp Concierge
               </a>
 
@@ -750,7 +798,14 @@ const PropertyDetail = () => {
             <div className="font-serif-l text-[18px] leading-none">{fmtIDR(property.price)}</div>
             <div className="text-[10px] text-luxe-mut mt-1">{property.listing_type === "rent" ? "per night" : "list price"}</div>
           </div>
-          <a href={whatsappLink} target="_blank" rel="noreferrer" className="luxe-gold-btn rounded-full px-5 py-2.5 text-[12px] font-medium inline-flex items-center gap-2">
+          <a
+            ref={ctaRef("reserve", "mobile_bar")}
+            href={whatsappLink}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => trackClick({ cta: "reserve", placement: "mobile_bar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+            className="luxe-gold-btn rounded-full px-5 py-2.5 text-[12px] font-medium inline-flex items-center gap-2"
+          >
             <Phone className="h-3.5 w-3.5" /> Reserve
           </a>
         </LuxeCard>
