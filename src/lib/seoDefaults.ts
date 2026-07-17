@@ -13,7 +13,7 @@ export const DEFAULT_DESCRIPTION =
   "Discover luxury villas, apartments, land, and investment properties across Indonesia with AI-powered search, virtual tours, and verified listings.";
 
 export const HOME_FULL_TITLE =
-  "ASTRA Villa Property | Buy, Sell, Rent & Invest in Indonesian Real Estate";
+  "ASTRA Villa Property | Indonesian Real Estate";
 
 export const OG_TITLE =
   "ASTRA Villa Property | Indonesia's AI-Powered Real Estate Platform";

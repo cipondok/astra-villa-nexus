@@ -1,0 +1,38 @@
+# ASTRA Villa Property
+
+> Indonesia's AI-powered real estate platform for buying, selling, renting, and investing in villas, apartments, land, and commercial property across Bali, Jakarta, and emerging Southeast Asian markets.
+
+ASTRA Villa Property combines an AI property search engine, verified listings, virtual tours, automated valuations, fractional/tokenized investment, escrow-backed transactions, and agent CRM tooling into a single platform. Content is available in Indonesian (id) and English (en). Base URL: https://astravilla.com
+
+## Core Pages
+
+- [Home](/): Platform overview, featured properties, AI search, investment hotspots
+- [About](/about): Company mission, vision, and platform capabilities
+- [Contact](/contact): Enterprise support center and ticket intake
+- [Properties](/properties): Full property search with filters (location, price, type)
+- [For Sale](/dijual): Properties listed for sale across Indonesia
+- [For Rent](/disewa): Rental properties and long-stay villas
+- [Provinces](/province-properties): Directory of properties by Indonesian province
+- [Location Map](/location): Geospatial heatmap of listings and investment areas
+- [Area Guides](/area-guides): Neighborhood intelligence for popular districts
+- [Advanced Search](/search-advanced): Multi-criteria property search
+- [AI Search](/ai-search): Natural-language property discovery assistant
+- [Investment](/investment): Investment opportunities, ROI analysis, hotspots
+
+## Content
+
+- [Blog](/blog): Market intelligence, investment strategy, technology insights
+- [Careers](/careers): Open roles at ASTRA Villa Property
+- [Press](/press): Media coverage and press resources
+
+## Legal & Support
+
+- [Terms of Service](/terms): Platform terms and user obligations
+- [Privacy Policy](/privacy): Data collection and processing practices
+- [Cookie Policy](/cookies): Cookie categories and usage
+- [Cookie Preferences](/cookie-preferences): Manage cookie consent categories
+- [Compliance](/compliance): Regulatory compliance and licensing
+
+## Optional
+
+- [Add Property](/add-property): Listing submission (authenticated users)

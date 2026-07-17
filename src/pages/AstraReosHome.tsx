@@ -544,8 +544,8 @@ export default function AstraReosHome() {
                   { b: "Download on the", n: "App Store", href: "https://apps.apple.com/" },
                   { b: "GET IT ON", n: "Google Play", href: "https://play.google.com/" },
                 ].map(a => (
-                  <a key={a.n} href={a.href} target="_blank" rel="noopener noreferrer" className="w-full h-11 px-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
-                    <div className="h-5 w-5 rounded reos-gold flex items-center justify-center">●</div>
+                  <a key={a.n} href={a.href} target="_blank" rel="noopener noreferrer" aria-label={`${a.b} ${a.n}`} className="w-full h-11 px-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
+                    <div aria-hidden="true" className="h-5 w-5 rounded reos-gold flex items-center justify-center">●</div>
                     <div className="leading-tight">
                       <div className="text-[9px] text-[var(--text-2)]">{a.b}</div>
                       <div className="text-[12px] font-medium">{a.n}</div>
@@ -627,9 +627,10 @@ export default function AstraReosHome() {
                         <button
                           type="button"
                           onClick={() => navigate("/search-advanced")}
+                          aria-label="More location filters"
                           className="btn-titanium text-[10px] md:text-[11px] px-2.5 md:px-3 py-1 rounded-full font-semibold inline-flex items-center gap-1"
                         >
-                          More <ChevronDown className="h-3 w-3" />
+                          More <ChevronDown className="h-3 w-3" aria-hidden="true" />
                         </button>
                       </div>
                     </div>

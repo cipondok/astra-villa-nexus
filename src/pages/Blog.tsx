@@ -54,9 +54,34 @@ const posts = [
 ];
 
 export default function BlogPage() {
+  const blogJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "ASTRA Insights",
+    url: "https://astravilla.com/blog",
+    description: "Insights on Indonesian real estate, AI property technology, and investment strategies.",
+    publisher: {
+      "@type": "Organization",
+      name: "ASTRA Villa Property",
+      url: "https://astravilla.com",
+    },
+    blogPost: posts.map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      description: p.excerpt,
+      datePublished: p.date,
+      articleSection: p.category,
+      url: `https://astravilla.com/blog/${p.slug}`,
+    })),
+  };
   return (
     <div className="reos min-h-screen">
-      <SEOHead title="Blog" description="Insights on Indonesian real estate, AI property technology, investment strategies, and market intelligence from ASTRA Villa Property." />
+      <SEOHead
+        title="Blog"
+        description="Insights on Indonesian real estate, AI property technology, investment strategies, and market intelligence from ASTRA Villa Property."
+        canonical="https://astravilla.com/blog"
+        jsonLd={blogJsonLd}
+      />
 
       <section className="relative overflow-hidden border-b border-[var(--line)]">
         <div className="absolute inset-0" style={{ background: "var(--hotspot-bg)" }} />
