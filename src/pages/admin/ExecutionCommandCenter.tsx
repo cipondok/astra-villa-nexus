@@ -146,11 +146,7 @@ export default function ExecutionCommandCenter() {
   const isLoading = hLoading || dosLoading;
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-pulse text-muted-foreground text-sm">Loading Command Center…</div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
 
   return (
