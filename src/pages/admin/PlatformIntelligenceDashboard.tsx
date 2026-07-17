@@ -9,6 +9,7 @@ import {
   Target, Gauge, Shield, Loader2, CheckCircle, ArrowUpRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const RISK_STYLES = {
   low: { color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', label: 'Low Risk' },
