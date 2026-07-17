@@ -217,7 +217,7 @@ const About = () => {
               <span className="text-sm font-medium text-gold-primary">{t('about.badge')}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4 leading-tight">
-              {t('about.title')}
+              About ASTRA Villa — Southeast Asia's Real Estate OS
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
               {t('about.subtitle')}
