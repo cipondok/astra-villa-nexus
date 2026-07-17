@@ -17,6 +17,7 @@ import {
   LuxeLayout, LuxeSection, LuxeSectionHead, LuxeCard, LuxeButton,
 } from "@/components/luxe";
 import { cn } from "@/lib/utils";
+import { PropertyWorkflowRail } from "@/components/property/PropertyWorkflowRail";
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
 
@@ -432,6 +433,9 @@ const PropertyDetail = () => {
                 </div>
               </LuxeCard>
             </div>
+
+            {/* workflow rail — connect to REOS modules */}
+            <PropertyWorkflowRail propertyId={property.id} price={property.price} />
           </div>
 
           {/* ----- Right column — sticky booking ----- */}
@@ -466,7 +470,8 @@ const PropertyDetail = () => {
                     toast({ title: "Select dates", description: "Please choose check-in and check-out." });
                     return;
                   }
-                  toast({ title: "Reservation requested", description: "Our concierge will confirm shortly." });
+                  const params = new URLSearchParams({ checkIn, checkOut, guests: String(guests) });
+                  navigate(`/booking/${property.id}?${params.toString()}`);
                 }}
                 className="luxe-gold-btn w-full rounded-full py-3.5 text-[13px] font-medium mt-6"
               >
