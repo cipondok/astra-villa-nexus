@@ -193,6 +193,19 @@ const PropertyDetail = () => {
         title={`${property.title} — ASTRA Villa`}
         description={property.description?.slice(0, 160) || `Cinematic luxury villa in ${loc}`}
         ogImage={images[0]}
+        canonical={`https://astravilla.com/property/${property.id}`}
+        jsonLd={seoSchemas.property({
+          title: property.title,
+          description: property.description?.slice(0, 300) || `Luxury villa in ${loc}`,
+          price: property.price || 0,
+          city: property.city || property.location || "Bali",
+          state: property.province || property.state || "Bali",
+          images,
+          bedrooms: property.bedrooms ?? undefined,
+          bathrooms: property.bathrooms ?? undefined,
+          areaSqm: property.area_sqm ?? undefined,
+          url: `https://astravilla.com/property/${property.id}`,
+        })}
       />
 
       {/* ============ CINEMATIC HERO GALLERY ============ */}
