@@ -11,6 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Shield, ToggleLeft, Gauge, Eye, AlertTriangle, Zap, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const STATUS_STYLES: Record<FeatureStatus, { bg: string; text: string; label: string }> = {
   active: { bg: 'bg-emerald-500/10 border-emerald-500/30', text: 'text-emerald-400', label: 'Active' },
