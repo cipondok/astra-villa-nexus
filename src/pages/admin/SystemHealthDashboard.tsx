@@ -80,15 +80,9 @@ const SystemHealthDashboard: React.FC = () => {
   const perf = usePerformanceMetrics();
 
   if (isLoading || !report) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-3">
-          <Gauge className="h-8 w-8 animate-spin text-muted-foreground mx-auto" />
-          <p className="text-sm text-muted-foreground">Computing health index…</p>
-        </div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={5} rows={6} />;
   }
+
 
   const cfg = STATUS_CONFIG[report.status];
 
