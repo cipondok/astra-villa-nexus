@@ -13,6 +13,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════
+   ASTRA V3 — UNIFIED MOTION LANGUAGE (Phase 5)
+   One timing system across the entire platform.
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --motion-instant: 120ms;
+  --motion-fast:    180ms;
+  --motion-base:    240ms;
+  --motion-slow:    360ms;
+  --motion-slower:  520ms;
+  --ease-astra:      cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-astra-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-astra-in:   cubic-bezier(0.4, 0, 1, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-instant: 0ms; --motion-fast: 0ms; --motion-base: 0ms;
+    --motion-slow: 0ms; --motion-slower: 0ms;
+  }
+}
+
+
+
 /* Smooth scrolling — respects reduced motion */
 html {
   scroll-behavior: smooth;
