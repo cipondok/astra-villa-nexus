@@ -255,6 +255,7 @@ const About = lazy(() => import('@/pages/About'));
 const Careers = lazy(() => import('@/pages/Careers'));
 const Press = lazy(() => import('@/pages/Press'));
 const Blog = lazy(() => import('@/pages/Blog'));
+const BlogBaliBuyingGuide = lazy(() => import('@/pages/BlogBaliBuyingGuide'));
 const Terms = lazy(() => import('@/pages/legal/Terms'));
 const Privacy = lazy(() => import('@/pages/legal/Privacy'));
 const CookiesPage = lazy(() => import('@/pages/legal/Cookies'));
@@ -738,6 +739,7 @@ const AppContent = () => {
                 <Route path="/careers" element={<Careers />} />
                 <Route path="/press" element={<Press />} />
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/bali-property-buying-guide" element={<BlogBaliBuyingGuide />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/cookies" element={<CookiesPage />} />

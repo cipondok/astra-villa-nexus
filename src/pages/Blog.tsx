@@ -51,6 +51,14 @@ const posts = [
     readTime: "6 min read",
     category: "Technology",
   },
+  {
+    slug: "bali-property-buying-guide",
+    title: "How to Buy a Villa in Bali as a Foreigner",
+    excerpt: "A 2026 guide to leasehold vs freehold, legal structures, area comparisons, ROI, and due diligence for international investors.",
+    date: "July 17, 2026",
+    readTime: "12 min read",
+    category: "Investor Guide",
+  },
 ];
 
 export default function BlogPage() {

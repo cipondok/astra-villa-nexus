@@ -30,6 +30,7 @@ export const PUBLIC_ROUTES: SitemapRoute[] = [
   { path: "/dijual", changefreq: "daily", priority: "0.9" },
   { path: "/disewa", changefreq: "daily", priority: "0.9" },
   { path: "/blog", changefreq: "weekly", priority: "0.7" },
+  { path: "/blog/bali-property-buying-guide", changefreq: "monthly", priority: "0.8" },
   { path: "/about", changefreq: "monthly", priority: "0.7" },
   { path: "/contact", changefreq: "monthly", priority: "0.6" },
   { path: "/help", changefreq: "monthly", priority: "0.6" },
