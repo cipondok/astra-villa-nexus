@@ -553,36 +553,39 @@ const AppContent = () => {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/dashboard/admin" element={<AdminDashboard />} />
-                <Route path="/admin/launch-readiness" element={<LaunchReadinessPage />} />
-                <Route path="/admin/analytics" element={<AdminAnalytics />} />
-                <Route path="/admin/conversion-analytics" element={<ConversionAnalyticsPage />} />
-                <Route path="/admin/ai-optimization" element={<AIOptimizationDashboard />} />
-                <Route path="/admin/trust-risk" element={<TrustRiskDashboard />} />
-                <Route path="/admin/kyc" element={<AdminKYCPanel />} />
-                <Route path="/admin/location-analytics" element={<LocationAnalyticsDashboard />} />
+                <Route element={<AdminLayout />}>
+                  <Route path="/admin/launch-readiness" element={<LaunchReadinessPage />} />
+                  <Route path="/admin/analytics" element={<AdminAnalytics />} />
+                  <Route path="/admin/conversion-analytics" element={<ConversionAnalyticsPage />} />
+                  <Route path="/admin/ai-optimization" element={<AIOptimizationDashboard />} />
+                  <Route path="/admin/trust-risk" element={<TrustRiskDashboard />} />
+                  <Route path="/admin/kyc" element={<AdminKYCPanel />} />
+                  <Route path="/admin/location-analytics" element={<LocationAnalyticsDashboard />} />
+                  <Route path="/admin/design-system" element={<DesignSystemSettings />} />
+                  <Route path="/admin/style-settings" element={<DesignSystemSettings />} />
+                  <Route path="/admin/seo" element={<AdminSEOSettings />} />
+                  <Route path="/admin/seo-settings" element={<AdminSEOSettings />} />
+                  <Route element={<AdminOnlyRoute />}>
+                    <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
+                    <Route path="/admin/listing-review" element={<AdminListingReview />} />
+                    <Route path="/admin/system-health" element={<SystemHealthDashboard />} />
+                    <Route path="/admin/feature-controls" element={<FeatureControlPanel />} />
+                    <Route path="/admin/platform-intelligence" element={<PlatformIntelligenceDashboard />} />
+                    <Route path="/admin/founder-command" element={<FounderCommandCenter />} />
+                    <Route path="/admin/strategic-intelligence" element={<StrategicIntelligenceDashboard />} />
+                    <Route path="/admin/global-growth" element={<GlobalGrowthEngineDashboard />} />
+                    <Route path="/admin/capital-intelligence" element={<CapitalIntelligenceDashboard />} />
+                    <Route path="/admin/founder-execution" element={<FounderExecutionDashboard />} />
+                    <Route path="/admin/execution-command" element={<ExecutionCommandCenter />} />
+                    <Route path="/admin/execution" element={<ExecutionCommandCenter />} />
+                    <Route path="/admin/deal-command" element={<DealExecutionCommandCenter />} />
+                    <Route path="/admin/support-dashboard" element={<AstraSupportDashboard />} />
+                    <Route path="/admin/support-analytics" element={<AstraSupportAnalytics />} />
+                  </Route>
+                </Route>
                 <Route path="/province-properties" element={<ProvinceProperties />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/admin/design-system" element={<DesignSystemSettings />} />
-                <Route path="/admin/style-settings" element={<DesignSystemSettings />} />
-                <Route path="/admin/seo" element={<AdminSEOSettings />} />
-                <Route path="/admin/seo-settings" element={<AdminSEOSettings />} />
-                <Route element={<AdminOnlyRoute />}>
-                  <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
-                  <Route path="/admin/listing-review" element={<AdminListingReview />} />
-                  <Route path="/admin/system-health" element={<SystemHealthDashboard />} />
-                  <Route path="/admin/feature-controls" element={<FeatureControlPanel />} />
-                  <Route path="/admin/platform-intelligence" element={<PlatformIntelligenceDashboard />} />
-                  <Route path="/admin/founder-command" element={<FounderCommandCenter />} />
-                  <Route path="/admin/strategic-intelligence" element={<StrategicIntelligenceDashboard />} />
-                  <Route path="/admin/global-growth" element={<GlobalGrowthEngineDashboard />} />
-                  <Route path="/admin/capital-intelligence" element={<CapitalIntelligenceDashboard />} />
-                  <Route path="/admin/founder-execution" element={<FounderExecutionDashboard />} />
-                  <Route path="/admin/execution-command" element={<ExecutionCommandCenter />} />
-                  <Route path="/admin/execution" element={<ExecutionCommandCenter />} />
-                  <Route path="/admin/deal-command" element={<DealExecutionCommandCenter />} />
-                  <Route path="/admin/support-dashboard" element={<AstraSupportDashboard />} />
-                  <Route path="/admin/support-analytics" element={<AstraSupportAnalytics />} />
-                </Route>
+
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent-crm" element={<ProtectedRoute />}>
                   <Route index element={<AgentCRMDashboard />} />
