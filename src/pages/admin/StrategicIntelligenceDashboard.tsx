@@ -36,15 +36,9 @@ const StrategicIntelligenceDashboard: React.FC = () => {
   const loading = dLoad || mLoad || hLoad;
 
   if (loading || !decisions || !momentum || !report) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-3">
-          <Brain className="h-8 w-8 animate-pulse text-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Analyzing strategic signals…</p>
-        </div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
+
 
   const verdict = VERDICT_STYLES[decisions.overallVerdict];
   const balanceLabel = decisions.performanceVsGrowthBalance > 0.3 ? 'Growth Focus'
