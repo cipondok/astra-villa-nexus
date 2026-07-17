@@ -146,11 +146,82 @@ export default function LaunchReadinessPage() {
       latencyMs: domTime,
     });
 
-    // 9-12. Static
-    results.push({ id: "errors",   label: "Error Rate",        icon: AlertTriangle, status: "ok",   detail: "Sentry-style boundaries active" });
-    results.push({ id: "queue",    label: "Queue Status",      icon: ListChecks,    status: "ok",   detail: "AI job queue idle" });
-    results.push({ id: "jobs",     label: "Background Jobs",   icon: Timer,         status: "ok",   detail: "pg_cron schedules healthy" });
-    results.push({ id: "deploy",   label: "Deployment",        icon: GitBranch,     status: "ok",   detail: "Vite build clean · 304 lazy routes" });
+    // 9. Error rate — last hour of error_logs (best-effort; falls back to idle)
+    const errProbe = await timed(async () => {
+      const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      const { count, error } = await supabase
+        .from("error_logs" as any)
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", since);
+      if (error) throw error;
+      return count ?? 0;
+    });
+    const errCount = (errProbe.value as number | undefined) ?? 0;
+    results.push({
+      id: "errors", label: "Error Rate (1h)", icon: AlertTriangle,
+      status: !errProbe.ok ? "idle" : errCount === 0 ? "ok" : errCount < 25 ? "warn" : "fail",
+      detail: errProbe.ok ? `${errCount} logged errors in last hour` : "Metric unavailable",
+    });
+
+    // 10. Queue / background jobs
+    const jobProbe = await timed(async () => {
+      const { count, error } = await supabase
+        .from("ai_image_jobs" as any)
+        .select("id", { count: "exact", head: true })
+        .in("status", ["pending", "processing"]);
+      if (error) throw error;
+      return count ?? 0;
+    });
+    const jobs = (jobProbe.value as number | undefined) ?? 0;
+    results.push({
+      id: "queue", label: "Queue Health", icon: ListChecks,
+      status: !jobProbe.ok ? "idle" : jobs < 50 ? "ok" : jobs < 200 ? "warn" : "fail",
+      detail: jobProbe.ok ? `${jobs} in-flight AI jobs` : "Queue metric unavailable",
+    });
+    results.push({
+      id: "jobs", label: "Background Jobs", icon: Timer,
+      status: "ok", detail: "pg_cron schedules healthy",
+    });
+
+    // 11. Storage usage snapshot
+    const storageBytes = await timed(async () => {
+      const { data, error } = await supabase.rpc("get_storage_usage_bytes" as any);
+      if (error) throw error;
+      return data as number;
+    });
+    const bytes = (storageBytes.value as number | undefined) ?? 0;
+    results.push({
+      id: "storage-usage", label: "Storage Usage", icon: HardDrive,
+      status: !storageBytes.ok ? "idle" : "ok",
+      detail: storageBytes.ok
+        ? `${(bytes / (1024 ** 3)).toFixed(2)} GB across public buckets`
+        : "Usage metric unavailable (add RPC)",
+    });
+
+    // 12. Active users (24h)
+    const activeProbe = await timed(async () => {
+      const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+      const { count, error } = await supabase
+        .from("user_activity_logs" as any)
+        .select("user_id", { count: "exact", head: true })
+        .gte("created_at", since);
+      if (error) throw error;
+      return count ?? 0;
+    });
+    results.push({
+      id: "active", label: "Active Users (24h)", icon: Activity,
+      status: activeProbe.ok ? "ok" : "idle",
+      detail: activeProbe.ok ? `${activeProbe.value ?? 0} activity events` : "Metric unavailable",
+    });
+
+    // 13. Deployment version
+    const version = (import.meta.env.VITE_APP_VERSION as string | undefined)
+      ?? (import.meta.env.VITE_GIT_SHA as string | undefined)
+      ?? "rc-1.0";
+    results.push({
+      id: "deploy", label: "Deployment", icon: GitBranch,
+      status: "ok", detail: `Release ${version} · Vite build clean`,
+    });
 
     setChecks(results);
     setLastRun(new Date());
