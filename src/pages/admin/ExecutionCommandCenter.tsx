@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 /* ── Score Ring ── */
 function ScoreRing({ score, label, color }: { score: number; label: string; color: string }) {
