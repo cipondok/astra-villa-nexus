@@ -32,13 +32,13 @@ const CHECKPOINT_WIDTHS = [360, 414, 640, 768, 1024, 1280, 1440, 1920];
 
 /**
  * Dev-only runtime assertion. Warns if the sidebar overlaps the content
- * column, either right now or at any of the standard checkpoint widths
- * (extrapolated from the current DOM measurements + sidebar breakpoint).
+ * column. Queries the DOM by `data-admin-sidebar` / `data-admin-content`
+ * so it works regardless of how components wrap their roots.
  * No-ops in production.
  */
 export function useAdminLayoutOverlapGuard(
-  sidebarRef: RefObject<HTMLElement | null>,
-  contentRef: RefObject<HTMLElement | null>
+  _sidebarRef?: RefObject<HTMLElement | null>,
+  _contentRef?: RefObject<HTMLElement | null>
 ) {
   const enabled = Boolean(import.meta.env?.DEV);
 
@@ -46,8 +46,12 @@ export function useAdminLayoutOverlapGuard(
     if (!enabled || typeof window === "undefined") return;
 
     const check = () => {
-      const sb = sidebarRef.current?.getBoundingClientRect();
-      const ct = contentRef.current?.getBoundingClientRect();
+      const sb = document
+        .querySelector<HTMLElement>("[data-admin-sidebar]")
+        ?.getBoundingClientRect();
+      const ct = document
+        .querySelector<HTMLElement>("[data-admin-content]")
+        ?.getBoundingClientRect();
       if (!sb || !ct) return;
 
       if (ct.left + 0.5 < sb.right) {
@@ -59,15 +63,17 @@ export function useAdminLayoutOverlapGuard(
       }
     };
 
-    check();
-    // Log the checkpoint list once so devs can eyeball responsive coverage.
-    if (typeof window !== "undefined") {
-      // eslint-disable-next-line no-console
-      console.debug(
-        `[admin-layout] responsive checkpoints monitored: ${CHECKPOINT_WIDTHS.join(", ")}px`
-      );
-    }
+    // Run after paint so measurements reflect the applied classes.
+    const raf = requestAnimationFrame(check);
+    // eslint-disable-next-line no-console
+    console.debug(
+      `[admin-layout] responsive checkpoints monitored: ${CHECKPOINT_WIDTHS.join(", ")}px`
+    );
     window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, [enabled, sidebarRef, contentRef]);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", check);
+    };
+  }, [enabled]);
 }
+
