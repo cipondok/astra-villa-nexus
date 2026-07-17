@@ -55,16 +55,14 @@ const CATEGORIES = [
 ] as const;
 
 const AICenter: React.FC = () => {
+  React.useEffect(() => {
+    const prev = document.title;
+    document.title = "AI Center | ASTRA Villa Property";
+    return () => { document.title = prev; };
+  }, []);
   return (
     <>
-      <Helmet>
-        <title>AI Center | ASTRA Villa Property</title>
-        <meta
-          name="description"
-          content="Explore all AI-powered real estate tools on ASTRA Villa Property — valuation, search, content, legal, finance and agent intelligence."
-        />
-        <link rel="canonical" href="https://www.astravilla.com/ai-center" />
-      </Helmet>
+
 
       <main className="container mx-auto px-4 py-10">
         <header className="mb-10 text-center">
