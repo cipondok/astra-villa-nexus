@@ -142,6 +142,23 @@ const ModernEnhancedAdminDashboard = () => {
     setPrioritySections(priorities);
   }, []);
 
+  // Mobile drawer state — only meaningful below `lg`.
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const closeMobileNav = useCallback(() => setMobileNavOpen(false), []);
+  const openMobileNav = useCallback(() => setMobileNavOpen(true), []);
+
+  // Close the mobile drawer if the viewport grows past `lg`.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const handler = (e: MediaQueryListEvent | MediaQueryList) => {
+      if (e.matches) setMobileNavOpen(false);
+    };
+    handler(mql);
+    mql.addEventListener("change", handler as (e: MediaQueryListEvent) => void);
+    return () => mql.removeEventListener("change", handler as (e: MediaQueryListEvent) => void);
+  }, []);
+
   return (
     <DemoModeProvider>
       <div className="min-h-screen flex w-full bg-background overflow-x-hidden">
@@ -151,6 +168,8 @@ const ModernEnhancedAdminDashboard = () => {
           onSectionChange={handleSectionChange}
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
+          mobileOpen={mobileNavOpen}
+          onMobileClose={closeMobileNav}
         />
 
         {/* Main content area */}
@@ -158,6 +177,7 @@ const ModernEnhancedAdminDashboard = () => {
           <AdminHeader
             activeSection={activeSection}
             onSectionChange={handleSectionChange}
+            onOpenMobileNav={openMobileNav}
           />
 
           <main ref={contentRef} className="flex-1 min-w-0 overflow-x-hidden px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
