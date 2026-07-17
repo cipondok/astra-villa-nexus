@@ -627,9 +627,10 @@ export default function AstraReosHome() {
                         <button
                           type="button"
                           onClick={() => navigate("/search-advanced")}
+                          aria-label="More location filters"
                           className="btn-titanium text-[10px] md:text-[11px] px-2.5 md:px-3 py-1 rounded-full font-semibold inline-flex items-center gap-1"
                         >
-                          More <ChevronDown className="h-3 w-3" />
+                          More <ChevronDown className="h-3 w-3" aria-hidden="true" />
                         </button>
                       </div>
                     </div>
