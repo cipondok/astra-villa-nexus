@@ -38,9 +38,20 @@ interface AdminSidebarProps {
   onSectionChange: (section: string) => void;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  /** Whether the mobile off-canvas drawer is open (only used below `lg`). */
+  mobileOpen?: boolean;
+  /** Close the mobile off-canvas drawer. */
+  onMobileClose?: () => void;
 }
 
-export function AdminSidebar({ activeSection, onSectionChange, collapsed = false, onToggleCollapse }: AdminSidebarProps) {
+export function AdminSidebar({
+  activeSection,
+  onSectionChange,
+  collapsed = false,
+  onToggleCollapse,
+  mobileOpen = false,
+  onMobileClose,
+}: AdminSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const flyoutRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
