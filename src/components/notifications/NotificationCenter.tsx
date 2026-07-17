@@ -238,7 +238,7 @@ export default function NotificationCenter() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
+        <Button variant="ghost" size="icon" className="relative" aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'}>
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center font-bold animate-pulse">
@@ -253,7 +253,7 @@ export default function NotificationCenter() {
           <SheetTitle className="text-base">
             {showSettings ? 'Notification Settings' : 'Notifications'}
           </SheetTitle>
-          <Button variant="ghost" size="icon" onClick={() => setShowSettings(!showSettings)}>
+          <Button variant="ghost" size="icon" onClick={() => setShowSettings(!showSettings)} aria-label={showSettings ? 'Back to notifications' : 'Notification settings'}>
             {showSettings ? <ChevronLeft className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
           </Button>
         </SheetHeader>

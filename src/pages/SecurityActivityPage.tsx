@@ -148,7 +148,7 @@ const SecurityActivityPage = () => {
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* Header */}
           <div className="flex items-center gap-3 mb-6">
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(-1)}>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(-1)} aria-label="Go back">
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div className="p-2.5 rounded-xl bg-primary/10">

@@ -43,7 +43,7 @@ const ContentGeneratorForm = ({ template, onBack, onGenerate, isGenerating }: Co
     <Card className="border-border/50">
       <CardHeader>
         <div className="flex items-center gap-3 mb-2">
-          <Button variant="ghost" size="icon" onClick={onBack}>
+          <Button variant="ghost" size="icon" onClick={onBack} aria-label="Go back">
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <span className="text-3xl">{template.icon}</span>

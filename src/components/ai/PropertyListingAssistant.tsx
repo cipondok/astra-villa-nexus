@@ -170,7 +170,7 @@ const PropertyListingAssistant = ({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={clearChat}>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={clearChat} aria-label="Clear chat">
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </TooltipTrigger>
@@ -179,7 +179,7 @@ const PropertyListingAssistant = ({
           </TooltipProvider>
           
           {variant === 'floating' && (
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setIsMinimized(true)}>
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setIsMinimized(true)} aria-label="Minimize">
               <Minimize2 className="h-3.5 w-3.5" />
             </Button>
           )}

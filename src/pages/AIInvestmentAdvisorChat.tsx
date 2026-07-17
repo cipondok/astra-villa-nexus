@@ -186,10 +186,10 @@ export default function AIInvestmentAdvisorChat() {
   const isEmpty = messages.length === 0;
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-dvh bg-background">
       {/* Header */}
       <header className="flex items-center gap-3 px-4 py-3 border-b border-border/50 bg-card/80 backdrop-blur-lg">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground">
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} aria-label="Go back" className="text-muted-foreground hover:text-foreground">
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div className="flex items-center gap-2 flex-1">
@@ -202,7 +202,7 @@ export default function AIInvestmentAdvisorChat() {
           </div>
         </div>
         {messages.length > 0 && (
-          <Button variant="ghost" size="icon" onClick={clearChat} className="text-muted-foreground hover:text-destructive">
+          <Button variant="ghost" size="icon" onClick={clearChat} aria-label="Clear chat" className="text-muted-foreground hover:text-destructive">
             <Trash2 className="w-4 h-4" />
           </Button>
         )}
