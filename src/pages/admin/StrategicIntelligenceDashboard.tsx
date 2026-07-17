@@ -11,6 +11,7 @@ import {
   Gauge, Timer, Users, Rocket,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const VERDICT_STYLES = {
   accelerate: { color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', label: '🚀 Accelerate', desc: 'All systems clear for aggressive growth' },
