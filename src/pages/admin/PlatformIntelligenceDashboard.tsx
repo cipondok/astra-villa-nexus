@@ -9,6 +9,7 @@ import {
   Target, Gauge, Shield, Loader2, CheckCircle, ArrowUpRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const RISK_STYLES = {
   low: { color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', label: 'Low Risk' },
@@ -43,15 +44,9 @@ const PlatformIntelligenceDashboard: React.FC = () => {
   const { kpis, recommendations: revRecs, isLoading: revLoading } = useRevenueAnalytics();
 
   if (intLoading || revLoading || !intelligence) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-3">
-          <Brain className="h-8 w-8 animate-pulse text-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Analyzing platform intelligence…</p>
-        </div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
+
 
   const risk = RISK_STYLES[intelligence.riskLevel];
   const revSignal = REVENUE_SIGNAL_STYLES[intelligence.revenueHealthSignal];

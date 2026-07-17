@@ -8,6 +8,7 @@ import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Cart
 import { Activity, AlertTriangle, CheckCircle2, Clock, RefreshCw, Brain, ShieldAlert, Bell, TrendingUp, Copy, X, MessageSquare, Mail, Send } from 'lucide-react';
 import { format, subDays, differenceInMinutes } from 'date-fns';
 import { toast } from 'sonner';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const COLORS = ['#00E0A4', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 const CARD_BG = '#0F1726';
@@ -195,12 +196,9 @@ const AstraSupportAnalytics: React.FC = () => {
   const gradeColor: Record<string, string> = { A: '#00E0A4', B: '#3B82F6', C: '#F59E0B', D: '#EF4444' };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: PAGE_BG }}>
-        <RefreshCw className="w-8 h-8 animate-spin" style={{ color: ACCENT }} />
-      </div>
-    );
+    return <AdminPageSkeleton kpis={5} rows={8} />;
   }
+
 
   return (
     <div className="min-h-screen p-6 space-y-6" style={{ background: PAGE_BG, color: '#E2E8F0' }}>

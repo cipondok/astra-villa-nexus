@@ -9,6 +9,7 @@ import {
   Activity, XCircle, Lightbulb,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const URGENCY_STYLES = {
   critical: { color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30', icon: AlertTriangle },
@@ -27,15 +28,9 @@ const FounderExecutionDashboard: React.FC = () => {
   const { plan, isLoading } = useExecutionPlan();
 
   if (isLoading || !plan) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-3">
-          <Zap className="h-8 w-8 animate-pulse text-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Computing execution plan…</p>
-        </div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
+
 
   return (
     <div className="space-y-5 p-4 md:p-6 max-w-7xl mx-auto">

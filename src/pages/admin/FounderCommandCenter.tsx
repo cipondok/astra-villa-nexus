@@ -12,6 +12,7 @@ import {
   CheckCircle, BarChart3, Activity, Brain,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const PHASE_ICONS = { morning: Sun, midday: Zap, evening: Moon } as const;
 
@@ -47,15 +48,9 @@ const FounderCommandCenter: React.FC = () => {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
 
   if (isLoading || !routine || !plan || !weekly || !decisions) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-3">
-          <Brain className="h-8 w-8 animate-pulse text-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Loading daily operating system…</p>
-        </div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
+
 
   const totalChecks = routine.reduce((s, b) => s + b.items.length, 0);
   const doneChecks = Object.values(checked).filter(Boolean).length;

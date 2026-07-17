@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 /* ── Score Ring ── */
 function ScoreRing({ score, label, color }: { score: number; label: string; color: string }) {
@@ -145,11 +146,7 @@ export default function ExecutionCommandCenter() {
   const isLoading = hLoading || dosLoading;
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-pulse text-muted-foreground text-sm">Loading Command Center…</div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
 
   return (

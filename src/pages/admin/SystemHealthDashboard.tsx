@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Activity, AlertTriangle, CheckCircle, Gauge, Shield, TrendingUp, Zap, Server, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const STATUS_CONFIG = {
   strong: { color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', label: 'Strong' },
@@ -79,15 +80,9 @@ const SystemHealthDashboard: React.FC = () => {
   const perf = usePerformanceMetrics();
 
   if (isLoading || !report) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-3">
-          <Gauge className="h-8 w-8 animate-spin text-muted-foreground mx-auto" />
-          <p className="text-sm text-muted-foreground">Computing health index…</p>
-        </div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={5} rows={6} />;
   }
+
 
   const cfg = STATUS_CONFIG[report.status];
 

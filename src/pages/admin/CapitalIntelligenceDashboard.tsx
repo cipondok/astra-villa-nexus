@@ -11,6 +11,7 @@ import {
   DollarSign, BarChart3, Clock, CheckCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const READINESS_COLORS = {
   dormant: 'text-muted-foreground',
@@ -33,15 +34,9 @@ const CapitalIntelligenceDashboard: React.FC = () => {
   const { trajectory, isLoading: gLoad } = useGrowthTrajectory();
 
   if (cLoad || gLoad || !capital || !timing || !trajectory) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-3">
-          <DollarSign className="h-8 w-8 animate-pulse text-primary mx-auto" />
-          <p className="text-sm text-muted-foreground">Analyzing global capital signals…</p>
-        </div>
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
+
 
   const verdict = VERDICT_STYLES[timing.verdict];
   const phases = computeLeadershipPhases(trajectory.score);

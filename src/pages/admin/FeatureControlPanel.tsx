@@ -11,6 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Shield, ToggleLeft, Gauge, Eye, AlertTriangle, Zap, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const STATUS_STYLES: Record<FeatureStatus, { bg: string; text: string; label: string }> = {
   active: { bg: 'bg-emerald-500/10 border-emerald-500/30', text: 'text-emerald-400', label: 'Active' },
@@ -46,11 +47,7 @@ const FeatureControlPanel: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <AdminPageSkeleton kpis={4} rows={6} />;
   }
 
   const activeCount = controls.filter(c => c.status === 'active').length;
