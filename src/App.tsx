@@ -421,8 +421,9 @@ const AppContent = () => {
     path.startsWith('/property/');
   const hideAppShell = isAdminRoute || isLuxeRoute;
   // ASTRA V3: routes that get the unified app sidebar (auth/workspace surfaces)
-  const APP_ROUTE_PREFIXES = ['/dashboard', '/admin', '/admin-dashboard', '/settings', '/profile', '/my-properties', '/my-rental-inquiries', '/favorites', '/vendor-marketplace', '/ai-center'];
-  const isAppRoute = APP_ROUTE_PREFIXES.some((p) => path === p || path.startsWith(p + '/'));
+  // Admin routes render their own AdminSidebar/AdminHeader — exclude them from the global AppSidebar chrome.
+  const APP_ROUTE_PREFIXES = ['/dashboard', '/profile', '/my-properties', '/my-rental-inquiries', '/favorites', '/vendor-marketplace', '/ai-center'];
+  const isAppRoute = !isAdminRoute && APP_ROUTE_PREFIXES.some((p) => path === p || path.startsWith(p + '/'));
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
