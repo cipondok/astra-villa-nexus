@@ -157,6 +157,77 @@ export function AdminTableSkeleton({ rows = 10, className }: AdminTableSkeletonP
 }
 
 /* ------------------------------------------------------------------ */
+/* Unified skeleton dispatcher                                        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Single decision point for admin loading fallbacks.
+ *
+ * Contributors should NOT hand-pick between `AdminPageSkeleton`,
+ * `AdminCardsSkeleton`, and `AdminTableSkeleton` inline. Instead, render
+ * `<AdminLoadingFallback layout="…" />` and let this dispatcher choose,
+ * so cards/tables/pages stay visually consistent across the dashboard
+ * and every subpage.
+ *
+ * Rule of thumb:
+ *   - layout="page"   → default full-page shell (KPI strip + rows).
+ *                       Use at the top of a dashboard route while its
+ *                       primary query resolves.
+ *   - layout="cards"  → any view whose loaded state is a grid of cards
+ *                       (portfolios, catalogues, tile dashboards).
+ *   - layout="table"  → any view whose loaded state is a dense list or
+ *                       data table (queues, ledgers, logs, CRM lists).
+ *
+ * The dispatcher forwards sizing hints (`kpis`, `rows`, `count`,
+ * `columns`) to the matching underlying skeleton and ignores the rest,
+ * so callers can pass one consistent props bag.
+ */
+export type AdminLoadingLayout = "page" | "cards" | "table";
+
+export interface AdminLoadingFallbackProps {
+  layout?: AdminLoadingLayout;
+  /** KPI count (page layout). */
+  kpis?: number;
+  /** Row count (page + table layouts). */
+  rows?: number;
+  /** Card count (cards layout). */
+  count?: number;
+  /** Card grid columns (cards layout). */
+  columns?: 2 | 3 | 4;
+  className?: string;
+}
+
+export function AdminLoadingFallback({
+  layout = "page",
+  kpis,
+  rows,
+  count,
+  columns,
+  className,
+}: AdminLoadingFallbackProps) {
+  if (layout === "cards") {
+    return (
+      <AdminCardsSkeleton
+        count={count ?? 6}
+        columns={columns ?? 3}
+        className={className}
+      />
+    );
+  }
+  if (layout === "table") {
+    return <AdminTableSkeleton rows={rows ?? 10} className={className} />;
+  }
+  return (
+    <AdminPageSkeleton
+      kpis={kpis ?? 5}
+      rows={rows ?? 8}
+      className={className}
+    />
+  );
+}
+
+
+/* ------------------------------------------------------------------ */
 /* State views (empty / error / loading) — full-width admin variants  */
 /* ------------------------------------------------------------------ */
 
