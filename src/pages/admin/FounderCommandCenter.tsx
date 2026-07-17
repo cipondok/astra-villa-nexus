@@ -12,6 +12,7 @@ import {
   CheckCircle, BarChart3, Activity, Brain,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const PHASE_ICONS = { morning: Sun, midday: Zap, evening: Moon } as const;
 
