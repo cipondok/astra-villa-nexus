@@ -36,7 +36,7 @@ export interface PageSeoDefault {
  */
 export const PAGE_SEO: Record<string, PageSeoDefault> = {
   home: {
-    title: "Buy, Sell, Rent & Invest in Indonesian Real Estate",
+    title: "Indonesian Real Estate",
     description: DEFAULT_DESCRIPTION,
     keywords: DEFAULT_KEYWORDS,
     path: "/",
