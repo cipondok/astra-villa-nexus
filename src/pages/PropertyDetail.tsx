@@ -199,7 +199,7 @@ const PropertyDetail = () => {
           description: property.description?.slice(0, 300) || `Luxury villa in ${loc}`,
           price: property.price || 0,
           city: property.city || property.location || "Bali",
-          state: property.province || property.state || "Bali",
+          state: property.province || "Bali",
           images,
           bedrooms: property.bedrooms ?? undefined,
           bathrooms: property.bathrooms ?? undefined,
