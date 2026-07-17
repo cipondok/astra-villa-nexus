@@ -6,6 +6,7 @@ import {
   Sparkles, Server, ChevronLeft, ChevronRight, Zap, type LucideIcon 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SIDEBAR_WIDTH_COLLAPSED, SIDEBAR_WIDTH_EXPANDED } from './adminLayoutTokens';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 
