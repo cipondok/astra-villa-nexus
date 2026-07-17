@@ -68552,6 +68552,12 @@ export type Database = {
         }[]
       }
       get_total_user_count: { Args: never; Returns: number }
+      get_unanalyzed_property_ids: {
+        Args: { _limit?: number }
+        Returns: {
+          property_id: string
+        }[]
+      }
       get_unsubscribe_token: { Args: { p_email: string }; Returns: string }
       get_user_financial_summary: {
         Args: { p_user_id?: string }
