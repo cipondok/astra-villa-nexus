@@ -93,6 +93,7 @@ const PropertyDetail = lazy(() => import('@/pages/PropertyDetail'));
 const Dijual = lazy(() => import('@/pages/Dijual'));
 const Disewa = lazy(() => import('@/pages/Disewa'));
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
+const LaunchReadinessPage = lazy(() => import('@/pages/LaunchReadinessPage'));
 const SystemHealthDashboard = lazy(() => import('@/pages/admin/SystemHealthDashboard'));
 const FeatureControlPanel = lazy(() => import('@/pages/admin/FeatureControlPanel'));
 const PlatformIntelligenceDashboard = lazy(() => import('@/pages/admin/PlatformIntelligenceDashboard'));
