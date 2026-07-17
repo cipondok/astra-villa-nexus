@@ -33,7 +33,7 @@ const AdminDashboardContent = ({
   const priorityBanner = useMemo(() => {
     if (prioritySections.length === 0 || !isOverview) return null;
     return (
-      <div className="mx-3 mt-2 p-2 rounded-astra border border-chart-3/20 bg-chart-3/5 flex items-center gap-2">
+      <div className="p-2 rounded-astra border border-chart-3/20 bg-chart-3/5 flex items-center gap-2">
         <span className="h-1.5 w-1.5 rounded-full bg-chart-3 animate-pulse shrink-0" />
         <span className="text-[10px] text-foreground font-medium">
           AI Priority: {prioritySections.includes('verification') && 'Vendor verification queue needs attention'}
