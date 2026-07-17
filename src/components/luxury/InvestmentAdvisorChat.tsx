@@ -73,10 +73,10 @@ const InvestmentAdvisorChat = memo(({ isOpen, onClose, className }: InvestmentAd
               </div>
             </div>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={clearChat}>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={clearChat} aria-label="Clear chat">
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose} aria-label="Close advisor">
                 <X className="w-4 h-4" />
               </Button>
             </div>

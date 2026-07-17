@@ -378,10 +378,10 @@ const CommunityChat = ({ neighborhoodId }: CommunityChatProps) => {
       {isMember && user ? (
         <div className="border-t p-4 bg-background">
           <div className="flex gap-2">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" aria-label="Attach image">
               <Image className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" aria-label="Share property">
               <Home className="h-5 w-5" />
             </Button>
             <Input

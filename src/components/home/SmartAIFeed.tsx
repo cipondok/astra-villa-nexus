@@ -231,14 +231,14 @@ export default function SmartAIFeed({ onPropertyClick, className }: SmartAIFeedP
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => scroll('left')}>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => scroll('left')} aria-label="Scroll left">
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => scroll('right')}>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => scroll('right')} aria-label="Scroll right">
             <ChevronRight className="h-4 w-4" />
           </Button>
           {isLoggedIn && (
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => refetchAI()}>
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => refetchAI()} aria-label="Refresh recommendations">
               <RefreshCw className="h-3.5 w-3.5" />
             </Button>
           )}

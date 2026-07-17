@@ -544,13 +544,13 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
     >
       {/* ── Controls (right) ── */}
       <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-30 flex flex-col gap-2">
-        <Button size="icon" variant="outline" className="h-8 w-8 sm:h-10 sm:w-10 bg-background border-border shadow-sm hover:bg-primary/5 hover:border-primary rounded-lg" onClick={handleZoomIn}>
+        <Button size="icon" variant="outline" aria-label="Zoom in" className="h-8 w-8 sm:h-10 sm:w-10 bg-background border-border shadow-sm hover:bg-primary/5 hover:border-primary rounded-lg" onClick={handleZoomIn}>
           <ZoomIn className="h-4 w-4" />
         </Button>
-        <Button size="icon" variant="outline" className="h-8 w-8 sm:h-10 sm:w-10 bg-background border-border shadow-sm hover:bg-primary/5 hover:border-primary rounded-lg" onClick={handleZoomOut}>
+        <Button size="icon" variant="outline" aria-label="Zoom out" className="h-8 w-8 sm:h-10 sm:w-10 bg-background border-border shadow-sm hover:bg-primary/5 hover:border-primary rounded-lg" onClick={handleZoomOut}>
           <ZoomOut className="h-4 w-4" />
         </Button>
-        <Button size="icon" variant="outline" className="h-8 w-8 sm:h-10 sm:w-10 bg-background border-border shadow-sm hover:bg-primary/5 hover:border-primary rounded-lg" onClick={handleReset}>
+        <Button size="icon" variant="outline" aria-label="Reset view" className="h-8 w-8 sm:h-10 sm:w-10 bg-background border-border shadow-sm hover:bg-primary/5 hover:border-primary rounded-lg" onClick={handleReset}>
           <Maximize2 className="h-4 w-4" />
         </Button>
         {/* Divider */}

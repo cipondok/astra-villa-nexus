@@ -115,11 +115,11 @@ export default function InvestorCopilot({ propertyId }: Props) {
               </div>
               <div className="flex items-center gap-1">
                 {messages.length > 0 && (
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={clearMessages} title="Clear chat">
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={clearMessages} title="Clear chat" aria-label="Clear chat">
                     <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
                   </Button>
                 )}
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setIsOpen(false)}>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setIsOpen(false)} aria-label="Close copilot">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
