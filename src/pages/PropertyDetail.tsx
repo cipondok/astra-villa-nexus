@@ -662,7 +662,10 @@ const PropertyDetail = () => {
           </div>
 
           {/* ----- Right column — sticky booking ----- */}
-          <aside className="lg:sticky lg:top-28 lg:self-start">
+          <aside
+            className="lg:sticky lg:self-start"
+            style={{ top: "calc(var(--reos-header-h, 64px) + 60px)" }}
+          >
             <LuxeCard variant="glass" radius="lg" glow className="p-7 md:p-8">
               <div className="flex items-baseline gap-2">
                 <span className="font-serif-l text-[40px] leading-none">{fmtIDR(property.price)}</span>
