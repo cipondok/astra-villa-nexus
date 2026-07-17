@@ -433,6 +433,9 @@ const PropertyDetail = () => {
                 </div>
               </LuxeCard>
             </div>
+
+            {/* workflow rail — connect to REOS modules */}
+            <PropertyWorkflowRail propertyId={property.id} price={property.price} />
           </div>
 
           {/* ----- Right column — sticky booking ----- */}
