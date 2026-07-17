@@ -388,9 +388,12 @@ export function AdminSidebar({
             aria-label={sectionTitles[openCategory as keyof typeof sectionTitles]}
             onKeyDown={handleMenuKeyDown}
             className={cn(
-              "absolute top-2 w-56 bg-popover border border-border/50 rounded-xl shadow-xl z-[9999] flex flex-col origin-left",
+              "absolute top-2 bg-popover border border-border/50 rounded-xl shadow-xl z-[9999] flex flex-col origin-left",
               "motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:slide-in-from-left-2 motion-safe:duration-200",
-              collapsed ? "left-14" : "left-14 lg:left-60"
+              // On mobile the drawer is 256px wide (w-64); anchor the flyout
+              // just to its right and clamp to the viewport.
+              "left-[15.5rem] right-2 w-auto lg:right-auto lg:w-56",
+              collapsed ? "lg:left-14" : "lg:left-60"
             )}
             style={{ maxHeight: 'min(calc(100vh - 80px), 680px)' }}
           >
