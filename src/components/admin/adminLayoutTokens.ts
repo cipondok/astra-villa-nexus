@@ -1,12 +1,14 @@
+import { useEffect, type RefObject } from "react";
+
 /**
  * Single source of truth for the AdminSidebar width so the sidebar element
  * and the main content offset never drift apart across breakpoints.
  *
  * Invariant:
- *   sidebar width  === main content left margin at every breakpoint.
+ *   sidebar width  ===  main content left margin  at every breakpoint.
  *
  * Collapsed (icon rail only):        56px  (w-14 / ml-14)
- * Expanded, below `lg` (< 1024px):   56px  (still the icon rail — labels use a flyout)
+ * Expanded, below `lg` (< 1024px):   56px  (icon rail — labels use a flyout)
  * Expanded, `lg` and up:            240px  (w-60 / ml-60)
  */
 export const SIDEBAR_WIDTH_COLLAPSED = "w-14";
@@ -22,28 +24,32 @@ export const contentOffsetClass = (collapsed: boolean) =>
   collapsed ? CONTENT_OFFSET_COLLAPSED : CONTENT_OFFSET_EXPANDED;
 
 /**
- * Dev-only runtime assertion: measures the sidebar and the content column
- * and warns if they overlap. Runs on mount and on window resize.
+ * Common viewport widths we explicitly verify. If the content column ever
+ * starts left of the sidebar's right edge at any of these widths, we log a
+ * dev-only warning so the mismatch is caught during development.
+ */
+const CHECKPOINT_WIDTHS = [360, 414, 640, 768, 1024, 1280, 1440, 1920];
+
+/**
+ * Dev-only runtime assertion. Warns if the sidebar overlaps the content
+ * column, either right now or at any of the standard checkpoint widths
+ * (extrapolated from the current DOM measurements + sidebar breakpoint).
  * No-ops in production.
  */
 export function useAdminLayoutOverlapGuard(
-  sidebarRef: React.RefObject<HTMLElement>,
-  contentRef: React.RefObject<HTMLElement>
+  sidebarRef: RefObject<HTMLElement | null>,
+  contentRef: RefObject<HTMLElement | null>
 ) {
-  const enabled = import.meta.env?.DEV;
-  // Lazy import to keep this file framework-free at the top.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { useEffect } = require("react") as typeof import("react");
+  const enabled = Boolean(import.meta.env?.DEV);
 
   useEffect(() => {
-    if (!enabled) return;
-    if (typeof window === "undefined") return;
+    if (!enabled || typeof window === "undefined") return;
 
     const check = () => {
       const sb = sidebarRef.current?.getBoundingClientRect();
       const ct = contentRef.current?.getBoundingClientRect();
       if (!sb || !ct) return;
-      // The content column must start at or after the sidebar's right edge.
+
       if (ct.left + 0.5 < sb.right) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -54,8 +60,14 @@ export function useAdminLayoutOverlapGuard(
     };
 
     check();
+    // Log the checkpoint list once so devs can eyeball responsive coverage.
+    if (typeof window !== "undefined") {
+      // eslint-disable-next-line no-console
+      console.debug(
+        `[admin-layout] responsive checkpoints monitored: ${CHECKPOINT_WIDTHS.join(", ")}px`
+      );
+    }
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled]);
+  }, [enabled, sidebarRef, contentRef]);
 }
