@@ -725,39 +725,33 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
       let candidates: Record<string, unknown>[] = [];
 
       if (filter === "unanalyzed") {
-        // Fetch analyzed IDs (limited set), then fetch random properties excluding them
-        const { data: existing, error: existingError } = await supabase
-          .from("property_seo_analysis")
-          .select("property_id")
-          .not("property_id", "is", null)
-          .limit(10000);
+        // Use RPC to fetch unanalyzed property IDs directly (avoids 10k-row scan)
+        const rpcLimit = Math.min(Math.max(limit * 5, 50), 500);
+        const { data: unanalyzedRows, error: rpcError } = await supabase
+          .rpc("get_unanalyzed_property_ids", { _limit: rpcLimit });
 
-        if (existingError) return json({ error: existingError.message }, 500);
-        const analyzedIds = new Set((existing || []).map((row: any) => row.property_id));
+        if (rpcError) return json({ error: rpcError.message }, 500);
+        const unanalyzedIds = ((unanalyzedRows || []) as Array<{ property_id: string }>)
+          .map((r) => r.property_id)
+          .filter(Boolean);
 
-        // Fetch more candidates than needed to filter client-side
-        const fetchSize = Math.min(limit * 10, 500);
-        const randomOffset = Math.floor(Math.random() * 1000);
+        if (unanalyzedIds.length === 0) {
+          candidates = [];
+        } else {
+          let candidateQuery = supabase
+            .from("properties")
+            .select(SEO_PROPERTY_SELECT)
+            .in("id", unanalyzedIds)
+            .order("created_at", { ascending: false });
 
-        let candidateQuery = supabase
-          .from("properties")
-          .select(SEO_PROPERTY_SELECT)
-          .order("created_at", { ascending: false });
+          if (locState) candidateQuery = candidateQuery.eq("state", locState);
+          if (locCity) candidateQuery = candidateQuery.eq("city", locCity);
+          if (locArea) candidateQuery = candidateQuery.ilike("location", `%${locArea}%`);
 
-        // Apply location filters
-        if (locState) candidateQuery = candidateQuery.eq("state", locState);
-        if (locCity) candidateQuery = candidateQuery.eq("city", locCity);
-        if (locArea) candidateQuery = candidateQuery.ilike("location", `%${locArea}%`);
-
-        candidateQuery = candidateQuery.range(randomOffset, randomOffset + fetchSize - 1);
-
-        const { data: allCandidates, error: fetchError } = await candidateQuery;
-
-        if (fetchError) return json({ error: fetchError.message }, 500);
-
-        candidates = ((allCandidates || []) as Record<string, unknown>[])
-          .filter((p) => !analyzedIds.has(p.id as string))
-          .slice(0, limit);
+          const { data: allCandidates, error: fetchError } = await candidateQuery.limit(limit);
+          if (fetchError) return json({ error: fetchError.message }, 500);
+          candidates = (allCandidates || []) as Record<string, unknown>[];
+        }
       } else {
         let fetchQuery = supabase
           .from("properties")
