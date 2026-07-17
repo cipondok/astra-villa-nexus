@@ -212,7 +212,10 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
         {openCategory && openSections && (
           <div 
             role="menu"
-            className="absolute left-14 lg:left-60 top-2 w-56 bg-popover border border-border/50 rounded-xl shadow-xl z-[9999] flex flex-col"
+            className={cn(
+              "absolute top-2 w-56 bg-popover border border-border/50 rounded-xl shadow-xl z-[9999] flex flex-col",
+              collapsed ? "left-14" : "left-14 lg:left-60"
+            )}
             style={{ maxHeight: 'min(calc(100vh - 80px), 680px)' }}
           >
             {/* Panel Header */}
