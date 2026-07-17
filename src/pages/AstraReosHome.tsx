@@ -564,7 +564,7 @@ export default function AstraReosHome() {
             <Section className="grid grid-cols-12 gap-5">
               {/* Hero */}
               <motion.div variants={fadeUp} className="col-span-12 lg:col-span-9 reos-card overflow-hidden relative min-h-[480px]">
-                <img src={heroImg} alt="Luxury villa overlooking the ocean" className="absolute inset-0 w-full h-full object-cover" />
+                <img src={heroImg} alt="Luxury villa overlooking the ocean" width={1600} height={900} fetchPriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
 
                 <div className="relative p-6 md:p-10 flex flex-col h-full" style={{ color: "var(--hero-text)" }}>
