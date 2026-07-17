@@ -410,15 +410,20 @@ const PropertyDetail = () => {
       )}
 
       {/* ============ SCROLL-AWARE MINI ACTION BAR ============ */}
+      {/* Anchored directly beneath the global header via --reos-header-h so it
+          never overlaps the header, and sits at z-30 so header menus/modals win. */}
       <div
         className={cn(
-          "hidden lg:block fixed top-16 inset-x-0 z-40 transition-all duration-300",
+          "hidden lg:block fixed inset-x-0 z-30 transition-all duration-300",
           scrolled ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-3 pointer-events-none",
         )}
+        style={{ top: "var(--reos-header-h, 64px)" }}
         aria-hidden={!scrolled}
+        role="region"
+        aria-label="Property quick actions"
       >
         <div className="mx-auto max-w-[1440px] px-8">
-          <LuxeCard variant="glass" radius="pill" className="mt-3 px-5 py-2.5 flex items-center gap-4">
+          <LuxeCard variant="glass" radius="pill" className="mt-2 px-5 py-2 flex items-center gap-4 h-[52px]">
             <div className="min-w-0 flex-1">
               <div className="text-[13px] font-medium truncate">{property.title}</div>
               <div className="text-[10px] text-luxe-mut inline-flex items-center gap-1.5">
@@ -428,7 +433,8 @@ const PropertyDetail = () => {
             <div className="font-serif-l text-[18px] leading-none whitespace-nowrap">{fmtIDR(property.price)}</div>
             <button
               onClick={() => navigate(`/booking/${property.id}`)}
-              className="luxe-gold-btn rounded-full px-5 py-2 text-[12px] font-medium whitespace-nowrap"
+              className="luxe-gold-btn rounded-full px-5 py-2 text-[12px] font-medium whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+              tabIndex={scrolled ? 0 : -1}
             >
               Reserve
             </button>
@@ -656,7 +662,10 @@ const PropertyDetail = () => {
           </div>
 
           {/* ----- Right column — sticky booking ----- */}
-          <aside className="lg:sticky lg:top-28 lg:self-start">
+          <aside
+            className="lg:sticky lg:self-start"
+            style={{ top: "calc(var(--reos-header-h, 64px) + 60px)" }}
+          >
             <LuxeCard variant="glass" radius="lg" glow className="p-7 md:p-8">
               <div className="flex items-baseline gap-2">
                 <span className="font-serif-l text-[40px] leading-none">{fmtIDR(property.price)}</span>
