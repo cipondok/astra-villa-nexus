@@ -345,7 +345,7 @@ export function AdminSidebar({
                         className={cn(
                           "text-[9px] tabular-nums font-medium rounded px-1 py-0.5 ml-auto",
                           "motion-safe:transition-opacity motion-safe:duration-200",
-                          showLabels ? "opacity-100" : "opacity-0 pointer-events-none",
+                          showLabels ? "opacity-100" : "opacity-100 lg:opacity-0 lg:pointer-events-none",
                           isOpen ? "bg-primary-foreground/20 text-primary-foreground" :
                           isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
                         )}
