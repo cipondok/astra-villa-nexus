@@ -4,10 +4,27 @@ import AdminDashboardContent from "./AdminDashboardContent";
 import AdminHeader from "./AdminHeader";
 import { useNavigate } from "react-router-dom";
 import { DemoModeProvider } from "@/contexts/DemoModeContext";
+import { useAuth } from "@/contexts/AuthContext";
 import AIIntelligenceSystem from "./AIIntelligenceSystem";
 import { InvestorDemoMode } from "./InvestorDemoMode";
 import DecacornNarrativeMode from "./DecacornNarrativeMode";
 import { contentOffsetClass, useAdminLayoutOverlapGuard } from "./adminLayoutTokens";
+
+const SIDEBAR_PREF_PREFIX = "astra:admin:sidebar-collapsed";
+const sidebarPrefKey = (userId?: string | null) =>
+  `${SIDEBAR_PREF_PREFIX}:${userId ?? "anon"}`;
+
+const readStoredSidebar = (userId?: string | null): boolean | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(sidebarPrefKey(userId));
+    if (raw === "1") return true;
+    if (raw === "0") return false;
+    return null;
+  } catch {
+    return null;
+  }
+};
 
 const DemoModeController = lazy(() => import("./demo/DemoModeController"));
 const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
