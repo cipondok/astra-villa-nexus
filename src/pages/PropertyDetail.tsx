@@ -725,12 +725,20 @@ const PropertyDetail = () => {
               </div>
 
               <button
+                ref={ctaRef("reserve", "sidebar")}
                 onClick={() => {
                   if (!checkIn || !checkOut) {
+                    trackClick({ cta: "reserve", placement: "sidebar", extra: { blocked: "missing_dates" } });
                     toast({ title: "Select dates", description: "Please choose check-in and check-out." });
                     return;
                   }
                   const params = new URLSearchParams({ checkIn, checkOut, guests: String(guests) });
+                  trackClick({
+                    cta: "reserve",
+                    placement: "sidebar",
+                    outcome: "booking_initiated",
+                    extra: { has_dates: true, guests },
+                  });
                   navigate(`/booking/${property.id}?${params.toString()}`);
                 }}
                 className="luxe-gold-btn w-full rounded-full py-3.5 text-[13px] font-medium mt-6"
@@ -738,8 +746,14 @@ const PropertyDetail = () => {
                 Reserve
               </button>
 
-              <a href={whatsappLink} target="_blank" rel="noreferrer"
-                 className="luxe-ghost-btn w-full rounded-full py-3.5 text-[12px] mt-3 inline-flex items-center justify-center gap-2">
+              <a
+                ref={ctaRef("contact", "sidebar")}
+                href={whatsappLink}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => trackClick({ cta: "contact", placement: "sidebar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+                className="luxe-ghost-btn w-full rounded-full py-3.5 text-[12px] mt-3 inline-flex items-center justify-center gap-2"
+              >
                 <MessageCircle className="h-3.5 w-3.5" /> WhatsApp Concierge
               </a>
 
