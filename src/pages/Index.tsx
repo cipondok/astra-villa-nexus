@@ -573,7 +573,7 @@ const Index = () => {
         Skip to main content
       </a>
       <SEOHead
-        fullTitle="ASTRA Villa Property | Buy, Sell, Rent & Invest in Indonesian Real Estate"
+        fullTitle="ASTRA Villa Property | Indonesian Real Estate"
         description="Discover luxury villas, apartments, land, and investment properties across Indonesia with AI-powered search, virtual tours, and verified listings."
         keywords="property indonesia, bali villa, luxury villa, real estate indonesia, property investment, villa for sale, villa rental, apartment indonesia, property marketplace, astra villa property"
         ogTitle="ASTRA Villa Property | Indonesia's AI-Powered Real Estate Platform"
