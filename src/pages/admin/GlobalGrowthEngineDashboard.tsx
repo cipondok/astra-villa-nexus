@@ -10,6 +10,7 @@ import {
   Loader2, ArrowUpRight, Activity, Crown, Rocket, Timer, Shield,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const TIER_COLORS = {
   cold: 'text-muted-foreground bg-muted/20 border-muted/30',
