@@ -73,16 +73,17 @@ const config: Config = {
           900: 'hsl(0, 0%, 9%)',
         },
         // ASTRA Villa Property Brand Colors
+        // Primary: #0A1931 | Secondary: #FFFFFF | Accent: #D4AF37
         'astra': {
           navy: {
-            DEFAULT: 'hsl(223, 32%, 27%)', // #2E3A59
-            light: 'hsl(223, 28%, 35%)',
-            dark: 'hsl(222, 47%, 11%)', // #0F172A
+            DEFAULT: 'hsl(217, 66%, 12%)', // #0A1931
+            light: 'hsl(217, 54%, 18%)',    // #12264A
+            dark: 'hsl(217, 70%, 8%)',      // #071225
           },
           gold: {
-            DEFAULT: 'hsl(38, 52%, 67%)', // #D6B67E
-            light: 'hsl(38, 45%, 75%)',
-            muted: 'hsl(38, 48%, 55%)',
+            DEFAULT: 'hsl(46, 65%, 52%)', // #D4AF37
+            light: 'hsl(46, 70%, 62%)',   // #E4C56A
+            muted: 'hsl(46, 55%, 42%)',   // #B08C26
           },
           cream: 'hsl(41, 52%, 91%)', // #F3ECDC
         },

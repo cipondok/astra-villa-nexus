@@ -36,7 +36,7 @@ function GlassCard({ children, className }: { children: React.ReactNode; classNa
   return (
     <div className={cn(
       'rounded-[20px] border border-[hsl(var(--border))]/10',
-      'bg-[#0B0B0B]/70 backdrop-blur-xl shadow-2xl',
+      'bg-[#0A1931]/70 backdrop-blur-xl shadow-2xl',
       className
     )}>
       {children}
@@ -49,10 +49,10 @@ function StatRow({ icon: Icon, label, value, accent }: { icon: React.ElementType
   return (
     <div className="flex items-center justify-between py-2">
       <div className="flex items-center gap-2">
-        <Icon className={cn('h-3.5 w-3.5', accent ? 'text-[#C8A96A]' : 'text-muted-foreground')} />
+        <Icon className={cn('h-3.5 w-3.5', accent ? 'text-[#D4AF37]' : 'text-muted-foreground')} />
         <span className="text-xs text-muted-foreground">{label}</span>
       </div>
-      <span className={cn('text-xs font-semibold', accent ? 'text-[#C8A96A]' : 'text-foreground')}>{value}</span>
+      <span className={cn('text-xs font-semibold', accent ? 'text-[#D4AF37]' : 'text-foreground')}>{value}</span>
     </div>
   );
 }
@@ -71,13 +71,13 @@ function useDeviceCapability() {
 // ── 3D Viewer Loading ──
 function ViewerLoader() {
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0B0B0B]">
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0A1931]">
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-        className="w-10 h-10 rounded-full border-2 border-[#C8A96A]/20 border-t-[#C8A96A]"
+        className="w-10 h-10 rounded-full border-2 border-[#D4AF37]/20 border-t-[#D4AF37]"
       />
-      <p className="text-xs text-[#C8A96A]/60 mt-3 font-mono tracking-wider">LOADING 3D MODEL</p>
+      <p className="text-xs text-[#D4AF37]/60 mt-3 font-mono tracking-wider">LOADING 3D MODEL</p>
     </div>
   );
 }
@@ -85,20 +85,20 @@ function ViewerLoader() {
 // ── Static fallback for weak devices ──
 function StaticFallback({ onRequestLoad }: { onRequestLoad: () => void }) {
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0B0B0B]">
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0A1931]">
       <div className="text-center px-6 max-w-sm">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#C8A96A]/20 to-[#C8A96A]/5 border border-[#C8A96A]/15 flex items-center justify-center mx-auto mb-5">
-          <Building2 className="h-9 w-9 text-[#C8A96A]" />
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#D4AF37]/20 to-[#D4AF37]/5 border border-[#D4AF37]/15 flex items-center justify-center mx-auto mb-5">
+          <Building2 className="h-9 w-9 text-[#D4AF37]" />
         </div>
         <h3 className="text-lg font-bold text-foreground mb-2">Villa Serenity</h3>
         <p className="text-xs text-muted-foreground mb-1">Canggu, Bali • 450 m² • 4 BD / 5 BA</p>
-        <p className="text-sm font-semibold text-[#C8A96A] mb-5">Rp 12.5B</p>
+        <p className="text-sm font-semibold text-[#D4AF37] mb-5">Rp 12.5B</p>
         <p className="text-[11px] text-muted-foreground mb-4">
           3D viewer uses simplified mode on this device for best performance.
         </p>
         <button
           onClick={onRequestLoad}
-          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C8A96A] to-[#B8955A] text-[#0B0B0B] text-xs font-bold hover:shadow-lg hover:shadow-[#C8A96A]/20 transition-all"
+          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-[#0A1931] text-xs font-bold hover:shadow-lg hover:shadow-[#D4AF37]/20 transition-all"
         >
           Load 3D Viewer Anyway
         </button>
@@ -137,7 +137,7 @@ export default function AstraImmersiveViewer() {
 
   return (
     <div className={cn(
-      "h-screen w-full bg-[#0B0B0B] text-foreground overflow-hidden relative",
+      "h-screen w-full bg-[#0A1931] text-foreground overflow-hidden relative",
       fullscreen ? "flex" : "grid grid-cols-12"
     )}>
       {/* ── Left Panel: Property Info (3 cols) ── */}
@@ -154,14 +154,14 @@ export default function AstraImmersiveViewer() {
             {/* Header */}
             <div className="px-5 pt-6 pb-4">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#C8A96A] to-[#C8A96A]/40 flex items-center justify-center">
-                  <Building2 className="h-4 w-4 text-[#0B0B0B]" />
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#D4AF37]/40 flex items-center justify-center">
+                  <Building2 className="h-4 w-4 text-[#0A1931]" />
                 </div>
-                <span className="text-xs font-bold tracking-[0.2em] text-[#C8A96A]">ASTRA VILLA</span>
+                <span className="text-xs font-bold tracking-[0.2em] text-[#D4AF37]">ASTRA VILLA</span>
               </div>
               <h1 className="text-xl font-bold tracking-tight">{PROPERTY.name}</h1>
               <div className="flex items-center gap-1.5 mt-1">
-                <MapPin className="h-3 w-3 text-[#C8A96A]" />
+                <MapPin className="h-3 w-3 text-[#D4AF37]" />
                 <span className="text-xs text-muted-foreground">{PROPERTY.location}</span>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function AstraImmersiveViewer() {
                 <div className="flex items-end justify-between">
                   <div>
                     <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Price</p>
-                    <p className="text-2xl font-bold text-[#C8A96A] mt-1">{PROPERTY.price}</p>
+                    <p className="text-2xl font-bold text-[#D4AF37] mt-1">{PROPERTY.price}</p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">≈ {PROPERTY.priceUsd}</p>
                   </div>
                   <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-500/10">
@@ -219,7 +219,7 @@ export default function AstraImmersiveViewer() {
                 <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">Features</h3>
                 <div className="flex flex-wrap gap-1.5">
                   {PROPERTY.features.map(f => (
-                    <span key={f} className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-[#C8A96A]/8 text-[#C8A96A] border border-[#C8A96A]/15">
+                    <span key={f} className="px-2.5 py-1 rounded-lg text-[10px] font-medium bg-[#D4AF37]/8 text-[#D4AF37] border border-[#D4AF37]/15">
                       {f}
                     </span>
                   ))}
@@ -229,10 +229,10 @@ export default function AstraImmersiveViewer() {
 
             {/* CTAs */}
             <div className="px-5 pb-6 mt-auto space-y-2">
-              <button className="w-full h-12 rounded-xl bg-gradient-to-r from-[#C8A96A] to-[#B8955A] text-[#0B0B0B] text-sm font-bold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#C8A96A]/20 transition-all">
+              <button className="w-full h-12 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8941F] text-[#0A1931] text-sm font-bold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#D4AF37]/20 transition-all">
                 <DollarSign className="h-4 w-4" /> Invest Now
               </button>
-              <button className="w-full h-10 rounded-xl border border-[#C8A96A]/20 text-[#C8A96A] text-xs font-semibold flex items-center justify-center gap-2 hover:bg-[#C8A96A]/5 transition-all">
+              <button className="w-full h-10 rounded-xl border border-[#D4AF37]/20 text-[#D4AF37] text-xs font-semibold flex items-center justify-center gap-2 hover:bg-[#D4AF37]/5 transition-all">
                 <Shield className="h-3.5 w-3.5" /> Schedule Private Viewing
               </button>
             </div>
@@ -255,7 +255,7 @@ export default function AstraImmersiveViewer() {
                 stencil: false,
                 depth: true,
               }}
-              style={{ background: '#0B0B0B' }}
+              style={{ background: '#0A1931' }}
               frameloop="always"
             >
               <PerformanceMonitor
@@ -263,8 +263,8 @@ export default function AstraImmersiveViewer() {
                 onIncline={() => setDprCap(Math.min(1.5, window.devicePixelRatio))}
               />
               <AdaptiveDpr pixelated />
-              <color attach="background" args={['#0B0B0B']} />
-              <fog attach="fog" args={['#0B0B0B', 20, 40]} />
+              <color attach="background" args={['#0A1931']} />
+              <fog attach="fog" args={['#0A1931', 20, 40]} />
               <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} cameraCommand={cameraCommand} onCameraCommandComplete={handleCameraCommandComplete} />
             </Canvas>
           </Suspense>
@@ -279,11 +279,11 @@ export default function AstraImmersiveViewer() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-5 left-1/2 -translate-x-1/2 px-5 py-2.5 rounded-2xl bg-[#0B0B0B]/80 backdrop-blur-xl border border-[#C8A96A]/30 z-20"
+              className="absolute top-5 left-1/2 -translate-x-1/2 px-5 py-2.5 rounded-2xl bg-[#0A1931]/80 backdrop-blur-xl border border-[#D4AF37]/30 z-20"
             >
               <div className="flex items-center gap-2">
-                <Sparkles className="h-3.5 w-3.5 text-[#C8A96A]" />
-                <span className="text-xs font-semibold text-[#C8A96A]">{activeHotspot}</span>
+                <Sparkles className="h-3.5 w-3.5 text-[#D4AF37]" />
+                <span className="text-xs font-semibold text-[#D4AF37]">{activeHotspot}</span>
                 <button onClick={() => setActiveHotspot(null)} className="ml-2 text-muted-foreground hover:text-foreground text-xs">✕</button>
               </div>
             </motion.div>
@@ -297,7 +297,7 @@ export default function AstraImmersiveViewer() {
               onClick={() => setIsNight(!isNight)}
               className={cn(
                 'w-9 h-9 rounded-xl flex items-center justify-center transition-all',
-                isNight ? 'bg-[#C8A96A]/20 text-[#C8A96A]' : 'text-muted-foreground hover:text-foreground'
+                isNight ? 'bg-[#D4AF37]/20 text-[#D4AF37]' : 'text-muted-foreground hover:text-foreground'
               )}
               title={isNight ? 'Switch to Day' : 'Switch to Night'}
             >
@@ -308,7 +308,7 @@ export default function AstraImmersiveViewer() {
               onClick={() => setAutoRotate(!autoRotate)}
               className={cn(
                 'w-9 h-9 rounded-xl flex items-center justify-center transition-all',
-                autoRotate ? 'bg-[#C8A96A]/20 text-[#C8A96A]' : 'text-muted-foreground hover:text-foreground'
+                autoRotate ? 'bg-[#D4AF37]/20 text-[#D4AF37]' : 'text-muted-foreground hover:text-foreground'
               )}
               title={autoRotate ? 'Pause rotation' : 'Auto rotate'}
             >
@@ -336,13 +336,13 @@ export default function AstraImmersiveViewer() {
           <>
             <button
               onClick={() => setShowLeft(!showLeft)}
-              className="absolute top-4 left-4 w-8 h-8 rounded-xl bg-[#0B0B0B]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 flex items-center justify-center text-muted-foreground hover:text-foreground z-20"
+              className="absolute top-4 left-4 w-8 h-8 rounded-xl bg-[#0A1931]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 flex items-center justify-center text-muted-foreground hover:text-foreground z-20"
             >
               <PanelLeftClose className={cn('h-4 w-4 transition-transform', !showLeft && 'rotate-180')} />
             </button>
             <button
               onClick={() => setShowRight(!showRight)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-[#0B0B0B]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 flex items-center justify-center text-muted-foreground hover:text-foreground z-20"
+              className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-[#0A1931]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 flex items-center justify-center text-muted-foreground hover:text-foreground z-20"
             >
               <PanelRightClose className={cn('h-4 w-4 transition-transform', !showRight && 'rotate-180')} />
             </button>

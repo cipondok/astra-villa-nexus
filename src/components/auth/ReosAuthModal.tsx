@@ -244,7 +244,7 @@ export function ReosAuthModal({
               <div className="relative h-full flex flex-col justify-between p-6 text-white">
                 <div>
                   <div className="flex items-center gap-2">
-                    <div className="h-9 w-9 rounded-xl flex items-center justify-center font-bold text-black" style={{ background: "linear-gradient(180deg,#E0C384,#C8A96A)" }}>A</div>
+                    <div className="h-9 w-9 rounded-xl flex items-center justify-center font-bold text-black" style={{ background: "linear-gradient(180deg,#E0C384,#D4AF37)" }}>A</div>
                     <div className="leading-tight">
                       <div className="text-[11px] tracking-[0.28em] font-semibold">ASTRA VILLA</div>
                       <div className="text-[8px] tracking-[0.3em] text-white/60">REAL ESTATE OS</div>
@@ -303,7 +303,7 @@ export function ReosAuthModal({
                       <div className="flex items-center justify-between text-[12px]">
                         <label className="inline-flex items-center gap-2 cursor-pointer text-[#9A958A]">
                           <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)}
-                            className="h-3.5 w-3.5 rounded border-white/20 bg-transparent accent-[#C8A96A]" />
+                            className="h-3.5 w-3.5 rounded border-white/20 bg-transparent accent-[#D4AF37]" />
                           Remember me
                         </label>
                         <button
@@ -385,14 +385,14 @@ export function ReosAuthModal({
                             <select id="reg-country" value={reg.country}
                               onChange={(e) => setReg(r => ({ ...r, country: e.target.value }))}
                               className={inputCls + " appearance-none"}>
-                              {countries.map(c => <option key={c} value={c} className="bg-[#121214]">{c}</option>)}
+                              {countries.map(c => <option key={c} value={c} className="bg-[#0D2140]">{c}</option>)}
                             </select>
                           </Field>
                           <Field id="reg-lang" label="Language" icon={Languages} error={regErr.language}>
                             <select id="reg-lang" value={reg.language}
                               onChange={(e) => setReg(r => ({ ...r, language: e.target.value }))}
                               className={inputCls + " appearance-none"}>
-                              {languages.map(l => <option key={l.v} value={l.v} className="bg-[#121214]">{l.label}</option>)}
+                              {languages.map(l => <option key={l.v} value={l.v} className="bg-[#0D2140]">{l.label}</option>)}
                             </select>
                           </Field>
                         </div>
@@ -413,11 +413,11 @@ export function ReosAuthModal({
                             return (
                               <button key={p.v} type="button"
                                 onClick={() => setReg(r => ({ ...r, profileType: p.v }))}
-                                className={`text-left rounded-xl border p-3 transition group ${active ? "bg-[#C8A96A]/12 border-[#C8A96A]" : "bg-white/[0.02] border-white/8 hover:border-[#C8A96A]/40"}`}
-                                style={active ? { borderColor: "#C8A96A", background: "rgba(200,169,106,0.08)" } : {}}
+                                className={`text-left rounded-xl border p-3 transition group ${active ? "bg-[#D4AF37]/12 border-[#D4AF37]" : "bg-white/[0.02] border-white/8 hover:border-[#D4AF37]/40"}`}
+                                style={active ? { borderColor: "#D4AF37", background: "rgba(200,169,106,0.08)" } : {}}
                               >
                                 <div className="flex items-center gap-2">
-                                  <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#C8A96A] text-black" : "bg-white/5"}`}>
+                                  <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#D4AF37] text-black" : "bg-white/5"}`}>
                                     <p.icon className="h-3.5 w-3.5" />
                                   </div>
                                   <div className="text-[12.5px] font-semibold">{p.label}</div>
@@ -444,10 +444,10 @@ export function ReosAuthModal({
                             return (
                               <button key={opt.v} type="button"
                                 onClick={() => setReg(r => ({ ...r, interests: active ? r.interests.filter(x => x !== opt.v) : [...r.interests, opt.v] }))}
-                                className={`flex items-center gap-2 rounded-xl border p-3 transition ${active ? "border-[#C8A96A]" : "border-white/8 hover:border-[#C8A96A]/40"}`}
+                                className={`flex items-center gap-2 rounded-xl border p-3 transition ${active ? "border-[#D4AF37]" : "border-white/8 hover:border-[#D4AF37]/40"}`}
                                 style={active ? { background: "rgba(200,169,106,0.08)" } : {}}
                               >
-                                <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#C8A96A] text-black" : "bg-white/5"}`}>
+                                <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#D4AF37] text-black" : "bg-white/5"}`}>
                                   <opt.icon className="h-3.5 w-3.5" />
                                 </div>
                                 <span className="text-[12px] font-medium">{opt.label}</span>
@@ -476,7 +476,7 @@ export function ReosAuthModal({
                           style={{ background: "radial-gradient(circle, rgba(200,169,106,0.25), transparent 70%)" }}
                         >
                           <div className="h-14 w-14 rounded-full flex items-center justify-center"
-                            style={{ background: "linear-gradient(180deg,#E0C384,#C8A96A)" }}>
+                            style={{ background: "linear-gradient(180deg,#E0C384,#D4AF37)" }}>
                             <CheckCircle2 className="h-7 w-7 text-black" />
                           </div>
                         </motion.div>
@@ -510,7 +510,7 @@ export function ReosAuthModal({
                             className="flex items-center gap-3 text-[12.5px]">
                             <span className="h-6 w-6 rounded-full flex items-center justify-center border"
                               style={{
-                                borderColor: done ? "#C8A96A" : active ? "#E0C384" : "rgba(255,255,255,0.1)",
+                                borderColor: done ? "#D4AF37" : active ? "#E0C384" : "rgba(255,255,255,0.1)",
                                 background: done ? "rgba(200,169,106,0.18)" : "transparent",
                               }}>
                               {done ? <Check className="h-3 w-3" style={{ color: "#E0C384" }} />
@@ -549,13 +549,13 @@ export function ReosAuthModal({
    Sub-components
    ============================================================ */
 const inputCls =
-  "w-full h-10 pl-9 pr-9 rounded-lg bg-white/[0.03] border border-white/8 text-[13px] text-[#F4F1EA] placeholder:text-[#6B6760] outline-none transition focus:border-[#C8A96A] focus:bg-white/[0.05] focus:ring-2 focus:ring-[#C8A96A]/30";
+  "w-full h-10 pl-9 pr-9 rounded-lg bg-white/[0.03] border border-white/8 text-[13px] text-[#F4F1EA] placeholder:text-[#6B6760] outline-none transition focus:border-[#D4AF37] focus:bg-white/[0.05] focus:ring-2 focus:ring-[#D4AF37]/30";
 
 function Header({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div>
       <div className="md:hidden flex items-center gap-2 mb-4">
-        <div className="h-8 w-8 rounded-lg flex items-center justify-center font-bold text-black" style={{ background: "linear-gradient(180deg,#E0C384,#C8A96A)" }}>A</div>
+        <div className="h-8 w-8 rounded-lg flex items-center justify-center font-bold text-black" style={{ background: "linear-gradient(180deg,#E0C384,#D4AF37)" }}>A</div>
         <span className="text-[12px] tracking-[0.25em] font-semibold">ASTRA VILLA</span>
       </div>
       <h1 className="text-[22px] font-semibold tracking-tight">{title}</h1>
@@ -583,7 +583,7 @@ function PrimaryButton({ children, loading, className = "", ...props }: any) {
   return (
     <button {...props}
       className={`relative w-full h-11 rounded-xl text-[13px] font-semibold inline-flex items-center justify-center gap-2 transition disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
-      style={{ background: "linear-gradient(180deg,#E0C384,#C8A96A)", color: "#161208", boxShadow: "0 12px 30px -10px rgba(200,169,106,0.55), inset 0 1px 0 rgba(255,255,255,0.25)" }}
+      style={{ background: "linear-gradient(180deg,#E0C384,#D4AF37)", color: "#161208", boxShadow: "0 12px 30px -10px rgba(200,169,106,0.55), inset 0 1px 0 rgba(255,255,255,0.25)" }}
     >
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : children}
     </button>
@@ -593,7 +593,7 @@ function PrimaryButton({ children, loading, className = "", ...props }: any) {
 function SecondaryButton({ children, ...props }: any) {
   return (
     <button {...props}
-      className="h-11 px-4 rounded-xl text-[12.5px] inline-flex items-center justify-center gap-2 border border-white/10 bg-white/[0.02] text-[#F4F1EA] hover:bg-white/[0.05] hover:border-[#C8A96A]/40 transition">
+      className="h-11 px-4 rounded-xl text-[12.5px] inline-flex items-center justify-center gap-2 border border-white/10 bg-white/[0.02] text-[#F4F1EA] hover:bg-white/[0.05] hover:border-[#D4AF37]/40 transition">
       {children}
     </button>
   );
@@ -619,7 +619,7 @@ function SocialButton({ provider, children, ...props }: any) {
   }, [provider]);
   return (
     <button {...props}
-      className="h-10 rounded-xl inline-flex items-center justify-center gap-2.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#C8A96A]/40 text-[12.5px] text-[#F4F1EA] transition disabled:opacity-50 disabled:cursor-not-allowed">
+      className="h-10 rounded-xl inline-flex items-center justify-center gap-2.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#D4AF37]/40 text-[12.5px] text-[#F4F1EA] transition disabled:opacity-50 disabled:cursor-not-allowed">
       {Glyph} {children}
     </button>
   );
@@ -651,10 +651,10 @@ function Stepper({ step, total }: { step: number; total: number }) {
         return (
           <div key={n} className="flex-1 flex items-center gap-2">
             <div className="h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold transition"
-              style={{ background: active ? "linear-gradient(180deg,#E0C384,#C8A96A)" : "transparent", color: active ? "#161208" : "#9A958A", border: active ? "none" : "1px solid rgba(255,255,255,0.12)" }}>
+              style={{ background: active ? "linear-gradient(180deg,#E0C384,#D4AF37)" : "transparent", color: active ? "#161208" : "#9A958A", border: active ? "none" : "1px solid rgba(255,255,255,0.12)" }}>
               {n}
             </div>
-            {n < total && <div className="flex-1 h-px" style={{ background: step > n ? "#C8A96A" : "rgba(255,255,255,0.08)" }} />}
+            {n < total && <div className="flex-1 h-px" style={{ background: step > n ? "#D4AF37" : "rgba(255,255,255,0.08)" }} />}
           </div>
         );
       })}
