@@ -4,10 +4,27 @@ import AdminDashboardContent from "./AdminDashboardContent";
 import AdminHeader from "./AdminHeader";
 import { useNavigate } from "react-router-dom";
 import { DemoModeProvider } from "@/contexts/DemoModeContext";
+import { useAuth } from "@/contexts/AuthContext";
 import AIIntelligenceSystem from "./AIIntelligenceSystem";
 import { InvestorDemoMode } from "./InvestorDemoMode";
 import DecacornNarrativeMode from "./DecacornNarrativeMode";
 import { contentOffsetClass, useAdminLayoutOverlapGuard } from "./adminLayoutTokens";
+
+const SIDEBAR_PREF_PREFIX = "astra:admin:sidebar-collapsed";
+const sidebarPrefKey = (userId?: string | null) =>
+  `${SIDEBAR_PREF_PREFIX}:${userId ?? "anon"}`;
+
+const readStoredSidebar = (userId?: string | null): boolean | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(sidebarPrefKey(userId));
+    if (raw === "1") return true;
+    if (raw === "0") return false;
+    return null;
+  } catch {
+    return null;
+  }
+};
 
 const DemoModeController = lazy(() => import("./demo/DemoModeController"));
 const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
@@ -20,25 +37,56 @@ const normalizeSection = (section: string | null) => {
 
 const ModernEnhancedAdminDashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const userId = user?.id ?? null;
   const [activeSection, setActiveSection] = useState(() => {
     const params = new URLSearchParams(window.location.search);
     return normalizeSection(params.get("section"));
   });
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth < 1024 : false
-  );
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    const stored = readStoredSidebar(null);
+    if (stored !== null) return stored;
+    return typeof window !== "undefined" ? window.innerWidth < 1024 : false;
+  });
+  const hasUserPref = useRef(false);
 
-  // Auto-collapse on small screens, restore on large
+  // Load user-scoped preference once user is known
+  useEffect(() => {
+    const stored = readStoredSidebar(userId);
+    if (stored !== null) {
+      hasUserPref.current = true;
+      setSidebarCollapsed(stored);
+    } else {
+      hasUserPref.current = false;
+    }
+  }, [userId]);
+
+  // Persist preference whenever it changes
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(sidebarPrefKey(userId), sidebarCollapsed ? "1" : "0");
+    } catch {
+      /* ignore quota / disabled storage */
+    }
+  }, [sidebarCollapsed, userId]);
+
+  // Auto-collapse on small screens; on large screens, restore user preference (or expand)
   useEffect(() => {
     if (typeof window === "undefined") return;
     const mql = window.matchMedia("(max-width: 1023px)");
     const handler = (e: MediaQueryListEvent | MediaQueryList) => {
-      setSidebarCollapsed(e.matches);
+      if (e.matches) {
+        setSidebarCollapsed(true);
+      } else {
+        const stored = readStoredSidebar(userId);
+        setSidebarCollapsed(stored ?? false);
+      }
     };
     handler(mql);
     mql.addEventListener("change", handler as (e: MediaQueryListEvent) => void);
     return () => mql.removeEventListener("change", handler as (e: MediaQueryListEvent) => void);
-  }, []);
+  }, [userId]);
   const [prioritySections, setPrioritySections] = useState<string[]>([]);
   const [investorMode, setInvestorMode] = useState(false);
   const [narrativeMode, setNarrativeMode] = useState(false);
