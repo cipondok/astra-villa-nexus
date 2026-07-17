@@ -11,6 +11,7 @@ import {
   DollarSign, BarChart3, Clock, CheckCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const READINESS_COLORS = {
   dormant: 'text-muted-foreground',
