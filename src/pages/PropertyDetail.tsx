@@ -356,18 +356,18 @@ const PropertyDetail = () => {
               </div>
 
               {/* Compact stats */}
-              <div className="grid grid-cols-4 gap-3 md:gap-4 md:border-l md:border-luxe md:pl-8">
+              <div className="grid grid-cols-4 gap-3 lg:gap-4 lg:border-l lg:border-luxe lg:pl-8">
                 {features.map(f => (
-                  <div key={f.label} className="text-center md:text-left">
-                    <f.icon className="h-3.5 w-3.5 text-[var(--luxe-gold)] mx-auto md:mx-0" />
-                    <div className="mt-2 font-serif-l text-[18px] md:text-[20px] leading-none">{f.value}</div>
-                    <div className="text-[9px] md:text-[10px] uppercase tracking-[0.16em] text-luxe-mut mt-1.5">{f.label}</div>
+                  <div key={f.label} className="text-center lg:text-left">
+                    <f.icon className="h-3.5 w-3.5 text-[var(--luxe-gold)] mx-auto lg:mx-0" />
+                    <div className="mt-2 font-serif-l text-[18px] lg:text-[20px] leading-none whitespace-nowrap">{f.value}</div>
+                    <div className="text-[9px] lg:text-[10px] uppercase tracking-[0.16em] text-luxe-mut mt-1.5">{f.label}</div>
                   </div>
                 ))}
               </div>
 
               {/* Primary CTAs */}
-              <div className="flex md:flex-col gap-2 md:w-[180px]">
+              <div className="flex lg:flex-col gap-2 lg:w-[180px]">
                 <button
                   ref={ctaRef("reserve", "hero")}
                   onClick={() => {
