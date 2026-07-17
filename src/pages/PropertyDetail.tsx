@@ -369,16 +369,29 @@ const PropertyDetail = () => {
               {/* Primary CTAs */}
               <div className="flex md:flex-col gap-2 md:w-[180px]">
                 <button
+                  ref={ctaRef("reserve", "hero")}
                   onClick={() => {
                     const params = new URLSearchParams({ ...(checkIn && { checkIn }), ...(checkOut && { checkOut }), guests: String(guests) });
+                    trackClick({
+                      cta: "reserve",
+                      placement: "hero",
+                      outcome: "booking_initiated",
+                      extra: { has_dates: Boolean(checkIn && checkOut), guests },
+                    });
                     navigate(`/booking/${property.id}?${params.toString()}`);
                   }}
                   className="luxe-gold-btn flex-1 rounded-full py-3 text-[12px] font-medium"
                 >
                   Reserve
                 </button>
-                <a href={whatsappLink} target="_blank" rel="noreferrer"
-                   className="luxe-ghost-btn flex-1 rounded-full py-3 text-[12px] inline-flex items-center justify-center gap-1.5">
+                <a
+                  ref={ctaRef("contact", "hero")}
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => trackClick({ cta: "contact", placement: "hero", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+                  className="luxe-ghost-btn flex-1 rounded-full py-3 text-[12px] inline-flex items-center justify-center gap-1.5"
+                >
                   <MessageCircle className="h-3.5 w-3.5" /> Concierge
                 </a>
               </div>
