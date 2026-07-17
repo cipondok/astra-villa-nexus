@@ -18,6 +18,10 @@ import {
 } from "@/components/luxe";
 import { cn } from "@/lib/utils";
 import { PropertyWorkflowRail } from "@/components/property/PropertyWorkflowRail";
+import MarketContextCard from "@/components/property/MarketContextCard";
+import NearbyInvestments from "@/components/property/NearbyInvestments";
+import AIRecommendedProperties from "@/components/property/AIRecommendedProperties";
+import InvestmentIntelligenceBadge from "@/components/property/InvestmentIntelligenceBadge";
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
 
