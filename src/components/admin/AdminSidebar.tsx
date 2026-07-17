@@ -327,7 +327,7 @@ export function AdminSidebar({
                       className={cn(
                         "text-xs font-medium truncate whitespace-nowrap",
                         "motion-safe:transition-opacity motion-safe:duration-200",
-                        showLabels ? "opacity-100" : "opacity-0 pointer-events-none"
+                        showLabels ? "opacity-100" : "opacity-100 lg:opacity-0 lg:pointer-events-none"
                       )}
                       aria-hidden={!showLabels}
                     >
