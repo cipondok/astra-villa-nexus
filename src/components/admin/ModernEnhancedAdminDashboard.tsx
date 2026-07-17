@@ -7,6 +7,7 @@ import { DemoModeProvider } from "@/contexts/DemoModeContext";
 import AIIntelligenceSystem from "./AIIntelligenceSystem";
 import { InvestorDemoMode } from "./InvestorDemoMode";
 import DecacornNarrativeMode from "./DecacornNarrativeMode";
+import { contentOffsetClass, useAdminLayoutOverlapGuard } from "./adminLayoutTokens";
 
 const DemoModeController = lazy(() => import("./demo/DemoModeController"));
 const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
@@ -42,6 +43,7 @@ const ModernEnhancedAdminDashboard = () => {
   const [investorMode, setInvestorMode] = useState(false);
   const [narrativeMode, setNarrativeMode] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  useAdminLayoutOverlapGuard();
 
   // Expose investor demo trigger globally for header
   useEffect(() => {
@@ -104,7 +106,7 @@ const ModernEnhancedAdminDashboard = () => {
         />
 
         {/* Main content area */}
-        <div className={`flex-1 flex flex-col min-h-screen min-w-0 transition-all duration-200 ${sidebarCollapsed ? 'ml-14' : 'ml-14 lg:ml-60'}`}>
+        <div data-admin-content className={`flex-1 flex flex-col min-h-screen min-w-0 transition-all duration-200 ${contentOffsetClass(sidebarCollapsed)}`}>
           <AdminHeader
             activeSection={activeSection}
             onSectionChange={handleSectionChange}

@@ -6,6 +6,7 @@ import {
   Sparkles, Server, ChevronLeft, ChevronRight, Zap, type LucideIcon 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SIDEBAR_WIDTH_COLLAPSED, SIDEBAR_WIDTH_EXPANDED } from './adminLayoutTokens';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 
@@ -113,6 +114,7 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
 
       <nav
         ref={sidebarRef}
+        data-admin-sidebar
         className={cn(
           "fixed top-0 left-0 h-screen z-[9999] flex",
           "transition-all duration-200"
@@ -122,7 +124,7 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
         {/* Main sidebar column */}
         <div className={cn(
           "h-full bg-[hsl(var(--sidebar-background))] border-r border-border/30 flex flex-col transition-all duration-200",
-          showLabels ? "w-14 lg:w-60" : "w-14"
+          showLabels ? SIDEBAR_WIDTH_EXPANDED : SIDEBAR_WIDTH_COLLAPSED
         )}>
           {/* Logo area */}
           <div className="h-14 flex items-center px-3 border-b border-border/20 shrink-0">

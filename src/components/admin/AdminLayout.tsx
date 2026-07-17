@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AdminSidebar } from "./AdminSidebar";
 import AdminHeader from "./AdminHeader";
 import { DemoModeProvider } from "@/contexts/DemoModeContext";
+import { contentOffsetClass, useAdminLayoutOverlapGuard } from "./adminLayoutTokens";
 
 /**
  * Shared admin layout wrapper for `/admin/*` sub-pages.
@@ -42,6 +43,10 @@ export default function AdminLayout() {
     navigate(section === "overview" ? "/admin" : `/admin?section=${section}`);
   };
 
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  useAdminLayoutOverlapGuard(sidebarRef, contentRef);
+
   return (
     <DemoModeProvider>
       <div className="min-h-screen flex w-full bg-background overflow-x-hidden">
@@ -53,9 +58,9 @@ export default function AdminLayout() {
         />
 
         <div
-          className={`flex-1 flex flex-col min-h-screen min-w-0 transition-all duration-200 ${
-            sidebarCollapsed ? "ml-14" : "ml-14 lg:ml-60"
-          }`}
+          ref={contentRef}
+          data-admin-content
+          className={`flex-1 flex flex-col min-h-screen min-w-0 transition-all duration-200 ${contentOffsetClass(sidebarCollapsed)}`}
         >
           <AdminHeader
             activeSection={activeSection}
