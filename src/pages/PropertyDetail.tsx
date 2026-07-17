@@ -336,7 +336,7 @@ const PropertyDetail = () => {
       <div className="relative z-30 px-4 md:px-8 -mt-16 md:-mt-24">
         <div className="max-w-[1440px] mx-auto">
           <LuxeCard variant="glass" radius="lg" glow className="p-5 md:p-7">
-            <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr_auto] gap-6 md:gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr_auto] gap-6 lg:gap-8 items-center">
               {/* Price + AI badge */}
               <div>
                 <div className="text-[10px] uppercase tracking-[0.22em] text-luxe-mut">
