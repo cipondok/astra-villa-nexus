@@ -94,7 +94,7 @@ const ModernEnhancedAdminDashboard = () => {
 
   return (
     <DemoModeProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background overflow-x-hidden">
         {/* Fixed Left Sidebar */}
         <AdminSidebar
           activeSection={activeSection}
