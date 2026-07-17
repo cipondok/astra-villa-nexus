@@ -26,23 +26,24 @@ import { resolveDashboardPath } from "@/lib/dashboardRoute";
 
 export const reosTokens = `
   .reos {
-    --bg: #0B0B0C;
-    --bg-2: #0F0F11;
-    --surface: #121214;
-    --surface-2: #17171A;
-    --line: rgba(200,169,106,0.14);
-    --line-strong: rgba(200,169,106,0.32);
-    --gold: #C8A96A;
-    --gold-2: #E0C384;
-    --gold-soft: rgba(200,169,106,0.10);
+    /* ASTRA Villa REOS — Dark Navy + Gold (official brand guide) */
+    --bg: #0A1931;
+    --bg-2: #0D2140;
+    --surface: #12264A;
+    --surface-2: #162C52;
+    --line: rgba(212,175,55,0.14);
+    --line-strong: rgba(212,175,55,0.32);
+    --gold: #D4AF37;
+    --gold-2: #E4C56A;
+    --gold-soft: rgba(212,175,55,0.10);
     --text: #F4F1EA;
-    --text-2: #9A958A;
-    --text-3: #6B6760;
+    --text-2: #B8C4D4;
+    --text-3: #6B7A8E;
     --success: #4ADE80;
     --danger: #F87171;
-    --gold-fg: #161208;
-    --promo-gradient: linear-gradient(180deg, #1a1408, #0e0a04);
-    --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%);
+    --gold-fg: #0A1931;
+    --promo-gradient: linear-gradient(180deg, #0D2140, #0A1931);
+    --hero-overlay: linear-gradient(110deg, rgba(10,25,49,0.94) 0%, rgba(10,25,49,0.62) 55%, transparent 100%);
     --shadow-soft: 0 8px 32px rgba(0,0,0,0.35);
     --shadow-lift: 0 4px 16px rgba(0,0,0,0.25);
     --shadow-popover: 0 25px 50px -12px rgba(0,0,0,0.5);
@@ -62,12 +63,12 @@ export const reosTokens = `
     --gold: #D4AF37;
     --gold-2: #B8941F;
     --gold-soft: rgba(212,175,55,0.10);
-    --text: #111827;
+    --text: #0A1931;
     --text-2: #6B7280;
     --text-3: #9CA3AF;
     --success: #22C55E;
     --danger: #EF4444;
-    --gold-fg: #111827;
+    --gold-fg: #0A1931;
     --shadow-soft: 0 8px 30px rgba(0,0,0,0.06);
     --shadow-lift: 0 4px 14px rgba(0,0,0,0.05);
     --shadow-popover: 0 20px 40px -12px rgba(0,0,0,0.08);

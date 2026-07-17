@@ -225,19 +225,19 @@ html, body {
   .astra-pearl-white {
     /* ── ASTRA Pearl White — Luxury Ivory + Champagne Gold ─────────────── */
     --background: 42 33% 95%;          /* #F7F5F0 warm ivory */
-    --foreground: 222 39% 11%;         /* #111827 graphite */
+    --foreground: 217 66% 12%;           /* #0A1931 deep navy */
     --card: 0 0% 100%;                 /* #FFFFFF */
-    --card-foreground: 222 39% 11%;
+    --card-foreground: 217 66% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 39% 11%;
+    --popover-foreground: 217 66% 12%;
     --primary: 46 65% 52%;             /* #D4AF37 luxury gold */
-    --primary-foreground: 222 39% 11%; /* graphite on gold for AA */
+    --primary-foreground: 217 66% 12%; /* navy on gold for AA */
     --secondary: 0 0% 99%;             /* #FCFCFC secondary card */
-    --secondary-foreground: 222 39% 11%;
+    --secondary-foreground: 217 66% 12%;
     --muted: 42 20% 93%;
     --muted-foreground: 220 9% 46%;    /* #6B7280 */
     --accent: 51 100% 50%;             /* #FFD700 accent gold */
-    --accent-foreground: 222 39% 11%;
+    --accent-foreground: 217 66% 12%;
     --destructive: 0 84% 60%;          /* #EF4444 */
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;             /* #E5E7EB */
@@ -245,14 +245,14 @@ html, body {
     --ring: 46 65% 52%;                /* gold focus ring */
     --radius: 14px;
 
-    /* ASTRA brand convenience tokens — gold-led in light mode */
+    /* ASTRA brand convenience tokens — official brand guide */
     --gold-primary: 46 65% 52%;        /* #D4AF37 */
     --gold-secondary: 51 100% 50%;     /* #FFD700 */
-    --navy-primary: 222 39% 11%;
-    --navy-secondary: 220 9% 46%;
+    --navy-primary: 217 66% 12%;      /* #0A1931 */
+    --navy-secondary: 217 54% 18%;     /* #12264A */
     --dark-bg: 42 33% 95%;
     --dark-card: 0 0% 100%;
-    --text-light: 222 39% 11%;
+    --text-light: 217 66% 12%;
     --text-muted: 220 9% 46%;
 
     /* Hero gradients — Ivory wash */
@@ -333,55 +333,54 @@ html, body {
 
 
   .dark {
-    /* Dark mode = same Obsidian Black + Champagne Gold (single source of truth) */
-    --background: 240 4% 5%;
-    --foreground: 40 30% 94%;
-    --card: 240 5% 8%;
-    --card-foreground: 40 30% 94%;
-    --popover: 240 5% 9%;
-    --popover-foreground: 40 30% 94%;
-    --primary: 39 45% 60%;
-    --primary-foreground: 30 25% 8%;
-    --secondary: 240 4% 12%;
-    --secondary-foreground: 40 30% 94%;
-    --muted: 240 4% 12%;
-    --muted-foreground: 40 8% 60%;
-    --accent: 40 60% 70%;
-    --accent-foreground: 30 25% 8%;
+    /* Dark mode = ASTRA Navy (#0A1931) + Champagne Gold (#D4AF37) */
+    --background: 217 66% 12%;    /* #0A1931 deep navy primary */
+    --foreground: 42 30% 94%;      /* warm ivory text */
+    --card: 217 60% 8%;           /* deeper navy card */
+    --card-foreground: 42 30% 94%;
+    --popover: 217 60% 9%;
+    --popover-foreground: 42 30% 94%;
+    --primary: 46 65% 52%;        /* #D4AF37 gold accent */
+    --primary-foreground: 217 66% 12%;
+    --secondary: 217 50% 16%;
+    --secondary-foreground: 42 30% 94%;
+    --muted: 217 50% 16%;
+    --muted-foreground: 42 15% 65%;
+    --accent: 46 70% 62%;
+    --accent-foreground: 217 66% 12%;
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 41 25% 22%;
-    --input: 41 25% 22%;
-    --ring: 39 45% 60%;
+    --border: 217 40% 22%;
+    --input: 217 40% 22%;
+    --ring: 46 65% 52%;
 
-    
-    /* ASTRA Brand Colors - Dark Mode (boosted for contrast on dark backgrounds) */
-    --gold-primary: 45 100% 62%; /* Brighter gold for WCAG AA on dark bg */
-    --gold-secondary: 40 95% 55%;
-    --navy-primary: 200 100% 55%;
-    --navy-secondary: 205 80% 48%;
-    --dark-bg: 210 55% 5%;
-    --dark-card: 210 45% 10%;
+    /* ASTRA Brand Colors - Dark Mode (official brand guide) */
+    --gold-primary: 46 65% 52%;   /* #D4AF37 */
+    --gold-secondary: 51 100% 50%;
+    --navy-primary: 217 66% 12%; /* #0A1931 */
+    --navy-secondary: 217 54% 18%;
+    --dark-bg: 217 66% 12%;
+    --dark-card: 217 60% 8%;
     --text-light: 0 0% 100%;
-    --text-muted: 200 15% 70%;
-    
+    --text-muted: 42 15% 65%;
+
     /* Hero & Search Section Gradients - Dark Mode */
-    --hero-from: 210 55% 8%;
-    --hero-via: 210 50% 10%;
-    --hero-to: 210 45% 12%;
-    --hero-mid: 210 40% 14%;
-    --hero-end: 210 35% 16%;
-    --hero-fade: 210 30% 18%;
-    
+    --hero-from: 217 66% 10%;
+    --hero-via: 217 62% 12%;
+    --hero-to: 217 58% 14%;
+    --hero-mid: 217 54% 16%;
+    --hero-end: 217 50% 18%;
+    --hero-fade: 217 48% 20%;
+
     /* Glassy effect colors - Dark Mode */
-    --glass-bg: 210 50% 10%;
-    --glass-border: 200 50% 30%;
-    --glass-shadow: 210 60% 3%;
-    
+    --glass-bg: 217 60% 10%;
+    --glass-border: 217 45% 30%;
+    --glass-shadow: 217 70% 5%;
+
     /* Theme Colors - Dark */
-    --titanium-light: 210 30% 16%;
+    --titanium-light: 217 40% 16%;
     --titanium-white: 0 0% 100%;
-    --samsung-blue-primary: 200 100% 55%;
+    --samsung-blue-primary: 217 66% 50%;
 
     /* Chart / Data-Viz Colors - Dark Mode (boosted luminance for contrast) */
     --chart-1: 39 45% 60%;
@@ -419,44 +418,44 @@ html, body {
     --shadow-elevated: 0 12px 40px hsl(210 60% 3% / 0.8), 0 0 0 1px hsl(200 50% 40% / 0.15);
 
     /* ═══ Astra Villa Admin Panel Tokens - Dark ═══ */
-    --panel-bg: 225 18% 11%;
-    --panel-bg-elevated: 225 16% 14%;
-    --panel-border: 225 12% 19%;
-    --panel-border-subtle: 225 10% 16%;
-    --panel-hover: 225 14% 16%;
-    --panel-active: 225 12% 19%;
-    --panel-text: 220 12% 93%;
-    --panel-text-secondary: 220 8% 58%;
-    --panel-text-muted: 220 6% 40%;
-    --panel-accent: 43 96% 56%;
-    --panel-accent-dim: 43 80% 48%;
+    --panel-bg: 217 60% 11%;
+    --panel-bg-elevated: 217 58% 14%;
+    --panel-border: 217 35% 19%;
+    --panel-border-subtle: 217 30% 16%;
+    --panel-hover: 217 32% 16%;
+    --panel-active: 217 35% 19%;
+    --panel-text: 42 30% 94%;
+    --panel-text-secondary: 42 12% 62%;
+    --panel-text-muted: 42 8% 42%;
+    --panel-accent: 46 65% 52%;
+    --panel-accent-dim: 46 55% 42%;
     --panel-success: 152 69% 48%;
     --panel-danger: 350 65% 55%;
     --panel-warning: 38 92% 56%;
-    --panel-info: 210 80% 60%;
-    --panel-tooltip-bg: 225 20% 16%;
-    --panel-tooltip-border: 225 12% 24%;
-    --panel-tooltip-text: 220 8% 78%;
-    --panel-glow-accent: 43 96% 56%;
-    --panel-shadow: 0 1px 3px hsl(225 30% 4% / 0.5), 0 0 0 1px hsl(225 12% 19% / 0.9);
-    --panel-shadow-hover: 0 4px 16px hsl(225 30% 4% / 0.6), 0 0 0 1px hsl(43 96% 56% / 0.2), 0 0 20px hsl(43 96% 56% / 0.04);
+    --panel-info: 217 66% 60%;
+    --panel-tooltip-bg: 217 55% 14%;
+    --panel-tooltip-border: 217 35% 24%;
+    --panel-tooltip-text: 42 15% 78%;
+    --panel-glow-accent: 46 65% 52%;
+    --panel-shadow: 0 1px 3px hsl(217 70% 5% / 0.5), 0 0 0 1px hsl(217 35% 19% / 0.9);
+    --panel-shadow-hover: 0 4px 16px hsl(217 70% 5% / 0.6), 0 0 0 1px hsl(46 65% 52% / 0.2), 0 0 20px hsl(46 65% 52% / 0.04);
 
     /* ═══ Enterprise Admin Design System Tokens ═══ */
-    --admin-bg-main: 222 50% 5%;
-    --admin-bg-sidebar: 220 42% 9%;
-    --admin-bg-card: 218 40% 11%;
-    --admin-bg-hover: 218 35% 13%;
-    --admin-bg-glass: 218 35% 13%;
-    --admin-border-subtle: 216 25% 17%;
-    --admin-border-strong: 214 22% 24%;
+    --admin-bg-main: 217 66% 8%;
+    --admin-bg-sidebar: 217 60% 10%;
+    --admin-bg-card: 217 55% 12%;
+    --admin-bg-hover: 217 50% 14%;
+    --admin-bg-glass: 217 50% 14%;
+    --admin-border-subtle: 217 35% 17%;
+    --admin-border-strong: 217 30% 24%;
     --admin-divider: 0 0% 100%;
-    --admin-text-primary: 213 30% 93%;
-    --admin-text-secondary: 213 18% 67%;
-    --admin-text-muted: 213 14% 49%;
+    --admin-text-primary: 42 30% 93%;
+    --admin-text-secondary: 42 15% 67%;
+    --admin-text-muted: 42 10% 49%;
     --admin-accent-ai: 160 100% 44%;
     --admin-accent-warning: 36 100% 56%;
     --admin-accent-danger: 352 100% 67%;
-    --admin-accent-info: 213 100% 65%;
+    --admin-accent-info: 217 66% 65%;
 
     /* Sidebar specific */
     --sidebar-background: var(--admin-bg-sidebar);
@@ -487,9 +486,9 @@ html, body {
 
   html.dark {
     background: linear-gradient(135deg, 
-      hsl(210 55% 8%) 0%, 
-      hsl(200 50% 12%) 50%, 
-      hsl(210 55% 8%) 100%);
+      hsl(217 70% 8%) 0%, 
+      hsl(217 66% 12%) 50%, 
+      hsl(217 60% 16%) 100%);
   }
 
   body {
@@ -506,9 +505,9 @@ html, body {
 
   .dark body {
     background: linear-gradient(135deg, 
-      hsl(210 55% 8%) 0%, 
-      hsl(200 50% 12%) 50%, 
-      hsl(210 55% 8%) 100%);
+      hsl(217 70% 8%) 0%, 
+      hsl(217 66% 12%) 50%, 
+      hsl(217 60% 16%) 100%);
     background-attachment: fixed;
   }
 }

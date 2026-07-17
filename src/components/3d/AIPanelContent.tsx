@@ -130,12 +130,12 @@ export default function AIPanelContent({ onCameraCommand }: AIPanelContentProps)
       {/* Header */}
       <div className="px-5 py-4 border-b border-[hsl(var(--border))]/10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-[#C8A96A]/15 flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-[#C8A96A]" />
+          <div className="w-8 h-8 rounded-xl bg-[#D4AF37]/15 flex items-center justify-center">
+            <Sparkles className="h-4 w-4 text-[#D4AF37]" />
           </div>
           <div>
             <h3 className="text-sm font-semibold text-foreground">ASTRA AI Advisor</h3>
-            <p className="text-[10px] text-[#C8A96A]">3D Navigation + Intelligence</p>
+            <p className="text-[10px] text-[#D4AF37]">3D Navigation + Intelligence</p>
           </div>
         </div>
       </div>
@@ -155,13 +155,13 @@ export default function AIPanelContent({ onCameraCommand }: AIPanelContentProps)
                 'max-w-[85%] px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed',
                 msg.role === 'ai'
                   ? 'bg-[hsl(var(--card))]/80 border border-[hsl(var(--border))]/10 text-foreground'
-                  : 'bg-[#C8A96A]/15 text-foreground border border-[#C8A96A]/20'
+                  : 'bg-[#D4AF37]/15 text-foreground border border-[#D4AF37]/20'
               )}
             >
-              {msg.role === 'ai' && <Bot className="h-3 w-3 text-[#C8A96A] mb-1 inline-block mr-1" />}
+              {msg.role === 'ai' && <Bot className="h-3 w-3 text-[#D4AF37] mb-1 inline-block mr-1" />}
               {msg.text}
               {msg.cameraCommand && msg.role === 'ai' && (
-                <span className="block mt-1.5 text-[10px] text-[#C8A96A]/60 font-mono">
+                <span className="block mt-1.5 text-[10px] text-[#D4AF37]/60 font-mono">
                   📷 Camera → {msg.cameraCommand.replace('_', ' ')}
                 </span>
               )}
@@ -181,7 +181,7 @@ export default function AIPanelContent({ onCameraCommand }: AIPanelContentProps)
               className={cn(
                 "flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[10px] font-medium text-left transition-all border",
                 action.camera
-                  ? "text-[#C8A96A] bg-[#C8A96A]/5 border-[#C8A96A]/10 hover:bg-[#C8A96A]/10 hover:border-[#C8A96A]/20"
+                  ? "text-[#D4AF37] bg-[#D4AF37]/5 border-[#D4AF37]/10 hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/20"
                   : "text-foreground bg-[hsl(var(--card))]/40 border-[hsl(var(--border))]/10 hover:bg-[hsl(var(--card))]/60"
               )}
             >
@@ -204,7 +204,7 @@ export default function AIPanelContent({ onCameraCommand }: AIPanelContentProps)
           />
           <button
             onClick={() => send()}
-            className="w-7 h-7 rounded-lg bg-[#C8A96A]/20 text-[#C8A96A] flex items-center justify-center hover:bg-[#C8A96A]/30 transition-colors"
+            className="w-7 h-7 rounded-lg bg-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center hover:bg-[#D4AF37]/30 transition-colors"
           >
             <Send className="h-3.5 w-3.5" />
           </button>

@@ -141,7 +141,7 @@ function HotspotMarker({
       {/* Pulsing ring */}
       <mesh ref={ringRef} position={hotspot.position} rotation={[Math.PI / 2, 0, 0]} scale={0}>
         <ringGeometry args={[0.18, 0.22, 32]} />
-        <meshBasicMaterial color="#C8A96A" transparent opacity={0.5} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#D4AF37" transparent opacity={0.5} side={THREE.DoubleSide} />
       </mesh>
 
       {/* Core sphere */}
@@ -154,8 +154,8 @@ function HotspotMarker({
         onPointerOut={() => { setHovered(false); document.body.style.cursor = 'auto'; }}
       >
         <meshPhysicalMaterial
-          color={isActive ? '#FFD700' : hovered ? '#E0C080' : '#C8A96A'}
-          emissive={isActive ? '#C8A96A' : '#8B7340'}
+          color={isActive ? '#FFD700' : hovered ? '#E0C080' : '#D4AF37'}
+          emissive={isActive ? '#D4AF37' : '#8B7340'}
           emissiveIntensity={isActive ? 2 : hovered ? 1.2 : 0.5}
           roughness={0.15}
           metalness={0.85}
@@ -166,8 +166,8 @@ function HotspotMarker({
       {(hovered || isActive) && (
         <Float speed={2} floatIntensity={0.2}>
           <Html position={[hotspot.position[0], hotspot.position[1] + 0.45, hotspot.position[2]]} center distanceFactor={8}>
-            <div className="px-3 py-1.5 rounded-xl bg-[#0B0B0B]/85 backdrop-blur-xl border border-[#C8A96A]/30 whitespace-nowrap select-none pointer-events-none">
-              <span className="text-[11px] font-semibold text-[#C8A96A]">{hotspot.icon} {hotspot.label}</span>
+            <div className="px-3 py-1.5 rounded-xl bg-[#0A1931]/85 backdrop-blur-xl border border-[#D4AF37]/30 whitespace-nowrap select-none pointer-events-none">
+              <span className="text-[11px] font-semibold text-[#D4AF37]">{hotspot.icon} {hotspot.label}</span>
             </div>
           </Html>
         </Float>
@@ -197,11 +197,11 @@ function CanvasLoader() {
         <div className="relative w-16 h-16">
           <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
             <circle cx="32" cy="32" r="28" fill="none" stroke="hsl(var(--border))" strokeWidth="3" opacity={0.2} />
-            <circle cx="32" cy="32" r="28" fill="none" stroke="#C8A96A" strokeWidth="3" strokeLinecap="round"
+            <circle cx="32" cy="32" r="28" fill="none" stroke="#D4AF37" strokeWidth="3" strokeLinecap="round"
               strokeDasharray={175.9} strokeDashoffset={175.9 - (175.9 * progress) / 100}
               style={{ transition: 'stroke-dashoffset 0.3s ease' }} />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-xs font-mono font-bold text-[#C8A96A]">{Math.round(progress)}%</span>
+          <span className="absolute inset-0 flex items-center justify-center text-xs font-mono font-bold text-[#D4AF37]">{Math.round(progress)}%</span>
         </div>
         <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase">Loading Model</p>
       </div>
@@ -281,7 +281,7 @@ function ToolBtn({ onClick, active, children, title }: { onClick: () => void; ac
   return (
     <button onClick={onClick} title={title}
       className={cn('w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200',
-        active ? 'bg-[#C8A96A]/20 text-[#C8A96A]' : 'text-muted-foreground hover:text-foreground hover:bg-accent/30')}>
+        active ? 'bg-[#D4AF37]/20 text-[#D4AF37]' : 'text-muted-foreground hover:text-foreground hover:bg-accent/30')}>
       {children}
     </button>
   );
@@ -344,11 +344,11 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
 
   return (
     <div ref={containerRef}
-      className={cn('relative w-full h-full min-h-[400px] bg-[#0B0B0B] rounded-[20px] overflow-hidden border border-[hsl(var(--border))]/10', isFullscreen && 'rounded-none', className)}>
+      className={cn('relative w-full h-full min-h-[400px] bg-[#0A1931] rounded-[20px] overflow-hidden border border-[hsl(var(--border))]/10', isFullscreen && 'rounded-none', className)}>
       <Canvas camera={{ position: [8, 5, 8], fov: 45, near: 0.1, far: 100 }} shadows dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }} style={{ background: '#0B0B0B' }}>
-        <color attach="background" args={['#0B0B0B']} />
-        <fog attach="fog" args={['#0B0B0B', 25, 50]} />
+        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }} style={{ background: '#0A1931' }}>
+        <color attach="background" args={['#0A1931']} />
+        <fog attach="fog" args={['#0A1931', 25, 50]} />
         <SceneContent
           modelPath={modelPath} scale={scale} position={position} environment={envPreset}
           hotspots={resolvedHotspots} activeHotspot={activeHotspot} onHotspotClick={handleHotspotClick}
@@ -359,7 +359,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
 
       {/* ── Camera Preset Buttons (left side) ── */}
       <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
-        <div className="px-1.5 py-1.5 rounded-2xl bg-[#0B0B0B]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 flex flex-col gap-1">
+        <div className="px-1.5 py-1.5 rounded-2xl bg-[#0A1931]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 flex flex-col gap-1">
           {CAMERA_PRESETS.map(p => (
             <ToolBtn key={p.id} onClick={() => handlePreset(p)} title={p.label}>
               <p.icon className="h-4 w-4" />
@@ -370,7 +370,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
 
       {/* ── Bottom Toolbar ── */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
-        <div className="flex items-center gap-1 px-2 py-1.5 rounded-2xl bg-[#0B0B0B]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 shadow-2xl">
+        <div className="flex items-center gap-1 px-2 py-1.5 rounded-2xl bg-[#0A1931]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 shadow-2xl">
           <ToolBtn onClick={() => setIsNight(!isNight)} active={isNight} title={isNight ? 'Switch to Day' : 'Switch to Night'}>
             {isNight ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
           </ToolBtn>
@@ -391,7 +391,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
       {/* ── Environment Label ── */}
       <AnimatePresence>
         <motion.div key={`${envPreset}-${isNight}`} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-          className="absolute top-3 right-3 px-3 py-1 rounded-lg bg-[#0B0B0B]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 z-10">
+          className="absolute top-3 right-3 px-3 py-1 rounded-lg bg-[#0A1931]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 z-10">
           <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
             {isNight ? '🌙 night' : `☀️ ${envPreset}`}
           </span>
@@ -408,11 +408,11 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
             className="absolute bottom-20 left-1/2 z-20 w-[320px]"
           >
-            <div className="rounded-2xl bg-[#0B0B0B]/85 backdrop-blur-xl border border-[#C8A96A]/20 shadow-2xl p-4">
+            <div className="rounded-2xl bg-[#0A1931]/85 backdrop-blur-xl border border-[#D4AF37]/20 shadow-2xl p-4">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">{hotspotInfo.icon}</span>
-                  <h4 className="text-sm font-bold text-[#C8A96A]">{hotspotInfo.label}</h4>
+                  <h4 className="text-sm font-bold text-[#D4AF37]">{hotspotInfo.label}</h4>
                 </div>
                 <button
                   onClick={() => { setHotspotInfo(null); setActiveHotspot(null); }}
