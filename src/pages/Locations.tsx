@@ -209,7 +209,7 @@ function RegionCard({
             loading="lazy"
             width={1280}
             height={896}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-\[1400ms\] ease-\[cubic-bezier(0.22,1,0.36,1)\] group-hover:scale-[1.06]"
           />
           {/* Gradient + grain */}
           <div

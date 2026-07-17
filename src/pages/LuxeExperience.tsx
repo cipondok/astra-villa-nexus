@@ -733,7 +733,7 @@ export default function LuxeExperience() {
                   <Link to={detailHref} aria-label={`View ${v.name}`} className="absolute inset-0 z-10" />
                   <div className="aspect-[4/5] overflow-hidden">
                     <img src={v.img} alt={v.name} loading="lazy" width={1280} height={1600}
-                         className="w-full h-full object-cover transition-transform duration-[2000ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]" />
+                         className="w-full h-full object-cover transition-transform duration-\[2000ms\] ease-\[cubic-bezier(0.22,1,0.36,1)\] group-hover:scale-[1.08]" />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-[rgba(10,10,10,0.75)] via-[rgba(10,10,10,0.25)] to-transparent" />
                   <div aria-hidden className="pointer-events-none absolute -inset-x-1/4 -top-1/2 h-full rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
@@ -927,7 +927,7 @@ export default function LuxeExperience() {
                 <Link to={c.to} aria-label={c.t} className="absolute inset-0 z-10" />
 
                 <img src={c.img} alt={c.t} loading="lazy" width={1280} height={1600}
-                     className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
+                     className="w-full h-full object-cover transition-transform duration-\[2s\] group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[rgba(10,10,10,0.78)] via-[rgba(10,10,10,0.28)] to-transparent" />
                 <div className="absolute inset-x-6 bottom-6">
                   <div className="luxe-eyebrow mb-2">{c.c}</div>

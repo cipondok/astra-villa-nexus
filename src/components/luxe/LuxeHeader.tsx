@@ -218,7 +218,7 @@ export function LuxeHeader() {
         />
 
         <div className={cn(
-          "relative h-full overflow-y-auto px-6 pt-6 pb-12 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+          "relative h-full overflow-y-auto px-6 pt-6 pb-12 transition-transform duration-500 ease-\[cubic-bezier(0.22,1,0.36,1)\]",
           mobileOpen ? "translate-y-0" : "translate-y-3"
         )}>
           <div className="flex items-center justify-between mb-10">
