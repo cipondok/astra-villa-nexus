@@ -50,17 +50,16 @@ export default function AdminLayout() {
   return (
     <DemoModeProvider>
       <div className="min-h-screen flex w-full bg-background overflow-x-hidden">
-        <div ref={sidebarRef} className="contents">
-          <AdminSidebar
-            activeSection={activeSection}
-            onSectionChange={handleSectionChange}
-            collapsed={sidebarCollapsed}
-            onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
-          />
-        </div>
+        <AdminSidebar
+          activeSection={activeSection}
+          onSectionChange={handleSectionChange}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
+        />
 
         <div
           ref={contentRef}
+          data-admin-content
           className={`flex-1 flex flex-col min-h-screen min-w-0 transition-all duration-200 ${contentOffsetClass(sidebarCollapsed)}`}
         >
           <AdminHeader

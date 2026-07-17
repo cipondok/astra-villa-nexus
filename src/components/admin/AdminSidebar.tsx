@@ -114,6 +114,7 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
 
       <nav
         ref={sidebarRef}
+        data-admin-sidebar
         className={cn(
           "fixed top-0 left-0 h-screen z-[9999] flex",
           "transition-all duration-200"

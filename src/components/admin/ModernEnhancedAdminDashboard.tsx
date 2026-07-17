@@ -7,6 +7,7 @@ import { DemoModeProvider } from "@/contexts/DemoModeContext";
 import AIIntelligenceSystem from "./AIIntelligenceSystem";
 import { InvestorDemoMode } from "./InvestorDemoMode";
 import DecacornNarrativeMode from "./DecacornNarrativeMode";
+import { contentOffsetClass, useAdminLayoutOverlapGuard } from "./adminLayoutTokens";
 
 const DemoModeController = lazy(() => import("./demo/DemoModeController"));
 const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
