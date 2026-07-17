@@ -48,6 +48,10 @@ export function useAdminLayoutOverlapGuard(
     if (!enabled || typeof window === "undefined") return;
 
     const check = () => {
+      // The sidebar is an off-canvas drawer below `lg` (1024px); overlap is
+      // expected there because the drawer overlays the content.
+      if (window.innerWidth < 1024) return;
+
       const sb = document
         .querySelector<HTMLElement>("[data-admin-sidebar]")
         ?.getBoundingClientRect();
