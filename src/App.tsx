@@ -45,6 +45,7 @@ const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'))
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
 const GlobalFooter = lazy(() => import('@/components/layout/GlobalFooter'));
 const AppSidebar = lazy(() => import('@/components/layout/AppSidebar'));
+const AdminLayout = lazy(() => import('@/components/admin/AdminLayout'));
 const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingIndicator'));
 
 
