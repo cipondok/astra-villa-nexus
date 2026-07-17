@@ -309,9 +309,9 @@ const PropertyDetail = () => {
 
       {/* ============ MAIN GRID — info + sticky booking ============ */}
       <LuxeSection pad="md">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 lg:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 lg:gap-10">
           {/* ----- Left column ----- */}
-          <div className="space-y-20">
+          <div className="space-y-10 md:space-y-12">
             {/* feature strip */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {features.map(f => (
@@ -326,7 +326,7 @@ const PropertyDetail = () => {
             {/* story */}
             <div>
               <span className="luxe-eyebrow">The Story</span>
-              <h2 className="font-serif-l text-[32px] md:text-[44px] leading-[1.05] mt-4 max-w-2xl">
+              <h2 className="text-2xl md:text-3xl font-semibold tracking-tight leading-tight mt-3 max-w-2xl">
                 A cinematic retreat shaped by light, stone, and the rhythm of the ocean.
               </h2>
               <div className="luxe-divider my-8" />
