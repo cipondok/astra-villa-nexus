@@ -2761,7 +2761,7 @@ html { scroll-padding-top: calc(var(--reos-header-h) + 8px); }
   border-color: var(--gold-line);
 }
 
-header.reos-shell-header { height: var(--reos-header-h); }
+header.reos-shell-header > div:first-child { height: var(--reos-header-h); }
 
 /* Reserve bottom space on mobile when the REOS dock is mounted */
 @media (max-width: 767px) {
