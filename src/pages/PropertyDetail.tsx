@@ -134,6 +134,22 @@ const PropertyDetail = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* ----- CTA analytics tracking ----- */
+  const { registerImpression, trackClick } = usePropertyCtaTracking({
+    propertyId: property?.id,
+    city: property?.city,
+    price: property?.price,
+    listingType: property?.listing_type,
+  });
+
+  /** Ref callback factory that fires an impression event once visible. */
+  const ctaRef = useCallback(
+    (cta: CtaKind, placement: CtaPlacement) => (el: HTMLElement | null) => {
+      registerImpression(el, { cta, placement });
+    },
+    [registerImpression],
+  );
+
   const { toggleFavorite, isFavorite } = useFavorites({
     title: property?.title,
     images: property?.images || undefined,
