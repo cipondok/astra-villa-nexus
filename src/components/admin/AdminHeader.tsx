@@ -26,6 +26,8 @@ const DemoStartButton = lazy(() => import("./demo/DemoStartButton"));
 interface AdminHeaderProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  /** Open the mobile navigation drawer (only used below `lg`). */
+  onOpenMobileNav?: () => void;
 }
 
 const priorityColor = (priority: string) => {
@@ -34,7 +36,7 @@ const priorityColor = (priority: string) => {
   return "bg-primary/10 text-primary";
 };
 
-const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
+const AdminHeader = ({ activeSection, onSectionChange, onOpenMobileNav }: AdminHeaderProps) => {
   const { theme, setTheme } = useTheme();
   const { signOut, profile } = useAuth();
   const navigate = useNavigate();
