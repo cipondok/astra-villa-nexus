@@ -1,15 +1,12 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { LuxeAmbient } from "./LuxeAmbient";
-import GlobalHeader from "@/components/layout/GlobalHeader";
-import { LuxeFooter } from "./LuxeFooter";
-import { LuxeMobileDock } from "./LuxeMobileDock";
 
 interface LuxeLayoutProps {
   children: ReactNode;
-  /** Hide the global footer (rare, e.g. fullscreen viewer pages) */
+  /** Deprecated — footer is owned by the app shell (ReosFooter). Kept for API compatibility. */
   hideFooter?: boolean;
-  /** Hide the bottom mobile dock */
+  /** Deprecated — mobile dock is owned by the app shell (ReosMobileBottomNav). Kept for API compatibility. */
   hideDock?: boolean;
   /** Show the cinematic boot fade on mount (default true) */
   boot?: boolean;
@@ -17,26 +14,22 @@ interface LuxeLayoutProps {
 }
 
 /**
- * LuxeLayout — global cinematic page shell.
+ * LuxeLayout — cinematic page wrapper.
+ *
+ * IMPORTANT: The global header, footer, and mobile dock are rendered by the
+ * app shell in `App.tsx` (ReosHeader / ReosFooter / ReosMobileBottomNav).
+ * LuxeLayout intentionally does NOT render its own header/footer/dock —
+ * doing so caused duplicate top headers on luxe pages.
  *
  * Provides:
  *   • Ambient mesh + grain background
- *   • Fixed luxe header (with mobile menu)
- *   • Bottom mobile dock
- *   • Footer
- *   • Cinematic boot fade on first paint
- *
- * Every customer-facing luxe page should wrap its content with this.
+ *   • Cinematic boot fade on first paint (once per session)
  */
 export function LuxeLayout({
   children,
-  hideFooter = false,
-  hideDock = false,
   boot = true,
   className,
 }: LuxeLayoutProps) {
-  // Boot fade only once per browser session — prevents the jarring "jump to top"
-  // overlay overlay on every SPA route change.
   const shouldBoot =
     boot &&
     typeof window !== "undefined" &&
@@ -65,12 +58,9 @@ export function LuxeLayout({
       <LuxeAmbient />
 
       <div className="relative z-10">
-        <GlobalHeader />
         <main>{children}</main>
-        {!hideFooter && <LuxeFooter />}
       </div>
-
-      {!hideDock && <LuxeMobileDock />}
     </div>
   );
 }
+
