@@ -516,6 +516,23 @@ const PropertyDetail = () => {
 
             {/* workflow rail — connect to REOS modules */}
             <PropertyWorkflowRail propertyId={property.id} price={property.price} />
+
+            {/* Nearby investment opportunities */}
+            <div>
+              <NearbyInvestments propertyId={property.id} />
+            </div>
+
+            {/* AI Smart recommendations */}
+            <div>
+              <LuxeSectionHead
+                eyebrow="Smart Recommendations"
+                title={<>Curated <em className="not-italic text-[var(--luxe-gold)]">for you</em></>}
+                description="Personalized matches based on this property, your saved preferences and market intelligence."
+              />
+              <div className="mt-10">
+                <AIRecommendedProperties onPropertyClick={(p) => navigate(`/property/${p.id}`)} />
+              </div>
+            </div>
           </div>
 
           {/* ----- Right column — sticky booking ----- */}
