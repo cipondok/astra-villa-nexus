@@ -29,9 +29,9 @@
     <link rel="shortcut icon" href="/icon-512.png" type="image/png" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
 
-    <!-- Preload critical assets (LCP hero gets fetchpriority=high) -->
-    <link rel="preload" as="image" href="/src/assets/astra-logo.svg" type="image/svg+xml" />
-    <link rel="preload" as="image" href="/src/assets/home/slide-hero-1.png" fetchpriority="high" />
+    <!-- Hero LCP image is bundled by Vite with a hashed filename; the app sets
+         fetchpriority="high" directly on the <img>. Avoid preload to non-existent
+         /src/* paths in production which waste bandwidth and delay LCP. -->
 
     <!-- Preconnect to critical origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
