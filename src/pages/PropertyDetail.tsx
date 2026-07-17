@@ -462,7 +462,11 @@ const PropertyDetail = () => {
             </div>
             <div className="font-serif-l text-[18px] leading-none whitespace-nowrap">{fmtIDR(property.price)}</div>
             <button
-              onClick={() => navigate(`/booking/${property.id}`)}
+              ref={scrolled ? ctaRef("reserve", "mini_bar") : undefined}
+              onClick={() => {
+                trackClick({ cta: "reserve", placement: "mini_bar", outcome: "booking_initiated" });
+                navigate(`/booking/${property.id}`);
+              }}
               className="luxe-gold-btn rounded-full px-5 py-2 text-[12px] font-medium whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
               tabIndex={scrolled ? 0 : -1}
             >
