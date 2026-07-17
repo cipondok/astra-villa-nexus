@@ -5,7 +5,7 @@ import {
   ArrowLeft, ChevronLeft, ChevronRight, Maximize2, X,
   MapPin, BedDouble, Bath, Square, Calendar, Users, Sparkles,
   TrendingUp, Flame, Trophy, Activity, Heart, Share2,
-  MessageCircle, Phone, Box, Compass, ShieldCheck, Wind,
+  MessageCircle, Phone, Box, Compass, ShieldCheck, Wind, Images,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAIPropertyValuation } from "@/hooks/useAIPropertyValuation";
