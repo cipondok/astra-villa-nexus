@@ -214,12 +214,12 @@ const PropertyDetail = () => {
       />
 
       {/* ============ CINEMATIC HERO GALLERY ============ */}
-      <section className="relative w-full h-[78vh] md:h-[92vh] overflow-hidden luxe-grain">
+      <section className="relative w-full h-[70vh] md:h-[86vh] overflow-hidden luxe-grain">
         {images.map((src, i) => (
           <div
             key={src + i}
             className={cn(
-              "absolute inset-0 transition-opacity duration-\\[1200ms\\] ease-out",
+              "absolute inset-0 transition-opacity duration-[1200ms] ease-out",
               i === idx ? "opacity-100" : "opacity-0",
             )}
             aria-hidden={i !== idx}
