@@ -274,7 +274,7 @@ const PropertyDetail = () => {
         <div className="absolute inset-x-0 bottom-0 z-10 px-5 md:px-10 pb-12 md:pb-20">
           <div className="max-w-[1440px] mx-auto">
             <span className="luxe-eyebrow">{property.property_type || "Private Villa"} · {property.listing_type === "rent" ? "Nightly Stay" : "For Sale"}</span>
-            <h1 className="font-serif-l mt-4 text-[40px] md:text-[88px] leading-[0.95] tracking-tight max-w-4xl">
+            <h1 className="mt-4 text-[36px] md:text-[64px] font-semibold leading-[0.98] tracking-tight max-w-4xl text-white">
               {property.title}
             </h1>
             <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-luxe-fg/80">
