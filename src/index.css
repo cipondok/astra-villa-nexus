@@ -2667,7 +2667,7 @@ html:not(.dark) .bg-card > svg.lucide {
   :root { --reos-header-h: 56px; }
 }
 
-html { scroll-padding-top: calc(var(--reos-header-h) + 8px); }
+html { scroll-padding-top: calc(var(--reos-header-h) + 52px + 8px); }
 
 .reos-card,
 .reos-surface {
@@ -2761,7 +2761,7 @@ html { scroll-padding-top: calc(var(--reos-header-h) + 8px); }
   border-color: var(--gold-line);
 }
 
-header.reos-shell-header { height: var(--reos-header-h); }
+header.reos-shell-header > div:first-child { height: var(--reos-header-h); }
 
 /* Reserve bottom space on mobile when the REOS dock is mounted */
 @media (max-width: 767px) {
