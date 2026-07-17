@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet";
 import {
   Sparkles, Search, MapPin, Image as ImageIcon, Home, Calculator, FileText,
   Shield, TrendingUp, Users, MessageSquare, Palette, Wand2, Brain, Building2,
