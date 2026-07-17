@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, lazy, Suspense } from "react";
-import { Bell, Settings, LogOut, Sun, Moon, Wifi, WifiOff, Plus, Home, Play } from "lucide-react";
+import { Bell, Settings, LogOut, Sun, Moon, Wifi, WifiOff, Plus, Home, Play, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -26,6 +26,8 @@ const DemoStartButton = lazy(() => import("./demo/DemoStartButton"));
 interface AdminHeaderProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  /** Open the mobile navigation drawer (only used below `lg`). */
+  onOpenMobileNav?: () => void;
 }
 
 const priorityColor = (priority: string) => {
@@ -34,7 +36,7 @@ const priorityColor = (priority: string) => {
   return "bg-primary/10 text-primary";
 };
 
-const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
+const AdminHeader = ({ activeSection, onSectionChange, onOpenMobileNav }: AdminHeaderProps) => {
   const { theme, setTheme } = useTheme();
   const { signOut, profile } = useAuth();
   const navigate = useNavigate();
@@ -116,6 +118,19 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
   return (
     <header className="sticky top-0 z-50 w-full h-14 border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-full items-center gap-3 px-4 sm:px-6 lg:px-8">
+        {/* Mobile nav trigger */}
+        {onOpenMobileNav && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden h-8 w-8 -ml-1 shrink-0 hover:bg-muted"
+            onClick={onOpenMobileNav}
+            aria-label="Open navigation"
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
+        )}
+
         {/* Left: Page title / breadcrumb area */}
         <div className="flex items-center gap-2 min-w-0">
           <h1 className="text-sm font-semibold text-foreground truncate tracking-tight">

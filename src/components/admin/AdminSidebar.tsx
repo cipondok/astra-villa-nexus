@@ -38,9 +38,20 @@ interface AdminSidebarProps {
   onSectionChange: (section: string) => void;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  /** Whether the mobile off-canvas drawer is open (only used below `lg`). */
+  mobileOpen?: boolean;
+  /** Close the mobile off-canvas drawer. */
+  onMobileClose?: () => void;
 }
 
-export function AdminSidebar({ activeSection, onSectionChange, collapsed = false, onToggleCollapse }: AdminSidebarProps) {
+export function AdminSidebar({
+  activeSection,
+  onSectionChange,
+  collapsed = false,
+  onToggleCollapse,
+  mobileOpen = false,
+  onMobileClose,
+}: AdminSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const flyoutRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -89,7 +100,9 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
     onSectionChange(key);
     // Selecting an item closes the flyout, focus returns to opener naturally on next tab.
     setOpenCategory(null);
-  }, [onSectionChange]);
+    // Also close the mobile drawer if it is open.
+    onMobileClose?.();
+  }, [onSectionChange, onMobileClose]);
 
   useEffect(() => { setFlyoutQuery(''); menuItemRefs.current = []; }, [openCategory]);
 
@@ -104,18 +117,32 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Escape closes flyout and returns focus to the opener.
+  // Escape closes flyout and returns focus to the opener; if the mobile
+  // drawer is open (with no flyout active), Escape closes the drawer.
   useEffect(() => {
-    if (!openCategory) return;
+    if (!openCategory && !mobileOpen) return;
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.stopPropagation();
+      if (event.key !== 'Escape') return;
+      event.stopPropagation();
+      if (openCategory) {
         closeFlyout(true);
+      } else if (mobileOpen) {
+        onMobileClose?.();
       }
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [openCategory, closeFlyout]);
+  }, [openCategory, mobileOpen, closeFlyout, onMobileClose]);
+
+  // Lock body scroll while the mobile drawer is open.
+  useEffect(() => {
+    if (!mobileOpen || typeof document === 'undefined') return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
 
   // When the flyout opens, move focus to the search input (if visible) or the first menu item.
   useEffect(() => {
@@ -181,7 +208,7 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Flyout backdrop (all breakpoints) */}
       {openCategory && (
         <div
           className="fixed inset-0 bg-black/30 z-[9998] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:duration-200"
@@ -190,14 +217,29 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
         />
       )}
 
+      {/* Mobile drawer overlay (below lg only) */}
+      <div
+        className={cn(
+          "fixed inset-0 z-[9997] bg-black/50 lg:hidden",
+          "motion-safe:transition-opacity motion-safe:duration-300 motion-reduce:transition-none",
+          mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}
+        onClick={() => onMobileClose?.()}
+        aria-hidden="true"
+      />
+
       <nav
         ref={sidebarRef}
         data-admin-sidebar
         className={cn(
           "fixed top-0 left-0 h-screen z-[9999] flex",
-          "motion-safe:transition-[width] motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none"
+          // Slide the drawer off-screen below `lg` when it is closed.
+          "motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          "lg:translate-x-0"
         )}
         aria-label="Admin navigation"
+        aria-hidden={!mobileOpen ? undefined : undefined}
       >
         {/* Main sidebar column */}
         <div className={cn(
@@ -212,14 +254,29 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
             </div>
             <span
               className={cn(
-                "ml-2.5 font-semibold text-sm text-sidebar-foreground tracking-tight whitespace-nowrap",
+                "ml-2.5 font-semibold text-sm text-sidebar-foreground tracking-tight whitespace-nowrap flex-1",
                 "motion-safe:transition-opacity motion-safe:duration-200 motion-reduce:transition-none",
-                showLabels ? "opacity-100" : "opacity-0 pointer-events-none"
+                // On mobile the drawer is always expanded; hide the label only
+                // at `lg` and up when the desktop rail is collapsed.
+                showLabels ? "opacity-100" : "opacity-100 lg:opacity-0 lg:pointer-events-none"
               )}
               aria-hidden={!showLabels}
             >
               ASTRA
             </span>
+            {/* Mobile close button */}
+            <button
+              type="button"
+              onClick={() => onMobileClose?.()}
+              aria-label="Close navigation"
+              className={cn(
+                "lg:hidden ml-auto w-8 h-8 rounded-md flex items-center justify-center",
+                "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              )}
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
           </div>
 
           {/* Nav items */}
@@ -270,7 +327,7 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
                       className={cn(
                         "text-xs font-medium truncate whitespace-nowrap",
                         "motion-safe:transition-opacity motion-safe:duration-200",
-                        showLabels ? "opacity-100" : "opacity-0 pointer-events-none"
+                        showLabels ? "opacity-100" : "opacity-100 lg:opacity-0 lg:pointer-events-none"
                       )}
                       aria-hidden={!showLabels}
                     >
@@ -288,7 +345,7 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
                         className={cn(
                           "text-[9px] tabular-nums font-medium rounded px-1 py-0.5 ml-auto",
                           "motion-safe:transition-opacity motion-safe:duration-200",
-                          showLabels ? "opacity-100" : "opacity-0 pointer-events-none",
+                          showLabels ? "opacity-100" : "opacity-100 lg:opacity-0 lg:pointer-events-none",
                           isOpen ? "bg-primary-foreground/20 text-primary-foreground" :
                           isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
                         )}
@@ -331,9 +388,12 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
             aria-label={sectionTitles[openCategory as keyof typeof sectionTitles]}
             onKeyDown={handleMenuKeyDown}
             className={cn(
-              "absolute top-2 w-56 bg-popover border border-border/50 rounded-xl shadow-xl z-[9999] flex flex-col origin-left",
+              "absolute top-2 bg-popover border border-border/50 rounded-xl shadow-xl z-[9999] flex flex-col origin-left",
               "motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:slide-in-from-left-2 motion-safe:duration-200",
-              collapsed ? "left-14" : "left-14 lg:left-60"
+              // On mobile the drawer is 256px wide (w-64); anchor the flyout
+              // just to its right and clamp to the viewport.
+              "left-[15.5rem] right-2 w-auto lg:right-auto lg:w-56",
+              collapsed ? "lg:left-14" : "lg:left-60"
             )}
             style={{ maxHeight: 'min(calc(100vh - 80px), 680px)' }}
           >
