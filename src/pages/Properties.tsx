@@ -301,6 +301,7 @@ export default function Properties() {
             <select
               value={sort}
               onChange={(e) => updateParam("sort", e.target.value)}
+              aria-label="Sort properties"
               className="reos-chip text-[12px] rounded-lg h-9 px-3 bg-[var(--surface)] focus:outline-none"
             >
               {SORT_OPTIONS.map((o) => (

@@ -601,9 +601,10 @@ export default function AstraReosHome() {
                           <button
                             type="button"
                             onClick={() => setAiQuery("")}
+                            aria-label="Clear search"
                             className="shrink-0 p-1 rounded-full hover:bg-[var(--surface-2)] text-[var(--text-3)] transition"
                           >
-                            <X className="h-3.5 w-3.5" />
+                            <X className="h-3.5 w-3.5" aria-hidden="true" />
                           </button>
                         )}
                         <button onClick={submitAi} disabled={aiLoading} className="btn-titanium h-8 pl-1.5 pr-3 rounded-full text-[11px] inline-flex items-center gap-1.5 font-semibold disabled:opacity-60 shrink-0">
@@ -642,7 +643,7 @@ export default function AstraReosHome() {
               {/* Market overview */}
               <motion.div variants={fadeUp} className="col-span-12 lg:col-span-3 reos-card p-5">
                 <div className="flex items-center justify-between">
-                  <div className="text-[14px] font-semibold">Market Overview</div>
+                  <h2 className="text-[14px] font-semibold">Market Overview</h2>
                   <div className="relative" ref={countryRef}>
                     <button
                       type="button"
@@ -717,7 +718,7 @@ export default function AstraReosHome() {
               {/* Featured Properties */}
               <Section className="col-span-12 lg:col-span-5 reos-card p-5">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="text-[14px] font-semibold">Featured Properties</div>
+                  <h2 className="text-[14px] font-semibold">Featured Properties</h2>
                   <Link to="/properties" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -765,7 +766,7 @@ export default function AstraReosHome() {
               {/* Investment Hotspots */}
               <Section className="col-span-12 lg:col-span-4 reos-card p-5">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="text-[14px] font-semibold">Investment Hotspots</div>
+                  <h2 className="text-[14px] font-semibold">Investment Hotspots</h2>
                   <Link to="/market-heatmap" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
                 </div>
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "var(--hotspot-bg)" }}>
@@ -811,7 +812,7 @@ export default function AstraReosHome() {
               <div className="col-span-12 lg:col-span-3 space-y-5">
                 <Section className="reos-card p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <div className="text-[13px] font-semibold">AI Recommendation</div>
+                    <h2 className="text-[13px] font-semibold">AI Recommendation</h2>
                     <Link to="/ai-search" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
                   </div>
                   <div className="space-y-3">
@@ -834,7 +835,7 @@ export default function AstraReosHome() {
 
                 <Section className="reos-card p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <div className="text-[13px] font-semibold">Market Intelligence</div>
+                    <h2 className="text-[13px] font-semibold">Market Intelligence</h2>
                     <Link to="/market-heatmap" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
                   </div>
                   <div className="space-y-2.5">
@@ -911,7 +912,7 @@ export default function AstraReosHome() {
                     <Sparkles className="h-4 w-4 reos-gold" />
                     <span className="text-sm font-semibold tracking-wide">AI Investment Results</span>
                   </div>
-                  <button onClick={() => { setShowAiSheet(false); resetAi(); }} className="h-8 w-8 rounded-md hover:bg-[var(--surface)] flex items-center justify-center">
+                  <button onClick={() => { setShowAiSheet(false); resetAi(); }} aria-label="Close AI results" className="h-8 w-8 rounded-md hover:bg-[var(--surface)] flex items-center justify-center">
                     <X className="h-4 w-4" />
                   </button>
                 </div>
