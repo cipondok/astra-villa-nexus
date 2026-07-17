@@ -40,29 +40,21 @@ serve(async (req) => {
 
     // ── Step 1: Scan unanalyzed properties ──
     if (mode === "auto" || mode === "scan_only") {
-      // Get existing analyzed IDs
-      const { data: existing } = await supabase
-        .from("property_seo_analysis")
-        .select("property_id")
-        .limit(10000);
+      // Use RPC that anti-joins properties ⟂ property_seo_analysis
+      // (replaces prior full 10k-row fetch — see Phase 3 perf pass).
+      const { data: candidates, error: rpcErr } = await supabase.rpc(
+        "get_unanalyzed_property_ids",
+        { _limit: batchLimit },
+      );
 
-      const analyzedIds = new Set((existing || []).map((r: any) => r.property_id));
-
-      // Get unanalyzed properties
-      const { data: unanalyzed } = await supabase
-        .from("properties")
-        .select("id, title, description, property_type, listing_type, location, city, state, bedrooms, bathrooms, price")
-        .order("created_at", { ascending: false })
-        .limit(batchLimit * 3);
-
-      const candidates = (unanalyzed || []).filter((p: any) => !analyzedIds.has(p.id)).slice(0, batchLimit);
-
-      if (candidates.length > 0) {
-        // Call the ai-engine to analyze in batch
+      if (rpcErr) {
+        results.scan_error = rpcErr.message;
+        results.scanned = 0;
+      } else if ((candidates || []).length > 0) {
         const { data: analyzeResult, error: analyzeErr } = await supabase.functions.invoke("ai-engine", {
           body: {
             mode: "seo_generate",
-            payload: { action: "analyze-batch", limit: candidates.length, filter: "unanalyzed" },
+            payload: { action: "analyze-batch", limit: candidates!.length, filter: "unanalyzed" },
           },
         });
 
