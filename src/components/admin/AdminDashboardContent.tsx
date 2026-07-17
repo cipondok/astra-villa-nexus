@@ -45,9 +45,9 @@ const AdminDashboardContent = ({
   }, [prioritySections, isOverview]);
 
   return (
-    <div className="flex-1 p-2 lg:p-3">
+    <div className="flex-1 min-w-0 space-y-4 lg:space-y-6">
       {priorityBanner}
-      <div key={activeSection}>
+      <div key={activeSection} className="space-y-4 lg:space-y-6">
         {!isOverview && (
           <AdminCategoryTabs
             activeSection={activeSection}
