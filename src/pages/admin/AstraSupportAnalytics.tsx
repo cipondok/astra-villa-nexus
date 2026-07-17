@@ -196,12 +196,9 @@ const AstraSupportAnalytics: React.FC = () => {
   const gradeColor: Record<string, string> = { A: '#00E0A4', B: '#3B82F6', C: '#F59E0B', D: '#EF4444' };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: PAGE_BG }}>
-        <RefreshCw className="w-8 h-8 animate-spin" style={{ color: ACCENT }} />
-      </div>
-    );
+    return <AdminPageSkeleton kpis={5} rows={8} />;
   }
+
 
   return (
     <div className="min-h-screen p-6 space-y-6" style={{ background: PAGE_BG, color: '#E2E8F0' }}>
