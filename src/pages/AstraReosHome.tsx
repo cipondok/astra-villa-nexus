@@ -734,7 +734,7 @@ export default function AstraReosHome() {
                       <motion.div key={p.id} variants={fadeUp} whileHover={{ y: -3 }} className="reos-card-2 overflow-hidden group">
                         <Link to={`/properties/${p.slug ?? p.id}`}>
                           <div className="relative h-28 overflow-hidden">
-                            <img src={img} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <img src={img} alt={p.title} width={400} height={224} loading="lazy" decoding="async" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             <span className={`absolute top-2 left-2 text-[9px] font-bold tracking-wider px-1.5 py-0.5 rounded ${badgeColor[p._badge]}`}>{p._badge}</span>
                           </div>
                           <div className="p-3">
@@ -819,7 +819,7 @@ export default function AstraReosHome() {
                     {aiRecs.map(r => (
                       <motion.div key={r.title} variants={fadeUp} className="flex items-center gap-3">
                         <div className="h-10 w-12 rounded-md overflow-hidden shrink-0">
-                          <img src={heroImg} alt={r.city} className="h-full w-full object-cover" />
+                          <img src={heroImg} alt={r.city} width={48} height={40} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="text-[11px] font-medium truncate">{r.title}</div>
@@ -941,7 +941,7 @@ export default function AstraReosHome() {
                           <motion.div key={r.id ?? idx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}
                             className="reos-card p-4 flex gap-3">
                             <div className="h-16 w-20 rounded-lg overflow-hidden shrink-0">
-                              <img src={r.cover_image || heroImg} alt={r.title} className="h-full w-full object-cover" />
+                              <img src={r.cover_image || heroImg} alt={r.title} width={80} height={64} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="text-sm font-semibold truncate">{r.title}</div>
