@@ -8,6 +8,7 @@ import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Cart
 import { Activity, AlertTriangle, CheckCircle2, Clock, RefreshCw, Brain, ShieldAlert, Bell, TrendingUp, Copy, X, MessageSquare, Mail, Send } from 'lucide-react';
 import { format, subDays, differenceInMinutes } from 'date-fns';
 import { toast } from 'sonner';
+import { AdminPageSkeleton } from '@/components/admin/AdminStates';
 
 const COLORS = ['#00E0A4', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 const CARD_BG = '#0F1726';
