@@ -117,18 +117,32 @@ export function AdminSidebar({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Escape closes flyout and returns focus to the opener.
+  // Escape closes flyout and returns focus to the opener; if the mobile
+  // drawer is open (with no flyout active), Escape closes the drawer.
   useEffect(() => {
-    if (!openCategory) return;
+    if (!openCategory && !mobileOpen) return;
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.stopPropagation();
+      if (event.key !== 'Escape') return;
+      event.stopPropagation();
+      if (openCategory) {
         closeFlyout(true);
+      } else if (mobileOpen) {
+        onMobileClose?.();
       }
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [openCategory, closeFlyout]);
+  }, [openCategory, mobileOpen, closeFlyout, onMobileClose]);
+
+  // Lock body scroll while the mobile drawer is open.
+  useEffect(() => {
+    if (!mobileOpen || typeof document === 'undefined') return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
 
   // When the flyout opens, move focus to the search input (if visible) or the first menu item.
   useEffect(() => {
