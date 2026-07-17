@@ -904,13 +904,15 @@ const AppContent = () => {
       {/* REOS unified mobile bottom nav (Home / Properties / Invest / AI / Profile) */}
       {useReosChrome && <Suspense fallback={null}><ReosMobileBottomNav /></Suspense>}
 
-      {useReosChrome ? (
-        <ReosFooter />
-      ) : (
-        /* ASTRA V3: unified footer rendered on every non-Reos route */
-        <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '120px' }} />}>
-          <GlobalFooter />
-        </Suspense>
+      {!isAdminRoute && (
+        useReosChrome ? (
+          <ReosFooter />
+        ) : (
+          /* ASTRA V3: unified footer rendered on every non-Reos route */
+          <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '120px' }} />}>
+            <GlobalFooter />
+          </Suspense>
+        )
       )}
       </div>
     </SidebarProviderConditional>
