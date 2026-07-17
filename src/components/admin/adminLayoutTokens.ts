@@ -11,11 +11,13 @@ import { useEffect, type RefObject } from "react";
  * Expanded, below `lg` (< 1024px):   56px  (icon rail — labels use a flyout)
  * Expanded, `lg` and up:            240px  (w-60 / ml-60)
  */
-export const SIDEBAR_WIDTH_COLLAPSED = "w-14";
-export const SIDEBAR_WIDTH_EXPANDED = "w-14 lg:w-60";
+export const SIDEBAR_WIDTH_COLLAPSED = "w-64 lg:w-14";
+export const SIDEBAR_WIDTH_EXPANDED = "w-64 lg:w-60";
 
-export const CONTENT_OFFSET_COLLAPSED = "ml-14";
-export const CONTENT_OFFSET_EXPANDED = "ml-14 lg:ml-60";
+// Below `lg` the sidebar is an off-canvas drawer, so the main content has NO
+// left margin on mobile; the sidebar overlays instead of pushing content.
+export const CONTENT_OFFSET_COLLAPSED = "lg:ml-14";
+export const CONTENT_OFFSET_EXPANDED = "lg:ml-60";
 
 export const sidebarWidthClass = (collapsed: boolean) =>
   collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED;
