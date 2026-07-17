@@ -2543,6 +2543,28 @@ html:not(.dark) .border-slate-800,
 html:not(.dark) .border-slate-900 {
   border-color: hsl(var(--border));
 }
+
+/* Accessibility: raise contrast of low-opacity muted-foreground text.
+   Tailwind opacity modifiers like text-muted-foreground/30..60 often drop
+   body text below WCAG AA (4.5:1). Restore text color to full-opacity
+   muted-foreground for any text-bearing element (preserve icon svgs which
+   are decorative). */
+p.text-muted-foreground\/30, span.text-muted-foreground\/30, div.text-muted-foreground\/30,
+p.text-muted-foreground\/40, span.text-muted-foreground\/40, div.text-muted-foreground\/40,
+p.text-muted-foreground\/50, span.text-muted-foreground\/50, div.text-muted-foreground\/50,
+p.text-muted-foreground\/60, span.text-muted-foreground\/60, div.text-muted-foreground\/60,
+label.text-muted-foreground\/50, label.text-muted-foreground\/60,
+h1.text-muted-foreground\/50, h2.text-muted-foreground\/50, h3.text-muted-foreground\/50,
+h4.text-muted-foreground\/50, h5.text-muted-foreground\/50, h6.text-muted-foreground\/50 {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* Placeholder contrast: ensure inputs meet AA for placeholder text */
+input::placeholder,
+textarea::placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 1;
+}
 html:not(.dark) .bg-gray-800,
 html:not(.dark) .bg-gray-900,
 html:not(.dark) .bg-gray-950,
