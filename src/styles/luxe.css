@@ -129,8 +129,9 @@
 .bg-luxe-glass   { background: var(--luxe-glass); }
 .bg-luxe-surface { background: var(--luxe-surface); }
 .border-luxe     { border-color: var(--luxe-line); }
-.font-serif-l    { font-family: var(--luxe-serif); font-weight: 400; letter-spacing: -0.01em; }
-.font-display-l  { font-family: var(--luxe-display, var(--luxe-sans)); font-weight: 300; letter-spacing: -0.02em; }
+/* Aligned to ASTRA homepage display: semibold sans, tight tracking */
+.font-serif-l    { font-family: var(--luxe-serif); font-weight: 600; letter-spacing: -0.025em; }
+.font-display-l  { font-family: var(--luxe-display, var(--luxe-sans)); font-weight: 600; letter-spacing: -0.03em; }
 .font-mono-l     { font-family: var(--luxe-mono); }
 .text-luxe-sage  { color: var(--luxe-sage, var(--luxe-emerald)); }
 .bg-luxe-sage-soft { background: var(--luxe-sage-soft, rgba(125,155,118,0.18)); }
