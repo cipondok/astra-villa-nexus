@@ -484,7 +484,7 @@ export function ReosFooter() {
         { label: "Rent", to: "/properties?intent=rent", icon: KeyRound },
         { label: "Sell with Us", to: "/sell", icon: Tag },
         { label: "Agents", to: "/agents", icon: UsersRound },
-        { label: "Vendors", to: "/vendor-marketplace", icon: Store },
+        { label: "Vendors", to: "/services", icon: Store },
       ],
     },
     {
