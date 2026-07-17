@@ -122,7 +122,7 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
         {/* Main sidebar column */}
         <div className={cn(
           "h-full bg-[hsl(var(--sidebar-background))] border-r border-border/30 flex flex-col transition-all duration-200",
-          showLabels ? "w-14 lg:w-60" : "w-14"
+          showLabels ? SIDEBAR_WIDTH_EXPANDED : SIDEBAR_WIDTH_COLLAPSED
         )}>
           {/* Logo area */}
           <div className="h-14 flex items-center px-3 border-b border-border/20 shrink-0">
