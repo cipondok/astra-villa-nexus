@@ -798,7 +798,14 @@ const PropertyDetail = () => {
             <div className="font-serif-l text-[18px] leading-none">{fmtIDR(property.price)}</div>
             <div className="text-[10px] text-luxe-mut mt-1">{property.listing_type === "rent" ? "per night" : "list price"}</div>
           </div>
-          <a href={whatsappLink} target="_blank" rel="noreferrer" className="luxe-gold-btn rounded-full px-5 py-2.5 text-[12px] font-medium inline-flex items-center gap-2">
+          <a
+            ref={ctaRef("reserve", "mobile_bar")}
+            href={whatsappLink}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => trackClick({ cta: "reserve", placement: "mobile_bar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+            className="luxe-gold-btn rounded-full px-5 py-2.5 text-[12px] font-medium inline-flex items-center gap-2"
+          >
             <Phone className="h-3.5 w-3.5" /> Reserve
           </a>
         </LuxeCard>
