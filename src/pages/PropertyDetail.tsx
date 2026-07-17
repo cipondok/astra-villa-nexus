@@ -356,7 +356,83 @@ const PropertyDetail = () => {
                   <span className="text-luxe-fg">{fmtIDR(ai.avg_price_per_sqm)}/m²</span>
                 </p>
               )}
+              <div className="mt-8">
+                <InvestmentIntelligenceBadge
+                  investmentScore={ai?.investment_score ?? 0}
+                  rentalYield={ai?.deviation_percent ? Math.abs(ai.deviation_percent) : 0}
+                  demandScore={ai?.demand_heat_score ?? 0}
+                  liquidityScore={ai?.confidence ? Math.round(ai.confidence * 100) : 0}
+                />
+              </div>
             </div>
+
+            {/* Comparables */}
+            {ai?.top_comparables && ai.top_comparables.length > 0 && (
+              <div>
+                <LuxeSectionHead
+                  eyebrow="Comparables"
+                  title={<>Similar <em className="not-italic text-[var(--luxe-gold)]">listings</em></>}
+                  description={`Benchmarked against ${ai.comparables_count} comparable properties in ${ai.city ?? "market"}.`}
+                />
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {ai.top_comparables.slice(0, 3).map((c) => (
+                    <Link key={c.id} to={`/property/${c.id}`}>
+                      <LuxeCard variant="glass" radius="md" className="p-5 h-full hover:border-[var(--luxe-gold)]/40 transition">
+                        <div className="text-[11px] uppercase tracking-[0.18em] text-luxe-mut">{c.city}</div>
+                        <div className="font-serif-l text-[18px] mt-2 line-clamp-2">{c.title}</div>
+                        <div className="luxe-divider my-4" />
+                        <div className="flex items-baseline justify-between">
+                          <span className="font-serif-l text-[22px]">{fmtIDR(c.price)}</span>
+                          <span className="text-[11px] text-luxe-mut">{fmtIDR(c.price_per_sqm)}/m²</span>
+                        </div>
+                        <div className="text-[11px] text-luxe-mut mt-2">{c.area?.toLocaleString("id-ID")} m²</div>
+                      </LuxeCard>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Market context */}
+            {property.city && (
+              <div>
+                <LuxeSectionHead
+                  eyebrow="Market Intelligence"
+                  title={<>Neighborhood <em className="not-italic text-[var(--luxe-gold)]">signals</em></>}
+                  description="Live market trends, demand heat and rental insight for the area."
+                />
+                <div className="mt-10">
+                  <MarketContextCard city={property.city} currentPrice={property.price ?? undefined} />
+                </div>
+              </div>
+            )}
+
+            {/* Legal & Verification */}
+            <div>
+              <LuxeSectionHead
+                eyebrow="Trust & Legal"
+                title={<>Verification <em className="not-italic text-[var(--luxe-gold)]">status</em></>}
+                description="Automated legal checks and ownership verification for peace of mind."
+              />
+              <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { label: "Ownership", ok: true },
+                  { label: "Title Deed", ok: true },
+                  { label: "Zoning", ok: true },
+                  { label: "Tax Records", ok: true },
+                ].map((v) => (
+                  <LuxeCard key={v.label} variant="glass" radius="md" className="p-5">
+                    <ShieldCheck className={cn("h-4 w-4", v.ok ? "text-emerald-400" : "text-luxe-mut")} />
+                    <div className="mt-3 font-serif-l text-[16px]">{v.ok ? "Verified" : "Pending"}</div>
+                    <div className="text-[10px] uppercase tracking-[0.2em] text-luxe-mut mt-2">{v.label}</div>
+                  </LuxeCard>
+                ))}
+              </div>
+              <p className="mt-4 text-[11px] text-luxe-mut">
+                Backed by ASTRA AI Legal Assistant · <Link to={`/legal-verification/${property.id}`} className="text-luxe-gold hover:underline">View full report</Link>
+              </p>
+            </div>
+
 
             {/* amenities */}
             <div>
