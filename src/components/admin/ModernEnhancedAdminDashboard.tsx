@@ -23,7 +23,21 @@ const ModernEnhancedAdminDashboard = () => {
     const params = new URLSearchParams(window.location.search);
     return normalizeSection(params.get("section"));
   });
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 1024 : false
+  );
+
+  // Auto-collapse on small screens, restore on large
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(max-width: 1023px)");
+    const handler = (e: MediaQueryListEvent | MediaQueryList) => {
+      setSidebarCollapsed(e.matches);
+    };
+    handler(mql);
+    mql.addEventListener("change", handler as (e: MediaQueryListEvent) => void);
+    return () => mql.removeEventListener("change", handler as (e: MediaQueryListEvent) => void);
+  }, []);
   const [prioritySections, setPrioritySections] = useState<string[]>([]);
   const [investorMode, setInvestorMode] = useState(false);
   const [narrativeMode, setNarrativeMode] = useState(false);
@@ -80,7 +94,7 @@ const ModernEnhancedAdminDashboard = () => {
 
   return (
     <DemoModeProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background overflow-x-hidden">
         {/* Fixed Left Sidebar */}
         <AdminSidebar
           activeSection={activeSection}
