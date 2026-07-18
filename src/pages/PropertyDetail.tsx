@@ -6,6 +6,7 @@ import {
   MapPin, BedDouble, Bath, Square, Calendar, Users, Sparkles,
   TrendingUp, Flame, Trophy, Activity, Heart, Share2,
   MessageCircle, Phone, Box, Compass, ShieldCheck, Wind, Images,
+  Send, Bell, CalendarClock, ChevronDown, Play, Camera, Map as MapIcon,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAIPropertyValuation } from "@/hooks/useAIPropertyValuation";
@@ -127,6 +128,16 @@ const PropertyDetail = () => {
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(2);
 
+  /* ----- Contact form state ----- */
+  const [inquiryReason, setInquiryReason] = useState("Request more information");
+  const [inquiryMessage, setInquiryMessage] = useState("I'm interested in this property and would like more information.");
+  const [sending, setSending] = useState(false);
+  const [visitOpen, setVisitOpen] = useState(false);
+  const [visitDate, setVisitDate] = useState("");
+  const [visitTime, setVisitTime] = useState("10:00");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertEmail, setAlertEmail] = useState("");
+
   /* ----- CTA analytics tracking ----- */
   const { registerImpression, trackClick } = usePropertyCtaTracking({
     propertyId: property?.id,
@@ -210,6 +221,82 @@ const PropertyDetail = () => {
     return `https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`;
   }, [property]);
 
+  /* ----- Contact handlers ----- */
+  const handleSendMessage = useCallback(async () => {
+    if (!property) return;
+    if (!inquiryMessage.trim()) {
+      toast({ title: "Add a message", description: "Please write a short note for our concierge." });
+      return;
+    }
+    setSending(true);
+    try {
+      trackClick({
+        cta: "contact",
+        placement: "sidebar",
+        outcome: "contact_opened",
+        extra: { channel: "form", reason: inquiryReason, message_len: inquiryMessage.length },
+      });
+      trackEvent("property_inquiry_submitted", {
+        property_id: property.id,
+        city: property.city ?? undefined,
+        metadata: { reason: inquiryReason, price: property.price ?? null },
+      });
+      toast({
+        title: "Inquiry sent",
+        description: "Our concierge will reply within 24 hours.",
+      });
+      setInquiryMessage("");
+    } finally {
+      setSending(false);
+    }
+  }, [property, inquiryReason, inquiryMessage, trackClick, trackEvent, toast]);
+
+  const handleRequestVisit = useCallback(() => {
+    if (!property) return;
+    if (!visitDate) {
+      toast({ title: "Pick a date", description: "Please choose your preferred visit date." });
+      return;
+    }
+    trackClick({
+      cta: "contact",
+      placement: "sidebar",
+      outcome: "contact_opened",
+      extra: { channel: "visit_request", visit_date: visitDate, visit_time: visitTime },
+    });
+    trackEvent("property_visit_requested", {
+      property_id: property.id,
+      city: property.city ?? undefined,
+      metadata: { visit_date: visitDate, visit_time: visitTime },
+    });
+    toast({
+      title: "Visit requested",
+      description: `We will confirm your viewing on ${visitDate} at ${visitTime}.`,
+    });
+    setVisitOpen(false);
+  }, [property, visitDate, visitTime, trackClick, trackEvent, toast]);
+
+  const handlePriceAlert = useCallback(() => {
+    if (!property) return;
+    const email = alertEmail.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({ title: "Enter a valid email", description: "We'll notify you when this listing's price changes." });
+      return;
+    }
+    trackEvent("property_price_alert_subscribed", {
+      property_id: property.id,
+      city: property.city ?? undefined,
+      metadata: { email_domain: email.split("@")[1] },
+    });
+    toast({
+      title: "Price alert active",
+      description: "We'll email you the moment this listing's price moves.",
+    });
+    setAlertOpen(false);
+    setAlertEmail("");
+  }, [property, alertEmail, trackEvent, toast]);
+
+
+
   /* ------------------------------------------------------------- */
   /*  Loading / Error                                              */
   /* ------------------------------------------------------------- */
@@ -281,12 +368,6 @@ const PropertyDetail = () => {
   const hero = images[idx] || "/placeholder.svg";
   const loc = [property.district, property.city, property.province].filter(Boolean).join(", ") || property.location || "Bali, Indonesia";
 
-  const features: { icon: any; label: string; value: string }[] = [
-    { icon: BedDouble, label: "Bedrooms", value: property.bedrooms?.toString() ?? "—" },
-    { icon: Bath,      label: "Bathrooms", value: property.bathrooms?.toString() ?? "—" },
-    { icon: Square,    label: "Area", value: property.area_sqm ? `${property.area_sqm} m²` : "—" },
-    { icon: Wind,      label: "Type", value: property.property_type ?? "Villa" },
-  ];
 
   const amenities: string[] = Array.isArray(property.property_features?.amenities)
     ? property.property_features!.amenities
@@ -358,101 +439,171 @@ const PropertyDetail = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-1.5 h-[340px] sm:h-[440px] lg:h-[520px] overflow-hidden">
+              {/* Immobiliare-style 3/1 hero: main image + 4-row labeled thumb stack */}
+              <div className="grid grid-cols-4 gap-1.5 h-[340px] sm:h-[440px] lg:h-[520px] overflow-hidden">
                 <button
                   onClick={() => { setIdx(0); setFullscreen(true); }}
-                  className="col-span-12 md:col-span-8 relative group overflow-hidden bg-luxe-surface"
+                  className="col-span-4 md:col-span-3 relative group overflow-hidden bg-luxe-surface"
                   aria-label="View main photo"
                 >
                   <GalleryImg
                     src={images[0] || "/placeholder.svg"}
                     alt={`${property.title} — main view`}
                     eager
-                    className="group-hover:scale-[1.03]"
+                    className="group-hover:scale-[1.05] duration-1000"
                   />
-                  <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                  <span className="absolute bottom-5 left-5 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-white/10 text-white inline-flex items-center gap-1.5">
+                    <Images className="h-3 w-3" /> 1 / {Math.max(1, images.length)}
+                  </span>
                 </button>
 
-                <div className="hidden md:grid col-span-4 grid-rows-2 gap-1.5">
-                  <button
-                    onClick={() => { setIdx(1); setFullscreen(true); }}
-                    className="relative group overflow-hidden bg-luxe-surface"
-                    aria-label="View second photo"
-                  >
-                    <GalleryImg
-                      src={images[1] || images[0] || "/placeholder.svg"}
-                      alt=""
-                      className="group-hover:scale-[1.05]"
-                    />
-                    <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all" />
-                  </button>
-                  <button
-                    onClick={() => { setIdx(Math.min(2, images.length - 1)); setFullscreen(true); }}
-                    className="relative group overflow-hidden bg-luxe-surface"
-                    aria-label="View gallery"
-                  >
-                    <GalleryImg
-                      src={images[2] || images[0] || "/placeholder.svg"}
-                      alt=""
-                      className="group-hover:scale-[1.05]"
-                    />
-                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-all" />
-                    {images.length > 0 && (
-                      <span className="absolute bottom-4 right-4 bg-white/95 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.15em] text-[color:var(--luxe-ink,#0A1931)] shadow-xl inline-flex items-center gap-2 border border-white/60 backdrop-blur-sm">
-                        <Images className="h-3.5 w-3.5" />
-                        View {images.length} Photo{images.length === 1 ? "" : "s"}
+                <div className="hidden md:grid col-span-1 grid-rows-4 gap-1.5">
+                  {[
+                    { i: 1, label: "Interior" },
+                    { i: 2, label: "Suite" },
+                    { i: 3, label: "Detail" },
+                  ].map(({ i, label }) => (
+                    <button
+                      key={i}
+                      onClick={() => { setIdx(Math.min(i, images.length - 1)); setFullscreen(true); }}
+                      className="relative group overflow-hidden bg-luxe-surface"
+                      aria-label={`View ${label} photo`}
+                    >
+                      <GalleryImg
+                        src={images[i] || images[0] || "/placeholder.svg"}
+                        alt=""
+                        className="group-hover:scale-110 duration-500"
+                      />
+                      <span className="absolute inset-0 flex items-end p-2.5 bg-gradient-to-t from-black/60 to-transparent text-[9px] uppercase tracking-[0.2em] font-semibold text-white">
+                        {label}
                       </span>
-                    )}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => { setIdx(0); setFullscreen(true); }}
+                    className="relative group overflow-hidden cursor-pointer bg-[color:var(--luxe-gold)]/10"
+                    aria-label="Open full gallery"
+                  >
+                    <GalleryImg
+                      src={images[4] || images[3] || images[0] || "/placeholder.svg"}
+                      alt=""
+                      className="opacity-30 group-hover:scale-110 duration-500"
+                    />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
+                      <span className="text-[18px] font-semibold text-[var(--luxe-gold)] leading-none">
+                        +{Math.max(0, images.length - 4)}
+                      </span>
+                      <span className="text-[9px] text-white/80 uppercase tracking-[0.25em] font-medium">Photos</span>
+                    </div>
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* --- Content block --- */}
-            <div className="p-6 md:p-10 lg:p-12 pb-8 md:pb-10">
-              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8">
-                <div className="max-w-2xl space-y-6 min-w-0">
+            {/* --- Content block: quick chips → title/price → 6-col feature strip --- */}
+            <div className="p-6 md:p-10 lg:p-12 pb-8 md:pb-10 space-y-8 md:space-y-10">
+
+              {/* Quick access chips */}
+              <div className="flex flex-wrap gap-2.5">
+                <button
+                  onClick={() => { setIdx(0); setFullscreen(true); }}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                >
+                  <Camera className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                  {images.length} Photos
+                </button>
+                {(property.virtual_tour_url || (property.panorama_360_urls?.length ?? 0) > 0) && (
+                  <a
+                    href={property.virtual_tour_url || "#"}
+                    target="_blank" rel="noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                  >
+                    <Compass className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                    Virtual Tour
+                  </a>
+                )}
+                {property.glb_model_url && (
+                  <Link
+                    to={`/digital-twin/${property.id}`}
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                  >
+                    <Box className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                    3D Twin
+                  </Link>
+                )}
+                {property.drone_video_url && (
+                  <a
+                    href={property.drone_video_url}
+                    target="_blank" rel="noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                  >
+                    <Play className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                    Drone Video
+                  </a>
+                )}
+                <button
+                  onClick={() => document.getElementById("neighborhood")?.scrollIntoView({ behavior: "smooth" })}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                >
+                  <MapIcon className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                  Location
+                </button>
+              </div>
+
+              {/* Title + Price row with gold divider */}
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 border-b border-[var(--luxe-gold)]/20 pb-8">
+                <div className="space-y-3 min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="px-3 py-1 bg-[color:var(--luxe-ink,#0A1931)]/5 text-[color:var(--luxe-ink,#0A1931)] text-[10px] font-bold uppercase tracking-widest rounded-full border border-[color:var(--luxe-ink,#0A1931)]/10">
+                    <span className="px-3 py-1 bg-luxe-glass text-luxe-fg text-[10px] font-bold uppercase tracking-widest rounded-full border border-luxe">
                       {property.property_type || "Signature Collection"}
                     </span>
                     <span className="text-[var(--luxe-gold)] text-[10px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5">
                       <MapPin className="h-3 w-3" /> {loc}
                     </span>
                   </div>
-
-                  <h1 className="font-serif-l text-[34px] md:text-[52px] lg:text-[60px] leading-[1.05] tracking-tight text-luxe-fg">
+                  <h1 className="font-serif-l text-[34px] md:text-[48px] lg:text-[56px] leading-[1.05] tracking-tight text-luxe-fg">
                     {property.title}
                   </h1>
-
-                  {/* Feature icon rows */}
-                  <div className="flex flex-wrap items-center gap-x-10 gap-y-4 pt-2">
-                    {features.map((f) => (
-                      <div key={f.label} className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-luxe-glass border border-luxe flex items-center justify-center">
-                          <f.icon className="h-5 w-5 text-luxe-mut" strokeWidth={1.5} />
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-luxe-mut font-medium uppercase tracking-wider">{f.label}</p>
-                          <p className="text-[13px] font-bold text-luxe-fg mt-0.5">{f.value}</p>
-                        </div>
-                      </div>
-                    ))}
+                </div>
+                <div className="text-left md:text-right shrink-0">
+                  <span className="text-[var(--luxe-gold)] text-[10px] uppercase tracking-[0.2em] font-bold block mb-2">
+                    {property.listing_type === "rent" ? "From / night" : "List price"}
+                  </span>
+                  <div className="font-serif-l text-[36px] md:text-[44px] leading-none text-luxe-fg">
+                    {fmtIDR(property.price)}
                   </div>
                 </div>
+              </div>
 
-                {/* Trust badge card */}
-                <div className="flex flex-col items-center p-6 bg-[color:var(--luxe-ink,#0A1931)]/[0.03] border border-[color:var(--luxe-ink,#0A1931)]/10 rounded-2xl w-full lg:w-52 text-center shrink-0">
-                  <div className="w-12 h-12 mb-3 bg-[color:var(--luxe-ink,#0A1931)] rounded-full flex items-center justify-center text-[var(--luxe-gold)]">
-                    <ShieldCheck className="h-6 w-6" />
-                  </div>
-                  <p className="text-[11px] font-bold text-luxe-fg uppercase tracking-wider mb-1">Verified Asset</p>
-                  <p className="text-[10px] text-luxe-mut font-medium uppercase tracking-tight">Escrow Protected</p>
-                  {ai?.investment_score != null && (
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-full border border-[var(--luxe-gold)]/40 text-[var(--luxe-gold)] bg-[var(--luxe-gold)]/10 font-semibold">
-                      <Sparkles className="h-3 w-3" /> AI {ai.investment_score.toFixed(0)}/100
+              {/* 6-column feature strip */}
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-y-6 gap-x-4 pb-2">
+                {[
+                  { label: "Bedrooms", value: property.bedrooms?.toString() ?? "—" },
+                  { label: "Surface", value: property.area_sqm ? `${property.area_sqm} m²` : "—" },
+                  { label: "Baths", value: property.bathrooms?.toString() ?? "—" },
+                  { label: "Listing", value: property.listing_type === "rent" ? "Rent" : "Sale" },
+                  { label: "Type", value: property.property_type ?? "Villa" },
+                ].map((f) => (
+                  <div key={f.label} className="space-y-1.5">
+                    <span className="text-luxe-mut text-[9px] uppercase tracking-[0.25em] block font-semibold">
+                      {f.label}
                     </span>
-                  )}
+                    <div className="text-[15px] md:text-[16px] font-semibold text-luxe-fg capitalize">
+                      {f.value}
+                    </div>
+                  </div>
+                ))}
+                <div className="space-y-1.5">
+                  <span className="text-luxe-mut text-[9px] uppercase tracking-[0.25em] block font-semibold">Status</span>
+                  <div className="text-[15px] md:text-[16px] font-semibold text-[var(--luxe-gold)] inline-flex items-center gap-1.5">
+                    <ShieldCheck className="h-4 w-4" /> Verified
+                    {ai?.investment_score != null && (
+                      <span className="ml-1 text-[10px] px-2 py-0.5 rounded-full border border-[var(--luxe-gold)]/40 bg-[var(--luxe-gold)]/10">
+                        AI {ai.investment_score.toFixed(0)}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -689,7 +840,8 @@ const PropertyDetail = () => {
             )}
 
             {/* location atmosphere */}
-            <div>
+            <div id="neighborhood">
+
               <LuxeSectionHead eyebrow="Location" title="The neighborhood" description="A calm corner of the island, minutes from beach clubs, fine dining and wellness retreats." />
               <LuxeCard variant="glass" radius="lg" className="mt-10 p-8">
                 <div className="flex items-center gap-3 text-[13px]">
@@ -732,74 +884,188 @@ const PropertyDetail = () => {
             </div>
           </div>
 
-          {/* ----- Right column — sticky booking ----- */}
+          {/* ----- Right column — sticky contact card ----- */}
           <aside
             className="lg:sticky lg:self-start"
             style={{ top: "calc(var(--reos-header-h, 64px) + 60px)" }}
           >
-            <LuxeCard variant="glass" radius="lg" glow className="p-7 md:p-8">
-              <div className="flex items-baseline gap-2">
-                <span className="font-serif-l text-[40px] leading-none">{fmtIDR(property.price)}</span>
-                <span className="text-[12px] text-luxe-mut">{property.listing_type === "rent" ? "/ night" : ""}</span>
+            <div className="rounded-[20px] p-7 md:p-8 bg-luxe-glass backdrop-blur-2xl border border-[var(--luxe-gold)]/30 shadow-[0_30px_80px_-30px_rgba(10,25,49,0.45)]">
+              <div className="flex items-baseline justify-between gap-3 mb-6">
+                <h3 className="font-serif-l text-[22px] md:text-[24px] leading-none text-luxe-fg">Inquire</h3>
+                <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--luxe-gold)] font-semibold">
+                  {property.listing_type === "rent" ? "For Rent" : "For Sale"}
+                </span>
               </div>
-              <div className="luxe-divider my-6" />
 
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <BookingField label="Check in" icon={Calendar}>
-                    <input type="date" value={checkIn} onChange={e => setCheckIn(e.target.value)}
-                      className="w-full bg-transparent text-[13px] text-luxe-fg outline-none [color-scheme:dark]" />
-                  </BookingField>
-                  <BookingField label="Check out" icon={Calendar}>
-                    <input type="date" value={checkOut} onChange={e => setCheckOut(e.target.value)}
-                      className="w-full bg-transparent text-[13px] text-luxe-fg outline-none [color-scheme:dark]" />
-                  </BookingField>
+              {/* Inquiry Reason */}
+              <div className="space-y-2">
+                <label className="text-[9px] uppercase tracking-[0.25em] text-[var(--luxe-gold)] font-semibold">
+                  Inquiry Reason
+                </label>
+                <div className="relative">
+                  <select
+                    value={inquiryReason}
+                    onChange={(e) => setInquiryReason(e.target.value)}
+                    className="w-full bg-luxe-glass border border-luxe rounded-xl px-4 py-3.5 text-[13px] text-luxe-fg focus:outline-none focus:border-[var(--luxe-gold)] transition-all appearance-none pr-10 [color-scheme:dark]"
+                  >
+                    <option>Request more information</option>
+                    <option>Book private viewing</option>
+                    <option>Concierge consultation</option>
+                    <option>Investment inquiry</option>
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--luxe-gold)] pointer-events-none" />
                 </div>
-                <BookingField label="Guests" icon={Users}>
-                  <input type="number" min={1} max={20} value={guests} onChange={e => setGuests(parseInt(e.target.value) || 1)}
-                    className="w-full bg-transparent text-[13px] text-luxe-fg outline-none" />
-                </BookingField>
               </div>
 
+              {/* Message */}
+              <div className="space-y-2 mt-5">
+                <label className="text-[9px] uppercase tracking-[0.25em] text-luxe-mut font-semibold">Message</label>
+                <textarea
+                  rows={4}
+                  value={inquiryMessage}
+                  onChange={(e) => setInquiryMessage(e.target.value)}
+                  className="w-full bg-luxe-glass border border-luxe rounded-xl px-4 py-3.5 text-[13px] text-luxe-fg focus:outline-none focus:border-[var(--luxe-gold)] transition-all resize-none placeholder:text-luxe-mut"
+                  placeholder="Tell us what you'd like to know…"
+                />
+              </div>
+
+              {/* Send Message */}
               <button
-                ref={ctaRef("reserve", "sidebar")}
-                onClick={() => {
-                  if (!checkIn || !checkOut) {
-                    trackClick({ cta: "reserve", placement: "sidebar", extra: { blocked: "missing_dates" } });
-                    toast({ title: "Select dates", description: "Please choose check-in and check-out." });
-                    return;
-                  }
-                  const params = new URLSearchParams({ checkIn, checkOut, guests: String(guests) });
-                  trackClick({
-                    cta: "reserve",
-                    placement: "sidebar",
-                    outcome: "booking_initiated",
-                    extra: { has_dates: true, guests },
-                  });
-                  navigate(`/booking/${property.id}?${params.toString()}`);
-                }}
-                className="luxe-gold-btn w-full rounded-full py-3.5 text-[13px] font-medium mt-6"
+                ref={ctaRef("contact", "sidebar")}
+                onClick={handleSendMessage}
+                disabled={sending}
+                className="mt-5 w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#0A1931)] font-bold py-4 rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.35)] transition-all uppercase tracking-[0.2em] text-[11px] inline-flex items-center justify-center gap-2 disabled:opacity-60"
               >
-                Reserve
+                <Send className="h-3.5 w-3.5" />
+                {sending ? "Sending…" : "Send Message"}
               </button>
 
-              <a
-                ref={ctaRef("contact", "sidebar")}
-                href={whatsappLink}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => trackClick({ cta: "contact", placement: "sidebar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
-                className="luxe-ghost-btn w-full rounded-full py-3.5 text-[12px] mt-3 inline-flex items-center justify-center gap-2"
-              >
-                <MessageCircle className="h-3.5 w-3.5" /> WhatsApp Concierge
-              </a>
-
-              <div className="luxe-divider my-6" />
-              <div className="flex items-center gap-2 text-[11px] text-luxe-mut">
-                <ShieldCheck className="h-3.5 w-3.5 text-[var(--luxe-emerald)]" />
-                Verified listing · Escrow-protected payments
+              {/* Request Visit / Price Alert */}
+              <div className="grid grid-cols-2 gap-2.5 mt-3">
+                <button
+                  onClick={() => { setVisitOpen(v => !v); setAlertOpen(false); }}
+                  className={cn(
+                    "border py-3 rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold inline-flex items-center justify-center gap-1.5 transition-all",
+                    visitOpen
+                      ? "bg-[var(--luxe-gold)]/10 border-[var(--luxe-gold)]/60 text-[var(--luxe-gold)]"
+                      : "border-luxe text-luxe-fg hover:bg-luxe-glass",
+                  )}
+                >
+                  <CalendarClock className="h-3.5 w-3.5" /> Request Visit
+                </button>
+                <button
+                  onClick={() => { setAlertOpen(v => !v); setVisitOpen(false); }}
+                  className={cn(
+                    "border py-3 rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold inline-flex items-center justify-center gap-1.5 transition-all",
+                    alertOpen
+                      ? "bg-[var(--luxe-gold)]/10 border-[var(--luxe-gold)]/60 text-[var(--luxe-gold)]"
+                      : "border-luxe text-luxe-fg hover:bg-luxe-glass",
+                  )}
+                >
+                  <Bell className="h-3.5 w-3.5" /> Price Alert
+                </button>
               </div>
-            </LuxeCard>
+
+              {/* Request Visit panel */}
+              {visitOpen && (
+                <div className="mt-3 rounded-xl border border-[var(--luxe-gold)]/30 bg-luxe-glass p-4 space-y-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    <label className="block">
+                      <span className="text-[9px] uppercase tracking-[0.25em] text-luxe-mut font-semibold">Date</span>
+                      <input
+                        type="date"
+                        value={visitDate}
+                        onChange={(e) => setVisitDate(e.target.value)}
+                        className="mt-1 w-full bg-transparent border border-luxe rounded-lg px-3 py-2 text-[12px] text-luxe-fg outline-none focus:border-[var(--luxe-gold)] [color-scheme:dark]"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-[9px] uppercase tracking-[0.25em] text-luxe-mut font-semibold">Time</span>
+                      <input
+                        type="time"
+                        value={visitTime}
+                        onChange={(e) => setVisitTime(e.target.value)}
+                        className="mt-1 w-full bg-transparent border border-luxe rounded-lg px-3 py-2 text-[12px] text-luxe-fg outline-none focus:border-[var(--luxe-gold)] [color-scheme:dark]"
+                      />
+                    </label>
+                  </div>
+                  <button
+                    onClick={handleRequestVisit}
+                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#0A1931)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
+                  >
+                    Confirm Visit
+                  </button>
+                </div>
+              )}
+
+              {/* Price Alert panel */}
+              {alertOpen && (
+                <div className="mt-3 rounded-xl border border-[var(--luxe-gold)]/30 bg-luxe-glass p-4 space-y-3">
+                  <label className="block">
+                    <span className="text-[9px] uppercase tracking-[0.25em] text-luxe-mut font-semibold">Notify email</span>
+                    <input
+                      type="email"
+                      value={alertEmail}
+                      onChange={(e) => setAlertEmail(e.target.value)}
+                      placeholder="you@domain.com"
+                      className="mt-1 w-full bg-transparent border border-luxe rounded-lg px-3 py-2 text-[12px] text-luxe-fg outline-none focus:border-[var(--luxe-gold)] placeholder:text-luxe-mut"
+                    />
+                  </label>
+                  <button
+                    onClick={handlePriceAlert}
+                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#0A1931)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
+                  >
+                    Activate Alert
+                  </button>
+                </div>
+              )}
+
+              {/* Agent block */}
+              <div className="mt-8 pt-6 border-t border-luxe">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-[color:var(--luxe-ink,#0A1931)] border border-[var(--luxe-gold)]/40 flex items-center justify-center text-[var(--luxe-gold)] font-serif-l text-lg">
+                    A
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="font-serif-l text-[16px] text-luxe-fg leading-tight">ASTRA Concierge</h4>
+                    <p className="text-[10px] text-[var(--luxe-gold)] uppercase tracking-[0.2em] font-semibold mt-0.5">
+                      Listing Specialist
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex flex-col gap-2.5">
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => trackClick({ cta: "contact", placement: "sidebar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+                    className="w-full bg-luxe-glass border border-luxe py-3 rounded-xl text-[10px] uppercase tracking-[0.22em] font-bold text-[var(--luxe-gold)] hover:bg-[var(--luxe-gold)]/10 transition-all inline-flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle className="h-3.5 w-3.5" /> Concierge (WhatsApp)
+                  </a>
+                  <button
+                    ref={ctaRef("reserve", "sidebar")}
+                    onClick={() => {
+                      trackClick({ cta: "reserve", placement: "sidebar", outcome: "booking_initiated" });
+                      navigate(`/booking/${property.id}`);
+                    }}
+                    className="w-full bg-[var(--luxe-gold)]/10 border border-[var(--luxe-gold)]/50 py-3 rounded-xl text-[10px] uppercase tracking-[0.22em] font-bold text-[var(--luxe-gold)] hover:bg-[var(--luxe-gold)]/20 transition-all"
+                  >
+                    Reserve with ASTRA
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-5 border-t border-luxe flex items-center gap-2 text-[11px] text-luxe-mut">
+                <ShieldCheck className="h-3.5 w-3.5 text-[var(--luxe-emerald)]" />
+                Verified listing · Escrow-protected
+              </div>
+            </div>
+
+            <p className="mt-4 text-center text-luxe-mut text-[9px] uppercase tracking-[0.3em] font-semibold">
+              Verified by ASTRA Realty Group
+            </p>
           </aside>
         </div>
       </LuxeSection>
