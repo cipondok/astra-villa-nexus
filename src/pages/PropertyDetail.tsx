@@ -445,101 +445,171 @@ const PropertyDetail = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-1.5 h-[340px] sm:h-[440px] lg:h-[520px] overflow-hidden">
+              {/* Immobiliare-style 3/1 hero: main image + 4-row labeled thumb stack */}
+              <div className="grid grid-cols-4 gap-1.5 h-[340px] sm:h-[440px] lg:h-[520px] overflow-hidden">
                 <button
                   onClick={() => { setIdx(0); setFullscreen(true); }}
-                  className="col-span-12 md:col-span-8 relative group overflow-hidden bg-luxe-surface"
+                  className="col-span-4 md:col-span-3 relative group overflow-hidden bg-luxe-surface"
                   aria-label="View main photo"
                 >
                   <GalleryImg
                     src={images[0] || "/placeholder.svg"}
                     alt={`${property.title} — main view`}
                     eager
-                    className="group-hover:scale-[1.03]"
+                    className="group-hover:scale-[1.05] duration-1000"
                   />
-                  <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                  <span className="absolute bottom-5 left-5 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-white/10 text-white inline-flex items-center gap-1.5">
+                    <Images className="h-3 w-3" /> 1 / {Math.max(1, images.length)}
+                  </span>
                 </button>
 
-                <div className="hidden md:grid col-span-4 grid-rows-2 gap-1.5">
-                  <button
-                    onClick={() => { setIdx(1); setFullscreen(true); }}
-                    className="relative group overflow-hidden bg-luxe-surface"
-                    aria-label="View second photo"
-                  >
-                    <GalleryImg
-                      src={images[1] || images[0] || "/placeholder.svg"}
-                      alt=""
-                      className="group-hover:scale-[1.05]"
-                    />
-                    <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all" />
-                  </button>
-                  <button
-                    onClick={() => { setIdx(Math.min(2, images.length - 1)); setFullscreen(true); }}
-                    className="relative group overflow-hidden bg-luxe-surface"
-                    aria-label="View gallery"
-                  >
-                    <GalleryImg
-                      src={images[2] || images[0] || "/placeholder.svg"}
-                      alt=""
-                      className="group-hover:scale-[1.05]"
-                    />
-                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-all" />
-                    {images.length > 0 && (
-                      <span className="absolute bottom-4 right-4 bg-white/95 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.15em] text-[color:var(--luxe-ink,#0A1931)] shadow-xl inline-flex items-center gap-2 border border-white/60 backdrop-blur-sm">
-                        <Images className="h-3.5 w-3.5" />
-                        View {images.length} Photo{images.length === 1 ? "" : "s"}
+                <div className="hidden md:grid col-span-1 grid-rows-4 gap-1.5">
+                  {[
+                    { i: 1, label: "Interior" },
+                    { i: 2, label: "Suite" },
+                    { i: 3, label: "Detail" },
+                  ].map(({ i, label }) => (
+                    <button
+                      key={i}
+                      onClick={() => { setIdx(Math.min(i, images.length - 1)); setFullscreen(true); }}
+                      className="relative group overflow-hidden bg-luxe-surface"
+                      aria-label={`View ${label} photo`}
+                    >
+                      <GalleryImg
+                        src={images[i] || images[0] || "/placeholder.svg"}
+                        alt=""
+                        className="group-hover:scale-110 duration-500"
+                      />
+                      <span className="absolute inset-0 flex items-end p-2.5 bg-gradient-to-t from-black/60 to-transparent text-[9px] uppercase tracking-[0.2em] font-semibold text-white">
+                        {label}
                       </span>
-                    )}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => { setIdx(0); setFullscreen(true); }}
+                    className="relative group overflow-hidden cursor-pointer bg-[color:var(--luxe-gold)]/10"
+                    aria-label="Open full gallery"
+                  >
+                    <GalleryImg
+                      src={images[4] || images[3] || images[0] || "/placeholder.svg"}
+                      alt=""
+                      className="opacity-30 group-hover:scale-110 duration-500"
+                    />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
+                      <span className="text-[18px] font-semibold text-[var(--luxe-gold)] leading-none">
+                        +{Math.max(0, images.length - 4)}
+                      </span>
+                      <span className="text-[9px] text-white/80 uppercase tracking-[0.25em] font-medium">Photos</span>
+                    </div>
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* --- Content block --- */}
-            <div className="p-6 md:p-10 lg:p-12 pb-8 md:pb-10">
-              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8">
-                <div className="max-w-2xl space-y-6 min-w-0">
+            {/* --- Content block: quick chips → title/price → 6-col feature strip --- */}
+            <div className="p-6 md:p-10 lg:p-12 pb-8 md:pb-10 space-y-8 md:space-y-10">
+
+              {/* Quick access chips */}
+              <div className="flex flex-wrap gap-2.5">
+                <button
+                  onClick={() => { setIdx(0); setFullscreen(true); }}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                >
+                  <Camera className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                  {images.length} Photos
+                </button>
+                {(property.virtual_tour_url || (property.panorama_360_urls?.length ?? 0) > 0) && (
+                  <a
+                    href={property.virtual_tour_url || "#"}
+                    target="_blank" rel="noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                  >
+                    <Compass className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                    Virtual Tour
+                  </a>
+                )}
+                {property.glb_model_url && (
+                  <Link
+                    to={`/digital-twin/${property.id}`}
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                  >
+                    <Box className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                    3D Twin
+                  </Link>
+                )}
+                {property.drone_video_url && (
+                  <a
+                    href={property.drone_video_url}
+                    target="_blank" rel="noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                  >
+                    <Play className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                    Drone Video
+                  </a>
+                )}
+                <button
+                  onClick={() => document.getElementById("neighborhood")?.scrollIntoView({ behavior: "smooth" })}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-luxe-glass border border-luxe hover:border-[var(--luxe-gold)]/60 transition-all text-[11px] uppercase tracking-[0.2em] font-semibold text-luxe-fg"
+                >
+                  <MapIcon className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />
+                  Location
+                </button>
+              </div>
+
+              {/* Title + Price row with gold divider */}
+              <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 border-b border-[var(--luxe-gold)]/20 pb-8">
+                <div className="space-y-3 min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="px-3 py-1 bg-[color:var(--luxe-ink,#0A1931)]/5 text-[color:var(--luxe-ink,#0A1931)] text-[10px] font-bold uppercase tracking-widest rounded-full border border-[color:var(--luxe-ink,#0A1931)]/10">
+                    <span className="px-3 py-1 bg-luxe-glass text-luxe-fg text-[10px] font-bold uppercase tracking-widest rounded-full border border-luxe">
                       {property.property_type || "Signature Collection"}
                     </span>
                     <span className="text-[var(--luxe-gold)] text-[10px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5">
                       <MapPin className="h-3 w-3" /> {loc}
                     </span>
                   </div>
-
-                  <h1 className="font-serif-l text-[34px] md:text-[52px] lg:text-[60px] leading-[1.05] tracking-tight text-luxe-fg">
+                  <h1 className="font-serif-l text-[34px] md:text-[48px] lg:text-[56px] leading-[1.05] tracking-tight text-luxe-fg">
                     {property.title}
                   </h1>
-
-                  {/* Feature icon rows */}
-                  <div className="flex flex-wrap items-center gap-x-10 gap-y-4 pt-2">
-                    {features.map((f) => (
-                      <div key={f.label} className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-luxe-glass border border-luxe flex items-center justify-center">
-                          <f.icon className="h-5 w-5 text-luxe-mut" strokeWidth={1.5} />
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-luxe-mut font-medium uppercase tracking-wider">{f.label}</p>
-                          <p className="text-[13px] font-bold text-luxe-fg mt-0.5">{f.value}</p>
-                        </div>
-                      </div>
-                    ))}
+                </div>
+                <div className="text-left md:text-right shrink-0">
+                  <span className="text-[var(--luxe-gold)] text-[10px] uppercase tracking-[0.2em] font-bold block mb-2">
+                    {property.listing_type === "rent" ? "From / night" : "List price"}
+                  </span>
+                  <div className="font-serif-l text-[36px] md:text-[44px] leading-none text-luxe-fg">
+                    {fmtIDR(property.price)}
                   </div>
                 </div>
+              </div>
 
-                {/* Trust badge card */}
-                <div className="flex flex-col items-center p-6 bg-[color:var(--luxe-ink,#0A1931)]/[0.03] border border-[color:var(--luxe-ink,#0A1931)]/10 rounded-2xl w-full lg:w-52 text-center shrink-0">
-                  <div className="w-12 h-12 mb-3 bg-[color:var(--luxe-ink,#0A1931)] rounded-full flex items-center justify-center text-[var(--luxe-gold)]">
-                    <ShieldCheck className="h-6 w-6" />
-                  </div>
-                  <p className="text-[11px] font-bold text-luxe-fg uppercase tracking-wider mb-1">Verified Asset</p>
-                  <p className="text-[10px] text-luxe-mut font-medium uppercase tracking-tight">Escrow Protected</p>
-                  {ai?.investment_score != null && (
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-full border border-[var(--luxe-gold)]/40 text-[var(--luxe-gold)] bg-[var(--luxe-gold)]/10 font-semibold">
-                      <Sparkles className="h-3 w-3" /> AI {ai.investment_score.toFixed(0)}/100
+              {/* 6-column feature strip */}
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-y-6 gap-x-4 pb-2">
+                {[
+                  { label: "Bedrooms", value: property.bedrooms?.toString() ?? "—" },
+                  { label: "Surface", value: property.area_sqm ? `${property.area_sqm} m²` : "—" },
+                  { label: "Baths", value: property.bathrooms?.toString() ?? "—" },
+                  { label: "Listing", value: property.listing_type === "rent" ? "Rent" : "Sale" },
+                  { label: "Type", value: property.property_type ?? "Villa" },
+                ].map((f) => (
+                  <div key={f.label} className="space-y-1.5">
+                    <span className="text-luxe-mut text-[9px] uppercase tracking-[0.25em] block font-semibold">
+                      {f.label}
                     </span>
-                  )}
+                    <div className="text-[15px] md:text-[16px] font-semibold text-luxe-fg capitalize">
+                      {f.value}
+                    </div>
+                  </div>
+                ))}
+                <div className="space-y-1.5">
+                  <span className="text-luxe-mut text-[9px] uppercase tracking-[0.25em] block font-semibold">Status</span>
+                  <div className="text-[15px] md:text-[16px] font-semibold text-[var(--luxe-gold)] inline-flex items-center gap-1.5">
+                    <ShieldCheck className="h-4 w-4" /> Verified
+                    {ai?.investment_score != null && (
+                      <span className="ml-1 text-[10px] px-2 py-0.5 rounded-full border border-[var(--luxe-gold)]/40 bg-[var(--luxe-gold)]/10">
+                        AI {ai.investment_score.toFixed(0)}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
