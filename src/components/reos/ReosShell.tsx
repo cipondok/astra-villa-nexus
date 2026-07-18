@@ -127,6 +127,7 @@ export function ReosHeader() {
   const { pathname } = useLocation();
   const { user, profile, signOut } = useAuth();
   const { language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
   const { logoUrl: headerLogo } = useBrandingLogo("headerLogo", "/astra-logo.png");
   const { data: userRoles = [] } = useUserRoles();
