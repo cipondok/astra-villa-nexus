@@ -177,6 +177,8 @@ export default function Properties() {
   const seenIdsRef = useRef<Set<string>>(new Set());
   const endOfListFiredRef = useRef(false);
   const sentinelTriggerCountRef = useRef(0);
+  const duplicatesDetectedRef = useRef(0); // duplicate REQUESTS (same page in flight twice)
+  const duplicateRowsRef = useRef(0);      // duplicate ROWS returned across pages
   const filtersKey = `${q}|${location}|${tag}|${collection}|${intent}|${type}|${sort}|${listingType}|${priceRangeId}|${pageSize}`;
   const filtersKeyRef = useRef(filtersKey);
   // Reset counters when the query key changes (new search / filter set).
@@ -188,6 +190,8 @@ export default function Properties() {
       seenIdsRef.current.clear();
       endOfListFiredRef.current = false;
       sentinelTriggerCountRef.current = 0;
+      duplicatesDetectedRef.current = 0;
+      duplicateRowsRef.current = 0;
     }
   }, [filtersKey]);
 
