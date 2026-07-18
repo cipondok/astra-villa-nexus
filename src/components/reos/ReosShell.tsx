@@ -19,7 +19,9 @@ import { useUserRoles } from "@/hooks/useUserRoles";
 import { resolveDashboardPath } from "@/lib/dashboardRoute";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useTranslation } from "@/i18n/useTranslation";
 import { formatDistanceToNow } from "date-fns";
+
 
 
 /* ============================================================
