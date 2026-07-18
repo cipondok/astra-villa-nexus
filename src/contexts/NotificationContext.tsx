@@ -40,26 +40,35 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const { user } = useAuth();
 
-  // Load notifications from localStorage
+  // Load notifications from localStorage — strictly scoped to the current user.
+  // Reset immediately when the user changes or signs out so no data leaks across accounts.
   useEffect(() => {
-    if (user) {
+    if (!user) {
+      setNotifications([]);
+      return;
+    }
+    try {
       const savedNotifications = localStorage.getItem(`notifications_${user.id}`);
       if (savedNotifications) {
         const parsed = JSON.parse(savedNotifications);
-        setNotifications(parsed.map((n: any) => ({
-          ...n,
-          timestamp: new Date(n.timestamp)
-        })));
+        setNotifications(
+          parsed.map((n: any) => ({ ...n, timestamp: new Date(n.timestamp) }))
+        );
+      } else {
+        setNotifications([]);
       }
+    } catch {
+      setNotifications([]);
     }
-  }, [user]);
+  }, [user?.id]);
 
-  // Save notifications to localStorage
+  // Save notifications to localStorage (only when authenticated)
   useEffect(() => {
     if (user && notifications.length > 0) {
       localStorage.setItem(`notifications_${user.id}`, JSON.stringify(notifications));
     }
   }, [notifications, user]);
+
 
   const addNotification = (notification: Omit<NotificationItem, 'id' | 'timestamp' | 'read'>) => {
     const newNotification: NotificationItem = {
