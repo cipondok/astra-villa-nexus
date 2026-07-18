@@ -561,6 +561,7 @@ export default function Properties() {
             <div className="flex items-end justify-between mb-6">
               <p className="text-[12px] text-[var(--text-2)] uppercase tracking-[0.2em]">
                 {results.length} villa{results.length === 1 ? "" : "s"}
+                {hasNextPage && <span className="ml-1 opacity-60">· more below</span>}
               </p>
               <Link to="/wealth-advisor" className="text-[12px] reos-gold hover:underline inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" /> Curate with AI
@@ -571,7 +572,20 @@ export default function Properties() {
               {results.map((p, i) => (
                 <VillaCard key={p.id} listing={p} index={i} />
               ))}
+              {isFetchingNextPage &&
+                Array.from({ length: Math.min(pageSize, 6) }).map((_, i) => (
+                  <VillaCardSkeleton key={`skeleton-${i}`} />
+                ))}
             </div>
+
+            {/* Sentinel — triggers next page well before viewport bottom */}
+            <div ref={sentinelRef} aria-hidden className="h-10 w-full" />
+
+            {!hasNextPage && results.length > pageSize && (
+              <p className="mt-8 text-center text-[11px] uppercase tracking-[0.22em] text-[var(--text-3)]">
+                — End of collection —
+              </p>
+            )}
           </>
         )}
       </section>
