@@ -667,7 +667,7 @@ const PropertyDetail = () => {
 
       {/* ============ MAIN GRID — info + sticky booking ============ */}
       <LuxeSection pad="md">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 lg:gap-10 pb-28 lg:pb-0">
           {/* ----- Left column ----- */}
           <div className="space-y-10 md:space-y-12">
 
