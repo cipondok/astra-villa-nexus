@@ -143,18 +143,33 @@ export default function Properties() {
   useEffect(() => { setSearchInput(q); }, [q]);
   useEffect(() => { setLocationInput(location); }, [location]);
 
+  const pageSize = useResponsivePageSize();
+
+  // Skip the initial scroll-to-top so useScrollRestore can honor prior position on back-nav.
+  const didMountRef = useRef(false);
   useEffect(() => {
+    if (!didMountRef.current) { didMountRef.current = true; return; }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [q, location, tag, collection, intent, type, sort, listingType, priceRangeId, pathname]);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType, priceRangeId }],
-    queryFn: async (): Promise<Listing[]> => {
+  const {
+    data,
+    isLoading,
+    isError,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType, priceRangeId, pageSize }],
+    initialPageParam: 0,
+    queryFn: async ({ pageParam = 0 }): Promise<Listing[]> => {
+      const from = (pageParam as number) * pageSize;
+      const to = from + pageSize - 1;
+
       let query = supabase
         .from("properties")
         .select("id,title,city,area,location,price,price_idr,property_type,listing_type,bedrooms,bathrooms,area_sqm,images,image_urls,cover_image,investment_score,roi_percentage,rental_yield_percentage,is_featured,status,development_status")
-        .eq("status", "active")
-        .limit(60);
+        .eq("status", "active");
 
       if (q) query = query.ilike("title", `%${q}%`);
       if (location) {
@@ -179,13 +194,18 @@ export default function Properties() {
         default:           query = query.order("created_at", { ascending: false });
       }
 
-      const { data, error } = await query;
+      const { data, error } = await query.range(from, to);
       if (error) throw error;
       return (data ?? []) as Listing[];
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage || lastPage.length < pageSize) return undefined;
+      return allPages.length;
     },
     staleTime: 60_000,
     retry: 0,
   });
+
 
   const collectionTitle = collection ? (COLLECTION_LABELS[collection] || collection) : null;
 
