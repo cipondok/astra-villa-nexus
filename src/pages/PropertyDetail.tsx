@@ -221,6 +221,82 @@ const PropertyDetail = () => {
     return `https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`;
   }, [property]);
 
+  /* ----- Contact handlers ----- */
+  const handleSendMessage = useCallback(async () => {
+    if (!property) return;
+    if (!inquiryMessage.trim()) {
+      toast({ title: "Add a message", description: "Please write a short note for our concierge." });
+      return;
+    }
+    setSending(true);
+    try {
+      trackClick({
+        cta: "contact",
+        placement: "sidebar",
+        outcome: "contact_opened",
+        extra: { channel: "form", reason: inquiryReason, message_len: inquiryMessage.length },
+      });
+      trackEvent("property_inquiry_submitted", {
+        property_id: property.id,
+        city: property.city ?? undefined,
+        metadata: { reason: inquiryReason, price: property.price ?? null },
+      });
+      toast({
+        title: "Inquiry sent",
+        description: "Our concierge will reply within 24 hours.",
+      });
+      setInquiryMessage("");
+    } finally {
+      setSending(false);
+    }
+  }, [property, inquiryReason, inquiryMessage, trackClick, trackEvent, toast]);
+
+  const handleRequestVisit = useCallback(() => {
+    if (!property) return;
+    if (!visitDate) {
+      toast({ title: "Pick a date", description: "Please choose your preferred visit date." });
+      return;
+    }
+    trackClick({
+      cta: "contact",
+      placement: "sidebar",
+      outcome: "contact_opened",
+      extra: { channel: "visit_request", visit_date: visitDate, visit_time: visitTime },
+    });
+    trackEvent("property_visit_requested", {
+      property_id: property.id,
+      city: property.city ?? undefined,
+      metadata: { visit_date: visitDate, visit_time: visitTime },
+    });
+    toast({
+      title: "Visit requested",
+      description: `We will confirm your viewing on ${visitDate} at ${visitTime}.`,
+    });
+    setVisitOpen(false);
+  }, [property, visitDate, visitTime, trackClick, trackEvent, toast]);
+
+  const handlePriceAlert = useCallback(() => {
+    if (!property) return;
+    const email = alertEmail.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({ title: "Enter a valid email", description: "We'll notify you when this listing's price changes." });
+      return;
+    }
+    trackEvent("property_price_alert_subscribed", {
+      property_id: property.id,
+      city: property.city ?? undefined,
+      metadata: { email_domain: email.split("@")[1] },
+    });
+    toast({
+      title: "Price alert active",
+      description: "We'll email you the moment this listing's price moves.",
+    });
+    setAlertOpen(false);
+    setAlertEmail("");
+  }, [property, alertEmail, trackEvent, toast]);
+
+
+
   /* ------------------------------------------------------------- */
   /*  Loading / Error                                              */
   /* ------------------------------------------------------------- */
