@@ -1,18 +1,41 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useSearchParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   Search as SearchIcon, MapPin, Bed, Bath, Maximize, TrendingUp,
-  Sparkles, ArrowUpRight, SlidersHorizontal, X,
+  Sparkles, ArrowUpRight, SlidersHorizontal, X, Loader2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 import { cn } from "@/lib/utils";
 import ReosShell from "@/components/reos/ReosShell";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import villaFallback1 from "@/assets/luxe-villa-1.jpg";
 import villaFallback2 from "@/assets/luxe-villa-2.jpg";
 import villaFallback3 from "@/assets/luxe-villa-3.jpg";
+
+/** Responsive page size: desktop 24 / tablet 18 / mobile 12. */
+function useResponsivePageSize() {
+  const get = () => {
+    if (typeof window === "undefined") return 24;
+    const w = window.innerWidth;
+    if (w < 640) return 12;
+    if (w < 1024) return 18;
+    return 24;
+  };
+  const [size, setSize] = useState<number>(get);
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(t);
+      t = setTimeout(() => setSize(get()), 150);
+    };
+    window.addEventListener("resize", onResize);
+    return () => { window.removeEventListener("resize", onResize); clearTimeout(t); };
+  }, []);
+  return size;
+}
 
 /* ============================================================
    ASTRA Villa — Properties (REOS shell)
@@ -120,18 +143,33 @@ export default function Properties() {
   useEffect(() => { setSearchInput(q); }, [q]);
   useEffect(() => { setLocationInput(location); }, [location]);
 
+  const pageSize = useResponsivePageSize();
+
+  // Skip the initial scroll-to-top so useScrollRestore can honor prior position on back-nav.
+  const didMountRef = useRef(false);
   useEffect(() => {
+    if (!didMountRef.current) { didMountRef.current = true; return; }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [q, location, tag, collection, intent, type, sort, listingType, priceRangeId, pathname]);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType, priceRangeId }],
-    queryFn: async (): Promise<Listing[]> => {
+  const {
+    data,
+    isLoading,
+    isError,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType, priceRangeId, pageSize }],
+    initialPageParam: 0,
+    queryFn: async ({ pageParam = 0 }): Promise<Listing[]> => {
+      const from = (pageParam as number) * pageSize;
+      const to = from + pageSize - 1;
+
       let query = supabase
         .from("properties")
         .select("id,title,city,area,location,price,price_idr,property_type,listing_type,bedrooms,bathrooms,area_sqm,images,image_urls,cover_image,investment_score,roi_percentage,rental_yield_percentage,is_featured,status,development_status")
-        .eq("status", "active")
-        .limit(60);
+        .eq("status", "active");
 
       if (q) query = query.ilike("title", `%${q}%`);
       if (location) {
@@ -156,13 +194,18 @@ export default function Properties() {
         default:           query = query.order("created_at", { ascending: false });
       }
 
-      const { data, error } = await query;
+      const { data, error } = await query.range(from, to);
       if (error) throw error;
       return (data ?? []) as Listing[];
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage || lastPage.length < pageSize) return undefined;
+      return allPages.length;
     },
     staleTime: 60_000,
     retry: 0,
   });
+
 
   const collectionTitle = collection ? (COLLECTION_LABELS[collection] || collection) : null;
 
@@ -218,7 +261,30 @@ export default function Properties() {
     setParams(next);
   };
 
-  const results = data ?? [];
+  // Flatten paginated pages and dedupe by id (defensive against overlap).
+  const results = useMemo<Listing[]>(() => {
+    const pages = data?.pages ?? [];
+    const seen = new Set<string>();
+    const out: Listing[] = [];
+    for (const page of pages) {
+      for (const item of page) {
+        if (!seen.has(item.id)) { seen.add(item.id); out.push(item); }
+      }
+    }
+    return out;
+  }, [data]);
+
+  // Sentinel for infinite scroll — fires ~600px before hitting bottom.
+  const [sentinelRef, sentinelVisible] = useIntersectionObserver({
+    rootMargin: "600px",
+    freezeOnceVisible: false,
+  });
+  useEffect(() => {
+    if (sentinelVisible && hasNextPage && !isFetchingNextPage && !isLoading) {
+      fetchNextPage();
+    }
+  }, [sentinelVisible, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage]);
+
   const titleHead = heading.split(" ")[0];
   const titleTail = heading.split(" ").slice(1).join(" ") || "Villas";
 
@@ -470,7 +536,7 @@ export default function Properties() {
       {/* Results grid */}
       <section className="mx-auto max-w-[1600px] px-6 pb-12">
         {isLoading ? (
-          <ResultsSkeleton />
+          <ResultsSkeleton count={pageSize} />
         ) : isError ? (
           <EmptyState
             title="We couldn't reach the collection right now"
@@ -495,6 +561,7 @@ export default function Properties() {
             <div className="flex items-end justify-between mb-6">
               <p className="text-[12px] text-[var(--text-2)] uppercase tracking-[0.2em]">
                 {results.length} villa{results.length === 1 ? "" : "s"}
+                {hasNextPage && <span className="ml-1 opacity-60">· more below</span>}
               </p>
               <Link to="/wealth-advisor" className="text-[12px] reos-gold hover:underline inline-flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" /> Curate with AI
@@ -505,7 +572,20 @@ export default function Properties() {
               {results.map((p, i) => (
                 <VillaCard key={p.id} listing={p} index={i} />
               ))}
+              {isFetchingNextPage &&
+                Array.from({ length: Math.min(pageSize, 6) }).map((_, i) => (
+                  <VillaCardSkeleton key={`skeleton-${i}`} />
+                ))}
             </div>
+
+            {/* Sentinel — triggers next page well before viewport bottom */}
+            <div ref={sentinelRef} aria-hidden className="h-10 w-full" />
+
+            {!hasNextPage && results.length > pageSize && (
+              <p className="mt-8 text-center text-[11px] uppercase tracking-[0.22em] text-[var(--text-3)]">
+                — End of collection —
+              </p>
+            )}
           </>
         )}
       </section>
@@ -605,18 +685,24 @@ function VillaCard({ listing, index }: { listing: Listing; index: number }) {
   );
 }
 
-function ResultsSkeleton() {
+function VillaCardSkeleton() {
+  return (
+    <div className="reos-card overflow-hidden" aria-hidden>
+      <div className="aspect-[4/5] bg-[var(--surface-2)] animate-pulse" />
+      <div className="p-5 space-y-3">
+        <div className="h-4 w-2/3 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-3 w-1/2 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-3 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
+      </div>
+    </div>
+  );
+}
+
+function ResultsSkeleton({ count = 12 }: { count?: number }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="reos-card overflow-hidden">
-          <div className="aspect-[4/5] bg-[var(--surface-2)] animate-pulse" />
-          <div className="p-5 space-y-3">
-            <div className="h-4 w-2/3 bg-[var(--surface-2)] rounded animate-pulse" />
-            <div className="h-3 w-1/2 bg-[var(--surface-2)] rounded animate-pulse" />
-            <div className="h-3 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
-          </div>
-        </div>
+      {Array.from({ length: count }).map((_, i) => (
+        <VillaCardSkeleton key={i} />
       ))}
     </div>
   );
