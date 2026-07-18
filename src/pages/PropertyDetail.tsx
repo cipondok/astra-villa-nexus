@@ -137,6 +137,7 @@ const PropertyDetail = () => {
   const [visitTime, setVisitTime] = useState("10:00");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertEmail, setAlertEmail] = useState("");
+  const [inquireOpen, setInquireOpen] = useState(false); // mobile-only collapse
 
   /* ----- CTA analytics tracking ----- */
   const { registerImpression, trackClick } = usePropertyCtaTracking({
