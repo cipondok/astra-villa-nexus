@@ -79,11 +79,13 @@ test.describe('Properties marketplace · multi-page', () => {
   }) => {
     const fetches = trackPropertyFetches(page);
 
-    await page.goto('/properties?debug=1', { waitUntil: 'domcontentloaded' });
+    await page.goto(`/properties${MARKETPLACE_SEED_QUERY}&debug=1`, {
+      waitUntil: 'domcontentloaded',
+    });
     await waitForCards(page);
 
     const initial = await countCards(page);
-    test.skip(initial === 0, 'No properties seeded in this environment.');
+    test.skip(initial === 0, 'Marketplace seed missing and no organic data.');
 
     // Wait for the initial page fetch to complete before we start scrolling.
     await page.waitForTimeout(500);
