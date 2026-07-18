@@ -144,6 +144,7 @@ const PRICE_RANGES: { id: string; label: string; min?: number; max?: number }[] 
   { id: "10b-plus",    label: "Rp 10B+",           min: 10_000_000_000 },
 ];
 const SORT_OPTIONS = [
+  { id: "relevant",  label: "Most Relevant" },
   { id: "newest",    label: "Newest" },
   { id: "price-asc", label: "Price ↑" },
   { id: "price-desc",label: "Price ↓" },
