@@ -490,7 +490,7 @@ const PropertyDetail = () => {
                 href={whatsappLink}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => trackClick({ cta: "contact", placement: "mini_bar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+                onClick={() => trackStickyClick("contact", "contact_opened", { channel: "whatsapp" })}
                 className="hidden sm:inline-flex items-center gap-1.5 px-5 py-3 rounded-xl text-luxe-fg font-bold text-[11px] uppercase tracking-widest border border-luxe hover:bg-luxe-glass transition-all"
                 tabIndex={scrolled ? 0 : -1}
               >
