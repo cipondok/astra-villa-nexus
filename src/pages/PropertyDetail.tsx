@@ -499,7 +499,7 @@ const PropertyDetail = () => {
               <button
                 ref={scrolled ? ctaRef("reserve", "mini_bar") : undefined}
                 onClick={() => {
-                  trackClick({ cta: "reserve", placement: "mini_bar", outcome: "booking_initiated" });
+                  trackStickyClick("reserve", "booking_initiated");
                   navigate(`/booking/${property.id}`);
                 }}
                 className="px-6 md:px-10 py-3 bg-[color:var(--luxe-ink,#0A1931)] text-[var(--luxe-gold)] rounded-xl font-bold text-[11px] uppercase tracking-widest shadow-xl shadow-[color:var(--luxe-ink,#0A1931)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
