@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import {
   Search as SearchIcon, MapPin, Bed, Bath, Maximize, TrendingUp,
   Sparkles, ArrowUpRight, SlidersHorizontal, X, Loader2,
+  LayoutGrid, List as ListIcon,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
@@ -14,9 +15,27 @@ import ReosShell from "@/components/reos/ReosShell";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useTrackEvent } from "@/hooks/useTrackEvent";
 import { MarketplaceDevOverlay } from "@/components/dev/MarketplaceDevOverlay";
+import { indonesiaProvinces } from "@/data/indonesiaProvinces";
 import villaFallback1 from "@/assets/luxe-villa-1.jpg";
 import villaFallback2 from "@/assets/luxe-villa-2.jpg";
 import villaFallback3 from "@/assets/luxe-villa-3.jpg";
+
+/** Popular Indonesian cities/areas surfaced in the location dropdown alongside
+ *  the 34 provinces from `indonesiaProvinces` (which is our canonical location
+ *  source). Users can still type any free-text value — this only powers the
+ *  <datalist> suggestions. */
+const POPULAR_CITY_SUGGESTIONS = [
+  "Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Semarang", "Medan",
+  "Denpasar", "Ubud", "Canggu", "Seminyak", "Kuta", "Uluwatu", "Nusa Dua",
+  "Batam", "Makassar", "Balikpapan", "Manado", "Palembang", "Lombok",
+];
+
+const LOCATION_SUGGESTIONS: string[] = Array.from(
+  new Set([
+    ...indonesiaProvinces.map((p) => p.name),
+    ...POPULAR_CITY_SUGGESTIONS,
+  ]),
+).sort((a, b) => a.localeCompare(b));
 
 /** Columns per row matching the Tailwind grid breakpoints. */
 function useGridColumns() {
