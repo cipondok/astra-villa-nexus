@@ -126,14 +126,6 @@ const PropertyDetail = () => {
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(2);
 
-  /* ----- Scroll-aware sticky action bar ----- */
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 280);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   /* ----- CTA analytics tracking ----- */
   const { registerImpression, trackClick } = usePropertyCtaTracking({
     propertyId: property?.id,
@@ -141,6 +133,35 @@ const PropertyDetail = () => {
     price: property?.price,
     listingType: property?.listing_type,
   });
+  const { trackEvent } = useTrackEvent();
+
+  /* ----- Scroll-aware sticky action bar ----- */
+  const [scrolled, setScrolled] = useState(false);
+  const stickyBarShownRef = useRef(false);
+  const stickyShownAtRef = useRef<number | null>(null);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 280);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Fire a one-time exposure event when the sticky bar first becomes visible.
+  // Serves as the denominator for mini_bar click-through / conversion rates.
+  useEffect(() => {
+    if (!scrolled || stickyBarShownRef.current || !property?.id) return;
+    stickyBarShownRef.current = true;
+    stickyShownAtRef.current = performance.now();
+    trackEvent("sticky_bar_shown", {
+      property_id: property.id,
+      city: property.city ?? undefined,
+      metadata: {
+        price: property.price ?? null,
+        listing_type: property.listing_type ?? null,
+        scroll_y: Math.round(window.scrollY),
+        viewport_w: window.innerWidth,
+      },
+    });
+  }, [scrolled, property?.id, property?.city, property?.price, property?.listing_type, trackEvent]);
 
   /** Ref callback factory that fires an impression event once visible. */
   const ctaRef = useCallback(
@@ -148,6 +169,22 @@ const PropertyDetail = () => {
       registerImpression(el, { cta, placement });
     },
     [registerImpression],
+  );
+
+  /** Wraps trackClick with dwell-time metadata for mini_bar CTAs. */
+  const trackStickyClick = useCallback(
+    (cta: CtaKind, outcome: "booking_initiated" | "contact_opened", extra: Record<string, unknown> = {}) => {
+      const dwellMs = stickyShownAtRef.current != null
+        ? Math.round(performance.now() - stickyShownAtRef.current)
+        : null;
+      trackClick({
+        cta,
+        placement: "mini_bar",
+        outcome,
+        extra: { ...extra, dwell_ms: dwellMs, sticky_shown: stickyBarShownRef.current },
+      });
+    },
+    [trackClick],
   );
 
   const { toggleFavorite, isFavorite } = useFavorites({
