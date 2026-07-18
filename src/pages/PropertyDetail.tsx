@@ -129,7 +129,7 @@ const PropertyDetail = () => {
   /* ----- Scroll-aware sticky action bar ----- */
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 520);
+    const onScroll = () => setScrolled(window.scrollY > 280);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
