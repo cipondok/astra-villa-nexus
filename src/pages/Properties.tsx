@@ -1197,7 +1197,7 @@ function VillaCardList({ listing, index }: { listing: Listing; index: number }) 
     >
       <Link to={`/properties/${listing.id}`} className="block group">
         <article className="reos-card overflow-hidden flex flex-col sm:flex-row transition-all duration-300 hover:border-[var(--line-strong)] hover:shadow-[0_24px_60px_-28px_rgba(200,169,106,0.25)]">
-          <div className="relative w-full sm:w-[340px] md:w-[380px] shrink-0 aspect-[4/3] sm:aspect-auto sm:min-h-[240px] overflow-hidden bg-[var(--surface-2)]">
+          <div className="relative w-full sm:w-[220px] md:w-[240px] shrink-0 aspect-square overflow-hidden bg-[var(--surface-2)] sm:m-3 sm:rounded-xl">
             <div
               aria-hidden
               className={cn(
@@ -1283,7 +1283,7 @@ function VillaCardList({ listing, index }: { listing: Listing; index: number }) 
 function VillaCardListSkeleton() {
   return (
     <div className="reos-card overflow-hidden flex flex-col sm:flex-row" aria-hidden>
-      <div className="w-full sm:w-[340px] md:w-[380px] shrink-0 aspect-[4/3] sm:aspect-auto sm:min-h-[240px] bg-[var(--surface-2)] animate-pulse" />
+      <div className="w-full sm:w-[220px] md:w-[240px] shrink-0 aspect-square bg-[var(--surface-2)] animate-pulse sm:m-3 sm:rounded-xl" />
       <div className="flex-1 p-5 md:p-6 space-y-3">
         <div className="h-6 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
         <div className="h-4 w-2/3 bg-[var(--surface-2)] rounded animate-pulse" />
