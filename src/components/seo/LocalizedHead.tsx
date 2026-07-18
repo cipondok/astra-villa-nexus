@@ -55,14 +55,12 @@ export const LocalizedHead = () => {
   const { t, language } = useTranslation();
   const location = useLocation();
 
-  const { title, description, canonical } = useMemo(() => {
-    const key = resolveSeoKey(location.pathname);
-    return {
-      title: t(`seo.${key}.title`),
-      description: t(`seo.${key}.description`),
-      canonical: `${BASE_URL}${location.pathname === '/' ? '' : location.pathname}`,
-    };
-  }, [t, location.pathname, language]);
+  // Do NOT memoize — translation lookups need to re-evaluate on every render
+  // so lazy-loaded locale bundles refresh the head as soon as they arrive.
+  const key = resolveSeoKey(location.pathname);
+  const title = t(`seo.${key}.title`);
+  const description = t(`seo.${key}.description`);
+  const canonical = `${BASE_URL}${location.pathname === '/' ? '' : location.pathname}`;
 
   const htmlLang = HTML_LANG[language] ?? 'en';
   const ogLocale = OG_LOCALE[language] ?? 'en_US';
