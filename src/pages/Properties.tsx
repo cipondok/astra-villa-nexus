@@ -1287,4 +1287,3 @@ function VillaCardListSkeleton() {
     </div>
   );
 }
-}
