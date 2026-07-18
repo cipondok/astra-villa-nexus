@@ -1,0 +1,1 @@
+CREATE POLICY "Admins can view all behavior events" ON public.behavior_events FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::user_role));
