@@ -101,7 +101,7 @@ const topTabs = [
   { icon: TrendingUp, tKey: "shell.tabs.investment", to: "/investment" },
   { icon: Banknote, tKey: "shell.tabs.finance", to: "/wallet" },
   { icon: Scale, tKey: "shell.tabs.legal", to: "/legal-services" },
-  { icon: Wrench, tKey: "shell.tabs.management", to: "/agent-dashboard" },
+  { icon: Wrench, tKey: "shell.tabs.management", to: "/my-properties" },
   { icon: Store, tKey: "shell.tabs.vendors", to: "/services" },
   { icon: Cpu, tKey: "shell.tabs.aiCenter", to: "/ai-search" },
   { icon: MoreHorizontal, tKey: "shell.tabs.more", to: "/search" },
