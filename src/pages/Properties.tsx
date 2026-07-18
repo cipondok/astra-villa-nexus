@@ -179,6 +179,7 @@ export default function Properties() {
   const listingType = (params.get("listing_type") || preset.listingType || "").toLowerCase();
   const priceRangeId = (params.get("price") || "").toLowerCase();
   const priceRange = PRICE_RANGES.find((r) => r.id === priceRangeId);
+  const viewMode: "grid" | "list" = (params.get("view") === "list" ? "list" : "grid");
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(q);
