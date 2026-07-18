@@ -261,7 +261,30 @@ export default function Properties() {
     setParams(next);
   };
 
-  const results = data ?? [];
+  // Flatten paginated pages and dedupe by id (defensive against overlap).
+  const results = useMemo<Listing[]>(() => {
+    const pages = data?.pages ?? [];
+    const seen = new Set<string>();
+    const out: Listing[] = [];
+    for (const page of pages) {
+      for (const item of page) {
+        if (!seen.has(item.id)) { seen.add(item.id); out.push(item); }
+      }
+    }
+    return out;
+  }, [data]);
+
+  // Sentinel for infinite scroll — fires ~600px before hitting bottom.
+  const [sentinelRef, sentinelVisible] = useIntersectionObserver({
+    rootMargin: "600px",
+    freezeOnceVisible: false,
+  });
+  useEffect(() => {
+    if (sentinelVisible && hasNextPage && !isFetchingNextPage && !isLoading) {
+      fetchNextPage();
+    }
+  }, [sentinelVisible, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage]);
+
   const titleHead = heading.split(" ")[0];
   const titleTail = heading.split(" ").slice(1).join(" ") || "Villas";
 
