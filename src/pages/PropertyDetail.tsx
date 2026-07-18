@@ -129,7 +129,7 @@ const PropertyDetail = () => {
   /* ----- Scroll-aware sticky action bar ----- */
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 520);
+    const onScroll = () => setScrolled(window.scrollY > 280);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -238,243 +238,204 @@ const PropertyDetail = () => {
         })}
       />
 
-      {/* ============ CINEMATIC HERO GALLERY ============ */}
-      <section className="relative w-full h-[70vh] md:h-[86vh] overflow-hidden luxe-grain">
-        {images.map((src, i) => (
-          <div
-            key={src + i}
-            className={cn(
-              "absolute inset-0 transition-opacity duration-[1200ms] ease-out",
-              i === idx ? "opacity-100" : "opacity-0",
-            )}
-            aria-hidden={i !== idx}
-          >
-            <img
-              src={src}
-              alt={`${property.title} — view ${i + 1}`}
-              loading={i === 0 ? "eager" : "lazy"}
-              className={cn("h-full w-full object-cover", i === idx && "luxe-kenburns")}
-            />
-          </div>
-        ))}
+      {/* ============ EDITORIAL HERO — framed gallery + content block ============ */}
+      <section className="px-4 md:px-8 pt-24 md:pt-28">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-luxe bg-luxe-surface shadow-[0_30px_80px_-30px_rgba(10,25,49,0.35)]">
 
-        {/* atmospheric overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/85" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-transparent to-transparent" />
+            {/* --- Gallery grid 8/4 mosaic --- */}
+            <div className="relative">
+              {/* corner nav */}
+              <div className="absolute top-5 left-5 right-5 z-20 flex items-center justify-between">
+                <button
+                  onClick={() => navigate(-1)}
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#0A1931)] shadow-sm hover:bg-white transition-all text-[11px] font-semibold uppercase tracking-[0.15em]"
+                  aria-label="Go back"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Back</span>
+                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => toggleFavorite(property.id)}
+                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#0A1931)] shadow-sm hover:bg-white transition-all"
+                    aria-label="Favorite"
+                  >
+                    <Heart className={cn("h-4 w-4", isFavorite(property.id) && "fill-[var(--luxe-gold)] text-[var(--luxe-gold)]")} />
+                  </button>
+                  <button
+                    onClick={handleShare}
+                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#0A1931)] shadow-sm hover:bg-white transition-all"
+                    aria-label="Share"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setFullscreen(true)}
+                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#0A1931)] shadow-sm hover:bg-white transition-all"
+                    aria-label="Expand"
+                  >
+                    <Maximize2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
 
-        {/* top bar */}
-        <div className="absolute top-0 inset-x-0 z-20 pt-24 md:pt-28 px-5 md:px-10 flex items-center justify-between">
-          <button
-            onClick={() => navigate(-1)}
-            className="luxe-ghost-btn rounded-full px-4 py-2 text-[12px] inline-flex items-center gap-2"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> Back
-          </button>
-          <div className="flex items-center gap-2">
-            <button onClick={() => toggleFavorite(property.id)} className="luxe-ghost-btn rounded-full p-2.5">
-              <Heart className={cn("h-4 w-4", isFavorite(property.id) && "fill-[var(--luxe-gold)] text-[var(--luxe-gold)]")} />
-            </button>
-            <button onClick={handleShare} className="luxe-ghost-btn rounded-full p-2.5">
-              <Share2 className="h-4 w-4" />
-            </button>
-            <button onClick={() => setFullscreen(true)} className="luxe-ghost-btn rounded-full p-2.5">
-              <Maximize2 className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+              <div className="grid grid-cols-12 gap-1.5 h-[340px] sm:h-[440px] lg:h-[520px] overflow-hidden">
+                <button
+                  onClick={() => { setIdx(0); setFullscreen(true); }}
+                  className="col-span-12 md:col-span-8 relative group overflow-hidden bg-luxe-surface"
+                  aria-label="View main photo"
+                >
+                  <img
+                    src={images[0] || "/placeholder.svg"}
+                    alt={`${property.title} — main view`}
+                    loading="eager"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all" />
+                </button>
 
-        {/* gallery controls */}
-        {images.length > 1 && (
-          <>
-            <button onClick={prev} className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 luxe-ghost-btn rounded-full p-3 hidden md:inline-flex">
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button onClick={next} className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 luxe-ghost-btn rounded-full p-3 hidden md:inline-flex">
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </>
-        )}
-
-        {/* hero info */}
-        <div className="absolute inset-x-0 bottom-0 z-10 px-5 md:px-10 pb-12 md:pb-20">
-          <div className="max-w-[1440px] mx-auto">
-            <span className="luxe-eyebrow">{property.property_type || "Private Villa"} · {property.listing_type === "rent" ? "Nightly Stay" : "For Sale"}</span>
-            <h1 className="mt-4 text-[36px] md:text-[64px] font-semibold leading-[0.98] tracking-tight max-w-4xl text-white">
-              {property.title}
-            </h1>
-            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-luxe-fg/80">
-              <span className="inline-flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />{loc}</span>
-              <span className="inline-flex items-center gap-2"><Sparkles className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />AI Score {ai?.investment_score?.toFixed(0) ?? "—"}/100</span>
+                <div className="hidden md:grid col-span-4 grid-rows-2 gap-1.5">
+                  <button
+                    onClick={() => { setIdx(1); setFullscreen(true); }}
+                    className="relative group overflow-hidden bg-luxe-surface"
+                    aria-label="View second photo"
+                  >
+                    <img
+                      src={images[1] || images[0] || "/placeholder.svg"}
+                      alt=""
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                    />
+                    <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all" />
+                  </button>
+                  <button
+                    onClick={() => { setIdx(Math.min(2, images.length - 1)); setFullscreen(true); }}
+                    className="relative group overflow-hidden bg-luxe-surface"
+                    aria-label="View gallery"
+                  >
+                    <img
+                      src={images[2] || images[0] || "/placeholder.svg"}
+                      alt=""
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                    />
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-all" />
+                    {images.length > 0 && (
+                      <span className="absolute bottom-4 right-4 bg-white/95 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.15em] text-[color:var(--luxe-ink,#0A1931)] shadow-xl inline-flex items-center gap-2 border border-white/60 backdrop-blur-sm">
+                        <Images className="h-3.5 w-3.5" />
+                        View {images.length} Photo{images.length === 1 ? "" : "s"}
+                      </span>
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* pagination + counter */}
-            {images.length > 1 && (
-              <div className="mt-8 flex items-center gap-4">
-                <div className="flex gap-1.5">
-                  {images.slice(0, 8).map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setIdx(i)}
-                      className={cn(
-                        "h-[2px] transition-all duration-500",
-                        i === idx ? "w-10 bg-[var(--luxe-gold)]" : "w-5 bg-white/25",
-                      )}
-                      aria-label={`Go to image ${i + 1}`}
-                    />
-                  ))}
-                </div>
-                <span className="font-mono-l text-[11px] text-luxe-mut">
-                  {String(idx + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+            {/* --- Content block --- */}
+            <div className="p-6 md:p-10 lg:p-12 pb-8 md:pb-10">
+              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8">
+                <div className="max-w-2xl space-y-6 min-w-0">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="px-3 py-1 bg-[color:var(--luxe-ink,#0A1931)]/5 text-[color:var(--luxe-ink,#0A1931)] text-[10px] font-bold uppercase tracking-widest rounded-full border border-[color:var(--luxe-ink,#0A1931)]/10">
+                      {property.property_type || "Signature Collection"}
+                    </span>
+                    <span className="text-[var(--luxe-gold)] text-[10px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5">
+                      <MapPin className="h-3 w-3" /> {loc}
+                    </span>
+                  </div>
 
-      {/* ============ FLOATING SUMMARY PANEL (overlaps hero bottom) ============ */}
-      <div className="relative z-30 px-4 md:px-8 -mt-16 md:-mt-24">
-        <div className="max-w-[1440px] mx-auto">
-          <LuxeCard variant="glass" radius="lg" glow className="p-5 md:p-7">
-            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr_auto] gap-6 lg:gap-8 items-center">
-              {/* Price + AI badge */}
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.22em] text-luxe-mut">
-                  {property.listing_type === "rent" ? "From / night" : "List price"}
+                  <h1 className="font-serif-l text-[34px] md:text-[52px] lg:text-[60px] leading-[1.05] tracking-tight text-luxe-fg">
+                    {property.title}
+                  </h1>
+
+                  {/* Feature icon rows */}
+                  <div className="flex flex-wrap items-center gap-x-10 gap-y-4 pt-2">
+                    {features.map((f) => (
+                      <div key={f.label} className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-luxe-glass border border-luxe flex items-center justify-center">
+                          <f.icon className="h-5 w-5 text-luxe-mut" strokeWidth={1.5} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-luxe-mut font-medium uppercase tracking-wider">{f.label}</p>
+                          <p className="text-[13px] font-bold text-luxe-fg mt-0.5">{f.value}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-2 flex items-baseline gap-3 flex-wrap">
-                  <span className="font-serif-l text-[32px] md:text-[42px] leading-none">{fmtIDR(property.price)}</span>
+
+                {/* Trust badge card */}
+                <div className="flex flex-col items-center p-6 bg-[color:var(--luxe-ink,#0A1931)]/[0.03] border border-[color:var(--luxe-ink,#0A1931)]/10 rounded-2xl w-full lg:w-52 text-center shrink-0">
+                  <div className="w-12 h-12 mb-3 bg-[color:var(--luxe-ink,#0A1931)] rounded-full flex items-center justify-center text-[var(--luxe-gold)]">
+                    <ShieldCheck className="h-6 w-6" />
+                  </div>
+                  <p className="text-[11px] font-bold text-luxe-fg uppercase tracking-wider mb-1">Verified Asset</p>
+                  <p className="text-[10px] text-luxe-mut font-medium uppercase tracking-tight">Escrow Protected</p>
                   {ai?.investment_score != null && (
-                    <span className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full border border-[var(--luxe-gold)]/40 text-[var(--luxe-gold)] bg-[var(--luxe-gold)]/8">
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-full border border-[var(--luxe-gold)]/40 text-[var(--luxe-gold)] bg-[var(--luxe-gold)]/10 font-semibold">
                       <Sparkles className="h-3 w-3" /> AI {ai.investment_score.toFixed(0)}/100
                     </span>
                   )}
                 </div>
-                <div className="mt-2 text-[12px] text-luxe-mut inline-flex items-center gap-1.5">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" /> Verified · Escrow-protected
-                </div>
               </div>
-
-              {/* Compact stats */}
-              <div className="grid grid-cols-4 gap-3 lg:gap-4 lg:border-l lg:border-luxe lg:pl-8">
-                {features.map(f => (
-                  <div key={f.label} className="text-center lg:text-left">
-                    <f.icon className="h-3.5 w-3.5 text-[var(--luxe-gold)] mx-auto lg:mx-0" />
-                    <div className="mt-2 font-serif-l text-[18px] lg:text-[20px] leading-none whitespace-nowrap">{f.value}</div>
-                    <div className="text-[9px] lg:text-[10px] uppercase tracking-[0.16em] text-luxe-mut mt-1.5">{f.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Primary CTAs */}
-              <div className="flex lg:flex-col gap-2 lg:w-[180px]">
-                <button
-                  ref={ctaRef("reserve", "hero")}
-                  onClick={() => {
-                    const params = new URLSearchParams({ ...(checkIn && { checkIn }), ...(checkOut && { checkOut }), guests: String(guests) });
-                    trackClick({
-                      cta: "reserve",
-                      placement: "hero",
-                      outcome: "booking_initiated",
-                      extra: { has_dates: Boolean(checkIn && checkOut), guests },
-                    });
-                    navigate(`/booking/${property.id}?${params.toString()}`);
-                  }}
-                  className="luxe-gold-btn flex-1 rounded-full py-3 text-[12px] font-medium"
-                >
-                  Reserve
-                </button>
-                <a
-                  ref={ctaRef("contact", "hero")}
-                  href={whatsappLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => trackClick({ cta: "contact", placement: "hero", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
-                  className="luxe-ghost-btn flex-1 rounded-full py-3 text-[12px] inline-flex items-center justify-center gap-1.5"
-                >
-                  <MessageCircle className="h-3.5 w-3.5" /> Concierge
-                </a>
-              </div>
-            </div>
-          </LuxeCard>
-        </div>
-      </div>
-
-      {/* ============ GALLERY MOSAIC ============ */}
-      {images.length > 1 && (
-        <div className="px-4 md:px-8 mt-8 md:mt-12">
-          <div className="max-w-[1440px] mx-auto">
-            <div className="flex items-end justify-between mb-4">
-              <span className="luxe-eyebrow">Gallery</span>
-              <button
-                onClick={() => setFullscreen(true)}
-                className="luxe-ghost-btn rounded-full px-3.5 py-1.5 text-[11px] inline-flex items-center gap-1.5"
-              >
-                <Images className="h-3 w-3" /> View all {images.length}
-              </button>
-            </div>
-            <div className="grid grid-cols-4 grid-rows-2 gap-2 md:gap-3 h-[280px] md:h-[420px] rounded-3xl overflow-hidden">
-              <button
-                onClick={() => { setIdx(0); setFullscreen(true); }}
-                className="col-span-2 row-span-2 relative group overflow-hidden bg-luxe-surface"
-              >
-                <img src={images[0]} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" loading="lazy" />
-              </button>
-              {images.slice(1, 5).map((src, i) => (
-                <button
-                  key={src + i}
-                  onClick={() => { setIdx(i + 1); setFullscreen(true); }}
-                  className="relative group overflow-hidden bg-luxe-surface"
-                >
-                  <img src={src} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]" loading="lazy" />
-                  {i === 3 && images.length > 5 && (
-                    <div className="absolute inset-0 bg-black/55 backdrop-blur-[2px] grid place-items-center">
-                      <span className="text-white text-[13px] font-medium tracking-wide">+{images.length - 5} more</span>
-                    </div>
-                  )}
-                </button>
-              ))}
             </div>
           </div>
         </div>
-      )}
+      </section>
 
-      {/* ============ SCROLL-AWARE MINI ACTION BAR ============ */}
-      {/* Anchored directly beneath the global header via --reos-header-h so it
-          never overlaps the header, and sits at z-30 so header menus/modals win. */}
+      {/* ============ PREMIUM GLASS STICKY ACTION BAR (bottom, all breakpoints) ============ */}
       <div
         className={cn(
-          "hidden lg:block fixed inset-x-0 z-30 transition-all duration-300",
-          scrolled ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-3 pointer-events-none",
+          "fixed inset-x-0 bottom-0 z-40 transition-all duration-300",
+          scrolled ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-3 pointer-events-none",
         )}
-        style={{ top: "var(--reos-header-h, 64px)" }}
-        aria-hidden={!scrolled}
         role="region"
         aria-label="Property quick actions"
+        aria-hidden={!scrolled}
       >
-        <div className="mx-auto max-w-[1440px] px-8">
-          <LuxeCard variant="glass" radius="pill" className="mt-2 px-5 py-2 flex items-center gap-4 h-[52px]">
-            <div className="min-w-0 flex-1">
-              <div className="text-[13px] font-medium truncate">{property.title}</div>
-              <div className="text-[10px] text-luxe-mut inline-flex items-center gap-1.5">
-                <MapPin className="h-3 w-3" /> {loc}
+        <div className="mx-auto max-w-[1440px] px-4 md:px-8 pb-4 md:pb-6">
+          <div className="rounded-2xl bg-luxe-glass backdrop-blur-2xl border border-luxe shadow-[0_20px_60px_-20px_rgba(10,25,49,0.35)] px-5 py-4 md:px-8 md:py-5 flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold text-[var(--luxe-gold)] uppercase tracking-[0.2em]">
+                {property.listing_type === "rent" ? "From / night" : "List price"}
+              </p>
+              <div className="mt-1 flex items-baseline gap-2">
+                <span className="font-serif-l text-[22px] md:text-[28px] leading-none text-luxe-fg whitespace-nowrap">
+                  {fmtIDR(property.price)}
+                </span>
+                <span className="hidden sm:inline text-[11px] text-luxe-mut font-semibold uppercase tracking-wider">IDR</span>
               </div>
             </div>
-            <div className="font-serif-l text-[18px] leading-none whitespace-nowrap">{fmtIDR(property.price)}</div>
-            <button
-              ref={scrolled ? ctaRef("reserve", "mini_bar") : undefined}
-              onClick={() => {
-                trackClick({ cta: "reserve", placement: "mini_bar", outcome: "booking_initiated" });
-                navigate(`/booking/${property.id}`);
-              }}
-              className="luxe-gold-btn rounded-full px-5 py-2 text-[12px] font-medium whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-              tabIndex={scrolled ? 0 : -1}
-            >
-              Reserve
-            </button>
-          </LuxeCard>
+
+            <div className="flex items-center gap-2 md:gap-3 shrink-0">
+              <a
+                ref={scrolled ? ctaRef("contact", "mini_bar") : undefined}
+                href={whatsappLink}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => trackClick({ cta: "contact", placement: "mini_bar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+                className="hidden sm:inline-flex items-center gap-1.5 px-5 py-3 rounded-xl text-luxe-fg font-bold text-[11px] uppercase tracking-widest border border-luxe hover:bg-luxe-glass transition-all"
+                tabIndex={scrolled ? 0 : -1}
+              >
+                <MessageCircle className="h-3.5 w-3.5" /> Concierge
+              </a>
+              <button
+                ref={scrolled ? ctaRef("reserve", "mini_bar") : undefined}
+                onClick={() => {
+                  trackClick({ cta: "reserve", placement: "mini_bar", outcome: "booking_initiated" });
+                  navigate(`/booking/${property.id}`);
+                }}
+                className="px-6 md:px-10 py-3 bg-[color:var(--luxe-ink,#0A1931)] text-[var(--luxe-gold)] rounded-xl font-bold text-[11px] uppercase tracking-widest shadow-xl shadow-[color:var(--luxe-ink,#0A1931)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
+                tabIndex={scrolled ? 0 : -1}
+              >
+                Reserve Now
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
 
       {/* ============ MAIN GRID — info + sticky booking ============ */}
       <LuxeSection pad="md">
@@ -791,25 +752,7 @@ const PropertyDetail = () => {
         </div>
       )}
 
-      {/* mobile booking bar */}
-      <div className="lg:hidden fixed bottom-[72px] inset-x-3 z-40">
-        <LuxeCard variant="glass" radius="pill" className="px-5 py-3 flex items-center justify-between">
-          <div>
-            <div className="font-serif-l text-[18px] leading-none">{fmtIDR(property.price)}</div>
-            <div className="text-[10px] text-luxe-mut mt-1">{property.listing_type === "rent" ? "per night" : "list price"}</div>
-          </div>
-          <a
-            ref={ctaRef("reserve", "mobile_bar")}
-            href={whatsappLink}
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => trackClick({ cta: "reserve", placement: "mobile_bar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
-            className="luxe-gold-btn rounded-full px-5 py-2.5 text-[12px] font-medium inline-flex items-center gap-2"
-          >
-            <Phone className="h-3.5 w-3.5" /> Reserve
-          </a>
-        </LuxeCard>
-      </div>
+      {/* mobile booking bar is now unified with the glass sticky action bar above */}
     </LuxeLayout>
   );
 };
