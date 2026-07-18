@@ -840,7 +840,8 @@ const PropertyDetail = () => {
             )}
 
             {/* location atmosphere */}
-            <div>
+            <div id="neighborhood">
+
               <LuxeSectionHead eyebrow="Location" title="The neighborhood" description="A calm corner of the island, minutes from beach clubs, fine dining and wellness retreats." />
               <LuxeCard variant="glass" radius="lg" className="mt-10 p-8">
                 <div className="flex items-center gap-3 text-[13px]">
