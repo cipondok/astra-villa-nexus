@@ -441,6 +441,7 @@ const AppContent = () => {
 
   const shellInner = (
     <>
+      <LocalizedHead />
       <NetworkStatusIndicator />
       <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
