@@ -536,7 +536,7 @@ export default function Properties() {
       {/* Results grid */}
       <section className="mx-auto max-w-[1600px] px-6 pb-12">
         {isLoading ? (
-          <ResultsSkeleton />
+          <ResultsSkeleton count={pageSize} />
         ) : isError ? (
           <EmptyState
             title="We couldn't reach the collection right now"
