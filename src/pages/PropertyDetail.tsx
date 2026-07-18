@@ -178,9 +178,49 @@ const PropertyDetail = () => {
   if (isLoading) {
     return (
       <LuxeLayout>
-        <div className="min-h-[60vh] grid place-items-center">
-          <div className="luxe-shimmer h-12 w-64 rounded-full" />
-        </div>
+        <section className="px-4 md:px-8 pt-24 md:pt-28" aria-busy="true" aria-live="polite">
+          <div className="max-w-[1440px] mx-auto">
+            <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-luxe bg-luxe-surface shadow-[0_30px_80px_-30px_rgba(10,25,49,0.35)]">
+              {/* Gallery mosaic skeleton */}
+              <div className="grid grid-cols-12 gap-1.5 h-[340px] sm:h-[440px] lg:h-[520px]">
+                <div className="col-span-12 md:col-span-8 luxe-shimmer" />
+                <div className="hidden md:grid col-span-4 grid-rows-2 gap-1.5">
+                  <div className="luxe-shimmer" />
+                  <div className="luxe-shimmer" />
+                </div>
+              </div>
+
+              {/* Title block skeleton */}
+              <div className="p-6 md:p-10 lg:p-12 pb-8 md:pb-10">
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8">
+                  <div className="max-w-2xl w-full space-y-6 min-w-0">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="luxe-shimmer h-6 w-32 rounded-full" />
+                      <div className="luxe-shimmer h-4 w-24 rounded-full" />
+                    </div>
+                    <div className="space-y-3">
+                      <div className="luxe-shimmer h-10 md:h-14 w-11/12 rounded-lg" />
+                      <div className="luxe-shimmer h-10 md:h-14 w-3/4 rounded-lg" />
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-10 gap-y-4 pt-2">
+                      {[0, 1, 2, 3].map(i => (
+                        <div key={i} className="flex items-center gap-3">
+                          <div className="luxe-shimmer w-10 h-10 rounded-xl" />
+                          <div className="space-y-2">
+                            <div className="luxe-shimmer h-2.5 w-16 rounded" />
+                            <div className="luxe-shimmer h-3 w-10 rounded" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="luxe-shimmer w-full lg:w-52 h-40 rounded-2xl shrink-0" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <span className="sr-only">Loading property details</span>
+        </section>
       </LuxeLayout>
     );
   }
