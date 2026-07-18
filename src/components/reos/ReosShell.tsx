@@ -17,6 +17,10 @@ import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import { useUserRoles } from "@/hooks/useUserRoles";
 import { resolveDashboardPath } from "@/lib/dashboardRoute";
+import { useNotifications } from "@/contexts/NotificationContext";
+import { useFavorites } from "@/hooks/useFavorites";
+import { formatDistanceToNow } from "date-fns";
+
 
 /* ============================================================
    ReosShell — Shared "Bloomberg Terminal" Black/Gold layout
@@ -174,20 +178,22 @@ export function ReosHeader() {
     { code: "ru", label: "RU", native: "Русский" },
   ];
 
-  const notifications = [
-    { id: 1, title: "New villa match in Canggu", desc: "Villa Asteria · IDR 8.5B · 92 AI score", time: "2m", unread: true, to: "/properties" },
-    { id: 2, title: "Price drop on your watchlist", desc: "Seminyak Cliff Estate · −5%", time: "1h", unread: true, to: "/favorites" },
-    { id: 3, title: "Offer accepted", desc: "Your bid on Ubud Sanctuary was approved.", time: "3h", unread: true, to: "/investment-performance" },
-    { id: 4, title: "Market report ready", desc: "Q2 Bali liquidity report is now available.", time: "1d", unread: false, to: "/investor-reports" },
-  ];
-  const unreadCount = notifications.filter(n => n.unread).length;
+  // Real, user-scoped notifications. Guests get an empty list and see a login CTA.
+  const {
+    notifications: userNotifications,
+    unreadCount: notifUnread,
+    markAsRead,
+  } = useNotifications();
+  const notifications = user ? userNotifications : [];
+  const unreadCount = user ? notifUnread : 0;
 
-  const savedItems = [
-    { id: 1, title: "Villa Asteria", desc: "Canggu · IDR 8.5B · 92 AI score", to: "/properties" },
-    { id: 2, title: "Seminyak Cliff Estate", desc: "Seminyak · IDR 12B · Villa", to: "/properties" },
-    { id: 3, title: "Ubud Sanctuary", desc: "Ubud · IDR 4.2B · Estate", to: "/properties" },
-  ];
-  const savedCount = savedItems.length;
+  // Real, user-scoped saved properties.
+  const { favorites } = useFavorites();
+  const savedCount = user ? favorites.size : 0;
+  const savedItems = user
+    ? Array.from(favorites).slice(0, 5).map((id) => ({ id, propertyId: id }))
+    : [];
+
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
@@ -264,101 +270,124 @@ export function ReosHeader() {
               {theme === "dark" ? <Sun className="h-4 w-4 text-[var(--text-2)]" /> : <Moon className="h-4 w-4 text-[var(--text-2)]" />}
             </button>
 
-            <div className="relative" ref={notifRef}>
-              <button
-                type="button"
-                onClick={() => { setNotifOpen(o => !o); setLangOpen(false); setProfileOpen(false); }}
-                aria-label="Notifications"
-                aria-haspopup="menu"
-                aria-expanded={notifOpen}
-                className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
-              >
-                <Bell className="h-4 w-4 text-[var(--text-2)]" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-4 min-w-[16px] px-1 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">{unreadCount}</span>
-                )}
-              </button>
-              {notifOpen && (
-                <div role="menu" className="absolute right-0 mt-2 w-[340px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
-                    <div className="text-[12.5px] font-semibold text-[var(--text)]">Notifications</div>
-                    <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{unreadCount} new</span>
-                  </div>
-                  <div className="max-h-[340px] overflow-y-auto reos-scrollbar">
-                    {notifications.map(n => (
-                      <button
-                        key={n.id}
-                        type="button"
-                        onClick={() => { setNotifOpen(false); navigate(n.to); }}
-                        className="w-full text-left px-4 py-3 flex gap-3 items-start hover:bg-[var(--surface-2)] border-b border-[var(--line)] last:border-b-0 transition-colors"
-                      >
-                        <span className={`mt-1.5 h-2 w-2 rounded-full shrink-0 ${n.unread ? "bg-[var(--gold)]" : "bg-[var(--text-3)]/40"}`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="text-[12.5px] font-medium text-[var(--text)] truncate">{n.title}</div>
-                            <div className="text-[10px] text-[var(--text-3)] shrink-0">{n.time}</div>
-                          </div>
-                          <div className="text-[11.5px] text-[var(--text-2)] mt-0.5 line-clamp-2">{n.desc}</div>
+            {user && (
+              <div className="relative" ref={notifRef}>
+                <button
+                  type="button"
+                  onClick={() => { setNotifOpen(o => !o); setLangOpen(false); setProfileOpen(false); }}
+                  aria-label="Notifications"
+                  aria-haspopup="menu"
+                  aria-expanded={notifOpen}
+                  className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
+                >
+                  <Bell className="h-4 w-4 text-[var(--text-2)]" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 h-4 min-w-[16px] px-1 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">{unreadCount}</span>
+                  )}
+                </button>
+                {notifOpen && (
+                  <div role="menu" className="absolute right-0 mt-2 w-[340px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
+                      <div className="text-[12.5px] font-semibold text-[var(--text)]">Notifications</div>
+                      <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{unreadCount} new</span>
+                    </div>
+                    <div className="max-h-[340px] overflow-y-auto reos-scrollbar">
+                      {notifications.length === 0 ? (
+                        <div className="px-4 py-8 text-center text-[12px] text-[var(--text-3)]">
+                          You're all caught up.
                         </div>
-                      </button>
-                    ))}
+                      ) : (
+                        notifications.slice(0, 8).map((n) => {
+                          const to = n.propertyId ? `/property/${n.propertyId}` : "/notifications";
+                          const time = (() => {
+                            try { return formatDistanceToNow(n.timestamp, { addSuffix: false }); } catch { return ""; }
+                          })();
+                          return (
+                            <button
+                              key={n.id}
+                              type="button"
+                              onClick={() => { markAsRead(n.id); setNotifOpen(false); navigate(to); }}
+                              className="w-full text-left px-4 py-3 flex gap-3 items-start hover:bg-[var(--surface-2)] border-b border-[var(--line)] last:border-b-0 transition-colors"
+                            >
+                              <span className={`mt-1.5 h-2 w-2 rounded-full shrink-0 ${!n.read ? "bg-[var(--gold)]" : "bg-[var(--text-3)]/40"}`} />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="text-[12.5px] font-medium text-[var(--text)] truncate">{n.title}</div>
+                                  <div className="text-[10px] text-[var(--text-3)] shrink-0">{time}</div>
+                                </div>
+                                <div className="text-[11.5px] text-[var(--text-2)] mt-0.5 line-clamp-2">{n.message}</div>
+                              </div>
+                            </button>
+                          );
+                        })
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { setNotifOpen(false); navigate("/notifications"); }}
+                      className="w-full text-[12px] text-center py-3 reos-gold hover:bg-[var(--surface-2)] border-t border-[var(--line)]"
+                    >
+                      View all notifications
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => { setNotifOpen(false); navigate("/notifications"); }}
-                    className="w-full text-[12px] text-center py-3 reos-gold hover:bg-[var(--surface-2)] border-t border-[var(--line)]"
-                  >
-                    View all notifications
-                  </button>
-                </div>
-              )}
-            </div>
-            <div className="relative" ref={savedRef}>
-              <button
-                type="button"
-                onClick={() => { setSavedOpen(o => !o); setLangOpen(false); setNotifOpen(false); setProfileOpen(false); }}
-                aria-label="Saved"
-                aria-haspopup="menu"
-                aria-expanded={savedOpen}
-                className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
-              >
-                <Heart className="h-4 w-4 text-[var(--text-2)]" />
-                {savedCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-4 min-w-[16px] px-1 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">{savedCount}</span>
                 )}
-              </button>
-              {savedOpen && (
-                <div role="menu" className="absolute right-0 mt-2 w-[320px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
-                    <div className="text-[12.5px] font-semibold text-[var(--text)]">Saved</div>
-                    <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{savedCount} items</span>
-                  </div>
-                  <div className="max-h-[340px] overflow-y-auto reos-scrollbar">
-                    {savedItems.map(s => (
-                      <button
-                        key={s.id}
-                        type="button"
-                        onClick={() => { setSavedOpen(false); navigate(s.to); }}
-                        className="w-full text-left px-4 py-3 flex gap-3 items-start hover:bg-[var(--surface-2)] border-b border-[var(--line)] last:border-b-0 transition-colors"
-                      >
-                        <Heart className="mt-1 h-3.5 w-3.5 shrink-0 text-[var(--gold)]" />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-[12.5px] font-medium text-[var(--text)] truncate">{s.title}</div>
-                          <div className="text-[11.5px] text-[var(--text-2)] mt-0.5 line-clamp-2">{s.desc}</div>
+              </div>
+            )}
+            {user && (
+              <div className="relative" ref={savedRef}>
+                <button
+                  type="button"
+                  onClick={() => { setSavedOpen(o => !o); setLangOpen(false); setNotifOpen(false); setProfileOpen(false); }}
+                  aria-label="Saved"
+                  aria-haspopup="menu"
+                  aria-expanded={savedOpen}
+                  className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
+                >
+                  <Heart className="h-4 w-4 text-[var(--text-2)]" />
+                  {savedCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 h-4 min-w-[16px] px-1 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">{savedCount}</span>
+                  )}
+                </button>
+                {savedOpen && (
+                  <div role="menu" className="absolute right-0 mt-2 w-[320px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
+                      <div className="text-[12.5px] font-semibold text-[var(--text)]">Saved</div>
+                      <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{savedCount} items</span>
+                    </div>
+                    <div className="max-h-[340px] overflow-y-auto reos-scrollbar">
+                      {savedItems.length === 0 ? (
+                        <div className="px-4 py-8 text-center text-[12px] text-[var(--text-3)]">
+                          No saved properties yet.
                         </div>
-                      </button>
-                    ))}
+                      ) : (
+                        savedItems.map((s) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => { setSavedOpen(false); navigate(`/property/${s.propertyId}`); }}
+                            className="w-full text-left px-4 py-3 flex gap-3 items-start hover:bg-[var(--surface-2)] border-b border-[var(--line)] last:border-b-0 transition-colors"
+                          >
+                            <Heart className="mt-1 h-3.5 w-3.5 shrink-0 text-[var(--gold)]" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-[12.5px] font-medium text-[var(--text)] truncate">Saved property</div>
+                              <div className="text-[11.5px] text-[var(--text-2)] mt-0.5 line-clamp-2 font-mono">{s.propertyId.slice(0, 8)}…</div>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { setSavedOpen(false); navigate("/favorites"); }}
+                      className="w-full text-[12px] text-center py-3 reos-gold hover:bg-[var(--surface-2)] border-t border-[var(--line)]"
+                    >
+                      View all saved
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => { setSavedOpen(false); navigate("/favorites"); }}
-                    className="w-full text-[12px] text-center py-3 reos-gold hover:bg-[var(--surface-2)] border-t border-[var(--line)]"
-                  >
-                    View all saved
-                  </button>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
+
 
 
             {user ? (
@@ -366,19 +395,31 @@ export function ReosHeader() {
                 <button
                   type="button"
                   onClick={() => setProfileOpen(o => !o)}
-                  className="h-9 pl-1.5 pr-3 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-2 hover:border-[var(--line-strong)]"
+                  aria-label="Open user menu"
+                  className="h-9 pl-1 pr-2 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-1.5 hover:border-[var(--line-strong)]"
                 >
                   <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">
                     {(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}
                   </div>
-                  <div className="leading-none hidden md:block">
-                    <div className="text-[12px] font-medium truncate max-w-[120px] text-left text-[var(--text)]">{profile?.full_name || user.email}</div>
-                    <div className="text-[9px] reos-gold mt-0.5 text-left">Premium Investor</div>
-                  </div>
                   <ChevronDown className="h-3 w-3 text-[var(--text-2)]" />
                 </button>
                 {profileOpen && (
-                  <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
+                  <div role="menu" className="absolute right-0 mt-2 w-60 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
+                    {/* Identity block — full name & email live INSIDE the dropdown only */}
+                    <div className="px-3 py-3 border-b border-[var(--line)] mb-1">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-9 w-9 rounded-full reos-cta flex items-center justify-center text-[12px] font-bold">
+                          {(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[12.5px] font-semibold text-[var(--text)] truncate">
+                            {profile?.full_name || "Member"}
+                          </div>
+                          <div className="text-[10.5px] text-[var(--text-2)] truncate">{user.email}</div>
+                        </div>
+                      </div>
+                    </div>
+
                     <button type="button" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> Dashboard</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> My Profile</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> Wallet</button>
