@@ -394,7 +394,7 @@ export default function AstraReosHome() {
   const countryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.title = "ASTRA Villa REOS — AI Real Estate Operating System";
+    // Title is set by <LocalizedHead /> so it stays in sync with the active language.
     document.documentElement.setAttribute("data-reos-theme", "on");
     return () => document.documentElement.removeAttribute("data-reos-theme");
   }, []);
