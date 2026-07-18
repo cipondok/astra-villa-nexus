@@ -520,6 +520,14 @@ export default function Properties() {
           </button>
         </form>
 
+        {/* Shared location suggestion list — sourced from provinces DB + popular cities.
+            Users can still type any free-text value. */}
+        <datalist id="astra-locations">
+          {LOCATION_SUGGESTIONS.map((name) => (
+            <option key={name} value={name} />
+          ))}
+        </datalist>
+
         {/* Active filter chips + controls */}
         <div className="mt-6 flex flex-wrap items-center gap-2">
           {activeChips.map((chip) => (
