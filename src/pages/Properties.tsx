@@ -169,6 +169,27 @@ export default function Properties() {
 
   const pageSize = useResponsivePageSize();
 
+  // ------- Marketplace analytics -------
+  const { trackEvent } = useTrackEvent();
+  const fetchCountRef = useRef(0);
+  const inFlightPagesRef = useRef<Set<number>>(new Set());
+  const seenIdsRef = useRef<Set<string>>(new Set());
+  const endOfListFiredRef = useRef(false);
+  const sentinelTriggerCountRef = useRef(0);
+  const filtersKey = `${q}|${location}|${tag}|${collection}|${intent}|${type}|${sort}|${listingType}|${priceRangeId}|${pageSize}`;
+  const filtersKeyRef = useRef(filtersKey);
+  // Reset counters when the query key changes (new search / filter set).
+  useEffect(() => {
+    if (filtersKeyRef.current !== filtersKey) {
+      filtersKeyRef.current = filtersKey;
+      fetchCountRef.current = 0;
+      inFlightPagesRef.current.clear();
+      seenIdsRef.current.clear();
+      endOfListFiredRef.current = false;
+      sentinelTriggerCountRef.current = 0;
+    }
+  }, [filtersKey]);
+
   // Skip the initial scroll-to-top so useScrollRestore can honor prior position on back-nav.
   const didMountRef = useRef(false);
   useEffect(() => {
