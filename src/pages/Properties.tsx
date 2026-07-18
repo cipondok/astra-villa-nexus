@@ -541,6 +541,41 @@ export default function Properties() {
             </button>
           )}
           <div className="ml-auto flex items-center gap-2">
+            {/* Grid / List view toggle — persisted via ?view= URL param */}
+            <div
+              role="group"
+              aria-label="Toggle results view"
+              className="h-9 inline-flex items-center rounded-lg border border-[var(--line)] bg-[var(--surface)] p-0.5"
+            >
+              <button
+                type="button"
+                aria-pressed={viewMode === "grid"}
+                aria-label="Grid view"
+                onClick={() => { removeParam("view"); trackEvent({ event_type: "marketplace_view_mode_changed", event_data: { view: "grid" } }); }}
+                className={cn(
+                  "h-8 px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
+                  viewMode === "grid"
+                    ? "bg-[var(--gold-soft)] reos-gold"
+                    : "text-[var(--text-2)] hover:text-[var(--text)]",
+                )}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" /> Grid
+              </button>
+              <button
+                type="button"
+                aria-pressed={viewMode === "list"}
+                aria-label="List view"
+                onClick={() => { updateParam("view", "list"); trackEvent({ event_type: "marketplace_view_mode_changed", event_data: { view: "list" } }); }}
+                className={cn(
+                  "h-8 px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
+                  viewMode === "list"
+                    ? "bg-[var(--gold-soft)] reos-gold"
+                    : "text-[var(--text-2)] hover:text-[var(--text)]",
+                )}
+              >
+                <ListIcon className="w-3.5 h-3.5" /> List
+              </button>
+            </div>
             <button
               type="button"
               onClick={() => setFilterOpen((v) => !v)}
