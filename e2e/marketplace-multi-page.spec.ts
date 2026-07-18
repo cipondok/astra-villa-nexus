@@ -1,4 +1,8 @@
 import { test, expect, Page, Request } from '@playwright/test';
+import {
+  MARKETPLACE_SEED_COUNT,
+  MARKETPLACE_SEED_QUERY,
+} from './helpers/marketplace-fixtures';
 
 /**
  * ASTRA Villa — Marketplace multi-page E2E
