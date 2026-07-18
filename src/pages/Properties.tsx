@@ -221,6 +221,7 @@ export default function Properties() {
       const inFlight = inFlightPagesRef.current;
       const isDuplicate = inFlight.has(pageIndex);
       if (isDuplicate) {
+        duplicatesDetectedRef.current += 1;
         trackEvent("marketplace_duplicate_request_detected", {
           metadata: {
             page_index: pageIndex,
