@@ -125,7 +125,10 @@
     "vitest": "^3.2.4"
   },
   "overrides": {
-    "jspdf": "^4.2.1"
+    "jspdf": "$jspdf",
+    "html2pdf.js": {
+      "jspdf": "$jspdf"
+    }
   },
   "resolutions": {
     "jspdf": "^4.2.1"
