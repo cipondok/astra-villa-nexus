@@ -96,30 +96,31 @@ export const reosTokens = `
 `;
 
 const topTabs = [
-  { icon: Home, label: "Home", to: "/" },
-  { icon: Building2, label: "Properties", to: "/properties" },
-  { icon: TrendingUp, label: "Investment", to: "/investment" },
-  { icon: Banknote, label: "Finance", to: "/wallet" },
-  { icon: Scale, label: "Legal", to: "/legal-services" },
-  { icon: Wrench, label: "Management", to: "/agent-dashboard" },
-  { icon: Store, label: "Vendors", to: "/services" },
-  { icon: Cpu, label: "AI Center", to: "/ai-search" },
-  { icon: MoreHorizontal, label: "More", to: "/search" },
+  { icon: Home, tKey: "shell.tabs.home", to: "/" },
+  { icon: Building2, tKey: "shell.tabs.properties", to: "/properties" },
+  { icon: TrendingUp, tKey: "shell.tabs.investment", to: "/investment" },
+  { icon: Banknote, tKey: "shell.tabs.finance", to: "/wallet" },
+  { icon: Scale, tKey: "shell.tabs.legal", to: "/legal-services" },
+  { icon: Wrench, tKey: "shell.tabs.management", to: "/agent-dashboard" },
+  { icon: Store, tKey: "shell.tabs.vendors", to: "/services" },
+  { icon: Cpu, tKey: "shell.tabs.aiCenter", to: "/ai-search" },
+  { icon: MoreHorizontal, tKey: "shell.tabs.more", to: "/search" },
 ];
 
 const sideNav = [
-  { icon: Eye, label: "Overview", to: "/" },
-  { icon: BarChart3, label: "Market Intelligence", to: "/market-heatmap" },
-  { icon: BookmarkPlus, label: "Watchlist", to: "/favorites" },
-  { icon: Wallet, label: "My Portfolio", to: "/investment-performance" },
-  { icon: MessageSquare, label: "Messages", to: "/messages", badge: 12 as number | undefined },
-  { icon: ArrowLeftRight, label: "Transactions", to: "/wallet" },
-  { icon: Calendar, label: "Calendar", to: "/profile" },
-  { icon: FileText, label: "Documents", to: "/documents" },
-  { icon: LifeBuoy, label: "Support Center", to: "/support" },
+  { icon: Eye, tKey: "shell.side.overview", to: "/" },
+  { icon: BarChart3, tKey: "shell.side.marketIntelligence", to: "/market-heatmap" },
+  { icon: BookmarkPlus, tKey: "shell.side.watchlist", to: "/favorites" },
+  { icon: Wallet, tKey: "shell.side.portfolio", to: "/investment-performance" },
+  { icon: MessageSquare, tKey: "shell.side.messages", to: "/messages", badge: 12 as number | undefined },
+  { icon: ArrowLeftRight, tKey: "shell.side.transactions", to: "/wallet" },
+  { icon: Calendar, tKey: "shell.side.calendar", to: "/profile" },
+  { icon: FileText, tKey: "shell.side.documents", to: "/documents" },
+  { icon: LifeBuoy, tKey: "shell.side.support", to: "/support" },
 ];
 
 const banks = ["BCA", "Mandiri", "CIMB NIAGA", "HSBC", "DBS", "Maybank", "UOB", "OCBC NISP", "BNI", "BRI"];
+
 
 export function ReosHeader() {
   const navigate = useNavigate();
