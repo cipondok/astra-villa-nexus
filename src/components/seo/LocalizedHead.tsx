@@ -48,9 +48,9 @@ const OG_LOCALE: Record<string, string> = {
 const BASE_URL = 'https://astravilla.com';
 
 /**
- * Renders per-route, per-language <title>, meta description, og:*/twitter:*,
- * <html lang>, and canonical tags. Updates automatically when the user
- * switches language via the language selector.
+ * Renders per-route, per-language title, description, og/twitter tags,
+ * html lang, and canonical. Updates automatically when the user switches
+ * language via the language selector.
  */
 export const LocalizedHead = () => {
   const { t, language } = useTranslation();
