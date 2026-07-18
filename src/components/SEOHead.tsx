@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   SITE_NAME as DEFAULT_SITE_NAME,
   SITE_URL as DEFAULT_SITE_URL,
@@ -7,6 +8,34 @@ import {
   OG_TITLE,
   OG_DESCRIPTION,
 } from '@/lib/seoDefaults';
+import { useTranslation } from '@/i18n/useTranslation';
+
+/**
+ * Route → seo.<key> mapping used to auto-localize page titles/descriptions.
+ * Only routes that have a corresponding entry in the `seo` translation namespace
+ * are listed here; other routes fall back to the props passed by the caller.
+ */
+function resolveLocalizedSeoKey(pathname: string): string | null {
+  const p = pathname.replace(/\/+$/, '') || '/';
+  if (p === '/' || p === '/luxe') return 'home';
+  if (p === '/properties' || p.startsWith('/properties/') || p.startsWith('/property/')) return 'properties';
+  if (p === '/dijual' || p === '/buy') return 'dijual';
+  if (p === '/disewa' || p === '/rent' || p === '/sewa') return 'disewa';
+  if (p === '/search') return 'search';
+  if (p.startsWith('/about')) return 'about';
+  if (p.startsWith('/contact')) return 'contact';
+  if (p.startsWith('/help')) return 'help';
+  if (p.startsWith('/auth') || p === '/login' || p === '/register') return 'auth';
+  if (p.startsWith('/investment')) return 'investment';
+  if (p.startsWith('/community')) return 'community';
+  if (p.startsWith('/agents') || p.startsWith('/agent-directory')) return 'agentDirectory';
+  if (p.startsWith('/location') || p === '/locations') return 'locationMap';
+  return null;
+}
+
+const LOCALE_TO_OG: Record<string, string> = {
+  en: 'en_US', id: 'id_ID', zh: 'zh_CN', ja: 'ja_JP', ko: 'ko_KR', ru: 'ru_RU',
+};
 
 interface SEOHeadProps {
   title?: string;
