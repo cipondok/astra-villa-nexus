@@ -128,9 +128,13 @@
     "jspdf": "$jspdf",
     "html2pdf.js": {
       "jspdf": "$jspdf"
-    }
+    },
+    "protobufjs": "^7.5.4",
+    "sha.js": "^2.4.12"
   },
   "resolutions": {
-    "jspdf": "^4.2.1"
+    "jspdf": "^4.2.1",
+    "protobufjs": "^7.5.4",
+    "sha.js": "^2.4.12"
   }
 }
