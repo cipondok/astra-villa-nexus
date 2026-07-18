@@ -450,11 +450,11 @@ export function ReosHeader() {
               const active = isActive(tab.to);
               return (
                 <Link
-                  key={tab.label}
+                  key={tab.tKey}
                   to={tab.to}
                   className={`relative inline-flex items-center gap-2 text-[13px] whitespace-nowrap transition-colors ${active ? "reos-tab-active font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
                 >
-                  <tab.icon className="h-4 w-4" /> {tab.label}
+                  <tab.icon className="h-4 w-4" /> {t(tab.tKey)}
                 </Link>
               );
             })}
@@ -481,21 +481,18 @@ export function ReosHeader() {
                   <img src={headerLogo} alt="ASTRA Villa" className="h-8 w-8 rounded-full object-contain shadow-sm" />
                   <span className="font-semibold tracking-[0.18em] text-[14px]">ASTRA<span className="reos-gold ml-1">VILLA</span></span>
                 </div>
-                <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
+                <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label={t("shell.closeMenu")} className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
               </div>
               <div className="space-y-1">
-                {topTabs.map(tab => {
-                  const t = tab.label === "Dashboard" ? { ...tab, to: dashboardPath } : tab;
-                  return (
-                    <Link key={t.label} to={t.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
-                      <t.icon className="h-4 w-4" /> {t.label}
-                    </Link>
-                  );
-                })}
+                {topTabs.map(tab => (
+                  <Link key={tab.tKey} to={tab.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                    <tab.icon className="h-4 w-4" /> {t(tab.tKey)}
+                  </Link>
+                ))}
                 <div className="reos-divider my-3" />
                 {sideNav.map(n => (
-                  <Link key={n.label} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
-                    <n.icon className="h-4 w-4" /><span className="flex-1">{n.label}</span>
+                  <Link key={n.tKey} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                    <n.icon className="h-4 w-4" /><span className="flex-1">{t(n.tKey)}</span>
                     {n.badge && <span className="text-[10px] bg-[var(--gold)] text-[var(--gold-fg)] font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
                   </Link>
                 ))}
@@ -504,6 +501,7 @@ export function ReosHeader() {
           </motion.div>
         )}
       </AnimatePresence>
+
 
       <ReosAuthModal open={showAuth} onOpenChange={setShowAuth} initialMode={authInitial} />
     </>
