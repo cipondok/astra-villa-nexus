@@ -12,6 +12,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { cn } from "@/lib/utils";
 import ReosShell from "@/components/reos/ReosShell";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useTrackEvent } from "@/hooks/useTrackEvent";
 import villaFallback1 from "@/assets/luxe-villa-1.jpg";
 import villaFallback2 from "@/assets/luxe-villa-2.jpg";
 import villaFallback3 from "@/assets/luxe-villa-3.jpg";
