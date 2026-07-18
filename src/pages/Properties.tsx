@@ -392,10 +392,53 @@ export default function Properties() {
     freezeOnceVisible: false,
   });
   useEffect(() => {
-    if (sentinelVisible && hasNextPage && !isFetchingNextPage && !isLoading) {
+    if (!sentinelVisible) return;
+    if (isLoading) return;
+    const pagesLoaded = data?.pages?.length ?? 0;
+    if (hasNextPage && !isFetchingNextPage) {
+      sentinelTriggerCountRef.current += 1;
+      trackEvent("marketplace_next_page_trigger", {
+        metadata: {
+          trigger_number: sentinelTriggerCountRef.current,
+          pages_loaded: pagesLoaded,
+          rows_loaded: results.length,
+          page_size: pageSize,
+          filters_key: filtersKey,
+        },
+      });
       fetchNextPage();
+    } else if (hasNextPage && isFetchingNextPage) {
+      // Sentinel re-fired while a page was already in flight — should be blocked.
+      trackEvent("marketplace_next_page_blocked", {
+        metadata: {
+          reason: "already_fetching",
+          pages_loaded: pagesLoaded,
+          rows_loaded: results.length,
+          filters_key: filtersKey,
+        },
+      });
     }
-  }, [sentinelVisible, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage]);
+  }, [sentinelVisible, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage, data?.pages?.length, results.length, pageSize, filtersKey, trackEvent]);
+
+  // Fire once when pagination completes for this filter set.
+  useEffect(() => {
+    if (isLoading || isFetchingNextPage) return;
+    if (hasNextPage) return;
+    if (!data?.pages?.length) return;
+    if (endOfListFiredRef.current) return;
+    endOfListFiredRef.current = true;
+    trackEvent("marketplace_end_of_list", {
+      metadata: {
+        total_rows: results.length,
+        pages_loaded: data.pages.length,
+        total_fetches: fetchCountRef.current,
+        sentinel_triggers: sentinelTriggerCountRef.current,
+        page_size: pageSize,
+        filters_key: filtersKey,
+      },
+    });
+  }, [hasNextPage, isLoading, isFetchingNextPage, data?.pages?.length, results.length, pageSize, filtersKey, trackEvent]);
+
 
   const titleHead = heading.split(" ")[0];
   const titleTail = heading.split(" ").slice(1).join(" ") || "Villas";
