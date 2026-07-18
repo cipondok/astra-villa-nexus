@@ -128,6 +128,16 @@ const PropertyDetail = () => {
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(2);
 
+  /* ----- Contact form state ----- */
+  const [inquiryReason, setInquiryReason] = useState("Request more information");
+  const [inquiryMessage, setInquiryMessage] = useState("I'm interested in this property and would like more information.");
+  const [sending, setSending] = useState(false);
+  const [visitOpen, setVisitOpen] = useState(false);
+  const [visitDate, setVisitDate] = useState("");
+  const [visitTime, setVisitTime] = useState("10:00");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertEmail, setAlertEmail] = useState("");
+
   /* ----- CTA analytics tracking ----- */
   const { registerImpression, trackClick } = usePropertyCtaTracking({
     propertyId: property?.id,
