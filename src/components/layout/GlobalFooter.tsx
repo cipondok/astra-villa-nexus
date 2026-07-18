@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
+import { useTranslation } from "@/i18n/useTranslation";
 import {
-  Building2,
   Mail,
   MapPin,
   Phone,
@@ -13,54 +13,52 @@ import {
 
 /**
  * ASTRA Design System V3 — Global Footer
- *
- * Unified footer rendered on every route. Themed via design tokens
- * (background / foreground / primary) so it adapts to both
- * ASTRA Black Gold and ASTRA Pearl White automatically.
+ * Fully translated via i18n. All labels resolve through `t()`.
  */
 const FOOTER_LINKS = [
   {
-    heading: "Marketplace",
+    headingKey: "shell.footer.sections.marketplace",
     items: [
-      { label: "Buy", to: "/buy" },
-      { label: "Rent", to: "/rent" },
-      { label: "New Projects", to: "/projects" },
-      { label: "Luxury", to: "/luxury" },
-      { label: "Locations", to: "/locations" },
+      { labelKey: "shell.footer.links.buy", to: "/buy" },
+      { labelKey: "shell.footer.links.rent", to: "/rent" },
+      { labelKey: "shell.footer.links.newProjects", to: "/projects" },
+      { labelKey: "shell.footer.links.luxury", to: "/luxury" },
+      { labelKey: "shell.footer.links.locations", to: "/locations" },
     ],
   },
   {
-    heading: "Invest",
+    headingKey: "shell.footer.sections.invest",
     items: [
-      { label: "Opportunities", to: "/investment-opportunities" },
-      { label: "Investment Intelligence", to: "/investment-intelligence" },
-      { label: "Fractional", to: "/fractional-investment" },
-      { label: "Market Heatmap", to: "/market-heatmap" },
+      { labelKey: "shell.footer.links.opportunities", to: "/investment-opportunities" },
+      { labelKey: "shell.footer.links.investmentIntelligence", to: "/investment-intelligence" },
+      { labelKey: "shell.footer.links.fractional", to: "/fractional-investment" },
+      { labelKey: "shell.footer.links.marketHeatmap", to: "/market-heatmap" },
     ],
   },
   {
-    heading: "Platform",
+    headingKey: "shell.footer.sections.platform",
     items: [
-      { label: "Dashboard", to: "/dashboard" },
-      { label: "AI Center", to: "/ai-center" },
-      { label: "Vendor Marketplace", to: "/vendor-marketplace" },
-      { label: "Sell", to: "/sell" },
+      { labelKey: "shell.tabs.aiCenter", to: "/ai-center" },
+      { labelKey: "shell.side.portfolio", to: "/dashboard" },
+      { labelKey: "shell.footer.links.vendorMarketplace", to: "/vendor-marketplace" },
+      { labelKey: "shell.footer.links.sell", to: "/sell" },
     ],
   },
   {
-    heading: "Company",
+    headingKey: "shell.footer.sections.company",
     items: [
-      { label: "About", to: "/about" },
-      { label: "Contact", to: "/contact" },
-      { label: "Legal", to: "/legal" },
-      { label: "Privacy", to: "/privacy" },
+      { labelKey: "shell.footer.links.about", to: "/about" },
+      { labelKey: "shell.footer.links.contact", to: "/contact" },
+      { labelKey: "shell.footer.links.legalPage", to: "/legal" },
+      { labelKey: "shell.footer.links.privacy", to: "/privacy" },
     ],
   },
 ];
 
 export default function GlobalFooter() {
   const year = new Date().getFullYear();
-  const { logoUrl: footerLogo } = useBrandingLogo('footerLogo', '/astra-logo.png');
+  const { logoUrl: footerLogo } = useBrandingLogo("footerLogo", "/astra-logo.png");
+  const { t } = useTranslation();
 
   return (
     <footer className="border-t border-border/60 bg-background text-foreground mt-auto">
@@ -79,8 +77,7 @@ export default function GlobalFooter() {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground mt-3 max-w-xs leading-relaxed">
-              The AI-powered Real Estate Operating System for premium property
-              discovery, investment and management.
+              {t("shell.footer.tagline")}
             </p>
             <div className="flex items-center gap-3 mt-4">
               <SocialIcon href="https://instagram.com" icon={Instagram} label="Instagram" />
@@ -92,9 +89,9 @@ export default function GlobalFooter() {
 
           {/* Link columns */}
           {FOOTER_LINKS.map((col) => (
-            <div key={col.heading}>
+            <div key={col.headingKey}>
               <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-3">
-                {col.heading}
+                {t(col.headingKey)}
               </h3>
               <ul className="space-y-2">
                 {col.items.map((item) => (
@@ -103,7 +100,7 @@ export default function GlobalFooter() {
                       to={item.to}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      {item.label}
+                      {t(item.labelKey)}
                     </Link>
                   </li>
                 ))}
@@ -136,12 +133,12 @@ export default function GlobalFooter() {
       {/* Legal bar */}
       <div className="border-t border-border/40">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-muted-foreground">
-          <p>© {year} ASTRA Villa · Property Operating System</p>
+          <p>© {year} {t("shell.footer.copyright")}</p>
           <div className="flex items-center gap-4">
-            <Link to="/terms" className="hover:text-foreground">Terms</Link>
-            <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
-            <Link to="/cookies" className="hover:text-foreground">Cookies</Link>
-            <Link to="/cookie-preferences" className="hover:text-foreground">Cookie Settings</Link>
+            <Link to="/terms" className="hover:text-foreground">{t("shell.footer.links.termsShort")}</Link>
+            <Link to="/privacy" className="hover:text-foreground">{t("shell.footer.links.privacyShort")}</Link>
+            <Link to="/cookies" className="hover:text-foreground">{t("shell.footer.links.cookiesShort")}</Link>
+            <Link to="/cookie-preferences" className="hover:text-foreground">{t("shell.footer.links.cookieSettings")}</Link>
           </div>
         </div>
       </div>
