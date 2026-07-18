@@ -1079,7 +1079,9 @@ const PropertyDetail = () => {
                 <ShieldCheck className="h-3.5 w-3.5 text-[var(--luxe-emerald)]" />
                 Verified listing · Escrow-protected
               </div>
+              </div>
             </div>
+
 
             <p className="mt-4 text-center text-luxe-mut text-[9px] uppercase tracking-[0.3em] font-semibold">
               Verified by ASTRA Realty Group
