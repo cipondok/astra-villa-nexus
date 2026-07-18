@@ -152,6 +152,14 @@ test.describe('Properties marketplace · multi-page', () => {
       expect(endMarkerSeen).toBeTruthy();
     }
 
+    // ---- Assertion 2b: when the deterministic seed is in place (isolated
+    //      by the ?q= filter) the total count MUST equal the seed size and
+    //      the end-of-list marker MUST have been reached.
+    if (finalCount >= MARKETPLACE_SEED_COUNT) {
+      expect(finalCount).toBe(MARKETPLACE_SEED_COUNT);
+      expect(endMarkerSeen).toBeTruthy();
+    }
+
     // ---- Assertion 3: end-of-list behavior — extra scrolls at the bottom
     //      must NOT trigger any additional property fetches.
     const beforeIdleScroll = fetches.length;
