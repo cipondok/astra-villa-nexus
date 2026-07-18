@@ -178,20 +178,22 @@ export function ReosHeader() {
     { code: "ru", label: "RU", native: "Русский" },
   ];
 
-  const notifications = [
-    { id: 1, title: "New villa match in Canggu", desc: "Villa Asteria · IDR 8.5B · 92 AI score", time: "2m", unread: true, to: "/properties" },
-    { id: 2, title: "Price drop on your watchlist", desc: "Seminyak Cliff Estate · −5%", time: "1h", unread: true, to: "/favorites" },
-    { id: 3, title: "Offer accepted", desc: "Your bid on Ubud Sanctuary was approved.", time: "3h", unread: true, to: "/investment-performance" },
-    { id: 4, title: "Market report ready", desc: "Q2 Bali liquidity report is now available.", time: "1d", unread: false, to: "/investor-reports" },
-  ];
-  const unreadCount = notifications.filter(n => n.unread).length;
+  // Real, user-scoped notifications. Guests get an empty list and see a login CTA.
+  const {
+    notifications: userNotifications,
+    unreadCount: notifUnread,
+    markAsRead,
+  } = useNotifications();
+  const notifications = user ? userNotifications : [];
+  const unreadCount = user ? notifUnread : 0;
 
-  const savedItems = [
-    { id: 1, title: "Villa Asteria", desc: "Canggu · IDR 8.5B · 92 AI score", to: "/properties" },
-    { id: 2, title: "Seminyak Cliff Estate", desc: "Seminyak · IDR 12B · Villa", to: "/properties" },
-    { id: 3, title: "Ubud Sanctuary", desc: "Ubud · IDR 4.2B · Estate", to: "/properties" },
-  ];
-  const savedCount = savedItems.length;
+  // Real, user-scoped saved properties.
+  const { favorites } = useFavorites();
+  const savedCount = user ? favorites.size : 0;
+  const savedItems = user
+    ? Array.from(favorites).slice(0, 5).map((id) => ({ id, propertyId: id }))
+    : [];
+
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
