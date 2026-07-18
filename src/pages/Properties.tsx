@@ -208,8 +208,37 @@ export default function Properties() {
     queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType, priceRangeId, pageSize }],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }): Promise<Listing[]> => {
-      const from = (pageParam as number) * pageSize;
+      const pageIndex = pageParam as number;
+      const from = pageIndex * pageSize;
       const to = from + pageSize - 1;
+
+      // Duplicate-request guard: track pages already in flight for this filter set.
+      const inFlight = inFlightPagesRef.current;
+      const isDuplicate = inFlight.has(pageIndex);
+      if (isDuplicate) {
+        trackEvent("marketplace_duplicate_request_detected", {
+          metadata: {
+            page_index: pageIndex,
+            page_size: pageSize,
+            filters_key: filtersKey,
+            in_flight_pages: Array.from(inFlight),
+          },
+        });
+      }
+      inFlight.add(pageIndex);
+      fetchCountRef.current += 1;
+      const fetchNumber = fetchCountRef.current;
+
+      trackEvent("marketplace_fetch_start", {
+        metadata: {
+          page_index: pageIndex,
+          page_size: pageSize,
+          from,
+          to,
+          fetch_number: fetchNumber,
+          filters_key: filtersKey,
+        },
+      });
 
       let query = supabase
         .from("properties")
@@ -239,9 +268,47 @@ export default function Properties() {
         default:           query = query.order("created_at", { ascending: false });
       }
 
+      const t0 = performance.now();
       const { data, error } = await query.range(from, to);
-      if (error) throw error;
-      return (data ?? []) as Listing[];
+      const durationMs = Math.round(performance.now() - t0);
+
+      inFlight.delete(pageIndex);
+
+      if (error) {
+        trackEvent("marketplace_fetch_error", {
+          metadata: {
+            page_index: pageIndex,
+            page_size: pageSize,
+            duration_ms: durationMs,
+            message: error.message,
+            fetch_number: fetchNumber,
+          },
+        });
+        throw error;
+      }
+
+      const rows = (data ?? []) as Listing[];
+      // Count duplicates against previously-seen ids for this filter set.
+      let duplicates = 0;
+      for (const r of rows) {
+        if (seenIdsRef.current.has(r.id)) duplicates += 1;
+        else seenIdsRef.current.add(r.id);
+      }
+
+      trackEvent("marketplace_batch_loaded", {
+        metadata: {
+          page_index: pageIndex,
+          page_size: pageSize,
+          rows_returned: rows.length,
+          duplicates_dropped: duplicates,
+          duration_ms: durationMs,
+          fetch_number: fetchNumber,
+          was_duplicate_request: isDuplicate,
+          filters_key: filtersKey,
+        },
+      });
+
+      return rows;
     },
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage || lastPage.length < pageSize) return undefined;
