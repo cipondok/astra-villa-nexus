@@ -723,6 +723,8 @@ function VillaCard({ listing, index }: { listing: Listing; index: number }) {
   const area = [listing.area ?? listing.location, listing.city].filter(Boolean).join(" · ") || "Bali";
   const score = listing.investment_score != null ? Math.round(Number(listing.investment_score)) : null;
   const roi = listing.roi_percentage != null ? Number(listing.roi_percentage) : null;
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <motion.div
@@ -733,15 +735,35 @@ function VillaCard({ listing, index }: { listing: Listing; index: number }) {
     >
       <Link to={`/properties/${listing.id}`} className="block group">
         <div className="reos-card overflow-hidden flex flex-col h-full transition-all duration-300 hover:border-[var(--line-strong)] hover:shadow-[0_24px_60px_-28px_rgba(200,169,106,0.25)]">
-          <div className="relative aspect-[4/5] overflow-hidden">
+          <div className="relative aspect-[4/5] overflow-hidden bg-[var(--surface-2)]">
+            {/* Skeleton shimmer — visible until image decodes. Sits behind the img so no flash. */}
+            <div
+              aria-hidden
+              className={cn(
+                "absolute inset-0 transition-opacity duration-500",
+                imgLoaded ? "opacity-0" : "opacity-100",
+              )}
+              style={{
+                background:
+                  "linear-gradient(110deg, var(--surface-2) 20%, var(--surface-3, rgba(255,255,255,0.06)) 40%, var(--surface-2) 60%)",
+                backgroundSize: "200% 100%",
+                animation: "reos-shimmer 1.6s linear infinite",
+              }}
+            />
             <img
-              src={img}
+              src={imgError ? FALLBACK_IMGS[index % FALLBACK_IMGS.length] : img}
               alt={listing.title ?? "Villa"}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover transition-transform duration-\\[1200ms\\] ease-\\[cubic-bezier(0.22,1,0.36,1)\\] group-hover:scale-[1.05]"
+              onLoad={() => setImgLoaded(true)}
+              onError={() => { setImgError(true); setImgLoaded(true); }}
+              className={cn(
+                "w-full h-full object-cover transition-[opacity,filter,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]",
+                imgLoaded ? "opacity-100 blur-0" : "opacity-0 blur-md scale-[1.02]",
+              )}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
+
 
             <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
               {listing.is_featured && (
