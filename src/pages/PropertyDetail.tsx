@@ -752,25 +752,7 @@ const PropertyDetail = () => {
         </div>
       )}
 
-      {/* mobile booking bar */}
-      <div className="lg:hidden fixed bottom-[72px] inset-x-3 z-40">
-        <LuxeCard variant="glass" radius="pill" className="px-5 py-3 flex items-center justify-between">
-          <div>
-            <div className="font-serif-l text-[18px] leading-none">{fmtIDR(property.price)}</div>
-            <div className="text-[10px] text-luxe-mut mt-1">{property.listing_type === "rent" ? "per night" : "list price"}</div>
-          </div>
-          <a
-            ref={ctaRef("reserve", "mobile_bar")}
-            href={whatsappLink}
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => trackClick({ cta: "reserve", placement: "mobile_bar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
-            className="luxe-gold-btn rounded-full px-5 py-2.5 text-[12px] font-medium inline-flex items-center gap-2"
-          >
-            <Phone className="h-3.5 w-3.5" /> Reserve
-          </a>
-        </LuxeCard>
-      </div>
+      {/* mobile booking bar is now unified with the glass sticky action bar above */}
     </LuxeLayout>
   );
 };
