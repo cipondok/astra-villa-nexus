@@ -685,18 +685,24 @@ function VillaCard({ listing, index }: { listing: Listing; index: number }) {
   );
 }
 
-function ResultsSkeleton() {
+function VillaCardSkeleton() {
+  return (
+    <div className="reos-card overflow-hidden" aria-hidden>
+      <div className="aspect-[4/5] bg-[var(--surface-2)] animate-pulse" />
+      <div className="p-5 space-y-3">
+        <div className="h-4 w-2/3 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-3 w-1/2 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-3 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
+      </div>
+    </div>
+  );
+}
+
+function ResultsSkeleton({ count = 12 }: { count?: number }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="reos-card overflow-hidden">
-          <div className="aspect-[4/5] bg-[var(--surface-2)] animate-pulse" />
-          <div className="p-5 space-y-3">
-            <div className="h-4 w-2/3 bg-[var(--surface-2)] rounded animate-pulse" />
-            <div className="h-3 w-1/2 bg-[var(--surface-2)] rounded animate-pulse" />
-            <div className="h-3 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
-          </div>
-        </div>
+      {Array.from({ length: count }).map((_, i) => (
+        <VillaCardSkeleton key={i} />
       ))}
     </div>
   );
