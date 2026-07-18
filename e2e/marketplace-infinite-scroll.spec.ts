@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { MARKETPLACE_SEED_QUERY } from './helpers/marketplace-fixtures';
 
 /**
  * ASTRA Villa — Marketplace E2E
