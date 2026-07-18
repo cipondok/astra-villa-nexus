@@ -889,74 +889,188 @@ const PropertyDetail = () => {
             </div>
           </div>
 
-          {/* ----- Right column — sticky booking ----- */}
+          {/* ----- Right column — sticky contact card ----- */}
           <aside
             className="lg:sticky lg:self-start"
             style={{ top: "calc(var(--reos-header-h, 64px) + 60px)" }}
           >
-            <LuxeCard variant="glass" radius="lg" glow className="p-7 md:p-8">
-              <div className="flex items-baseline gap-2">
-                <span className="font-serif-l text-[40px] leading-none">{fmtIDR(property.price)}</span>
-                <span className="text-[12px] text-luxe-mut">{property.listing_type === "rent" ? "/ night" : ""}</span>
+            <div className="rounded-[20px] p-7 md:p-8 bg-luxe-glass backdrop-blur-2xl border border-[var(--luxe-gold)]/30 shadow-[0_30px_80px_-30px_rgba(10,25,49,0.45)]">
+              <div className="flex items-baseline justify-between gap-3 mb-6">
+                <h3 className="font-serif-l text-[22px] md:text-[24px] leading-none text-luxe-fg">Inquire</h3>
+                <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--luxe-gold)] font-semibold">
+                  {property.listing_type === "rent" ? "For Rent" : "For Sale"}
+                </span>
               </div>
-              <div className="luxe-divider my-6" />
 
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <BookingField label="Check in" icon={Calendar}>
-                    <input type="date" value={checkIn} onChange={e => setCheckIn(e.target.value)}
-                      className="w-full bg-transparent text-[13px] text-luxe-fg outline-none [color-scheme:dark]" />
-                  </BookingField>
-                  <BookingField label="Check out" icon={Calendar}>
-                    <input type="date" value={checkOut} onChange={e => setCheckOut(e.target.value)}
-                      className="w-full bg-transparent text-[13px] text-luxe-fg outline-none [color-scheme:dark]" />
-                  </BookingField>
+              {/* Inquiry Reason */}
+              <div className="space-y-2">
+                <label className="text-[9px] uppercase tracking-[0.25em] text-[var(--luxe-gold)] font-semibold">
+                  Inquiry Reason
+                </label>
+                <div className="relative">
+                  <select
+                    value={inquiryReason}
+                    onChange={(e) => setInquiryReason(e.target.value)}
+                    className="w-full bg-luxe-glass border border-luxe rounded-xl px-4 py-3.5 text-[13px] text-luxe-fg focus:outline-none focus:border-[var(--luxe-gold)] transition-all appearance-none pr-10 [color-scheme:dark]"
+                  >
+                    <option>Request more information</option>
+                    <option>Book private viewing</option>
+                    <option>Concierge consultation</option>
+                    <option>Investment inquiry</option>
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--luxe-gold)] pointer-events-none" />
                 </div>
-                <BookingField label="Guests" icon={Users}>
-                  <input type="number" min={1} max={20} value={guests} onChange={e => setGuests(parseInt(e.target.value) || 1)}
-                    className="w-full bg-transparent text-[13px] text-luxe-fg outline-none" />
-                </BookingField>
               </div>
 
+              {/* Message */}
+              <div className="space-y-2 mt-5">
+                <label className="text-[9px] uppercase tracking-[0.25em] text-luxe-mut font-semibold">Message</label>
+                <textarea
+                  rows={4}
+                  value={inquiryMessage}
+                  onChange={(e) => setInquiryMessage(e.target.value)}
+                  className="w-full bg-luxe-glass border border-luxe rounded-xl px-4 py-3.5 text-[13px] text-luxe-fg focus:outline-none focus:border-[var(--luxe-gold)] transition-all resize-none placeholder:text-luxe-mut"
+                  placeholder="Tell us what you'd like to know…"
+                />
+              </div>
+
+              {/* Send Message */}
               <button
-                ref={ctaRef("reserve", "sidebar")}
-                onClick={() => {
-                  if (!checkIn || !checkOut) {
-                    trackClick({ cta: "reserve", placement: "sidebar", extra: { blocked: "missing_dates" } });
-                    toast({ title: "Select dates", description: "Please choose check-in and check-out." });
-                    return;
-                  }
-                  const params = new URLSearchParams({ checkIn, checkOut, guests: String(guests) });
-                  trackClick({
-                    cta: "reserve",
-                    placement: "sidebar",
-                    outcome: "booking_initiated",
-                    extra: { has_dates: true, guests },
-                  });
-                  navigate(`/booking/${property.id}?${params.toString()}`);
-                }}
-                className="luxe-gold-btn w-full rounded-full py-3.5 text-[13px] font-medium mt-6"
+                ref={ctaRef("contact", "sidebar")}
+                onClick={handleSendMessage}
+                disabled={sending}
+                className="mt-5 w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#0A1931)] font-bold py-4 rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.35)] transition-all uppercase tracking-[0.2em] text-[11px] inline-flex items-center justify-center gap-2 disabled:opacity-60"
               >
-                Reserve
+                <Send className="h-3.5 w-3.5" />
+                {sending ? "Sending…" : "Send Message"}
               </button>
 
-              <a
-                ref={ctaRef("contact", "sidebar")}
-                href={whatsappLink}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => trackClick({ cta: "contact", placement: "sidebar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
-                className="luxe-ghost-btn w-full rounded-full py-3.5 text-[12px] mt-3 inline-flex items-center justify-center gap-2"
-              >
-                <MessageCircle className="h-3.5 w-3.5" /> WhatsApp Concierge
-              </a>
-
-              <div className="luxe-divider my-6" />
-              <div className="flex items-center gap-2 text-[11px] text-luxe-mut">
-                <ShieldCheck className="h-3.5 w-3.5 text-[var(--luxe-emerald)]" />
-                Verified listing · Escrow-protected payments
+              {/* Request Visit / Price Alert */}
+              <div className="grid grid-cols-2 gap-2.5 mt-3">
+                <button
+                  onClick={() => { setVisitOpen(v => !v); setAlertOpen(false); }}
+                  className={cn(
+                    "border py-3 rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold inline-flex items-center justify-center gap-1.5 transition-all",
+                    visitOpen
+                      ? "bg-[var(--luxe-gold)]/10 border-[var(--luxe-gold)]/60 text-[var(--luxe-gold)]"
+                      : "border-luxe text-luxe-fg hover:bg-luxe-glass",
+                  )}
+                >
+                  <CalendarClock className="h-3.5 w-3.5" /> Request Visit
+                </button>
+                <button
+                  onClick={() => { setAlertOpen(v => !v); setVisitOpen(false); }}
+                  className={cn(
+                    "border py-3 rounded-xl text-[10px] uppercase tracking-[0.2em] font-bold inline-flex items-center justify-center gap-1.5 transition-all",
+                    alertOpen
+                      ? "bg-[var(--luxe-gold)]/10 border-[var(--luxe-gold)]/60 text-[var(--luxe-gold)]"
+                      : "border-luxe text-luxe-fg hover:bg-luxe-glass",
+                  )}
+                >
+                  <Bell className="h-3.5 w-3.5" /> Price Alert
+                </button>
               </div>
-            </LuxeCard>
+
+              {/* Request Visit panel */}
+              {visitOpen && (
+                <div className="mt-3 rounded-xl border border-[var(--luxe-gold)]/30 bg-luxe-glass p-4 space-y-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    <label className="block">
+                      <span className="text-[9px] uppercase tracking-[0.25em] text-luxe-mut font-semibold">Date</span>
+                      <input
+                        type="date"
+                        value={visitDate}
+                        onChange={(e) => setVisitDate(e.target.value)}
+                        className="mt-1 w-full bg-transparent border border-luxe rounded-lg px-3 py-2 text-[12px] text-luxe-fg outline-none focus:border-[var(--luxe-gold)] [color-scheme:dark]"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-[9px] uppercase tracking-[0.25em] text-luxe-mut font-semibold">Time</span>
+                      <input
+                        type="time"
+                        value={visitTime}
+                        onChange={(e) => setVisitTime(e.target.value)}
+                        className="mt-1 w-full bg-transparent border border-luxe rounded-lg px-3 py-2 text-[12px] text-luxe-fg outline-none focus:border-[var(--luxe-gold)] [color-scheme:dark]"
+                      />
+                    </label>
+                  </div>
+                  <button
+                    onClick={handleRequestVisit}
+                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#0A1931)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
+                  >
+                    Confirm Visit
+                  </button>
+                </div>
+              )}
+
+              {/* Price Alert panel */}
+              {alertOpen && (
+                <div className="mt-3 rounded-xl border border-[var(--luxe-gold)]/30 bg-luxe-glass p-4 space-y-3">
+                  <label className="block">
+                    <span className="text-[9px] uppercase tracking-[0.25em] text-luxe-mut font-semibold">Notify email</span>
+                    <input
+                      type="email"
+                      value={alertEmail}
+                      onChange={(e) => setAlertEmail(e.target.value)}
+                      placeholder="you@domain.com"
+                      className="mt-1 w-full bg-transparent border border-luxe rounded-lg px-3 py-2 text-[12px] text-luxe-fg outline-none focus:border-[var(--luxe-gold)] placeholder:text-luxe-mut"
+                    />
+                  </label>
+                  <button
+                    onClick={handlePriceAlert}
+                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#0A1931)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
+                  >
+                    Activate Alert
+                  </button>
+                </div>
+              )}
+
+              {/* Agent block */}
+              <div className="mt-8 pt-6 border-t border-luxe">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-[color:var(--luxe-ink,#0A1931)] border border-[var(--luxe-gold)]/40 flex items-center justify-center text-[var(--luxe-gold)] font-serif-l text-lg">
+                    A
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="font-serif-l text-[16px] text-luxe-fg leading-tight">ASTRA Concierge</h4>
+                    <p className="text-[10px] text-[var(--luxe-gold)] uppercase tracking-[0.2em] font-semibold mt-0.5">
+                      Listing Specialist
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex flex-col gap-2.5">
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => trackClick({ cta: "contact", placement: "sidebar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+                    className="w-full bg-luxe-glass border border-luxe py-3 rounded-xl text-[10px] uppercase tracking-[0.22em] font-bold text-[var(--luxe-gold)] hover:bg-[var(--luxe-gold)]/10 transition-all inline-flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle className="h-3.5 w-3.5" /> Concierge (WhatsApp)
+                  </a>
+                  <button
+                    ref={ctaRef("reserve", "sidebar")}
+                    onClick={() => {
+                      trackClick({ cta: "reserve", placement: "sidebar", outcome: "booking_initiated" });
+                      navigate(`/booking/${property.id}`);
+                    }}
+                    className="w-full bg-[var(--luxe-gold)]/10 border border-[var(--luxe-gold)]/50 py-3 rounded-xl text-[10px] uppercase tracking-[0.22em] font-bold text-[var(--luxe-gold)] hover:bg-[var(--luxe-gold)]/20 transition-all"
+                  >
+                    Reserve with ASTRA
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-5 border-t border-luxe flex items-center gap-2 text-[11px] text-luxe-mut">
+                <ShieldCheck className="h-3.5 w-3.5 text-[var(--luxe-emerald)]" />
+                Verified listing · Escrow-protected
+              </div>
+            </div>
+
+            <p className="mt-4 text-center text-luxe-mut text-[9px] uppercase tracking-[0.3em] font-semibold">
+              Verified by ASTRA Realty Group
+            </p>
           </aside>
         </div>
       </LuxeSection>
