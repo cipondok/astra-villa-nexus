@@ -71,6 +71,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 
   const addNotification = (notification: Omit<NotificationItem, 'id' | 'timestamp' | 'read'>) => {
+    // Guests should never accumulate notifications.
+    if (!user) return;
     const newNotification: NotificationItem = {
       ...notification,
       id: Date.now().toString(),
@@ -78,9 +80,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       read: false,
       category: notification.category || inferCategory(notification),
     };
-    
+
     setNotifications(prev => [newNotification, ...prev.slice(0, 49)]);
   };
+
 
   const inferCategory = (notification: Partial<NotificationItem>): NotificationCategory => {
     if (notification.propertyId) return 'property';
