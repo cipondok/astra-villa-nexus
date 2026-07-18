@@ -890,13 +890,30 @@ const PropertyDetail = () => {
             className="lg:sticky lg:self-start"
             style={{ top: "calc(var(--reos-header-h, 64px) + 60px)" }}
           >
-            <div className="rounded-[20px] p-7 md:p-8 bg-luxe-glass backdrop-blur-2xl border border-[var(--luxe-gold)]/30 shadow-[0_30px_80px_-30px_rgba(10,25,49,0.45)]">
-              <div className="flex items-baseline justify-between gap-3 mb-6">
+            <div className="rounded-[20px] p-6 md:p-8 bg-luxe-glass backdrop-blur-2xl border border-[var(--luxe-gold)]/30 shadow-[0_30px_80px_-30px_rgba(10,25,49,0.45)]">
+              <button
+                type="button"
+                onClick={() => setInquireOpen((v) => !v)}
+                className="w-full flex items-center justify-between gap-3 mb-6 lg:cursor-default lg:pointer-events-none"
+                aria-expanded={inquireOpen}
+                aria-controls="inquire-panel"
+              >
                 <h3 className="font-serif-l text-[22px] md:text-[24px] leading-none text-luxe-fg">Inquire</h3>
-                <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--luxe-gold)] font-semibold">
-                  {property.listing_type === "rent" ? "For Rent" : "For Sale"}
-                </span>
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--luxe-gold)] font-semibold">
+                    {property.listing_type === "rent" ? "For Rent" : "For Sale"}
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "lg:hidden h-4 w-4 text-[var(--luxe-gold)] transition-transform",
+                      inquireOpen && "rotate-180",
+                    )}
+                  />
+                </div>
+              </button>
+
+              <div id="inquire-panel" className={cn("lg:block", inquireOpen ? "block" : "hidden")}>
+
 
               {/* Inquiry Reason */}
               <div className="space-y-2">
