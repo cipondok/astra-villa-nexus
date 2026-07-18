@@ -583,6 +583,7 @@ const AppContent = () => {
                     <Route path="/admin/deal-command" element={<DealExecutionCommandCenter />} />
                     <Route path="/admin/support-dashboard" element={<AstraSupportDashboard />} />
                     <Route path="/admin/support-analytics" element={<AstraSupportAnalytics />} />
+                    <Route path="/admin/marketplace-performance" element={<MarketplacePerformanceDashboard />} />
                   </Route>
                 </Route>
                 <Route path="/province-properties" element={<ProvinceProperties />} />
