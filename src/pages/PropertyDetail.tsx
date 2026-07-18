@@ -137,6 +137,7 @@ const PropertyDetail = () => {
   const [visitTime, setVisitTime] = useState("10:00");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertEmail, setAlertEmail] = useState("");
+  const [inquireOpen, setInquireOpen] = useState(false); // mobile-only collapse
 
   /* ----- CTA analytics tracking ----- */
   const { registerImpression, trackClick } = usePropertyCtaTracking({
@@ -621,7 +622,7 @@ const PropertyDetail = () => {
         aria-label="Property quick actions"
         aria-hidden={!scrolled}
       >
-        <div className="mx-auto max-w-[1440px] px-4 md:px-8 pb-4 md:pb-6">
+        <div className="mx-auto max-w-[1440px] px-4 md:px-8 pb-4 md:pb-6" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
           <div className="rounded-2xl bg-luxe-glass backdrop-blur-2xl border border-luxe shadow-[0_20px_60px_-20px_rgba(10,25,49,0.35)] px-5 py-4 md:px-8 md:py-5 flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-[10px] font-bold text-[var(--luxe-gold)] uppercase tracking-[0.2em]">
@@ -666,7 +667,7 @@ const PropertyDetail = () => {
 
       {/* ============ MAIN GRID — info + sticky booking ============ */}
       <LuxeSection pad="md">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 lg:gap-10 pb-28 lg:pb-0">
           {/* ----- Left column ----- */}
           <div className="space-y-10 md:space-y-12">
 
@@ -889,13 +890,30 @@ const PropertyDetail = () => {
             className="lg:sticky lg:self-start"
             style={{ top: "calc(var(--reos-header-h, 64px) + 60px)" }}
           >
-            <div className="rounded-[20px] p-7 md:p-8 bg-luxe-glass backdrop-blur-2xl border border-[var(--luxe-gold)]/30 shadow-[0_30px_80px_-30px_rgba(10,25,49,0.45)]">
-              <div className="flex items-baseline justify-between gap-3 mb-6">
+            <div className="rounded-[20px] p-6 md:p-8 bg-luxe-glass backdrop-blur-2xl border border-[var(--luxe-gold)]/30 shadow-[0_30px_80px_-30px_rgba(10,25,49,0.45)]">
+              <button
+                type="button"
+                onClick={() => setInquireOpen((v) => !v)}
+                className="w-full flex items-center justify-between gap-3 mb-6 lg:cursor-default lg:pointer-events-none"
+                aria-expanded={inquireOpen}
+                aria-controls="inquire-panel"
+              >
                 <h3 className="font-serif-l text-[22px] md:text-[24px] leading-none text-luxe-fg">Inquire</h3>
-                <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--luxe-gold)] font-semibold">
-                  {property.listing_type === "rent" ? "For Rent" : "For Sale"}
-                </span>
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--luxe-gold)] font-semibold">
+                    {property.listing_type === "rent" ? "For Rent" : "For Sale"}
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "lg:hidden h-4 w-4 text-[var(--luxe-gold)] transition-transform",
+                      inquireOpen && "rotate-180",
+                    )}
+                  />
+                </div>
+              </button>
+
+              <div id="inquire-panel" className={cn("lg:block", inquireOpen ? "block" : "hidden")}>
+
 
               {/* Inquiry Reason */}
               <div className="space-y-2">
@@ -1061,7 +1079,9 @@ const PropertyDetail = () => {
                 <ShieldCheck className="h-3.5 w-3.5 text-[var(--luxe-emerald)]" />
                 Verified listing · Escrow-protected
               </div>
+              </div>
             </div>
+
 
             <p className="mt-4 text-center text-luxe-mut text-[9px] uppercase tracking-[0.3em] font-semibold">
               Verified by ASTRA Realty Group
