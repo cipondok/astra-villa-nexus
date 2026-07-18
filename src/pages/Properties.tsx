@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import {
   Search as SearchIcon, MapPin, Bed, Bath, Maximize, TrendingUp,
   Sparkles, ArrowUpRight, SlidersHorizontal, X, Loader2,
+  LayoutGrid, List as ListIcon,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
@@ -14,9 +15,27 @@ import ReosShell from "@/components/reos/ReosShell";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useTrackEvent } from "@/hooks/useTrackEvent";
 import { MarketplaceDevOverlay } from "@/components/dev/MarketplaceDevOverlay";
+import { indonesiaProvinces } from "@/data/indonesiaProvinces";
 import villaFallback1 from "@/assets/luxe-villa-1.jpg";
 import villaFallback2 from "@/assets/luxe-villa-2.jpg";
 import villaFallback3 from "@/assets/luxe-villa-3.jpg";
+
+/** Popular Indonesian cities/areas surfaced in the location dropdown alongside
+ *  the 34 provinces from `indonesiaProvinces` (which is our canonical location
+ *  source). Users can still type any free-text value — this only powers the
+ *  <datalist> suggestions. */
+const POPULAR_CITY_SUGGESTIONS = [
+  "Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Semarang", "Medan",
+  "Denpasar", "Ubud", "Canggu", "Seminyak", "Kuta", "Uluwatu", "Nusa Dua",
+  "Batam", "Makassar", "Balikpapan", "Manado", "Palembang", "Lombok",
+];
+
+const LOCATION_SUGGESTIONS: string[] = Array.from(
+  new Set([
+    ...indonesiaProvinces.map((p) => p.name),
+    ...POPULAR_CITY_SUGGESTIONS,
+  ]),
+).sort((a, b) => a.localeCompare(b));
 
 /** Columns per row matching the Tailwind grid breakpoints. */
 function useGridColumns() {
@@ -160,6 +179,7 @@ export default function Properties() {
   const listingType = (params.get("listing_type") || preset.listingType || "").toLowerCase();
   const priceRangeId = (params.get("price") || "").toLowerCase();
   const priceRange = PRICE_RANGES.find((r) => r.id === priceRangeId);
+  const viewMode: "grid" | "list" = (params.get("view") === "list" ? "list" : "grid");
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(q);
@@ -487,6 +507,8 @@ export default function Properties() {
               onChange={(e) => setLocationInput(e.target.value)}
               placeholder="Location: Bali, Jakarta, Phuket…"
               aria-label="Location"
+              list="astra-locations"
+              autoComplete="off"
               className="w-full h-11 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
             />
           </div>
@@ -497,6 +519,14 @@ export default function Properties() {
             <SearchIcon className="h-4 w-4" /> Search
           </button>
         </form>
+
+        {/* Shared location suggestion list — sourced from provinces DB + popular cities.
+            Users can still type any free-text value. */}
+        <datalist id="astra-locations">
+          {LOCATION_SUGGESTIONS.map((name) => (
+            <option key={name} value={name} />
+          ))}
+        </datalist>
 
         {/* Active filter chips + controls */}
         <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -519,6 +549,41 @@ export default function Properties() {
             </button>
           )}
           <div className="ml-auto flex items-center gap-2">
+            {/* Grid / List view toggle — persisted via ?view= URL param */}
+            <div
+              role="group"
+              aria-label="Toggle results view"
+              className="h-9 inline-flex items-center rounded-lg border border-[var(--line)] bg-[var(--surface)] p-0.5"
+            >
+              <button
+                type="button"
+                aria-pressed={viewMode === "grid"}
+                aria-label="Grid view"
+                onClick={() => { removeParam("view"); trackEvent("marketplace_view_mode_changed", { event_data: { view: "grid" } } as any); }}
+                className={cn(
+                  "h-8 px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
+                  viewMode === "grid"
+                    ? "bg-[var(--gold-soft)] reos-gold"
+                    : "text-[var(--text-2)] hover:text-[var(--text)]",
+                )}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" /> Grid
+              </button>
+              <button
+                type="button"
+                aria-pressed={viewMode === "list"}
+                aria-label="List view"
+                onClick={() => { updateParam("view", "list"); trackEvent("marketplace_view_mode_changed", { event_data: { view: "list" } } as any); }}
+                className={cn(
+                  "h-8 px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
+                  viewMode === "list"
+                    ? "bg-[var(--gold-soft)] reos-gold"
+                    : "text-[var(--text-2)] hover:text-[var(--text)]",
+                )}
+              >
+                <ListIcon className="w-3.5 h-3.5" /> List
+              </button>
+            </div>
             <button
               type="button"
               onClick={() => setFilterOpen((v) => !v)}
@@ -634,6 +699,8 @@ export default function Properties() {
                   }}
                   placeholder="e.g. Bali, Canggu, Jakarta…"
                   aria-label="Filter by location"
+                  list="astra-locations"
+                  autoComplete="off"
                   className="w-full h-10 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
                 />
               </div>
@@ -730,12 +797,21 @@ export default function Properties() {
               </Link>
             </div>
 
-            <VirtualizedGrid
-              results={results}
-              hasNextPage={!!hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              pageSize={pageSize}
-            />
+            {viewMode === "list" ? (
+              <VirtualizedList
+                results={results}
+                hasNextPage={!!hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                pageSize={pageSize}
+              />
+            ) : (
+              <VirtualizedGrid
+                results={results}
+                hasNextPage={!!hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                pageSize={pageSize}
+              />
+            )}
 
             {/* Sentinel — triggers next page well before viewport bottom */}
             <div ref={sentinelRef} aria-hidden className="h-10 w-full" />
@@ -1011,6 +1087,203 @@ function EmptyState({
       <h3 className="text-[28px] mt-6 text-[var(--text)] font-semibold">{title}</h3>
       {description && <p className="mt-3 text-[13px] text-[var(--text-2)] max-w-md mx-auto leading-relaxed">{description}</p>}
       {action && <div className="mt-7 flex justify-center">{action}</div>}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------- */
+/* List view — one-column virtualized row layout, echoes    */
+/* Immobiliare-style horizontal cards.                      */
+/* -------------------------------------------------------- */
+
+function VirtualizedList({
+  results,
+  isFetchingNextPage,
+  pageSize,
+}: {
+  results: Listing[];
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  pageSize: number;
+}) {
+  const parentRef = useRef<HTMLDivElement>(null);
+  const [scrollMargin, setScrollMargin] = useState(0);
+  const [isNarrow, setIsNarrow] = useState<boolean>(
+    typeof window !== "undefined" ? window.innerWidth < 640 : false,
+  );
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (!parentRef.current) return;
+      setScrollMargin(parentRef.current.getBoundingClientRect().top + window.scrollY);
+      setIsNarrow(window.innerWidth < 640);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const estimateSize = () => (isNarrow ? 420 : 280);
+
+  const rowVirtualizer = useWindowVirtualizer({
+    count: results.length,
+    estimateSize,
+    overscan: 4,
+    scrollMargin,
+    gap: 16,
+  });
+
+  const virtualRows = rowVirtualizer.getVirtualItems();
+  const totalSize = rowVirtualizer.getTotalSize();
+
+  return (
+    <div ref={parentRef} className="relative w-full" style={{ height: totalSize }}>
+      {virtualRows.map((virtualRow) => {
+        const listing = results[virtualRow.index];
+        if (!listing) return null;
+        return (
+          <div
+            key={virtualRow.key}
+            data-index={virtualRow.index}
+            ref={rowVirtualizer.measureElement}
+            className="absolute left-0 right-0 top-0"
+            style={{ transform: `translateY(${virtualRow.start - scrollMargin}px)` }}
+          >
+            <VillaCardList listing={listing} index={virtualRow.index} />
+          </div>
+        );
+      })}
+
+      {isFetchingNextPage && (
+        <div
+          className="absolute left-0 right-0 top-0 space-y-4"
+          style={{ transform: `translateY(${totalSize}px)` }}
+        >
+          {Array.from({ length: Math.min(pageSize, 4) }).map((_, i) => (
+            <VillaCardListSkeleton key={`list-skeleton-${i}`} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function VillaCardList({ listing, index }: { listing: Listing; index: number }) {
+  const img =
+    listing.cover_image ||
+    (Array.isArray(listing.image_urls) && listing.image_urls[0]) ||
+    (Array.isArray(listing.images) && listing.images[0]) ||
+    FALLBACK_IMGS[index % FALLBACK_IMGS.length];
+
+  const priceNum = Number(listing.price_idr ?? listing.price ?? 0);
+  const area = [listing.area ?? listing.location, listing.city].filter(Boolean).join(" · ") || "Bali";
+  const score = listing.investment_score != null ? Math.round(Number(listing.investment_score)) : null;
+  const roi = listing.roi_percentage != null ? Number(listing.roi_percentage) : null;
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12, filter: "blur(3px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, delay: Math.min(index * 0.03, 0.2), ease: [0.22, 1, 0.36, 1] }}
+    >
+      <Link to={`/properties/${listing.id}`} className="block group">
+        <article className="reos-card overflow-hidden flex flex-col sm:flex-row transition-all duration-300 hover:border-[var(--line-strong)] hover:shadow-[0_24px_60px_-28px_rgba(200,169,106,0.25)]">
+          <div className="relative w-full sm:w-[340px] md:w-[380px] shrink-0 aspect-[4/3] sm:aspect-auto sm:min-h-[240px] overflow-hidden bg-[var(--surface-2)]">
+            <div
+              aria-hidden
+              className={cn(
+                "absolute inset-0 transition-opacity duration-500",
+                imgLoaded ? "opacity-0" : "opacity-100",
+              )}
+              style={{
+                background:
+                  "linear-gradient(110deg, var(--surface-2) 20%, var(--surface-3, rgba(255,255,255,0.06)) 40%, var(--surface-2) 60%)",
+                backgroundSize: "200% 100%",
+                animation: "reos-shimmer 1.6s linear infinite",
+              }}
+            />
+            <img
+              src={imgError ? FALLBACK_IMGS[index % FALLBACK_IMGS.length] : img}
+              alt={listing.title ?? "Villa"}
+              loading="lazy"
+              decoding="async"
+              onLoad={() => setImgLoaded(true)}
+              onError={() => { setImgError(true); setImgLoaded(true); }}
+              className={cn(
+                "w-full h-full object-cover transition-[opacity,filter,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]",
+                imgLoaded ? "opacity-100 blur-0" : "opacity-0 blur-md scale-[1.02]",
+              )}
+            />
+            <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+              {listing.is_featured && (
+                <span className="px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] bg-black/40 backdrop-blur reos-gold border border-[var(--line-strong)]">
+                  Editor's Pick
+                </span>
+              )}
+              {score != null && score >= 85 && (
+                <span className="px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] bg-black/40 backdrop-blur text-[#7be0b3] border border-[#7be0b3]/30 inline-flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> {score}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex-1 min-w-0 p-5 md:p-6 flex flex-col gap-3">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)] mb-1">From</p>
+                <p className="text-[24px] md:text-[26px] leading-none font-semibold text-[var(--text)] truncate">
+                  {formatPrice(priceNum)}
+                </p>
+              </div>
+              <span className="w-10 h-10 grid place-items-center rounded-full border border-[var(--line-strong)] reos-gold shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <ArrowUpRight className="w-4 h-4" />
+              </span>
+            </div>
+
+            <h3 className="text-[18px] md:text-[19px] leading-tight tracking-tight text-[var(--text)] font-semibold line-clamp-1 group-hover:reos-gold transition-colors">
+              {listing.title ?? "Untitled Villa"}
+            </h3>
+            <p className="text-[12px] text-[var(--text-2)] inline-flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 reos-gold" /> {area}
+            </p>
+
+            <div className="mt-auto pt-4 border-t border-[var(--line)] flex flex-wrap items-center justify-between gap-3 text-[12px] text-[var(--text-2)]">
+              <div className="flex items-center gap-4">
+                {listing.bedrooms != null && (
+                  <span className="inline-flex items-center gap-1.5"><Bed className="w-4 h-4" /> {listing.bedrooms} rooms</span>
+                )}
+                {listing.bathrooms != null && (
+                  <span className="inline-flex items-center gap-1.5"><Bath className="w-4 h-4" /> {listing.bathrooms} bath</span>
+                )}
+                {listing.area_sqm != null && (
+                  <span className="inline-flex items-center gap-1.5"><Maximize className="w-4 h-4" /> {listing.area_sqm} m²</span>
+                )}
+              </div>
+              {roi != null && (
+                <span className="reos-gold font-semibold">{roi.toFixed(1)}% ROI</span>
+              )}
+            </div>
+          </div>
+        </article>
+      </Link>
+    </motion.div>
+  );
+}
+
+function VillaCardListSkeleton() {
+  return (
+    <div className="reos-card overflow-hidden flex flex-col sm:flex-row" aria-hidden>
+      <div className="w-full sm:w-[340px] md:w-[380px] shrink-0 aspect-[4/3] sm:aspect-auto sm:min-h-[240px] bg-[var(--surface-2)] animate-pulse" />
+      <div className="flex-1 p-5 md:p-6 space-y-3">
+        <div className="h-6 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-4 w-2/3 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-3 w-1/2 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-3 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
+      </div>
     </div>
   );
 }
