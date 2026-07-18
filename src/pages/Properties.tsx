@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import { motion } from "framer-motion";
 import {
   Search as SearchIcon, MapPin, Bed, Bath, Maximize, TrendingUp,
@@ -14,6 +15,28 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import villaFallback1 from "@/assets/luxe-villa-1.jpg";
 import villaFallback2 from "@/assets/luxe-villa-2.jpg";
 import villaFallback3 from "@/assets/luxe-villa-3.jpg";
+
+/** Columns per row matching the Tailwind grid breakpoints. */
+function useGridColumns() {
+  const get = () => {
+    if (typeof window === "undefined") return 3;
+    const w = window.innerWidth;
+    if (w < 640) return 1;   // grid-cols-1
+    if (w < 1024) return 2;  // sm:grid-cols-2
+    return 3;                // lg:grid-cols-3
+  };
+  const [cols, setCols] = useState<number>(get);
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(t);
+      t = setTimeout(() => setCols(get()), 150);
+    };
+    window.addEventListener("resize", onResize);
+    return () => { window.removeEventListener("resize", onResize); clearTimeout(t); };
+  }, []);
+  return cols;
+}
 
 /** Responsive page size: desktop 24 / tablet 18 / mobile 12. */
 function useResponsivePageSize() {
