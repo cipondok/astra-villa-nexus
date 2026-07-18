@@ -341,11 +341,10 @@ const PropertyDetail = () => {
                     className="relative group overflow-hidden bg-luxe-surface"
                     aria-label="View second photo"
                   >
-                    <img
+                    <GalleryImg
                       src={images[1] || images[0] || "/placeholder.svg"}
                       alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                      className="group-hover:scale-[1.05]"
                     />
                     <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all" />
                   </button>
