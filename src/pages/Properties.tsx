@@ -656,6 +656,8 @@ export default function Properties() {
                   }}
                   placeholder="e.g. Bali, Canggu, Jakarta…"
                   aria-label="Filter by location"
+                  list="astra-locations"
+                  autoComplete="off"
                   className="w-full h-10 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
                 />
               </div>
