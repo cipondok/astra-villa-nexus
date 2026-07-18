@@ -6,6 +6,7 @@ import {
   MapPin, BedDouble, Bath, Square, Calendar, Users, Sparkles,
   TrendingUp, Flame, Trophy, Activity, Heart, Share2,
   MessageCircle, Phone, Box, Compass, ShieldCheck, Wind, Images,
+  Send, Bell, CalendarClock, ChevronDown, Play, Camera, Map as MapIcon,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAIPropertyValuation } from "@/hooks/useAIPropertyValuation";
