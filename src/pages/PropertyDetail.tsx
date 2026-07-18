@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback, lazy, Suspense } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef, lazy, Suspense } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -23,6 +23,7 @@ import NearbyInvestments from "@/components/property/NearbyInvestments";
 import AIRecommendedProperties from "@/components/property/AIRecommendedProperties";
 import InvestmentIntelligenceBadge from "@/components/property/InvestmentIntelligenceBadge";
 import { usePropertyCtaTracking, type CtaPlacement, type CtaKind } from "@/hooks/usePropertyCtaTracking";
+import { useTrackEvent } from "@/hooks/useTrackEvent";
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
 
@@ -126,14 +127,6 @@ const PropertyDetail = () => {
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(2);
 
-  /* ----- Scroll-aware sticky action bar ----- */
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 280);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   /* ----- CTA analytics tracking ----- */
   const { registerImpression, trackClick } = usePropertyCtaTracking({
     propertyId: property?.id,
@@ -141,6 +134,35 @@ const PropertyDetail = () => {
     price: property?.price,
     listingType: property?.listing_type,
   });
+  const { trackEvent } = useTrackEvent();
+
+  /* ----- Scroll-aware sticky action bar ----- */
+  const [scrolled, setScrolled] = useState(false);
+  const stickyBarShownRef = useRef(false);
+  const stickyShownAtRef = useRef<number | null>(null);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 280);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Fire a one-time exposure event when the sticky bar first becomes visible.
+  // Serves as the denominator for mini_bar click-through / conversion rates.
+  useEffect(() => {
+    if (!scrolled || stickyBarShownRef.current || !property?.id) return;
+    stickyBarShownRef.current = true;
+    stickyShownAtRef.current = performance.now();
+    trackEvent("sticky_bar_shown", {
+      property_id: property.id,
+      city: property.city ?? undefined,
+      metadata: {
+        price: property.price ?? null,
+        listing_type: property.listing_type ?? null,
+        scroll_y: Math.round(window.scrollY),
+        viewport_w: window.innerWidth,
+      },
+    });
+  }, [scrolled, property?.id, property?.city, property?.price, property?.listing_type, trackEvent]);
 
   /** Ref callback factory that fires an impression event once visible. */
   const ctaRef = useCallback(
@@ -148,6 +170,22 @@ const PropertyDetail = () => {
       registerImpression(el, { cta, placement });
     },
     [registerImpression],
+  );
+
+  /** Wraps trackClick with dwell-time metadata for mini_bar CTAs. */
+  const trackStickyClick = useCallback(
+    (cta: CtaKind, outcome: "booking_initiated" | "contact_opened", extra: Record<string, unknown> = {}) => {
+      const dwellMs = stickyShownAtRef.current != null
+        ? Math.round(performance.now() - stickyShownAtRef.current)
+        : null;
+      trackClick({
+        cta,
+        placement: "mini_bar",
+        outcome,
+        extra: { ...extra, dwell_ms: dwellMs, sticky_shown: stickyBarShownRef.current },
+      });
+    },
+    [trackClick],
   );
 
   const { toggleFavorite, isFavorite } = useFavorites({
@@ -452,7 +490,7 @@ const PropertyDetail = () => {
                 href={whatsappLink}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => trackClick({ cta: "contact", placement: "mini_bar", outcome: "contact_opened", extra: { channel: "whatsapp" } })}
+                onClick={() => trackStickyClick("contact", "contact_opened", { channel: "whatsapp" })}
                 className="hidden sm:inline-flex items-center gap-1.5 px-5 py-3 rounded-xl text-luxe-fg font-bold text-[11px] uppercase tracking-widest border border-luxe hover:bg-luxe-glass transition-all"
                 tabIndex={scrolled ? 0 : -1}
               >
@@ -461,7 +499,7 @@ const PropertyDetail = () => {
               <button
                 ref={scrolled ? ctaRef("reserve", "mini_bar") : undefined}
                 onClick={() => {
-                  trackClick({ cta: "reserve", placement: "mini_bar", outcome: "booking_initiated" });
+                  trackStickyClick("reserve", "booking_initiated");
                   navigate(`/booking/${property.id}`);
                 }}
                 className="px-6 md:px-10 py-3 bg-[color:var(--luxe-ink,#0A1931)] text-[var(--luxe-gold)] rounded-xl font-bold text-[11px] uppercase tracking-widest shadow-xl shadow-[color:var(--luxe-ink,#0A1931)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
