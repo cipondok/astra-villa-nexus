@@ -2767,3 +2767,12 @@ header.reos-shell-header > div:first-child { height: var(--reos-header-h); }
 @media (max-width: 767px) {
   .reos { padding-bottom: calc(var(--reos-bottomnav-h, 56px) + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* Progressive image reveal shimmer used by property cards */
+@keyframes reos-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [style*="reos-shimmer"] { animation: none !important; }
+}
