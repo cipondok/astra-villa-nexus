@@ -551,7 +551,7 @@ export default function Properties() {
                 type="button"
                 aria-pressed={viewMode === "grid"}
                 aria-label="Grid view"
-                onClick={() => { removeParam("view"); trackEvent({ event_type: "marketplace_view_mode_changed", event_data: { view: "grid" } }); }}
+                onClick={() => { removeParam("view"); trackEvent("marketplace_view_mode_changed", { view: "grid" }); }}
                 className={cn(
                   "h-8 px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
                   viewMode === "grid"
@@ -565,7 +565,7 @@ export default function Properties() {
                 type="button"
                 aria-pressed={viewMode === "list"}
                 aria-label="List view"
-                onClick={() => { updateParam("view", "list"); trackEvent({ event_type: "marketplace_view_mode_changed", event_data: { view: "list" } }); }}
+                onClick={() => { updateParam("view", "list"); trackEvent("marketplace_view_mode_changed", { view: "list" }); }}
                 className={cn(
                   "h-8 px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
                   viewMode === "list"
