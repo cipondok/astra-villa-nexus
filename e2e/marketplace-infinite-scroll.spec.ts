@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { MARKETPLACE_SEED_QUERY } from './helpers/marketplace-fixtures';
 
 /**
  * ASTRA Villa — Marketplace E2E
@@ -38,7 +39,7 @@ async function scrollToBottom(page: Page, step = 800, maxSteps = 40) {
 
 test.describe('Properties marketplace', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/properties', { waitUntil: 'domcontentloaded' });
+    await page.goto(`/properties${MARKETPLACE_SEED_QUERY}`, { waitUntil: 'domcontentloaded' });
     await waitForCards(page);
   });
 

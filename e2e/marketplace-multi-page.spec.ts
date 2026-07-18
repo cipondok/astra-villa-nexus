@@ -1,4 +1,8 @@
 import { test, expect, Page, Request } from '@playwright/test';
+import {
+  MARKETPLACE_SEED_COUNT,
+  MARKETPLACE_SEED_QUERY,
+} from './helpers/marketplace-fixtures';
 
 /**
  * ASTRA Villa — Marketplace multi-page E2E
@@ -75,11 +79,13 @@ test.describe('Properties marketplace · multi-page', () => {
   }) => {
     const fetches = trackPropertyFetches(page);
 
-    await page.goto('/properties?debug=1', { waitUntil: 'domcontentloaded' });
+    await page.goto(`/properties${MARKETPLACE_SEED_QUERY}&debug=1`, {
+      waitUntil: 'domcontentloaded',
+    });
     await waitForCards(page);
 
     const initial = await countCards(page);
-    test.skip(initial === 0, 'No properties seeded in this environment.');
+    test.skip(initial === 0, 'Marketplace seed missing and no organic data.');
 
     // Wait for the initial page fetch to complete before we start scrolling.
     await page.waitForTimeout(500);
@@ -143,6 +149,14 @@ test.describe('Properties marketplace · multi-page', () => {
       expect(distinctRanges.size).toBeGreaterThanOrEqual(2);
     } else {
       // Whole catalog fit in page 1 → end marker MUST be visible.
+      expect(endMarkerSeen).toBeTruthy();
+    }
+
+    // ---- Assertion 2b: when the deterministic seed is in place (isolated
+    //      by the ?q= filter) the total count MUST equal the seed size and
+    //      the end-of-list marker MUST have been reached.
+    if (finalCount >= MARKETPLACE_SEED_COUNT) {
+      expect(finalCount).toBe(MARKETPLACE_SEED_COUNT);
       expect(endMarkerSeen).toBeTruthy();
     }
 
