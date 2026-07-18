@@ -748,6 +748,22 @@ export default function Properties() {
           </>
         )}
       </section>
+
+      <MarketplaceDevOverlay
+        pagesLoaded={data?.pages?.length ?? 0}
+        rowsLoaded={results.length}
+        pageSize={pageSize}
+        hasNextPage={!!hasNextPage}
+        isLoading={isLoading}
+        isFetchingNextPage={isFetchingNextPage}
+        filtersKey={filtersKey}
+        fetchCountRef={fetchCountRef}
+        inFlightPagesRef={inFlightPagesRef}
+        sentinelTriggerCountRef={sentinelTriggerCountRef}
+        duplicatesDetectedRef={duplicatesDetectedRef}
+        duplicateRowsRef={duplicateRowsRef}
+        seenIdsRef={seenIdsRef}
+      />
     </ReosShell>
   );
 }
