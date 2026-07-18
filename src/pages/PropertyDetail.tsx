@@ -622,7 +622,7 @@ const PropertyDetail = () => {
         aria-label="Property quick actions"
         aria-hidden={!scrolled}
       >
-        <div className="mx-auto max-w-[1440px] px-4 md:px-8 pb-4 md:pb-6">
+        <div className="mx-auto max-w-[1440px] px-4 md:px-8 pb-4 md:pb-6" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
           <div className="rounded-2xl bg-luxe-glass backdrop-blur-2xl border border-luxe shadow-[0_20px_60px_-20px_rgba(10,25,49,0.35)] px-5 py-4 md:px-8 md:py-5 flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-[10px] font-bold text-[var(--luxe-gold)] uppercase tracking-[0.2em]">
