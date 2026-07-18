@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import ReosShell from "@/components/reos/ReosShell";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useTrackEvent } from "@/hooks/useTrackEvent";
+import { MarketplaceDevOverlay } from "@/components/dev/MarketplaceDevOverlay";
 import villaFallback1 from "@/assets/luxe-villa-1.jpg";
 import villaFallback2 from "@/assets/luxe-villa-2.jpg";
 import villaFallback3 from "@/assets/luxe-villa-3.jpg";
@@ -176,6 +177,8 @@ export default function Properties() {
   const seenIdsRef = useRef<Set<string>>(new Set());
   const endOfListFiredRef = useRef(false);
   const sentinelTriggerCountRef = useRef(0);
+  const duplicatesDetectedRef = useRef(0); // duplicate REQUESTS (same page in flight twice)
+  const duplicateRowsRef = useRef(0);      // duplicate ROWS returned across pages
   const filtersKey = `${q}|${location}|${tag}|${collection}|${intent}|${type}|${sort}|${listingType}|${priceRangeId}|${pageSize}`;
   const filtersKeyRef = useRef(filtersKey);
   // Reset counters when the query key changes (new search / filter set).
@@ -187,6 +190,8 @@ export default function Properties() {
       seenIdsRef.current.clear();
       endOfListFiredRef.current = false;
       sentinelTriggerCountRef.current = 0;
+      duplicatesDetectedRef.current = 0;
+      duplicateRowsRef.current = 0;
     }
   }, [filtersKey]);
 
@@ -216,6 +221,7 @@ export default function Properties() {
       const inFlight = inFlightPagesRef.current;
       const isDuplicate = inFlight.has(pageIndex);
       if (isDuplicate) {
+        duplicatesDetectedRef.current += 1;
         trackEvent("marketplace_duplicate_request_detected", {
           metadata: {
             page_index: pageIndex,
@@ -294,6 +300,7 @@ export default function Properties() {
         if (seenIdsRef.current.has(r.id)) duplicates += 1;
         else seenIdsRef.current.add(r.id);
       }
+      duplicateRowsRef.current += duplicates;
 
       trackEvent("marketplace_batch_loaded", {
         metadata: {
@@ -741,6 +748,22 @@ export default function Properties() {
           </>
         )}
       </section>
+
+      <MarketplaceDevOverlay
+        pagesLoaded={data?.pages?.length ?? 0}
+        rowsLoaded={results.length}
+        pageSize={pageSize}
+        hasNextPage={!!hasNextPage}
+        isLoading={isLoading}
+        isFetchingNextPage={isFetchingNextPage}
+        filtersKey={filtersKey}
+        fetchCountRef={fetchCountRef}
+        inFlightPagesRef={inFlightPagesRef}
+        sentinelTriggerCountRef={sentinelTriggerCountRef}
+        duplicatesDetectedRef={duplicatesDetectedRef}
+        duplicateRowsRef={duplicateRowsRef}
+        seenIdsRef={seenIdsRef}
+      />
     </ReosShell>
   );
 }
