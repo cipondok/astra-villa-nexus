@@ -395,19 +395,31 @@ export function ReosHeader() {
                 <button
                   type="button"
                   onClick={() => setProfileOpen(o => !o)}
-                  className="h-9 pl-1.5 pr-3 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-2 hover:border-[var(--line-strong)]"
+                  aria-label="Open user menu"
+                  className="h-9 pl-1 pr-2 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-1.5 hover:border-[var(--line-strong)]"
                 >
                   <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">
                     {(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}
                   </div>
-                  <div className="leading-none hidden md:block">
-                    <div className="text-[12px] font-medium truncate max-w-[120px] text-left text-[var(--text)]">{profile?.full_name || user.email}</div>
-                    <div className="text-[9px] reos-gold mt-0.5 text-left">Premium Investor</div>
-                  </div>
                   <ChevronDown className="h-3 w-3 text-[var(--text-2)]" />
                 </button>
                 {profileOpen && (
-                  <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
+                  <div role="menu" className="absolute right-0 mt-2 w-60 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
+                    {/* Identity block — full name & email live INSIDE the dropdown only */}
+                    <div className="px-3 py-3 border-b border-[var(--line)] mb-1">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-9 w-9 rounded-full reos-cta flex items-center justify-center text-[12px] font-bold">
+                          {(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[12.5px] font-semibold text-[var(--text)] truncate">
+                            {profile?.full_name || "Member"}
+                          </div>
+                          <div className="text-[10.5px] text-[var(--text-2)] truncate">{user.email}</div>
+                        </div>
+                      </div>
+                    </div>
+
                     <button type="button" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> Dashboard</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> My Profile</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> Wallet</button>
