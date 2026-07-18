@@ -797,12 +797,21 @@ export default function Properties() {
               </Link>
             </div>
 
-            <VirtualizedGrid
-              results={results}
-              hasNextPage={!!hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              pageSize={pageSize}
-            />
+            {viewMode === "list" ? (
+              <VirtualizedList
+                results={results}
+                hasNextPage={!!hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                pageSize={pageSize}
+              />
+            ) : (
+              <VirtualizedGrid
+                results={results}
+                hasNextPage={!!hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                pageSize={pageSize}
+              />
+            )}
 
             {/* Sentinel — triggers next page well before viewport bottom */}
             <div ref={sentinelRef} aria-hidden className="h-10 w-full" />
