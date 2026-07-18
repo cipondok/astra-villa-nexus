@@ -509,71 +509,74 @@ export function ReosHeader() {
 }
 
 export function ReosFooter() {
-  const footerLinks: { title: string; links: { label: string; to: string; icon: typeof Home }[] }[] = [
+  const { t } = useTranslation();
+  const footerLinks: { titleKey: string; links: { labelKey: string; to: string; icon: typeof Home }[] }[] = [
     {
-      title: "Explore",
+      titleKey: "shell.footer.sections.explore",
       links: [
-        { label: "Home", to: "/", icon: Home },
-        { label: "Properties", to: "/properties", icon: Building2 },
-        { label: "Market Intelligence", to: "/market-intelligence", icon: BarChart3 },
-        { label: "Wealth Advisor", to: "/wealth-advisor", icon: Brain },
-        { label: "Investment Fund", to: "/investment", icon: PiggyBank },
+        { labelKey: "shell.footer.links.home", to: "/", icon: Home },
+        { labelKey: "shell.footer.links.properties", to: "/properties", icon: Building2 },
+        { labelKey: "shell.footer.links.marketIntelligence", to: "/market-intelligence", icon: BarChart3 },
+        { labelKey: "shell.footer.links.wealthAdvisor", to: "/wealth-advisor", icon: Brain },
+        { labelKey: "shell.footer.links.investmentFund", to: "/investment", icon: PiggyBank },
       ],
     },
     {
-      title: "Services",
+      titleKey: "shell.footer.sections.services",
       links: [
-        { label: "Buy", to: "/properties?intent=buy", icon: ShoppingCart },
-        { label: "Rent", to: "/properties?intent=rent", icon: KeyRound },
-        { label: "Sell with Us", to: "/sell", icon: Tag },
-        { label: "Agents", to: "/agents", icon: UsersRound },
-        { label: "Vendors", to: "/services", icon: Store },
+        { labelKey: "shell.footer.links.buy", to: "/properties?intent=buy", icon: ShoppingCart },
+        { labelKey: "shell.footer.links.rent", to: "/properties?intent=rent", icon: KeyRound },
+        { labelKey: "shell.footer.links.sellWithUs", to: "/sell", icon: Tag },
+        { labelKey: "shell.footer.links.agents", to: "/agents", icon: UsersRound },
+        { labelKey: "shell.footer.links.vendors", to: "/services", icon: Store },
       ],
     },
     {
-      title: "Company",
+      titleKey: "shell.footer.sections.company",
       links: [
-        { label: "About", to: "/about", icon: Briefcase },
-        { label: "Contact", to: "/contact", icon: Mail },
-        { label: "Careers", to: "/careers", icon: UsersRound },
-        { label: "Press", to: "/press", icon: Newspaper },
-        { label: "Blog", to: "/blog", icon: BookOpen },
+        { labelKey: "shell.footer.links.about", to: "/about", icon: Briefcase },
+        { labelKey: "shell.footer.links.contact", to: "/contact", icon: Mail },
+        { labelKey: "shell.footer.links.careers", to: "/careers", icon: UsersRound },
+        { labelKey: "shell.footer.links.press", to: "/press", icon: Newspaper },
+        { labelKey: "shell.footer.links.blog", to: "/blog", icon: BookOpen },
       ],
     },
     {
-      title: "Legal",
+      titleKey: "shell.footer.sections.legal",
       links: [
-        { label: "Terms of Service", to: "/terms", icon: ScrollText },
-        { label: "Privacy Policy", to: "/privacy", icon: Lock },
-        { label: "Cookie Policy", to: "/cookies", icon: Cookie },
-        { label: "Cookie Settings", to: "/cookie-preferences", icon: Cookie },
-        { label: "Compliance", to: "/compliance", icon: Gavel },
-        { label: "Help Center", to: "/help", icon: HelpCircle },
+        { labelKey: "shell.footer.links.terms", to: "/terms", icon: ScrollText },
+        { labelKey: "shell.footer.links.privacy", to: "/privacy", icon: Lock },
+        { labelKey: "shell.footer.links.cookies", to: "/cookies", icon: Cookie },
+        { labelKey: "shell.footer.links.cookieSettings", to: "/cookie-preferences", icon: Cookie },
+        { labelKey: "shell.footer.links.compliance", to: "/compliance", icon: Gavel },
+        { labelKey: "shell.footer.links.helpCenter", to: "/help", icon: HelpCircle },
       ],
     },
+  ];
+
+  const trust = [
+    { icon: CheckCircle2, labelKey: "shell.trust.verified", subKey: "shell.trust.verifiedSub" },
+    { icon: Shield, labelKey: "shell.trust.secure", subKey: "shell.trust.secureSub" },
+    { icon: LifeBuoy, labelKey: "shell.trust.expert", subKey: "shell.trust.expertSub" },
   ];
 
   return (
     <footer className="mx-auto max-w-[1600px] px-6 pb-10 pt-4">
       <div className="reos-card p-5">
         <div className="flex items-center flex-wrap gap-5 justify-between">
-          <div className="text-[12px] text-[var(--text-2)]">Trusted By Thousands</div>
+          <div className="text-[12px] text-[var(--text-2)]">{t("shell.trust.trustedBy")}</div>
           <div className="flex items-center flex-wrap gap-x-7 gap-y-2">
             {banks.map(b => (
               <span key={b} className="text-[12px] font-bold tracking-wider text-[var(--text-2)]/70 hover:text-[var(--text)] transition">{b}</span>
             ))}
           </div>
           <div className="flex items-center gap-5 text-[11px]">
-            {[
-              { icon: CheckCircle2, label: "Verified Properties", sub: "100% Verified" },
-              { icon: Shield, label: "Secure Transactions", sub: "Bank-Level Security" },
-              { icon: LifeBuoy, label: "Expert Support", sub: "24/7 Assistance" },
-            ].map(t => (
-              <div key={t.label} className="flex items-center gap-2">
-                <t.icon className="h-4 w-4 reos-gold" />
+            {trust.map(item => (
+              <div key={item.labelKey} className="flex items-center gap-2">
+                <item.icon className="h-4 w-4 reos-gold" />
                 <div className="leading-tight">
-                  <div className="text-[11px] font-medium text-[var(--text)]">{t.label}</div>
-                  <div className="text-[9px] text-[var(--text-2)]">{t.sub}</div>
+                  <div className="text-[11px] font-medium text-[var(--text)]">{t(item.labelKey)}</div>
+                  <div className="text-[9px] text-[var(--text-2)]">{t(item.subKey)}</div>
                 </div>
               </div>
             ))}
@@ -585,19 +588,19 @@ export function ReosFooter() {
       <div className="mt-4 reos-card p-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {footerLinks.map((col) => (
-            <div key={col.title}>
+            <div key={col.titleKey}>
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] reos-gold mb-3">
-                {col.title}
+                {t(col.titleKey)}
               </div>
               <ul className="space-y-2">
                 {col.links.map((l) => (
-                  <li key={l.label}>
+                  <li key={l.labelKey}>
                     <Link
                       to={l.to}
                       className="group flex items-center gap-2 text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
                     >
                       <l.icon className="h-3.5 w-3.5 text-[var(--gold)] group-hover:text-[var(--gold-2)] transition shrink-0" />
-                      <span>{l.label}</span>
+                      <span>{t(l.labelKey)}</span>
                     </Link>
                   </li>
                 ))}
@@ -608,11 +611,12 @@ export function ReosFooter() {
       </div>
 
       <div className="text-center text-[11px] text-[var(--text-3)] py-6">
-        © {new Date().getFullYear()} ASTRA Villa REOS · Built for ASEAN · Enterprise-grade
+        © {new Date().getFullYear()} {t("shell.footer.copyright")}
       </div>
     </footer>
   );
 }
+
 
 interface ReosShellProps {
   children: ReactNode;
