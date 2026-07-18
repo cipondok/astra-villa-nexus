@@ -300,6 +300,7 @@ export default function Properties() {
         if (seenIdsRef.current.has(r.id)) duplicates += 1;
         else seenIdsRef.current.add(r.id);
       }
+      duplicateRowsRef.current += duplicates;
 
       trackEvent("marketplace_batch_loaded", {
         metadata: {
