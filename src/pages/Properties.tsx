@@ -1,18 +1,41 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useSearchParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   Search as SearchIcon, MapPin, Bed, Bath, Maximize, TrendingUp,
-  Sparkles, ArrowUpRight, SlidersHorizontal, X,
+  Sparkles, ArrowUpRight, SlidersHorizontal, X, Loader2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 import { cn } from "@/lib/utils";
 import ReosShell from "@/components/reos/ReosShell";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import villaFallback1 from "@/assets/luxe-villa-1.jpg";
 import villaFallback2 from "@/assets/luxe-villa-2.jpg";
 import villaFallback3 from "@/assets/luxe-villa-3.jpg";
+
+/** Responsive page size: desktop 24 / tablet 18 / mobile 12. */
+function useResponsivePageSize() {
+  const get = () => {
+    if (typeof window === "undefined") return 24;
+    const w = window.innerWidth;
+    if (w < 640) return 12;
+    if (w < 1024) return 18;
+    return 24;
+  };
+  const [size, setSize] = useState<number>(get);
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(t);
+      t = setTimeout(() => setSize(get()), 150);
+    };
+    window.addEventListener("resize", onResize);
+    return () => { window.removeEventListener("resize", onResize); clearTimeout(t); };
+  }, []);
+  return size;
+}
 
 /* ============================================================
    ASTRA Villa — Properties (REOS shell)
