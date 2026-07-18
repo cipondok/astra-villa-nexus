@@ -1090,3 +1090,201 @@ function EmptyState({
     </div>
   );
 }
+
+/* -------------------------------------------------------- */
+/* List view — one-column virtualized row layout, echoes    */
+/* Immobiliare-style horizontal cards.                      */
+/* -------------------------------------------------------- */
+
+function VirtualizedList({
+  results,
+  isFetchingNextPage,
+  pageSize,
+}: {
+  results: Listing[];
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  pageSize: number;
+}) {
+  const parentRef = useRef<HTMLDivElement>(null);
+  const [scrollMargin, setScrollMargin] = useState(0);
+  const [isNarrow, setIsNarrow] = useState<boolean>(
+    typeof window !== "undefined" ? window.innerWidth < 640 : false,
+  );
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (!parentRef.current) return;
+      setScrollMargin(parentRef.current.getBoundingClientRect().top + window.scrollY);
+      setIsNarrow(window.innerWidth < 640);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const estimateSize = () => (isNarrow ? 420 : 280);
+
+  const rowVirtualizer = useWindowVirtualizer({
+    count: results.length,
+    estimateSize,
+    overscan: 4,
+    scrollMargin,
+    gap: 16,
+  });
+
+  const virtualRows = rowVirtualizer.getVirtualItems();
+  const totalSize = rowVirtualizer.getTotalSize();
+
+  return (
+    <div ref={parentRef} className="relative w-full" style={{ height: totalSize }}>
+      {virtualRows.map((virtualRow) => {
+        const listing = results[virtualRow.index];
+        if (!listing) return null;
+        return (
+          <div
+            key={virtualRow.key}
+            data-index={virtualRow.index}
+            ref={rowVirtualizer.measureElement}
+            className="absolute left-0 right-0 top-0"
+            style={{ transform: `translateY(${virtualRow.start - scrollMargin}px)` }}
+          >
+            <VillaCardList listing={listing} index={virtualRow.index} />
+          </div>
+        );
+      })}
+
+      {isFetchingNextPage && (
+        <div
+          className="absolute left-0 right-0 top-0 space-y-4"
+          style={{ transform: `translateY(${totalSize}px)` }}
+        >
+          {Array.from({ length: Math.min(pageSize, 4) }).map((_, i) => (
+            <VillaCardListSkeleton key={`list-skeleton-${i}`} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function VillaCardList({ listing, index }: { listing: Listing; index: number }) {
+  const img =
+    listing.cover_image ||
+    (Array.isArray(listing.image_urls) && listing.image_urls[0]) ||
+    (Array.isArray(listing.images) && listing.images[0]) ||
+    FALLBACK_IMGS[index % FALLBACK_IMGS.length];
+
+  const priceNum = Number(listing.price_idr ?? listing.price ?? 0);
+  const area = [listing.area ?? listing.location, listing.city].filter(Boolean).join(" · ") || "Bali";
+  const score = listing.investment_score != null ? Math.round(Number(listing.investment_score)) : null;
+  const roi = listing.roi_percentage != null ? Number(listing.roi_percentage) : null;
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12, filter: "blur(3px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, delay: Math.min(index * 0.03, 0.2), ease: [0.22, 1, 0.36, 1] }}
+    >
+      <Link to={`/properties/${listing.id}`} className="block group">
+        <article className="reos-card overflow-hidden flex flex-col sm:flex-row transition-all duration-300 hover:border-[var(--line-strong)] hover:shadow-[0_24px_60px_-28px_rgba(200,169,106,0.25)]">
+          <div className="relative w-full sm:w-[340px] md:w-[380px] shrink-0 aspect-[4/3] sm:aspect-auto sm:min-h-[240px] overflow-hidden bg-[var(--surface-2)]">
+            <div
+              aria-hidden
+              className={cn(
+                "absolute inset-0 transition-opacity duration-500",
+                imgLoaded ? "opacity-0" : "opacity-100",
+              )}
+              style={{
+                background:
+                  "linear-gradient(110deg, var(--surface-2) 20%, var(--surface-3, rgba(255,255,255,0.06)) 40%, var(--surface-2) 60%)",
+                backgroundSize: "200% 100%",
+                animation: "reos-shimmer 1.6s linear infinite",
+              }}
+            />
+            <img
+              src={imgError ? FALLBACK_IMGS[index % FALLBACK_IMGS.length] : img}
+              alt={listing.title ?? "Villa"}
+              loading="lazy"
+              decoding="async"
+              onLoad={() => setImgLoaded(true)}
+              onError={() => { setImgError(true); setImgLoaded(true); }}
+              className={cn(
+                "w-full h-full object-cover transition-[opacity,filter,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]",
+                imgLoaded ? "opacity-100 blur-0" : "opacity-0 blur-md scale-[1.02]",
+              )}
+            />
+            <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+              {listing.is_featured && (
+                <span className="px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] bg-black/40 backdrop-blur reos-gold border border-[var(--line-strong)]">
+                  Editor's Pick
+                </span>
+              )}
+              {score != null && score >= 85 && (
+                <span className="px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] bg-black/40 backdrop-blur text-[#7be0b3] border border-[#7be0b3]/30 inline-flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> {score}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex-1 min-w-0 p-5 md:p-6 flex flex-col gap-3">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)] mb-1">From</p>
+                <p className="text-[24px] md:text-[26px] leading-none font-semibold text-[var(--text)] truncate">
+                  {formatPrice(priceNum)}
+                </p>
+              </div>
+              <span className="w-10 h-10 grid place-items-center rounded-full border border-[var(--line-strong)] reos-gold shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <ArrowUpRight className="w-4 h-4" />
+              </span>
+            </div>
+
+            <h3 className="text-[18px] md:text-[19px] leading-tight tracking-tight text-[var(--text)] font-semibold line-clamp-1 group-hover:reos-gold transition-colors">
+              {listing.title ?? "Untitled Villa"}
+            </h3>
+            <p className="text-[12px] text-[var(--text-2)] inline-flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 reos-gold" /> {area}
+            </p>
+
+            <div className="mt-auto pt-4 border-t border-[var(--line)] flex flex-wrap items-center justify-between gap-3 text-[12px] text-[var(--text-2)]">
+              <div className="flex items-center gap-4">
+                {listing.bedrooms != null && (
+                  <span className="inline-flex items-center gap-1.5"><Bed className="w-4 h-4" /> {listing.bedrooms} rooms</span>
+                )}
+                {listing.bathrooms != null && (
+                  <span className="inline-flex items-center gap-1.5"><Bath className="w-4 h-4" /> {listing.bathrooms} bath</span>
+                )}
+                {listing.area_sqm != null && (
+                  <span className="inline-flex items-center gap-1.5"><Maximize className="w-4 h-4" /> {listing.area_sqm} m²</span>
+                )}
+              </div>
+              {roi != null && (
+                <span className="reos-gold font-semibold">{roi.toFixed(1)}% ROI</span>
+              )}
+            </div>
+          </div>
+        </article>
+      </Link>
+    </motion.div>
+  );
+}
+
+function VillaCardListSkeleton() {
+  return (
+    <div className="reos-card overflow-hidden flex flex-col sm:flex-row" aria-hidden>
+      <div className="w-full sm:w-[340px] md:w-[380px] shrink-0 aspect-[4/3] sm:aspect-auto sm:min-h-[240px] bg-[var(--surface-2)] animate-pulse" />
+      <div className="flex-1 p-5 md:p-6 space-y-3">
+        <div className="h-6 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-4 w-2/3 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-3 w-1/2 bg-[var(--surface-2)] rounded animate-pulse" />
+        <div className="h-3 w-1/3 bg-[var(--surface-2)] rounded animate-pulse" />
+      </div>
+    </div>
+  );
+}
+}
