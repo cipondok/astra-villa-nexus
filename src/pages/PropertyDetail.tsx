@@ -326,11 +326,11 @@ const PropertyDetail = () => {
                   className="col-span-12 md:col-span-8 relative group overflow-hidden bg-luxe-surface"
                   aria-label="View main photo"
                 >
-                  <img
+                  <GalleryImg
                     src={images[0] || "/placeholder.svg"}
                     alt={`${property.title} — main view`}
-                    loading="eager"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    eager
+                    className="group-hover:scale-[1.03]"
                   />
                   <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all" />
                 </button>
