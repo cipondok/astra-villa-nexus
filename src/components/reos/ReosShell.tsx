@@ -19,7 +19,9 @@ import { useUserRoles } from "@/hooks/useUserRoles";
 import { resolveDashboardPath } from "@/lib/dashboardRoute";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useTranslation } from "@/i18n/useTranslation";
 import { formatDistanceToNow } from "date-fns";
+
 
 
 /* ============================================================
@@ -94,36 +96,38 @@ export const reosTokens = `
 `;
 
 const topTabs = [
-  { icon: Home, label: "Home", to: "/" },
-  { icon: Building2, label: "Properties", to: "/properties" },
-  { icon: TrendingUp, label: "Investment", to: "/investment" },
-  { icon: Banknote, label: "Finance", to: "/wallet" },
-  { icon: Scale, label: "Legal", to: "/legal-services" },
-  { icon: Wrench, label: "Management", to: "/agent-dashboard" },
-  { icon: Store, label: "Vendors", to: "/services" },
-  { icon: Cpu, label: "AI Center", to: "/ai-search" },
-  { icon: MoreHorizontal, label: "More", to: "/search" },
+  { icon: Home, tKey: "shell.tabs.home", to: "/" },
+  { icon: Building2, tKey: "shell.tabs.properties", to: "/properties" },
+  { icon: TrendingUp, tKey: "shell.tabs.investment", to: "/investment" },
+  { icon: Banknote, tKey: "shell.tabs.finance", to: "/wallet" },
+  { icon: Scale, tKey: "shell.tabs.legal", to: "/legal-services" },
+  { icon: Wrench, tKey: "shell.tabs.management", to: "/agent-dashboard" },
+  { icon: Store, tKey: "shell.tabs.vendors", to: "/services" },
+  { icon: Cpu, tKey: "shell.tabs.aiCenter", to: "/ai-search" },
+  { icon: MoreHorizontal, tKey: "shell.tabs.more", to: "/search" },
 ];
 
 const sideNav = [
-  { icon: Eye, label: "Overview", to: "/" },
-  { icon: BarChart3, label: "Market Intelligence", to: "/market-heatmap" },
-  { icon: BookmarkPlus, label: "Watchlist", to: "/favorites" },
-  { icon: Wallet, label: "My Portfolio", to: "/investment-performance" },
-  { icon: MessageSquare, label: "Messages", to: "/messages", badge: 12 as number | undefined },
-  { icon: ArrowLeftRight, label: "Transactions", to: "/wallet" },
-  { icon: Calendar, label: "Calendar", to: "/profile" },
-  { icon: FileText, label: "Documents", to: "/documents" },
-  { icon: LifeBuoy, label: "Support Center", to: "/support" },
+  { icon: Eye, tKey: "shell.side.overview", to: "/" },
+  { icon: BarChart3, tKey: "shell.side.marketIntelligence", to: "/market-heatmap" },
+  { icon: BookmarkPlus, tKey: "shell.side.watchlist", to: "/favorites" },
+  { icon: Wallet, tKey: "shell.side.portfolio", to: "/investment-performance" },
+  { icon: MessageSquare, tKey: "shell.side.messages", to: "/messages", badge: 12 as number | undefined },
+  { icon: ArrowLeftRight, tKey: "shell.side.transactions", to: "/wallet" },
+  { icon: Calendar, tKey: "shell.side.calendar", to: "/profile" },
+  { icon: FileText, tKey: "shell.side.documents", to: "/documents" },
+  { icon: LifeBuoy, tKey: "shell.side.support", to: "/support" },
 ];
 
 const banks = ["BCA", "Mandiri", "CIMB NIAGA", "HSBC", "DBS", "Maybank", "UOB", "OCBC NISP", "BNI", "BRI"];
+
 
 export function ReosHeader() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user, profile, signOut } = useAuth();
   const { language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
   const { logoUrl: headerLogo } = useBrandingLogo("headerLogo", "/astra-logo.png");
   const { data: userRoles = [] } = useUserRoles();
@@ -204,7 +208,7 @@ export function ReosHeader() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            aria-label="Open menu"
+            aria-label={t("shell.openMenu")}
             className="lg:hidden h-10 w-10 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
           >
             <Menu className="h-5 w-5 text-[var(--text)]" />
@@ -224,7 +228,7 @@ export function ReosHeader() {
               className="btn-titanium inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-[11px] font-semibold tracking-wide hover:opacity-90 transition"
             >
               <Plus className="h-3.5 w-3.5" />
-              Add Property
+              {t("shell.addProperty")}
             </Link>
           </div>
 
@@ -242,7 +246,7 @@ export function ReosHeader() {
               </button>
               {langOpen && (
                 <div role="menu" className="absolute right-0 mt-2 w-56 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
-                  <div className="px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)]">Language</div>
+                  <div className="px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)]">{t("shell.language")}</div>
                   {languages.map(l => (
                     <button
                       key={l.code}
@@ -264,7 +268,7 @@ export function ReosHeader() {
             <button
               type="button"
               onClick={toggleTheme}
-              aria-label="Toggle theme"
+              aria-label={t("shell.toggleTheme")}
               className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
             >
               {theme === "dark" ? <Sun className="h-4 w-4 text-[var(--text-2)]" /> : <Moon className="h-4 w-4 text-[var(--text-2)]" />}
@@ -275,7 +279,7 @@ export function ReosHeader() {
                 <button
                   type="button"
                   onClick={() => { setNotifOpen(o => !o); setLangOpen(false); setProfileOpen(false); }}
-                  aria-label="Notifications"
+                  aria-label={t("shell.notifications")}
                   aria-haspopup="menu"
                   aria-expanded={notifOpen}
                   className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
@@ -288,13 +292,13 @@ export function ReosHeader() {
                 {notifOpen && (
                   <div role="menu" className="absolute right-0 mt-2 w-[340px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
-                      <div className="text-[12.5px] font-semibold text-[var(--text)]">Notifications</div>
-                      <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{unreadCount} new</span>
+                      <div className="text-[12.5px] font-semibold text-[var(--text)]">{t("shell.notifications")}</div>
+                      <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{unreadCount} {t("shell.newSuffix")}</span>
                     </div>
                     <div className="max-h-[340px] overflow-y-auto reos-scrollbar">
                       {notifications.length === 0 ? (
                         <div className="px-4 py-8 text-center text-[12px] text-[var(--text-3)]">
-                          You're all caught up.
+                          {t("shell.noNotifications")}
                         </div>
                       ) : (
                         notifications.slice(0, 8).map((n) => {
@@ -327,7 +331,7 @@ export function ReosHeader() {
                       onClick={() => { setNotifOpen(false); navigate("/notifications"); }}
                       className="w-full text-[12px] text-center py-3 reos-gold hover:bg-[var(--surface-2)] border-t border-[var(--line)]"
                     >
-                      View all notifications
+                      {t("shell.viewAllNotifications")}
                     </button>
                   </div>
                 )}
@@ -338,7 +342,7 @@ export function ReosHeader() {
                 <button
                   type="button"
                   onClick={() => { setSavedOpen(o => !o); setLangOpen(false); setNotifOpen(false); setProfileOpen(false); }}
-                  aria-label="Saved"
+                  aria-label={t("shell.saved")}
                   aria-haspopup="menu"
                   aria-expanded={savedOpen}
                   className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
@@ -351,13 +355,13 @@ export function ReosHeader() {
                 {savedOpen && (
                   <div role="menu" className="absolute right-0 mt-2 w-[320px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
-                      <div className="text-[12.5px] font-semibold text-[var(--text)]">Saved</div>
-                      <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{savedCount} items</span>
+                      <div className="text-[12.5px] font-semibold text-[var(--text)]">{t("shell.saved")}</div>
+                      <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{savedCount} {t("shell.itemsSuffix")}</span>
                     </div>
                     <div className="max-h-[340px] overflow-y-auto reos-scrollbar">
                       {savedItems.length === 0 ? (
                         <div className="px-4 py-8 text-center text-[12px] text-[var(--text-3)]">
-                          No saved properties yet.
+                          {t("shell.noSaved")}
                         </div>
                       ) : (
                         savedItems.map((s) => (
@@ -369,7 +373,7 @@ export function ReosHeader() {
                           >
                             <Heart className="mt-1 h-3.5 w-3.5 shrink-0 text-[var(--gold)]" />
                             <div className="flex-1 min-w-0">
-                              <div className="text-[12.5px] font-medium text-[var(--text)] truncate">Saved property</div>
+                              <div className="text-[12.5px] font-medium text-[var(--text)] truncate">{t("shell.savedProperty")}</div>
                               <div className="text-[11.5px] text-[var(--text-2)] mt-0.5 line-clamp-2 font-mono">{s.propertyId.slice(0, 8)}…</div>
                             </div>
                           </button>
@@ -381,7 +385,7 @@ export function ReosHeader() {
                       onClick={() => { setSavedOpen(false); navigate("/favorites"); }}
                       className="w-full text-[12px] text-center py-3 reos-gold hover:bg-[var(--surface-2)] border-t border-[var(--line)]"
                     >
-                      View all saved
+                      {t("shell.viewAllSaved")}
                     </button>
                   </div>
                 )}
@@ -395,7 +399,7 @@ export function ReosHeader() {
                 <button
                   type="button"
                   onClick={() => setProfileOpen(o => !o)}
-                  aria-label="Open user menu"
+                  aria-label={t("shell.openUserMenu")}
                   className="h-9 pl-1 pr-2 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-1.5 hover:border-[var(--line-strong)]"
                 >
                   <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">
@@ -413,27 +417,27 @@ export function ReosHeader() {
                         </div>
                         <div className="min-w-0">
                           <div className="text-[12.5px] font-semibold text-[var(--text)] truncate">
-                            {profile?.full_name || "Member"}
+                            {profile?.full_name || t("shell.member")}
                           </div>
                           <div className="text-[10.5px] text-[var(--text-2)] truncate">{user.email}</div>
                         </div>
                       </div>
                     </div>
 
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> Dashboard</button>
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> My Profile</button>
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> Wallet</button>
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> Saved</button>
+                    <button type="button" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> {t("shell.dashboard")}</button>
+                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> {t("shell.myProfile")}</button>
+                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> {t("shell.wallet")}</button>
+                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> {t("shell.saved")}</button>
                     <div className="reos-divider my-1" />
-                    <button type="button" onClick={async () => { setProfileOpen(false); await signOut(); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] text-[var(--danger)] inline-flex items-center gap-2"><LogOut className="h-3.5 w-3.5" /> Sign out</button>
+                    <button type="button" onClick={async () => { setProfileOpen(false); await signOut(); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] text-[var(--danger)] inline-flex items-center gap-2"><LogOut className="h-3.5 w-3.5" /> {t("shell.signOut")}</button>
                   </div>
                 )}
               </div>
             ) : (
               <>
-                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-9 px-4 rounded-lg text-[12.5px] hover:bg-[var(--surface)] text-[var(--text)] transition">Sign in</button>
+                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-9 px-4 rounded-lg text-[12.5px] hover:bg-[var(--surface)] text-[var(--text)] transition">{t("shell.signIn")}</button>
                 <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-9 px-4 rounded-lg reos-cta text-[12.5px] inline-flex items-center gap-1.5">
-                  Get Started <ChevronRight className="h-3.5 w-3.5" />
+                  {t("shell.getStarted")} <ChevronRight className="h-3.5 w-3.5" />
                 </button>
               </>
             )}
@@ -446,11 +450,11 @@ export function ReosHeader() {
               const active = isActive(tab.to);
               return (
                 <Link
-                  key={tab.label}
+                  key={tab.tKey}
                   to={tab.to}
                   className={`relative inline-flex items-center gap-2 text-[13px] whitespace-nowrap transition-colors ${active ? "reos-tab-active font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
                 >
-                  <tab.icon className="h-4 w-4" /> {tab.label}
+                  <tab.icon className="h-4 w-4" /> {t(tab.tKey)}
                 </Link>
               );
             })}
@@ -477,21 +481,18 @@ export function ReosHeader() {
                   <img src={headerLogo} alt="ASTRA Villa" className="h-8 w-8 rounded-full object-contain shadow-sm" />
                   <span className="font-semibold tracking-[0.18em] text-[14px]">ASTRA<span className="reos-gold ml-1">VILLA</span></span>
                 </div>
-                <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
+                <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label={t("shell.closeMenu")} className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
               </div>
               <div className="space-y-1">
-                {topTabs.map(tab => {
-                  const t = tab.label === "Dashboard" ? { ...tab, to: dashboardPath } : tab;
-                  return (
-                    <Link key={t.label} to={t.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
-                      <t.icon className="h-4 w-4" /> {t.label}
-                    </Link>
-                  );
-                })}
+                {topTabs.map(tab => (
+                  <Link key={tab.tKey} to={tab.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                    <tab.icon className="h-4 w-4" /> {t(tab.tKey)}
+                  </Link>
+                ))}
                 <div className="reos-divider my-3" />
                 {sideNav.map(n => (
-                  <Link key={n.label} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
-                    <n.icon className="h-4 w-4" /><span className="flex-1">{n.label}</span>
+                  <Link key={n.tKey} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                    <n.icon className="h-4 w-4" /><span className="flex-1">{t(n.tKey)}</span>
                     {n.badge && <span className="text-[10px] bg-[var(--gold)] text-[var(--gold-fg)] font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
                   </Link>
                 ))}
@@ -501,77 +502,81 @@ export function ReosHeader() {
         )}
       </AnimatePresence>
 
+
       <ReosAuthModal open={showAuth} onOpenChange={setShowAuth} initialMode={authInitial} />
     </>
   );
 }
 
 export function ReosFooter() {
-  const footerLinks: { title: string; links: { label: string; to: string; icon: typeof Home }[] }[] = [
+  const { t } = useTranslation();
+  const footerLinks: { titleKey: string; links: { labelKey: string; to: string; icon: typeof Home }[] }[] = [
     {
-      title: "Explore",
+      titleKey: "shell.footer.sections.explore",
       links: [
-        { label: "Home", to: "/", icon: Home },
-        { label: "Properties", to: "/properties", icon: Building2 },
-        { label: "Market Intelligence", to: "/market-intelligence", icon: BarChart3 },
-        { label: "Wealth Advisor", to: "/wealth-advisor", icon: Brain },
-        { label: "Investment Fund", to: "/investment", icon: PiggyBank },
+        { labelKey: "shell.footer.links.home", to: "/", icon: Home },
+        { labelKey: "shell.footer.links.properties", to: "/properties", icon: Building2 },
+        { labelKey: "shell.footer.links.marketIntelligence", to: "/market-intelligence", icon: BarChart3 },
+        { labelKey: "shell.footer.links.wealthAdvisor", to: "/wealth-advisor", icon: Brain },
+        { labelKey: "shell.footer.links.investmentFund", to: "/investment", icon: PiggyBank },
       ],
     },
     {
-      title: "Services",
+      titleKey: "shell.footer.sections.services",
       links: [
-        { label: "Buy", to: "/properties?intent=buy", icon: ShoppingCart },
-        { label: "Rent", to: "/properties?intent=rent", icon: KeyRound },
-        { label: "Sell with Us", to: "/sell", icon: Tag },
-        { label: "Agents", to: "/agents", icon: UsersRound },
-        { label: "Vendors", to: "/services", icon: Store },
+        { labelKey: "shell.footer.links.buy", to: "/properties?intent=buy", icon: ShoppingCart },
+        { labelKey: "shell.footer.links.rent", to: "/properties?intent=rent", icon: KeyRound },
+        { labelKey: "shell.footer.links.sellWithUs", to: "/sell", icon: Tag },
+        { labelKey: "shell.footer.links.agents", to: "/agents", icon: UsersRound },
+        { labelKey: "shell.footer.links.vendors", to: "/services", icon: Store },
       ],
     },
     {
-      title: "Company",
+      titleKey: "shell.footer.sections.company",
       links: [
-        { label: "About", to: "/about", icon: Briefcase },
-        { label: "Contact", to: "/contact", icon: Mail },
-        { label: "Careers", to: "/careers", icon: UsersRound },
-        { label: "Press", to: "/press", icon: Newspaper },
-        { label: "Blog", to: "/blog", icon: BookOpen },
+        { labelKey: "shell.footer.links.about", to: "/about", icon: Briefcase },
+        { labelKey: "shell.footer.links.contact", to: "/contact", icon: Mail },
+        { labelKey: "shell.footer.links.careers", to: "/careers", icon: UsersRound },
+        { labelKey: "shell.footer.links.press", to: "/press", icon: Newspaper },
+        { labelKey: "shell.footer.links.blog", to: "/blog", icon: BookOpen },
       ],
     },
     {
-      title: "Legal",
+      titleKey: "shell.footer.sections.legal",
       links: [
-        { label: "Terms of Service", to: "/terms", icon: ScrollText },
-        { label: "Privacy Policy", to: "/privacy", icon: Lock },
-        { label: "Cookie Policy", to: "/cookies", icon: Cookie },
-        { label: "Cookie Settings", to: "/cookie-preferences", icon: Cookie },
-        { label: "Compliance", to: "/compliance", icon: Gavel },
-        { label: "Help Center", to: "/help", icon: HelpCircle },
+        { labelKey: "shell.footer.links.terms", to: "/terms", icon: ScrollText },
+        { labelKey: "shell.footer.links.privacy", to: "/privacy", icon: Lock },
+        { labelKey: "shell.footer.links.cookies", to: "/cookies", icon: Cookie },
+        { labelKey: "shell.footer.links.cookieSettings", to: "/cookie-preferences", icon: Cookie },
+        { labelKey: "shell.footer.links.compliance", to: "/compliance", icon: Gavel },
+        { labelKey: "shell.footer.links.helpCenter", to: "/help", icon: HelpCircle },
       ],
     },
+  ];
+
+  const trust = [
+    { icon: CheckCircle2, labelKey: "shell.trust.verified", subKey: "shell.trust.verifiedSub" },
+    { icon: Shield, labelKey: "shell.trust.secure", subKey: "shell.trust.secureSub" },
+    { icon: LifeBuoy, labelKey: "shell.trust.expert", subKey: "shell.trust.expertSub" },
   ];
 
   return (
     <footer className="mx-auto max-w-[1600px] px-6 pb-10 pt-4">
       <div className="reos-card p-5">
         <div className="flex items-center flex-wrap gap-5 justify-between">
-          <div className="text-[12px] text-[var(--text-2)]">Trusted By Thousands</div>
+          <div className="text-[12px] text-[var(--text-2)]">{t("shell.trust.trustedBy")}</div>
           <div className="flex items-center flex-wrap gap-x-7 gap-y-2">
             {banks.map(b => (
               <span key={b} className="text-[12px] font-bold tracking-wider text-[var(--text-2)]/70 hover:text-[var(--text)] transition">{b}</span>
             ))}
           </div>
           <div className="flex items-center gap-5 text-[11px]">
-            {[
-              { icon: CheckCircle2, label: "Verified Properties", sub: "100% Verified" },
-              { icon: Shield, label: "Secure Transactions", sub: "Bank-Level Security" },
-              { icon: LifeBuoy, label: "Expert Support", sub: "24/7 Assistance" },
-            ].map(t => (
-              <div key={t.label} className="flex items-center gap-2">
-                <t.icon className="h-4 w-4 reos-gold" />
+            {trust.map(item => (
+              <div key={item.labelKey} className="flex items-center gap-2">
+                <item.icon className="h-4 w-4 reos-gold" />
                 <div className="leading-tight">
-                  <div className="text-[11px] font-medium text-[var(--text)]">{t.label}</div>
-                  <div className="text-[9px] text-[var(--text-2)]">{t.sub}</div>
+                  <div className="text-[11px] font-medium text-[var(--text)]">{t(item.labelKey)}</div>
+                  <div className="text-[9px] text-[var(--text-2)]">{t(item.subKey)}</div>
                 </div>
               </div>
             ))}
@@ -583,19 +588,19 @@ export function ReosFooter() {
       <div className="mt-4 reos-card p-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {footerLinks.map((col) => (
-            <div key={col.title}>
+            <div key={col.titleKey}>
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] reos-gold mb-3">
-                {col.title}
+                {t(col.titleKey)}
               </div>
               <ul className="space-y-2">
                 {col.links.map((l) => (
-                  <li key={l.label}>
+                  <li key={l.labelKey}>
                     <Link
                       to={l.to}
                       className="group flex items-center gap-2 text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
                     >
                       <l.icon className="h-3.5 w-3.5 text-[var(--gold)] group-hover:text-[var(--gold-2)] transition shrink-0" />
-                      <span>{l.label}</span>
+                      <span>{t(l.labelKey)}</span>
                     </Link>
                   </li>
                 ))}
@@ -606,11 +611,12 @@ export function ReosFooter() {
       </div>
 
       <div className="text-center text-[11px] text-[var(--text-3)] py-6">
-        © {new Date().getFullYear()} ASTRA Villa REOS · Built for ASEAN · Enterprise-grade
+        © {new Date().getFullYear()} {t("shell.footer.copyright")}
       </div>
     </footer>
   );
 }
+
 
 interface ReosShellProps {
   children: ReactNode;
