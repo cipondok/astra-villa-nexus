@@ -20,7 +20,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^3.9.0",
-    "@huggingface/transformers": "^3.6.1",
+    "@huggingface/transformers": "^3.8.1",
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
@@ -76,7 +76,7 @@
     "html2pdf.js": "^0.14.0",
     "input-otp": "^1.2.4",
     "jsdom": "^29.0.0",
-    "jspdf": "^4.0.0",
+    "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
     "lucide-react": "^0.462.0",
     "mapbox-gl": "^3.15.0",
@@ -100,7 +100,7 @@
     "topojson-client": "3.1.0",
     "vaul": "^0.9.3",
     "vite-plugin-pwa": "1.2.0",
-    "wagmi": "^2.15.6",
+    "wagmi": "^2.19.5",
     "zod": "^3.23.8",
     "zustand": "^5.0.8"
   },
@@ -123,5 +123,14 @@
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",
     "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "jspdf": "$jspdf",
+    "html2pdf.js": {
+      "jspdf": "$jspdf"
+    }
+  },
+  "resolutions": {
+    "jspdf": "^4.2.1"
   }
 }
