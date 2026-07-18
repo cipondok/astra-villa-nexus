@@ -174,7 +174,7 @@ export default function Properties() {
   const collection = params.get("collection") || preset.collection || "";
   const intent     = params.get("intent") || "";
   const type       = (params.get("type") || "all").toLowerCase();
-  const sort       = (params.get("sort") || "newest").toLowerCase();
+  const sort       = (params.get("sort") || "relevant").toLowerCase();
   const guests     = params.get("guests") || "";
   const when       = params.get("when") || "";
   const listingType = (params.get("listing_type") || preset.listingType || "").toLowerCase();
