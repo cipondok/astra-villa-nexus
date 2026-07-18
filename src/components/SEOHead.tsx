@@ -69,13 +69,38 @@ export const SEOHead = ({
   noIndex = false,
   jsonLd,
 }: SEOHeadProps) => {
+  const { t, language } = useTranslation();
+  let pathname = '/';
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    pathname = useLocation().pathname;
+  } catch {
+    pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
+  }
+
+  // Route-based localized title/description — takes precedence over hardcoded props
+  // so language switching updates the head automatically on every recognized route.
+  const seoKey = resolveLocalizedSeoKey(pathname);
+  const localizedTitle = seoKey ? t(`seo.${seoKey}.title`) : undefined;
+  const localizedDescription = seoKey ? t(`seo.${seoKey}.description`) : undefined;
+
+  const effectiveTitle = localizedTitle ?? title;
+  const effectiveDescription = localizedDescription ?? description;
+
   const fullTitle =
     fullTitleProp ??
-    (title ? `${title} | ${SITE_NAME}` : HOME_FULL_TITLE);
+    (effectiveTitle ? `${effectiveTitle} | ${SITE_NAME}` : HOME_FULL_TITLE);
+
+  const ogLocale = LOCALE_TO_OG[language] ?? 'id_ID';
 
   useEffect(() => {
     // Title
     document.title = fullTitle;
+
+    // Reflect active language on <html lang> so accessibility tools + crawlers agree
+    if (language && document.documentElement.lang !== language) {
+      document.documentElement.lang = language;
+    }
 
     // Helper to set/create a meta tag
     const setMeta = (selector: string, attr: string, content: string) => {
@@ -90,21 +115,22 @@ export const SEOHead = ({
     };
 
     // Basic meta
-    setMeta('meta[name="description"]', 'name=description', description);
+    setMeta('meta[name="description"]', 'name=description', effectiveDescription);
     if (keywords) setMeta('meta[name="keywords"]', 'name=keywords', keywords);
     if (noIndex) setMeta('meta[name="robots"]', 'name=robots', 'noindex, nofollow');
     else setMeta('meta[name="robots"]', 'name=robots', 'index, follow');
 
-    // Open Graph (allows separate OG title/description from page title)
-    const ogTitleResolved = ogTitle ?? OG_TITLE;
-    const ogDescriptionResolved = ogDescription ?? OG_DESCRIPTION;
+    // Open Graph — mirror the localized title/description unless the caller
+    // explicitly overrode them, so social previews stay in the active language.
+    const ogTitleResolved = ogTitle ?? localizedTitle ?? OG_TITLE;
+    const ogDescriptionResolved = ogDescription ?? localizedDescription ?? OG_DESCRIPTION;
     setMeta('meta[property="og:title"]', 'property=og:title', ogTitleResolved);
     setMeta('meta[property="og:description"]', 'property=og:description', ogDescriptionResolved);
     setMeta('meta[property="og:type"]', 'property=og:type', ogType);
     setMeta('meta[property="og:image"]', 'property=og:image', ogImage);
     setMeta('meta[property="og:url"]', 'property=og:url', canonical || `${SITE_URL}${window.location.pathname}`);
     setMeta('meta[property="og:site_name"]', 'property=og:site_name', SITE_NAME);
-    setMeta('meta[property="og:locale"]', 'property=og:locale', 'id_ID');
+    setMeta('meta[property="og:locale"]', 'property=og:locale', ogLocale);
 
     // Twitter Card
     setMeta('meta[name="twitter:title"]', 'name=twitter:title', ogTitleResolved);
@@ -141,7 +167,8 @@ export const SEOHead = ({
     return () => {
       document.title = SITE_NAME;
     };
-  }, [fullTitle, description, keywords, ogTitle, ogDescription, ogImage, ogType, canonical, noIndex, jsonLd]);
+    // language is included so switching locale re-runs this effect and updates head
+  }, [fullTitle, effectiveDescription, keywords, ogTitle, ogDescription, ogImage, ogType, canonical, noIndex, jsonLd, language, localizedTitle, localizedDescription, ogLocale]);
 
   return null;
 };
