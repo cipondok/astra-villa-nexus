@@ -368,12 +368,6 @@ const PropertyDetail = () => {
   const hero = images[idx] || "/placeholder.svg";
   const loc = [property.district, property.city, property.province].filter(Boolean).join(", ") || property.location || "Bali, Indonesia";
 
-  const features: { icon: any; label: string; value: string }[] = [
-    { icon: BedDouble, label: "Bedrooms", value: property.bedrooms?.toString() ?? "—" },
-    { icon: Bath,      label: "Bathrooms", value: property.bathrooms?.toString() ?? "—" },
-    { icon: Square,    label: "Area", value: property.area_sqm ? `${property.area_sqm} m²` : "—" },
-    { icon: Wind,      label: "Type", value: property.property_type ?? "Villa" },
-  ];
 
   const amenities: string[] = Array.isArray(property.property_features?.amenities)
     ? property.property_features!.amenities
