@@ -591,15 +591,12 @@ export default function Properties() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-              {results.map((p, i) => (
-                <VillaCard key={p.id} listing={p} index={i} />
-              ))}
-              {isFetchingNextPage &&
-                Array.from({ length: Math.min(pageSize, 6) }).map((_, i) => (
-                  <VillaCardSkeleton key={`skeleton-${i}`} />
-                ))}
-            </div>
+            <VirtualizedGrid
+              results={results}
+              hasNextPage={!!hasNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              pageSize={pageSize}
+            />
 
             {/* Sentinel — triggers next page well before viewport bottom */}
             <div ref={sentinelRef} aria-hidden className="h-10 w-full" />
@@ -615,6 +612,101 @@ export default function Properties() {
     </ReosShell>
   );
 }
+
+/* -------------------------------------------------------- */
+/* Virtualized grid — renders only visible rows via         */
+/* @tanstack/react-virtual (window scroller).               */
+/* -------------------------------------------------------- */
+
+function VirtualizedGrid({
+  results,
+  hasNextPage,
+  isFetchingNextPage,
+  pageSize,
+}: {
+  results: Listing[];
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  pageSize: number;
+}) {
+  const columns = useGridColumns();
+
+  const rows = useMemo<Listing[][]>(() => {
+    const out: Listing[][] = [];
+    for (let i = 0; i < results.length; i += columns) {
+      out.push(results.slice(i, i + columns));
+    }
+    return out;
+  }, [results, columns]);
+
+  const parentRef = useRef<HTMLDivElement>(null);
+  const [scrollMargin, setScrollMargin] = useState(0);
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (!parentRef.current) return;
+      setScrollMargin(parentRef.current.getBoundingClientRect().top + window.scrollY);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [columns]);
+
+  // Rough row height estimate — card image is aspect 4/5 + ~180px of info.
+  // Actual size is measured after mount via measureElement, so this only
+  // affects initial paint / overscan.
+  const estimateSize = () => (columns === 1 ? 720 : columns === 2 ? 640 : 620);
+
+  const rowVirtualizer = useWindowVirtualizer({
+    count: rows.length,
+    estimateSize,
+    overscan: 3,
+    scrollMargin,
+    gap: 24,
+  });
+
+  const virtualRows = rowVirtualizer.getVirtualItems();
+  const totalSize = rowVirtualizer.getTotalSize();
+
+  const gridColsClass =
+    columns === 1 ? "grid-cols-1" : columns === 2 ? "grid-cols-2" : "grid-cols-3";
+
+  return (
+    <div ref={parentRef} className="relative w-full" style={{ height: totalSize }}>
+      {virtualRows.map((virtualRow) => {
+        const row = rows[virtualRow.index];
+        if (!row) return null;
+        return (
+          <div
+            key={virtualRow.key}
+            data-index={virtualRow.index}
+            ref={rowVirtualizer.measureElement}
+            className={cn("grid gap-5 md:gap-6 absolute left-0 right-0 top-0", gridColsClass)}
+            style={{
+              transform: `translateY(${virtualRow.start - scrollMargin}px)`,
+            }}
+          >
+            {row.map((p, i) => (
+              <VillaCard key={p.id} listing={p} index={virtualRow.index * columns + i} />
+            ))}
+          </div>
+        );
+      })}
+
+      {isFetchingNextPage && (
+        <div
+          className={cn("grid gap-5 md:gap-6 absolute left-0 right-0 top-0", gridColsClass)}
+          style={{ transform: `translateY(${totalSize}px)` }}
+        >
+          {Array.from({ length: Math.min(pageSize, columns * 2) }).map((_, i) => (
+            <VillaCardSkeleton key={`skeleton-${i}`} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 /* -------------------------------------------------------- */
 /* Subcomponents                                            */
