@@ -144,6 +144,7 @@ const PRICE_RANGES: { id: string; label: string; min?: number; max?: number }[] 
   { id: "10b-plus",    label: "Rp 10B+",           min: 10_000_000_000 },
 ];
 const SORT_OPTIONS = [
+  { id: "relevant",  label: "Most Relevant" },
   { id: "newest",    label: "Newest" },
   { id: "price-asc", label: "Price ↑" },
   { id: "price-desc",label: "Price ↓" },
@@ -173,7 +174,7 @@ export default function Properties() {
   const collection = params.get("collection") || preset.collection || "";
   const intent     = params.get("intent") || "";
   const type       = (params.get("type") || "all").toLowerCase();
-  const sort       = (params.get("sort") || "newest").toLowerCase();
+  const sort       = (params.get("sort") || "relevant").toLowerCase();
   const guests     = params.get("guests") || "";
   const when       = params.get("when") || "";
   const listingType = (params.get("listing_type") || preset.listingType || "").toLowerCase();
@@ -291,7 +292,12 @@ export default function Properties() {
         case "price-asc":  query = query.order("price", { ascending: true,  nullsFirst: false } as any); break;
         case "price-desc": query = query.order("price", { ascending: false, nullsFirst: false } as any); break;
         case "score":      query = query.order("investment_score", { ascending: false, nullsFirst: false } as any); break;
-        default:           query = query.order("created_at", { ascending: false });
+        case "newest":     query = query.order("created_at", { ascending: false }); break;
+        default:
+          // "relevant" — blend AI score with recency as tiebreaker
+          query = query
+            .order("investment_score", { ascending: false, nullsFirst: false } as any)
+            .order("created_at", { ascending: false });
       }
 
       const t0 = performance.now();
