@@ -850,4 +850,38 @@ function BookingField({
   );
 }
 
+/**
+ * Image with a shimmer skeleton overlay that fades out after `load`.
+ * Prevents blank/flashing slots while gallery photos stream in.
+ */
+function GalleryImg({
+  src, alt, eager = false, className,
+}: { src: string; alt: string; eager?: boolean; className?: string }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <>
+      <div
+        aria-hidden="true"
+        className={cn(
+          "absolute inset-0 luxe-shimmer transition-opacity duration-500",
+          loaded ? "opacity-0" : "opacity-100",
+        )}
+      />
+      <img
+        src={src}
+        alt={alt}
+        loading={eager ? "eager" : "lazy"}
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setLoaded(true)}
+        className={cn(
+          "h-full w-full object-cover transition-[transform,opacity] duration-700",
+          loaded ? "opacity-100" : "opacity-0",
+          className,
+        )}
+      />
+    </>
+  );
+}
+
 export default PropertyDetail;
