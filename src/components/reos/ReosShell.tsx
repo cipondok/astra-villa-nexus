@@ -428,7 +428,20 @@ export function ReosHeader() {
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> {t("shell.myProfile")}</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> {t("shell.wallet")}</button>
                     <button type="button" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> {t("shell.saved")}</button>
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/my-properties"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wrench className="h-3.5 w-3.5" /> {t("shell.tabs.management")}</button>
+                    {canManageProperties && (
+                      <button
+                        type="button"
+                        aria-current={isManagementActive ? "page" : undefined}
+                        onClick={() => { setProfileOpen(false); navigate("/my-properties"); }}
+                        className={`w-full text-left px-3 py-2 rounded-md text-[12.5px] inline-flex items-center gap-2 transition ${
+                          isManagementActive
+                            ? "bg-[var(--surface-2)] text-[var(--gold,#D4AF37)] font-semibold"
+                            : "text-[var(--text)] hover:bg-[var(--surface-2)]"
+                        }`}
+                      >
+                        <Wrench className="h-3.5 w-3.5" /> {t("shell.tabs.management")}
+                      </button>
+                    )}
                     <div className="reos-divider my-1" />
                     <button type="button" onClick={async () => { setProfileOpen(false); await signOut(); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] text-[var(--danger)] inline-flex items-center gap-2"><LogOut className="h-3.5 w-3.5" /> {t("shell.signOut")}</button>
                   </div>
