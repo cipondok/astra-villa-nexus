@@ -135,6 +135,37 @@ export function ReosHeader() {
   const dashboardPath = resolveDashboardPath(userRoles);
   const canManage = canManageProperties(userRoles);
   const isManagementActive = isManagementPath(pathname);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+  const profileTriggerRef = useRef<HTMLButtonElement>(null);
+
+  const getMenuItems = () =>
+    Array.from(
+      profileMenuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []
+    );
+
+  const handleProfileMenuKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const items = getMenuItems();
+    if (items.length === 0) return;
+    const index = items.indexOf(document.activeElement as HTMLElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      items[(index + 1 + items.length) % items.length].focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      items[(index - 1 + items.length) % items.length].focus();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      items[0].focus();
+    } else if (e.key === "End") {
+      e.preventDefault();
+      items[items.length - 1].focus();
+    } else if (e.key === "Escape" || e.key === "Tab") {
+      if (e.key === "Escape") e.preventDefault();
+      setProfileOpen(false);
+      profileTriggerRef.current?.focus();
+    }
+  };
+
 
   const [aiQuery, setAiQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -401,8 +432,18 @@ export function ReosHeader() {
               <div className="relative" ref={profileRef}>
                 <button
                   type="button"
+                  ref={profileTriggerRef}
                   onClick={() => setProfileOpen(o => !o)}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      setProfileOpen(true);
+                      requestAnimationFrame(() => getMenuItems()[0]?.focus());
+                    }
+                  }}
                   aria-label={t("shell.openUserMenu")}
+                  aria-haspopup="menu"
+                  aria-expanded={profileOpen}
                   className="h-9 pl-1 pr-2 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-1.5 hover:border-[var(--line-strong)]"
                 >
                   <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">
@@ -411,7 +452,14 @@ export function ReosHeader() {
                   <ChevronDown className="h-3 w-3 text-[var(--text-2)]" />
                 </button>
                 {profileOpen && (
-                  <div role="menu" className="absolute right-0 mt-2 w-60 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
+                  <div
+                    role="menu"
+                    ref={profileMenuRef}
+                    aria-label={t("shell.openUserMenu")}
+                    onKeyDown={handleProfileMenuKeyDown}
+                    className="absolute right-0 mt-2 w-60 reos-card p-1 z-50 shadow-[var(--shadow-popover)]"
+                  >
+
                     {/* Identity block — full name & email live INSIDE the dropdown only */}
                     <div className="px-3 py-3 border-b border-[var(--line)] mb-1">
                       <div className="flex items-center gap-2.5">
@@ -427,13 +475,13 @@ export function ReosHeader() {
                       </div>
                     </div>
 
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> {t("shell.dashboard")}</button>
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> {t("shell.myProfile")}</button>
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> {t("shell.wallet")}</button>
-                    <button type="button" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> {t("shell.saved")}</button>
+                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> {t("shell.dashboard")}</button>
+                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> {t("shell.myProfile")}</button>
+                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> {t("shell.wallet")}</button>
+                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> {t("shell.saved")}</button>
                     {canManage && (
                       <button
-                        type="button"
+                        type="button" role="menuitem"
                         aria-current={isManagementActive ? "page" : undefined}
                         onClick={() => { setProfileOpen(false); navigate("/my-properties"); }}
                         className={`w-full text-left px-3 py-2 rounded-md text-[12.5px] inline-flex items-center gap-2 transition outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#D4AF37)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--surface)] ${
@@ -447,7 +495,7 @@ export function ReosHeader() {
                       </button>
                     )}
                     <div className="reos-divider my-1" />
-                    <button type="button" onClick={async () => { setProfileOpen(false); await signOut(); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] text-[var(--danger)] inline-flex items-center gap-2"><LogOut className="h-3.5 w-3.5" /> {t("shell.signOut")}</button>
+                    <button type="button" role="menuitem" onClick={async () => { setProfileOpen(false); await signOut(); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] text-[var(--danger)] inline-flex items-center gap-2"><LogOut className="h-3.5 w-3.5" /> {t("shell.signOut")}</button>
                   </div>
                 )}
               </div>
