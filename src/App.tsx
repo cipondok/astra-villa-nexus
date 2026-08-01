@@ -77,6 +77,7 @@ const AuthNotificationHandler = lazy(() => import('@/components/AuthNotification
 const VendorOnlyRoute = lazy(() => import('@/components/VendorOnlyRoute'));
 const AgentOnlyRoute = lazy(() => import('@/components/AgentOnlyRoute'));
 const PropertyOwnerOnlyRoute = lazy(() => import('@/components/PropertyOwnerOnlyRoute'));
+const PropertyManagementRoute = lazy(() => import('@/components/PropertyManagementRoute'));
 
 // All pages — lazy loaded for minimum initial bundle
 const Index = lazy(() => import('@/pages/Index'));
@@ -609,7 +610,9 @@ const AppContent = () => {
                 <Route element={<PropertyOwnerOnlyRoute />}>
                   <Route path="/dashboard/property-owner" element={<PropertyOwnerDashboard />} />
                 </Route>
-                <Route path="/my-properties" element={<MyProperties />} />
+                <Route element={<PropertyManagementRoute />}>
+                  <Route path="/my-properties" element={<MyProperties />} />
+                </Route>
                 <Route path="/dashboard/customer-service" element={<CustomerServiceDashboardPage />} />
                 <Route path="/dashboard/user" element={<UserDashboardPage />} />
                 <Route path="/user-dashboard" element={<UserDashboardPage />} />
