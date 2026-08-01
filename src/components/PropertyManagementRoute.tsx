@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRoles } from '@/hooks/useUserRoles';
 import { canManageProperties } from '@/lib/managementRoles';
@@ -17,7 +18,26 @@ const PropertyManagementRoute: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (authLoading || rolesLoading) {
+  const ready = !authLoading && !rolesLoading;
+  const allowed = ready && !!user && canManageProperties(roles);
+  const notified = useRef(false);
+
+  useEffect(() => {
+    if (!ready || allowed || notified.current) return;
+    notified.current = true;
+    if (!user) {
+      toast.error('Sign in required', {
+        description: 'Please sign in to manage your property listings.',
+      });
+    } else {
+      toast.error('Access restricted', {
+        description:
+          'Property management is available for agents, property owners and developers only.',
+      });
+    }
+  }, [ready, allowed, user]);
+
+  if (!ready) {
     return (
       <output
         aria-live="polite"
@@ -34,6 +54,7 @@ const PropertyManagementRoute: React.FC = () => {
   }
 
   if (!canManageProperties(roles)) {
+
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 px-6 text-center">
         <div className="rounded-full bg-destructive/10 p-3">
