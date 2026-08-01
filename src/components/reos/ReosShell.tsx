@@ -16,6 +16,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import { canManageProperties, isManagementPath } from "@/lib/managementRoles";
 import { resolveDashboardPath } from "@/lib/dashboardRoute";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useFavorites } from "@/hooks/useFavorites";
