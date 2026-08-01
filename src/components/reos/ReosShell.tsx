@@ -432,8 +432,18 @@ export function ReosHeader() {
               <div className="relative" ref={profileRef}>
                 <button
                   type="button"
+                  ref={profileTriggerRef}
                   onClick={() => setProfileOpen(o => !o)}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      setProfileOpen(true);
+                      requestAnimationFrame(() => getMenuItems()[0]?.focus());
+                    }
+                  }}
                   aria-label={t("shell.openUserMenu")}
+                  aria-haspopup="menu"
+                  aria-expanded={profileOpen}
                   className="h-9 pl-1 pr-2 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-1.5 hover:border-[var(--line-strong)]"
                 >
                   <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">
@@ -442,7 +452,14 @@ export function ReosHeader() {
                   <ChevronDown className="h-3 w-3 text-[var(--text-2)]" />
                 </button>
                 {profileOpen && (
-                  <div role="menu" className="absolute right-0 mt-2 w-60 reos-card p-1 z-50 shadow-[var(--shadow-popover)]">
+                  <div
+                    role="menu"
+                    ref={profileMenuRef}
+                    aria-label={t("shell.openUserMenu")}
+                    onKeyDown={handleProfileMenuKeyDown}
+                    className="absolute right-0 mt-2 w-60 reos-card p-1 z-50 shadow-[var(--shadow-popover)]"
+                  >
+
                     {/* Identity block — full name & email live INSIDE the dropdown only */}
                     <div className="px-3 py-3 border-b border-[var(--line)] mb-1">
                       <div className="flex items-center gap-2.5">
