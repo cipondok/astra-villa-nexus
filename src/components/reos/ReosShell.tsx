@@ -132,9 +132,8 @@ export function ReosHeader() {
   const { logoUrl: headerLogo } = useBrandingLogo("headerLogo", "/astra-logo.png");
   const { data: userRoles = [] } = useUserRoles();
   const dashboardPath = resolveDashboardPath(userRoles);
-  const MANAGEMENT_ROLES = ["agent", "property_owner", "developer", "admin", "super_admin"] as const;
-  const canManageProperties = userRoles.some((r) => (MANAGEMENT_ROLES as readonly string[]).includes(r));
-  const isManagementActive = pathname.startsWith("/my-properties");
+  const canManage = canManageProperties(userRoles);
+  const isManagementActive = isManagementPath(pathname);
 
   const [aiQuery, setAiQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
