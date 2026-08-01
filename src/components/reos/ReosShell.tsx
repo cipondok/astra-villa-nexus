@@ -135,6 +135,37 @@ export function ReosHeader() {
   const dashboardPath = resolveDashboardPath(userRoles);
   const canManage = canManageProperties(userRoles);
   const isManagementActive = isManagementPath(pathname);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+  const profileTriggerRef = useRef<HTMLButtonElement>(null);
+
+  const getMenuItems = () =>
+    Array.from(
+      profileMenuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []
+    );
+
+  const handleProfileMenuKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const items = getMenuItems();
+    if (items.length === 0) return;
+    const index = items.indexOf(document.activeElement as HTMLElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      items[(index + 1 + items.length) % items.length].focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      items[(index - 1 + items.length) % items.length].focus();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      items[0].focus();
+    } else if (e.key === "End") {
+      e.preventDefault();
+      items[items.length - 1].focus();
+    } else if (e.key === "Escape" || e.key === "Tab") {
+      if (e.key === "Escape") e.preventDefault();
+      setProfileOpen(false);
+      profileTriggerRef.current?.focus();
+    }
+  };
+
 
   const [aiQuery, setAiQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
