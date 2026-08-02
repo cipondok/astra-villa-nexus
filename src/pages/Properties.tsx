@@ -624,7 +624,7 @@ export default function Properties() {
         </div>
 
         {filterOpen && (
-          <div className="mt-5 reos-card p-5 space-y-6">
+          <div className="mt-5 reos-card p-5 sm:p-6 space-y-7">
             {/* Property Type */}
             <div>
               <div className="flex items-center justify-between mb-3">
@@ -638,88 +638,108 @@ export default function Properties() {
                   </button>
                 )}
               </div>
-              <div className="flex flex-wrap gap-2">
-                {PROPERTY_TYPES.map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => updateParam("type", t)}
-                    className={cn(
-                      "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
-                      type === t
-                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
-                        : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
-                    )}
-                  >
-                    {t}
-                  </button>
-                ))}
+              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+                {PROPERTY_TYPE_OPTIONS.map(({ id, label, Icon }) => {
+                  const active = type === id;
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => (active && id !== "all" ? removeParam("type") : updateParam("type", id))}
+                      className={cn(
+                        "group relative min-h-[64px] rounded-xl border px-2 py-3 flex flex-col items-center justify-center gap-1.5",
+                        "transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]/50",
+                        active
+                          ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold shadow-[var(--shadow-soft)]"
+                          : "border-[var(--line)] bg-[var(--surface-2)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)] hover:-translate-y-0.5"
+                      )}
+                    >
+                      {active && (
+                        <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--gold)]/20 flex items-center justify-center">
+                          <Check className="w-2.5 h-2.5" />
+                        </span>
+                      )}
+                      <Icon className="w-4 h-4" />
+                      <span className="text-[11px] tracking-[0.06em] capitalize leading-none">{label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Listing Type */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Listing Type</div>
-                {listingType && (
-                  <button
-                    onClick={() => removeParam("listing_type")}
-                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
-                  >
-                    <X className="w-3 h-3" /> Reset
-                  </button>
-                )}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Listing Type */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Listing Type</div>
+                  {listingType && (
+                    <button
+                      onClick={() => removeParam("listing_type")}
+                      className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                    >
+                      <X className="w-3 h-3" /> Reset
+                    </button>
+                  )}
+                </div>
+                <div
+                  role="group"
+                  aria-label="Listing type"
+                  className="inline-flex w-full max-w-sm items-center rounded-xl border border-[var(--line)] bg-[var(--surface-2)] p-1"
+                >
+                  {LISTING_TYPES.map((l) => (
+                    <button
+                      key={l.id || "any"}
+                      type="button"
+                      aria-pressed={listingType === l.id}
+                      onClick={() => updateParam("listing_type", l.id)}
+                      className={cn(
+                        "flex-1 min-h-[36px] rounded-lg text-[12px] tracking-[0.08em] transition-all duration-200",
+                        listingType === l.id
+                          ? "bg-[var(--gold-soft)] reos-gold shadow-[var(--shadow-soft)]"
+                          : "text-[var(--text-2)] hover:text-[var(--text)]"
+                      )}
+                    >
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {LISTING_TYPES.map((l) => (
-                  <button
-                    key={l.id || "any"}
-                    onClick={() => updateParam("listing_type", l.id)}
-                    className={cn(
-                      "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
-                      listingType === l.id
-                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
-                        : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
-                    )}
-                  >
-                    {l.label}
-                  </button>
-                ))}
-              </div>
-            </div>
 
-            {/* Location */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Location (state, city or area)</div>
-                {location && (
-                  <button
-                    onClick={() => { removeParam("location"); setLocationInput(""); }}
-                    className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
-                  >
-                    <X className="w-3 h-3" /> Reset
-                  </button>
-                )}
-              </div>
-              <div className="relative max-w-md">
-                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
-                <input
-                  value={locationInput}
-                  onChange={(e) => setLocationInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      updateParam("location", locationInput.trim());
-                    }
-                  }}
-                  onBlur={() => {
-                    if (locationInput.trim() !== location) updateParam("location", locationInput.trim());
-                  }}
-                  placeholder="e.g. Bali, Canggu, Jakarta…"
-                  aria-label="Filter by location"
-                  list="astra-locations"
-                  autoComplete="off"
-                  className="w-full h-10 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
-                />
+              {/* Location */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-2)]">Location (state, city or area)</div>
+                  {location && (
+                    <button
+                      onClick={() => { removeParam("location"); setLocationInput(""); }}
+                      className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors inline-flex items-center gap-1"
+                    >
+                      <X className="w-3 h-3" /> Reset
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
+                  <input
+                    value={locationInput}
+                    onChange={(e) => setLocationInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        updateParam("location", locationInput.trim());
+                      }
+                    }}
+                    onBlur={() => {
+                      if (locationInput.trim() !== location) updateParam("location", locationInput.trim());
+                    }}
+                    placeholder="e.g. Bali, Canggu, Jakarta…"
+                    aria-label="Filter by location"
+                    list="astra-locations"
+                    autoComplete="off"
+                    className="w-full h-10 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
+                  />
+                </div>
               </div>
             </div>
 
@@ -740,14 +760,17 @@ export default function Properties() {
                 {PRICE_RANGES.map((r) => (
                   <button
                     key={r.id || "any"}
+                    type="button"
+                    aria-pressed={priceRangeId === r.id}
                     onClick={() => updateParam("price", r.id)}
                     className={cn(
-                      "px-4 py-1.5 rounded-full text-[12px] uppercase tracking-[0.16em] border transition-colors",
+                      "min-h-[36px] px-4 rounded-full text-[12px] tracking-[0.06em] border transition-all duration-200 inline-flex items-center gap-1.5",
                       priceRangeId === r.id
-                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold"
-                        : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
+                        ? "bg-[var(--gold-soft)] border-[var(--line-strong)] reos-gold shadow-[var(--shadow-soft)]"
+                        : "border-[var(--line)] bg-[var(--surface-2)] text-[var(--text-2)] hover:border-[var(--line-strong)] hover:text-[var(--text)]"
                     )}
                   >
+                    {priceRangeId === r.id && <Check className="w-3 h-3" />}
                     {r.label}
                   </button>
                 ))}
@@ -766,6 +789,7 @@ export default function Properties() {
                 >
                   <X className="w-3.5 h-3.5" /> Reset All
                 </button>
+
                 <button
                   onClick={() => setFilterOpen(false)}
                   className="h-9 px-4 rounded-lg reos-cta text-[12px] uppercase tracking-[0.16em]"
