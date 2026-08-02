@@ -131,6 +131,16 @@ const COLLECTION_LABELS: Record<string, string> = {
 };
 
 const PROPERTY_TYPES = ["all", "villa", "house", "apartment", "townhouse", "condo", "land", "commercial"] as const;
+const PROPERTY_TYPE_OPTIONS: { id: string; label: string; Icon: typeof Home }[] = [
+  { id: "all",        label: "All",        Icon: Layers },
+  { id: "villa",      label: "Villa",      Icon: Home },
+  { id: "house",      label: "House",      Icon: Home },
+  { id: "apartment",  label: "Apartment",  Icon: Building2 },
+  { id: "townhouse",  label: "Townhouse",  Icon: Building },
+  { id: "condo",      label: "Condo",      Icon: Building2 },
+  { id: "land",       label: "Land",       Icon: Trees },
+  { id: "commercial", label: "Commercial", Icon: Store },
+];
 const LISTING_TYPES = [
   { id: "",     label: "Any" },
   { id: "sale", label: "For Sale" },
