@@ -547,6 +547,7 @@ const AppContent = () => {
                 <Route path="/fractional-investment" element={<FractionalInvestmentPage />} />
                 <Route path="/developer-demand-forecast" element={<DeveloperDemandForecastPage />} />
                 <Route path="/properties/:id" element={<PropertyDetail />} />
+                <Route path="/property/:id" element={<PropertyDetail />} />
                 <Route path="/add-property" element={<AddProperty />} />
                 <Route path="/post-property" element={<AddProperty />} />
                 <Route path="/submit-listing" element={<SubmitPropertyListing />} />
