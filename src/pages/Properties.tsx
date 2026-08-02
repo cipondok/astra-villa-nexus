@@ -130,7 +130,7 @@ const COLLECTION_LABELS: Record<string, string> = {
   curated:   "Curated Worlds",
 };
 
-const PROPERTY_TYPES = ["all", "villa", "house", "apartment", "townhouse", "condo", "land", "commercial"] as const;
+
 const PROPERTY_TYPE_OPTIONS: { id: string; label: string; Icon: typeof Home }[] = [
   { id: "all",        label: "All",        Icon: Layers },
   { id: "villa",      label: "Villa",      Icon: Home },
