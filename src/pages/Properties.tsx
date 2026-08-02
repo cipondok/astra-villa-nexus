@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 import {
   Search as SearchIcon, MapPin, Bed, Bath, Maximize, TrendingUp,
   Sparkles, ArrowUpRight, SlidersHorizontal, X, Loader2,
-  LayoutGrid, List as ListIcon,
+  LayoutGrid, List as ListIcon, Check,
+  Home, Building2, Building, Warehouse, Trees, Store, Layers,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
