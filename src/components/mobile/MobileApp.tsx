@@ -57,6 +57,7 @@ const MobileApp: React.FC = () => {
           {/* Core investor flows */}
           <Route path="/" element={<Index />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/property/:id" element={<PropertyDetail />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
           <Route path="/saved" element={<Saved />} />
           <Route path="/notifications" element={<Notifications />} />
