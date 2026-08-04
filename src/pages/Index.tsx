@@ -500,7 +500,7 @@ const Index = () => {
         city: property.city,
       }
     });
-    navigate(`/properties/${property.id}`);
+    navigate(`/property/${property.id}`);
   };
 
   const handleFiltersChange = (newFilters: PropertyFilters) => {

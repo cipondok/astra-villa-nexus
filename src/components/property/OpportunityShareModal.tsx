@@ -65,7 +65,7 @@ export default function OpportunityShareModal({ open, onOpenChange, property }: 
   });
 
   const buildShareUrl = (channel: string) => {
-    const base = `${window.location.origin}/properties/${property.id}`;
+    const base = `${window.location.origin}/property/${property.id}`;
     const params = new URLSearchParams();
     if (referralCode) params.set('ref', referralCode);
     params.set('utm_source', channel);

@@ -70,7 +70,7 @@ export default memo(function PriceDropAlertsFeed() {
           return (
             <div
               key={`${deal.property_id}-${deal.changed_at}`}
-              onClick={() => navigate(`/properties/${deal.property_id}`)}
+              onClick={() => navigate(`/property/${deal.property_id}`)}
               className={cn(
                 'rounded-lg border px-3 py-2.5 cursor-pointer transition-all hover:scale-[1.01]',
                 tier.bg,

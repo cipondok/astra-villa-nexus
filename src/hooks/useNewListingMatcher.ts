@@ -269,7 +269,7 @@ export const useNewListingMatcher = () => {
             action: {
               label: 'View',
               onClick: () => {
-                window.location.href = `/properties/${property.id}`;
+                window.location.href = `/property/${property.id}`;
               },
             },
           });

@@ -218,7 +218,7 @@ const PropertyRecommendations = ({ propertyId, propertyType }: PropertyRecommend
               >
                 <div
                   className="cursor-pointer"
-                  onClick={() => navigate(`/properties/${p.id}`)}
+                  onClick={() => navigate(`/property/${p.id}`)}
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                     <img

@@ -662,7 +662,7 @@ const PropertyManager = () => {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => window.open(`/properties/${property.id}`, '_blank')}
+                        onClick={() => window.open(`/property/${property.id}`, '_blank')}
                       >
                         <Eye className="h-3 w-3 mr-1" />
                         View

@@ -145,7 +145,7 @@ const EarlyInvestment = () => {
                   <OffPlanProjectCard
                     key={project.id}
                     project={project}
-                    onClick={(id) => navigate(`/properties/${id}`)}
+                    onClick={(id) => navigate(`/property/${id}`)}
                   />
                 ))}
               </div>

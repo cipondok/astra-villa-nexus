@@ -50,7 +50,7 @@ function StreakCard({ property, index }: { property: any; index: number }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08, duration: 0.3 }}
-      onClick={() => navigate(`/properties/${property.id}`)}
+      onClick={() => navigate(`/property/${property.id}`)}
       className="flex-shrink-0 w-[260px] sm:w-[290px] md:w-[310px] lg:w-[330px] snap-start group/card cursor-pointer"
     >
       <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm card-hover-lift will-change-transform">

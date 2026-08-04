@@ -75,7 +75,7 @@ function BookingCard({
         {/* Property Image */}
         <div 
           className="w-full sm:w-48 h-32 sm:h-auto cursor-pointer"
-          onClick={() => navigate(`/properties/${booking.property_id}`)}
+          onClick={() => navigate(`/property/${booking.property_id}`)}
         >
           <img
             src={booking.properties?.images?.[0] || '/placeholder.svg'}
@@ -90,7 +90,7 @@ function BookingCard({
             <div>
               <h3 
                 className="font-semibold text-base line-clamp-1 cursor-pointer hover:text-primary"
-                onClick={() => navigate(`/properties/${booking.property_id}`)}
+                onClick={() => navigate(`/property/${booking.property_id}`)}
               >
                 {booking.properties?.title || 'Property'}
               </h3>

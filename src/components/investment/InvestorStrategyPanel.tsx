@@ -114,7 +114,7 @@ function StrategyCard({ strategy, index }: { strategy: InvestmentStrategy; index
                     <div
                       key={p.id}
                       className="flex items-center gap-3 p-2 rounded-lg bg-card/50 border border-border/20 hover:border-primary/20 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/properties/${p.id}`)}
+                      onClick={() => navigate(`/property/${p.id}`)}
                     >
                       {p.image_url && (
                         <img src={p.image_url} alt="" className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />

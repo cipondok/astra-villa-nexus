@@ -230,7 +230,7 @@ const MobileInvestorDashboard: React.FC = () => {
                     return (
                       <button
                         key={alert.id}
-                        onClick={() => alert.property_id && navigate(`/properties/${alert.property_id}`)}
+                        onClick={() => alert.property_id && navigate(`/property/${alert.property_id}`)}
                         className="w-full flex items-center gap-3 p-3 rounded-xl bg-card border border-border/30 active:scale-[0.98] transition-transform text-left"
                       >
                         <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center shrink-0', config.color)}>
@@ -305,7 +305,7 @@ const MobileInvestorDashboard: React.FC = () => {
                     {portfolio.properties.slice(0, 6).map((prop) => (
                       <button
                         key={prop.id}
-                        onClick={() => navigate(`/properties/${prop.id}`)}
+                        onClick={() => navigate(`/property/${prop.id}`)}
                         className="w-44 shrink-0 rounded-2xl bg-card border border-border/30 overflow-hidden active:scale-[0.97] transition-transform text-left"
                       >
                         <div className="relative">
@@ -373,7 +373,7 @@ const MobileInvestorDashboard: React.FC = () => {
                 <div className="space-y-1.5">
                   {portfolio.top_performer && (
                     <button
-                      onClick={() => navigate(`/properties/${portfolio.top_performer!.id}`)}
+                      onClick={() => navigate(`/property/${portfolio.top_performer!.id}`)}
                       className="w-full flex items-center gap-3 p-3 rounded-xl bg-chart-3/5 border border-chart-3/15 active:scale-[0.98] transition-transform text-left"
                     >
                       <TrendingUp className="h-5 w-5 text-chart-3 shrink-0" />
@@ -386,7 +386,7 @@ const MobileInvestorDashboard: React.FC = () => {
                   )}
                   {portfolio.weakest_performer && (
                     <button
-                      onClick={() => navigate(`/properties/${portfolio.weakest_performer!.id}`)}
+                      onClick={() => navigate(`/property/${portfolio.weakest_performer!.id}`)}
                       className="w-full flex items-center gap-3 p-3 rounded-xl bg-destructive/5 border border-destructive/15 active:scale-[0.98] transition-transform text-left"
                     >
                       <AlertTriangle className="h-5 w-5 text-destructive shrink-0" />
@@ -414,7 +414,7 @@ const MobileInvestorDashboard: React.FC = () => {
                   {portfolio.properties.slice(0, 5).map((prop) => (
                     <button
                       key={prop.id}
-                      onClick={() => navigate(`/properties/${prop.id}`)}
+                      onClick={() => navigate(`/property/${prop.id}`)}
                       className="w-full flex items-center gap-3 p-3 rounded-xl bg-card border border-border/30 active:scale-[0.98] transition-transform text-left"
                     >
                       <img

@@ -395,7 +395,7 @@ const OpportunityFeed: React.FC = () => {
                     </div>
                   </div>
 
-                  <Link to={`/properties/${p.id}`} className="mt-3">
+                  <Link to={`/property/${p.id}`} className="mt-3">
                     <Button variant="outline" size="sm" className="w-full text-xs">
                       <Eye className="h-3 w-3 mr-1.5" /> View Details
                     </Button>

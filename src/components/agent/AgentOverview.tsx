@@ -139,7 +139,7 @@ const AgentOverview = () => {
   };
 
   const handleViewProperty = (propertyId: string) => {
-    window.open(`/properties/${propertyId}`, '_blank');
+    window.open(`/property/${propertyId}`, '_blank');
   };
 
   const handleEditProperty = (propertyId: string) => {

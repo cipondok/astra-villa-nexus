@@ -311,7 +311,7 @@ export const PropertyComparison = () => {
                     variant="outline"
                     size="sm"
                     className="flex-1 h-7 text-[10px]"
-                    onClick={() => window.open(`/properties/${property.id}`, '_blank')}
+                    onClick={() => window.open(`/property/${property.id}`, '_blank')}
                   >
                     View Details
                   </Button>

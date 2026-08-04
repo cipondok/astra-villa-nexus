@@ -5,7 +5,7 @@ export const shareProperty = async (property: {
   location: string;
   images?: string[];
 }) => {
-  const url = `${window.location.origin}/properties/${property.id}`;
+  const url = `${window.location.origin}/property/${property.id}`;
   const shareText = `Check out this property: ${property.title} in ${property.location}`;
   const fullText = `${shareText} - ${url}`;
 

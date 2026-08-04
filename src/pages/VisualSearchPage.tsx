@@ -218,7 +218,7 @@ export default function VisualSearchPage() {
                 </h3>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {matchedProperties.map((prop, idx) => (
-                    <PropertyMatchCard key={prop.id} property={prop} rank={idx + 1} onClick={() => navigate(`/properties/${prop.id}`)} />
+                    <PropertyMatchCard key={prop.id} property={prop} rank={idx + 1} onClick={() => navigate(`/property/${prop.id}`)} />
                   ))}
                 </div>
               </div>

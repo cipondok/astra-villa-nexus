@@ -221,7 +221,7 @@ const PropertyAdvisorPanel: React.FC = () => {
                           key={rec.property_id}
                           rec={rec}
                           index={i}
-                          onView={(id) => navigate(`/properties/${id}`)}
+                          onView={(id) => navigate(`/property/${id}`)}
                         />
                       ))}
                     </div>

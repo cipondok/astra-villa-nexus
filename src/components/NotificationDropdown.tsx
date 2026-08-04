@@ -110,7 +110,7 @@ const NotificationDropdown: React.FC<{ onNavigate?: (path: string) => void }> = 
       markAsRead(notification.id);
     }
     if (notification.propertyId) {
-      onNavigate?.(`/properties/${notification.propertyId}`);
+      onNavigate?.(`/property/${notification.propertyId}`);
       setIsOpen(false);
     }
   };

@@ -300,7 +300,7 @@ const Property3DShowcase = () => {
                           <Button 
                             variant="default"
                             className="flex-1"
-                            onClick={() => navigate(`/properties/${property.id}`)}
+                            onClick={() => navigate(`/property/${property.id}`)}
                           >
                             <Eye className="h-4 w-4 mr-1" />
                             View Details

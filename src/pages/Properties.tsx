@@ -1005,7 +1005,7 @@ function VillaCard({ listing, index }: { listing: Listing; index: number }) {
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.55, delay: Math.min(index * 0.05, 0.3), ease: [0.22, 1, 0.36, 1] }}
     >
-      <Link to={`/properties/${listing.id}`} className="block group">
+      <Link to={`/property/${listing.id}`} className="block group">
         <div className="reos-card overflow-hidden flex flex-col h-full transition-all duration-300 hover:border-[var(--line-strong)] hover:shadow-[0_24px_60px_-28px_rgba(200,169,106,0.25)]">
           <div className="relative aspect-[4/5] overflow-hidden bg-[var(--surface-2)]">
             {/* Skeleton shimmer — visible until image decodes. Sits behind the img so no flash. */}
@@ -1230,7 +1230,7 @@ function VillaCardList({ listing, index }: { listing: Listing; index: number }) 
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.45, delay: Math.min(index * 0.03, 0.2), ease: [0.22, 1, 0.36, 1] }}
     >
-      <Link to={`/properties/${listing.id}`} className="block group">
+      <Link to={`/property/${listing.id}`} className="block group">
         <article className="reos-card overflow-hidden flex flex-col sm:flex-row transition-all duration-300 hover:border-[var(--line-strong)] hover:shadow-[0_24px_60px_-28px_rgba(200,169,106,0.25)]">
           <div className="relative w-full sm:w-[220px] md:w-[240px] shrink-0 aspect-square overflow-hidden bg-[var(--surface-2)] sm:m-3 sm:rounded-xl">
             <div

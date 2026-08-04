@@ -167,7 +167,7 @@ export default function PriceDropDealsPage() {
               return (
                 <Card
                   key={`${deal.property_id}-${deal.changed_at}`}
-                  onClick={() => navigate(`/properties/${deal.property_id}`)}
+                  onClick={() => navigate(`/property/${deal.property_id}`)}
                   className={cn(
                     'bg-card/80 backdrop-blur border cursor-pointer transition-all hover:scale-[1.02] hover:shadow-lg',
                     tier.bg,

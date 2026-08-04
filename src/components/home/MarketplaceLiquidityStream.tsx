@@ -46,7 +46,7 @@ const MarketplaceLiquidityStream = () => {
           {streamItems.slice(0, 9).map((item, i) => {
             const config = typeConfig[item.type];
             return (
-              <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ delay: i * 0.04 }} onClick={() => navigate(`/properties/${item.id}`)} className="flex items-center gap-3 p-3 rounded-xl border border-border/60 bg-card/80 hover:border-primary/30 cursor-pointer transition-all group shadow-sm">
+              <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ delay: i * 0.04 }} onClick={() => navigate(`/property/${item.id}`)} className="flex items-center gap-3 p-3 rounded-xl border border-border/60 bg-card/80 hover:border-primary/30 cursor-pointer transition-all group shadow-sm">
                 <div className={`flex items-center justify-center w-8 h-8 rounded-lg border flex-shrink-0 ${config.color}`}><config.icon className="h-3.5 w-3.5" /></div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2"><span className={`text-[9px] font-bold uppercase tracking-wider ${config.color.split(' ')[0]}`}>{config.label}</span></div>

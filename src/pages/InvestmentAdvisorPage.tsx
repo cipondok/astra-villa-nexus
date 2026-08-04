@@ -258,7 +258,7 @@ export default function InvestmentAdvisorPage() {
                   rank={idx + 1}
                   isExpanded={expandedId === rec.property_id}
                   onToggle={() => setExpandedId(expandedId === rec.property_id ? null : rec.property_id)}
-                  onView={() => navigate(`/properties/${rec.property_id}`)}
+                  onView={() => navigate(`/property/${rec.property_id}`)}
                 />
               ))}
             </AnimatePresence>

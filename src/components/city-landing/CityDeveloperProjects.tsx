@@ -43,7 +43,7 @@ const CityDeveloperProjects = ({ cityName, projects }: Props) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                onClick={() => navigate(`/properties/${p.id}`)}
+                onClick={() => navigate(`/property/${p.id}`)}
                 className="group cursor-pointer rounded-xl overflow-hidden border border-border bg-card hover:border-primary/20 transition-all"
               >
                 <div className="aspect-video overflow-hidden">

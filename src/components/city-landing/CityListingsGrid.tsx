@@ -50,7 +50,7 @@ const CityListingsGrid = ({ cityName, properties }: Props) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06 }}
-                onClick={() => navigate(`/properties/${p.id}`)}
+                onClick={() => navigate(`/property/${p.id}`)}
                 className={`group cursor-pointer rounded-2xl overflow-hidden border bg-card transition-all duration-300 ${isElite ? 'border-intel-success/30 shadow-md' : 'border-border hover:border-primary/20'}`}
               >
                 <div className="relative aspect-[4/3] overflow-hidden">

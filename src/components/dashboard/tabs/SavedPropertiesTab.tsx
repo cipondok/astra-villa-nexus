@@ -153,10 +153,10 @@ const SavedPropertiesTab = () => {
                       </div>
                     </div>
                     <div className="flex gap-1 p-1.5 pt-0 border-t border-border/40 mt-1">
-                      <Button variant="outline" size="sm" className="h-5 text-[8px] flex-1 border-primary/15 hover:bg-primary/5 hover:text-primary" onClick={() => navigate(`/properties/${p.id}`)}>
+                      <Button variant="outline" size="sm" className="h-5 text-[8px] flex-1 border-primary/15 hover:bg-primary/5 hover:text-primary" onClick={() => navigate(`/property/${p.id}`)}>
                         <Eye className="h-2.5 w-2.5 mr-0.5" />View
                       </Button>
-                      <Button variant="outline" size="sm" className="h-5 text-[8px] flex-1 border-primary/15 hover:bg-primary/5 hover:text-primary" onClick={() => navigate(`/properties/${p.id}?inquiry=true`)}>
+                      <Button variant="outline" size="sm" className="h-5 text-[8px] flex-1 border-primary/15 hover:bg-primary/5 hover:text-primary" onClick={() => navigate(`/property/${p.id}?inquiry=true`)}>
                         <MessageSquare className="h-2.5 w-2.5 mr-0.5" />Inquire
                       </Button>
                       <Button variant="ghost" size="sm" className="h-5 text-[8px] text-destructive hover:text-destructive" onClick={() => handleRemove(fav.id)}>

@@ -19,7 +19,7 @@ interface SocialShareDialogProps {
 const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogProps) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const shareUrl = `${window.location.origin}/properties/${property.id}`;
+  const shareUrl = `${window.location.origin}/property/${property.id}`;
   const shareTitle = property.title;
   const shareDescription = `Check out this property: ${property.title} in ${property.city || property.location}`;
   const { getPropertyImage } = useDefaultPropertyImage();

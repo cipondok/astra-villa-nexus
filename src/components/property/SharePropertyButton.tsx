@@ -50,7 +50,7 @@ const SharePropertyButton = ({
   });
 
   const buildShareUrl = (channel: string) => {
-    const base = `${window.location.origin}/properties/${propertyId}`;
+    const base = `${window.location.origin}/property/${propertyId}`;
     const params = new URLSearchParams();
     if (referralCode) params.set('ref', referralCode);
     params.set('utm_source', channel);

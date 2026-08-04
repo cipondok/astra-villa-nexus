@@ -1,6 +1,6 @@
 // App entry point
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { CurrencyProvider } from '@/contexts/CurrencyContext';
@@ -402,6 +402,12 @@ const useMaintenanceMode = () => {
   return { maintenanceMode, maintenanceMessage };
 };
 
+const LegacyPropertyRedirect = () => {
+  const { id } = useParams();
+  const { search, hash } = useLocation();
+  return <Navigate to={`/property/${id}${search}${hash}`} replace />;
+};
+
 const AppContent = () => {
   useCLSMonitor(process.env.NODE_ENV === 'development');
   useScrollRestore(true);
@@ -546,7 +552,8 @@ const AppContent = () => {
                 <Route path="/blockchain-verification" element={<BlockchainVerification />} />
                 <Route path="/fractional-investment" element={<FractionalInvestmentPage />} />
                 <Route path="/developer-demand-forecast" element={<DeveloperDemandForecastPage />} />
-                <Route path="/properties/:id" element={<PropertyDetail />} />
+                {/* Legacy detail URL — canonical is /property/:id */}
+                <Route path="/properties/:id" element={<LegacyPropertyRedirect />} />
                 <Route path="/property/:id" element={<PropertyDetail />} />
                 <Route path="/add-property" element={<AddProperty />} />
                 <Route path="/post-property" element={<AddProperty />} />
