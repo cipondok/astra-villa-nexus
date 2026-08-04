@@ -39,7 +39,7 @@ const PropertySlideshow = () => {
   const { getPropertyImage } = useDefaultPropertyImage();
 
   const handlePropertyClick = (propertyId: number | string) => {
-    navigate(`/properties/${propertyId}`);
+    navigate(`/property/${propertyId}`);
   };
 
   const { data: properties = [] } = useQuery({

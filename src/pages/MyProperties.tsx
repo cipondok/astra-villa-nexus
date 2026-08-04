@@ -253,7 +253,7 @@ const MyProperties = () => {
                 >
                   <Card
                     className="rounded-2xl border-border/30 bg-card overflow-hidden cursor-pointer card-hover-lift"
-                    onClick={() => navigate(`/properties/${property.id}`)}
+                    onClick={() => navigate(`/property/${property.id}`)}
                   >
                     <CardContent className="p-3 flex gap-3">
                       {/* Thumbnail */}
@@ -283,7 +283,7 @@ const MyProperties = () => {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-44">
-                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/properties/${property.id}`); }}>
+                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/property/${property.id}`); }}>
                                   <Eye className="h-3.5 w-3.5 mr-2" /> Lihat
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/property/${property.id}/edit`); }}>

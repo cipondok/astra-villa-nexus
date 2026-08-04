@@ -203,7 +203,7 @@ const MyRentalInquiries = () => {
                       <Card
                         key={`${item.type}-${item.id}`}
                         className="rounded-2xl border-border/30 hover:border-primary/20 transition-colors cursor-pointer active:scale-[0.98]"
-                        onClick={() => navigate(`/properties/${item.id}`)}
+                        onClick={() => navigate(`/property/${item.id}`)}
                       >
                         <CardContent className="p-3 flex items-center gap-3">
                           {/* Image */}

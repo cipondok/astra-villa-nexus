@@ -275,7 +275,7 @@ const InvestorWatchlist = () => {
                           isElite && 'ring-1 ring-amber-400/30 shadow-[0_0_12px_-4px] shadow-amber-400/20',
                           item.has_new_alert && 'border-primary/40'
                         )}
-                        onClick={() => navigate(`/properties/${p.id}`)}
+                        onClick={() => navigate(`/property/${p.id}`)}
                       >
                         <CardContent className="p-3 flex gap-3">
                           {/* Image */}

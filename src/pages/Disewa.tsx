@@ -219,7 +219,7 @@ const Disewa = () => {
             ) : viewMode === 'list' ? (
               <PropertyListView
                 properties={properties as any}
-                onPropertyClick={(property) => navigate(`/properties/${property.id}`)}
+                onPropertyClick={(property) => navigate(`/property/${property.id}`)}
                 onSave={(property) => handleSaveProperty(property.id)}
               />
             ) : (
@@ -230,7 +230,7 @@ const Disewa = () => {
                   return (
                     <Card
                       key={property.id}
-                      onClick={() => navigate(`/properties/${property.id}`)}
+                      onClick={() => navigate(`/property/${property.id}`)}
                       className="group cursor-pointer overflow-hidden border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300"
                     >
                       <div className="relative aspect-[4/3] overflow-hidden">

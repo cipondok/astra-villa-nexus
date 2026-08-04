@@ -389,7 +389,7 @@ const PropertyComparison = () => {
                                   </Button>
                                 </div>
                                 <h3 className="font-semibold text-sm line-clamp-2">{p.title}</h3>
-                                <Button variant="outline" size="sm" className="w-full text-xs border-amber-500/20 hover:bg-amber-500/5" onClick={() => navigate(`/properties/${p.id}`)}>
+                                <Button variant="outline" size="sm" className="w-full text-xs border-amber-500/20 hover:bg-amber-500/5" onClick={() => navigate(`/property/${p.id}`)}>
                                   <Eye className="h-3 w-3 mr-1" />View Details
                                 </Button>
                               </div>

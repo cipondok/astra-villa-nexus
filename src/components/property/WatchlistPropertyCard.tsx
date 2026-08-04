@@ -81,7 +81,7 @@ const WatchlistPropertyCard = memo(({
       )}
     >
       {/* ── IMAGE ── */}
-      <div className="relative h-[140px] sm:h-[160px] overflow-hidden" onClick={() => navigate(`/properties/${property.id}`)}>
+      <div className="relative h-[140px] sm:h-[160px] overflow-hidden" onClick={() => navigate(`/property/${property.id}`)}>
         {!imgLoaded && <div className="absolute inset-0 bg-muted animate-pulse" />}
         <img
           src={imageUrl}
@@ -124,7 +124,7 @@ const WatchlistPropertyCard = memo(({
       </div>
 
       {/* ── INFO ── */}
-      <div className="flex flex-col flex-1 p-3" onClick={() => navigate(`/properties/${property.id}`)}>
+      <div className="flex flex-col flex-1 p-3" onClick={() => navigate(`/property/${property.id}`)}>
         <h3 className="text-[13px] sm:text-sm font-semibold text-foreground leading-snug truncate">
           {property.title}
         </h3>
@@ -188,7 +188,7 @@ const WatchlistPropertyCard = memo(({
           onClick={(e) => {
             e.stopPropagation();
             if (onInquiry) onInquiry(property.id);
-            else navigate(`/properties/${property.id}?inquiry=true`);
+            else navigate(`/property/${property.id}?inquiry=true`);
           }}
           className={cn(
             'flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] sm:text-xs font-medium',
@@ -201,7 +201,7 @@ const WatchlistPropertyCard = memo(({
 
         {/* View details */}
         <button
-          onClick={(e) => { e.stopPropagation(); navigate(`/properties/${property.id}`); }}
+          onClick={(e) => { e.stopPropagation(); navigate(`/property/${property.id}`); }}
           className="ml-auto flex items-center gap-0.5 text-[10px] sm:text-xs font-medium text-primary group-hover:gap-1.5 transition-all"
         >
           Details

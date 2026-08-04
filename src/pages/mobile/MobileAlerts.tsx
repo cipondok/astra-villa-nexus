@@ -48,7 +48,7 @@ const MobileAlerts: React.FC = () => {
 
   const handleAlertClick = (alert: DealAlert) => {
     if (!alert.is_read) markRead.mutate(alert.id);
-    if (alert.property_id) navigate(`/properties/${alert.property_id}`);
+    if (alert.property_id) navigate(`/property/${alert.property_id}`);
   };
 
   const getAlertType = (alert: DealAlert): string => {

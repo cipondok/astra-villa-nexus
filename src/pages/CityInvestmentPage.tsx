@@ -99,7 +99,7 @@ const CityInvestmentPage = () => {
               '@type': 'ListItem',
               position: i + 1,
               name: p.title,
-              url: `https://astra-villa-realty.lovable.app/properties/${p.id}`,
+              url: `https://astra-villa-realty.lovable.app/property/${p.id}`,
             })),
           },
         ]}

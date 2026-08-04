@@ -70,7 +70,7 @@ function ActionShortcuts({ conv, onSendMessage }: {
 
   const sharePropertyLink = () => {
     if (conv.property_id) {
-      const link = `${window.location.origin}/properties/${conv.property_id}`;
+      const link = `${window.location.origin}/property/${conv.property_id}`;
       const msg = `🏠 Here's the property link: ${link}\n\n${conv.property_title || 'Property Details'}`;
       onSendMessage(msg);
       setOpen(false);
@@ -552,7 +552,7 @@ const MessagesPage: React.FC = () => {
                         variant="outline"
                         size="sm"
                         className="text-[10px] h-7 gap-1 hidden sm:flex"
-                        onClick={() => navigate(`/properties/${selectedConv.property_id}`)}
+                        onClick={() => navigate(`/property/${selectedConv.property_id}`)}
                       >
                         <Eye className="h-3 w-3" /> View Property
                       </Button>
@@ -571,7 +571,7 @@ const MessagesPage: React.FC = () => {
                         {selectedConv.property_title && (
                           <div
                             className="mx-auto max-w-xs p-3 rounded-xl bg-muted/30 border border-border/30 cursor-pointer hover:bg-muted/50 transition-colors mb-4"
-                            onClick={() => navigate(`/properties/${selectedConv.property_id}`)}
+                            onClick={() => navigate(`/property/${selectedConv.property_id}`)}
                           >
                             {selectedConv.property_image && (
                               <img

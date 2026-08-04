@@ -111,7 +111,7 @@ const PropertyListingMapView = ({ properties, formatPrice }: PropertyListingMapV
         const safeTitle = sanitizeSync(p.title, { ALLOWED_TAGS: [] });
         const safePrice = sanitizeSync(formatPrice(p.price), { ALLOWED_TAGS: [] });
         return `
-          <a href="/properties/${p.id}" class="flex gap-2 p-2 hover:bg-gray-50 rounded transition-colors no-underline" style="text-decoration:none;color:inherit;">
+          <a href="/property/${p.id}" class="flex gap-2 p-2 hover:bg-gray-50 rounded transition-colors no-underline" style="text-decoration:none;color:inherit;">
             <img src="${sanitizeSync(img, { ALLOWED_TAGS: [] })}" alt="" class="w-14 h-14 object-cover rounded flex-shrink-0" />
             <div class="min-w-0">
               <p class="text-sm font-semibold truncate">${safeTitle}</p>

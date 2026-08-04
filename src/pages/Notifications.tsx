@@ -300,7 +300,7 @@ const Notifications = () => {
     if (type.includes('offer') || type.includes('deal') || type.includes('negotiation')) {
       navigate('/my-offers');
     } else if (propertyId) {
-      navigate(`/properties/${propertyId}`);
+      navigate(`/property/${propertyId}`);
     }
   }, [navigate, markAsRead]);
 

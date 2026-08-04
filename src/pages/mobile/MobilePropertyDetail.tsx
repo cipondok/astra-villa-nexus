@@ -109,7 +109,7 @@ const MobilePropertyDetail: React.FC = () => {
             <button
               onClick={() => {
                 if (navigator.share) {
-                  navigator.share({ title: property.title, url: `${window.location.origin}/properties/${property.id}` });
+                  navigator.share({ title: property.title, url: `${window.location.origin}/property/${property.id}` });
                 }
               }}
               className="w-9 h-9 rounded-full bg-black/40 backdrop-blur flex items-center justify-center active:scale-95"

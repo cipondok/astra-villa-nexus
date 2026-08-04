@@ -405,7 +405,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
           <PropertyListView
             properties={displayProperties as any}
             onPropertyClick={(property) => {
-              window.location.href = `/properties/${property.id}`;
+              window.location.href = `/property/${property.id}`;
             }}
           />
         ) : (
@@ -420,7 +420,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.4 }}
-                  onClick={() => window.location.href = `/properties/${property.id}`}
+                  onClick={() => window.location.href = `/property/${property.id}`}
                   className="group cursor-pointer rounded-2xl overflow-hidden bg-card border border-border/40 hover:border-primary/30 shadow-sm hover:shadow-xl transition-all duration-300"
                 >
                   {/* Image */}

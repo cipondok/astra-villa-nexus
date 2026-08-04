@@ -43,7 +43,7 @@ const RentalCashflowZone = () => {
           const demandVelocity = 60 + Math.floor(Math.random() * 35);
           const img = property.thumbnail_url || property.images?.[0] || '';
           return (
-            <motion.div key={property.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="flex-shrink-0 w-[260px] sm:w-[300px] snap-start rounded-xl overflow-hidden border border-border/60 bg-card hover:border-intel-success/30 transition-all cursor-pointer group shadow-sm" onClick={() => navigate(`/properties/${property.id}`)}>
+            <motion.div key={property.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="flex-shrink-0 w-[260px] sm:w-[300px] snap-start rounded-xl overflow-hidden border border-border/60 bg-card hover:border-intel-success/30 transition-all cursor-pointer group shadow-sm" onClick={() => navigate(`/property/${property.id}`)}>
               <div className="relative h-36 overflow-hidden">
                 {img ? <img src={img} alt={property.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" /> : <div className="w-full h-full bg-muted" />}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

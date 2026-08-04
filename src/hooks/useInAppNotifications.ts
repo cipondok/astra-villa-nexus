@@ -335,7 +335,7 @@ export const useInAppNotifications = () => {
             action: n.property_id ? {
               label: 'View',
               onClick: () => {
-                window.location.href = `/properties/${n.property_id}`;
+                window.location.href = `/property/${n.property_id}`;
               },
             } : undefined,
           });

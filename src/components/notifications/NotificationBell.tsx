@@ -209,7 +209,7 @@ export const NotificationBell: React.FC = () => {
       markAsRead(notification.id);
     }
     if (notification.property_id) {
-      navigate(`/properties/${notification.property_id}`);
+      navigate(`/property/${notification.property_id}`);
       setIsOpen(false);
     }
   };

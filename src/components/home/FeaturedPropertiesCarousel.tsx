@@ -183,7 +183,7 @@ export default function FeaturedPropertiesCarousel() {
           {properties.map((p) => (
             <div
               key={p.id}
-              onClick={() => !isDragging && navigate(`/properties/${p.id}`)}
+              onClick={() => !isDragging && navigate(`/property/${p.id}`)}
               className="flex-shrink-0 w-[260px] sm:w-[290px] md:w-[310px] lg:w-[330px] snap-start group/card cursor-pointer"
             >
               <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm card-hover-lift will-change-transform">

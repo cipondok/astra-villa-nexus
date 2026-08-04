@@ -115,7 +115,7 @@ const AIPropertyRecommendations = ({
   const insights = data?.userInsights;
 
   const handlePropertyClick = (propertyId: string) => {
-    navigate(`/properties/${propertyId}`);
+    navigate(`/property/${propertyId}`);
   };
 
   const handleShowExplanation = (property: Recommendation) => {

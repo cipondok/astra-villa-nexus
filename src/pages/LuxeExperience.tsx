@@ -725,7 +725,7 @@ export default function LuxeExperience() {
               </div>
             ))}
             {!featuredLoading && FEATURED.map((v, i) => {
-              const detailHref = v.id ? `/properties/${v.id}` : "/properties";
+              const detailHref = v.id ? `/property/${v.id}` : "/properties";
               return (
               <Reveal key={v.id ?? v.name} delay={i * 0.12} as="article"
                 className="snap-center shrink-0 w-[82%] sm:w-[60%] md:w-auto first:pl-0 last:pr-0">

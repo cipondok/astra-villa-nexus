@@ -101,7 +101,7 @@ const DealAlertsList: React.FC<DealAlertsListProps> = ({ className, compact }) =
   const navigate = useNavigate();
 
   const handleView = (propertyId: string) => {
-    navigate(`/properties/${propertyId}`);
+    navigate(`/property/${propertyId}`);
   };
 
   if (isLoading) {

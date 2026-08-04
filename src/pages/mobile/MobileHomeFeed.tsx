@@ -98,7 +98,7 @@ const MobileHomeFeed: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
-              onClick={() => navigate(`/properties/${property.id}`)}
+              onClick={() => navigate(`/property/${property.id}`)}
               className="group relative rounded-2xl overflow-hidden bg-card border border-border/40 shadow-sm active:scale-[0.98] transition-transform cursor-pointer"
             >
               {/* Image */}

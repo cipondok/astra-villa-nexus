@@ -182,7 +182,7 @@ const SignalFeed: React.FC<{ signals: UnifiedSignal[]; filterSource: SignalSourc
                 >
                   <Card
                     className="border-border/40 hover:border-primary/30 transition-all cursor-pointer group"
-                    onClick={() => signal.propertyId && navigate(`/properties/${signal.propertyId}`)}
+                    onClick={() => signal.propertyId && navigate(`/property/${signal.propertyId}`)}
                   >
                     <CardContent className="p-3 flex items-center gap-3">
                       {/* Source icon */}
