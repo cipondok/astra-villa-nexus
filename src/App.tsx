@@ -546,7 +546,8 @@ const AppContent = () => {
                 <Route path="/blockchain-verification" element={<BlockchainVerification />} />
                 <Route path="/fractional-investment" element={<FractionalInvestmentPage />} />
                 <Route path="/developer-demand-forecast" element={<DeveloperDemandForecastPage />} />
-                <Route path="/properties/:id" element={<PropertyDetail />} />
+                {/* Legacy detail URL — canonical is /property/:id */}
+                <Route path="/properties/:id" element={<LegacyPropertyRedirect />} />
                 <Route path="/property/:id" element={<PropertyDetail />} />
                 <Route path="/add-property" element={<AddProperty />} />
                 <Route path="/post-property" element={<AddProperty />} />
