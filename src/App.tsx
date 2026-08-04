@@ -1,6 +1,6 @@
 // App entry point
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { CurrencyProvider } from '@/contexts/CurrencyContext';
@@ -400,6 +400,12 @@ const useMaintenanceMode = () => {
   }, []);
 
   return { maintenanceMode, maintenanceMessage };
+};
+
+const LegacyPropertyRedirect = () => {
+  const { id } = useParams();
+  const { search, hash } = useLocation();
+  return <Navigate to={`/property/${id}${search}${hash}`} replace />;
 };
 
 const AppContent = () => {
