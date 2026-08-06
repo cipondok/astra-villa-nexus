@@ -40,14 +40,11 @@ export const PUBLIC_ROUTES: SitemapRoute[] = [
   { path: "/compliance", changefreq: "yearly", priority: "0.4" },
 ];
 
-const today = () => new Date().toISOString().slice(0, 10);
-
 export function buildLanguageSitemap(
   lang: "en" | "id",
   routes: SitemapRoute[] = PUBLIC_ROUTES,
   base = SITEMAP_BASE_URL,
 ): string {
-  const lastmod = today();
   const urls = routes
     .map((r) => {
       const locPath = r.path === "/" ? "/" : r.path;
@@ -58,7 +55,6 @@ export function buildLanguageSitemap(
       return [
         "  <url>",
         `    <loc>${loc}</loc>`,
-        `    <lastmod>${lastmod}</lastmod>`,
         r.changefreq ? `    <changefreq>${r.changefreq}</changefreq>` : null,
         r.priority ? `    <priority>${r.priority}</priority>` : null,
         `    <xhtml:link rel="alternate" hreflang="en" href="${enHref}" />`,
