@@ -16,6 +16,7 @@ import { useBugErrorDetection } from '@/hooks/useBugErrorDetection';
 import { BugDetectionSystem } from './BugDetectionSystem';
 import { SecurityFindingsPanel } from './SecurityFindingsPanel';
 import { ErrorLogViewer } from './ErrorLogViewer';
+import { NotFoundAnalytics } from './NotFoundAnalytics';
 
 export const BugErrorDashboard = () => {
   const { stats, isLoading, error, refresh } = useBugErrorDetection();
