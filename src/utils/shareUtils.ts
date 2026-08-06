@@ -1,3 +1,5 @@
+import { trackShareClick } from "@/lib/shareAnalytics";
+
 export const shareProperty = async (property: {
   id: string;
   title: string;
@@ -9,6 +11,9 @@ export const shareProperty = async (property: {
   const shareText = `Check out this property: ${property.title} in ${property.location}`;
   const fullText = `${shareText} - ${url}`;
 
+  const logShare = (channel: string, ok: boolean) =>
+    trackShareClick({ channel, propertyId: property.id, metadata: { ok, url } });
+
   // Check if Web Share API is supported and not in iframe
   if (navigator.share && window.parent === window) {
     try {
@@ -17,6 +22,7 @@ export const shareProperty = async (property: {
         text: shareText,
         url: url,
       });
+      logShare('native', true);
       return true;
     } catch (error) {
       // User cancelled or share failed - fall through to clipboard
@@ -28,6 +34,7 @@ export const shareProperty = async (property: {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     try {
       await navigator.clipboard.writeText(fullText);
+      logShare('clipboard', true);
       return true;
     } catch (error) {
       console.log('Clipboard API failed, trying fallback');
@@ -62,11 +69,13 @@ export const shareProperty = async (property: {
     document.body.removeChild(textArea);
     
     if (success) {
+      logShare('clipboard_fallback', true);
       return true;
     }
   } catch (fallbackError) {
     console.error('Fallback copy method failed:', fallbackError);
   }
 
+  logShare('failed', false);
   return false;
 };

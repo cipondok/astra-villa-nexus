@@ -402,7 +402,7 @@ const useMaintenanceMode = () => {
   return { maintenanceMode, maintenanceMessage };
 };
 
-const LegacyPropertyRedirect = () => {
+
   const { id } = useParams();
   const { pathname, search, hash } = useLocation();
   return (
@@ -419,6 +419,7 @@ const AppContent = () => {
   useCLSMonitor(process.env.NODE_ENV === 'development');
   useScrollRestore(true);
   useReferralTracking();
+  useShareTrafficTracker();
   
   const location = useLocation();
   const { language } = useTranslation();
