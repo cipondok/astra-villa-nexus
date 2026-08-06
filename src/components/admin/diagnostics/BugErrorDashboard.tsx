@@ -11,7 +11,9 @@ import {
   TrendingDown,
   Activity,
   AlertTriangle,
-  Link2Off
+  Link2Off,
+  Share2
+
 
 } from 'lucide-react';
 import { useBugErrorDetection } from '@/hooks/useBugErrorDetection';
