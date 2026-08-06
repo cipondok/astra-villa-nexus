@@ -404,9 +404,11 @@ const PropertyDetail = () => {
         })}
       />
 
+      <LegacyUrlMigrationBanner canonicalPath={`/property/${property.id}`} />
 
       {/* ============ EDITORIAL HERO — framed gallery + content block ============ */}
       <section className="px-4 md:px-8 pt-24 md:pt-28">
+
         <div className="max-w-[1440px] mx-auto">
           <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-luxe bg-luxe-surface shadow-[0_30px_80px_-30px_rgba(10,25,49,0.35)]">
 
