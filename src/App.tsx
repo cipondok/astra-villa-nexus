@@ -29,6 +29,8 @@ import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useReferralTracking } from '@/hooks/useReferralTracking';
+import { useShareTrafficTracker } from '@/hooks/useShareTrafficTracker';
+
 
 const AuthenticatedHooks = lazy(() => import('@/components/AuthenticatedHooks'));
 
@@ -404,6 +406,7 @@ const useMaintenanceMode = () => {
 
 const LegacyPropertyRedirect = () => {
   const { id } = useParams();
+
   const { pathname, search, hash } = useLocation();
   return (
     <Navigate
@@ -419,6 +422,7 @@ const AppContent = () => {
   useCLSMonitor(process.env.NODE_ENV === 'development');
   useScrollRestore(true);
   useReferralTracking();
+  useShareTrafficTracker();
   
   const location = useLocation();
   const { language } = useTranslation();
