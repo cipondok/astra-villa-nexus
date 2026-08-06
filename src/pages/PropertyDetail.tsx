@@ -25,6 +25,7 @@ import AIRecommendedProperties from "@/components/property/AIRecommendedProperti
 import InvestmentIntelligenceBadge from "@/components/property/InvestmentIntelligenceBadge";
 import { usePropertyCtaTracking, type CtaPlacement, type CtaKind } from "@/hooks/usePropertyCtaTracking";
 import { useTrackEvent } from "@/hooks/useTrackEvent";
+import { propertyCanonicalUrl } from "@/lib/canonicalUrl";
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
 
