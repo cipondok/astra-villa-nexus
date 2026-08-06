@@ -19,6 +19,7 @@ import { BugDetectionSystem } from './BugDetectionSystem';
 import { SecurityFindingsPanel } from './SecurityFindingsPanel';
 import { ErrorLogViewer } from './ErrorLogViewer';
 import { NotFoundAnalytics } from './NotFoundAnalytics';
+import { ShareTrafficAnalytics } from './ShareTrafficAnalytics';
 
 export const BugErrorDashboard = () => {
   const { stats, isLoading, error, refresh } = useBugErrorDetection();
@@ -142,6 +143,10 @@ export const BugErrorDashboard = () => {
             <Link2Off className="h-3 w-3" />
             404 Routes
           </TabsTrigger>
+          <TabsTrigger value="share" className="text-[10px] h-6 px-3 gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <Share2 className="h-3 w-3" />
+            Share Traffic
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="bugs" className="mt-0">
@@ -171,6 +176,10 @@ export const BugErrorDashboard = () => {
 
         <TabsContent value="notfound" className="mt-0">
           <NotFoundAnalytics />
+        </TabsContent>
+
+        <TabsContent value="share" className="mt-0">
+          <ShareTrafficAnalytics />
         </TabsContent>
       </Tabs>
     </div>
