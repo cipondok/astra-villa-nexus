@@ -25,6 +25,7 @@ import AIRecommendedProperties from "@/components/property/AIRecommendedProperti
 import InvestmentIntelligenceBadge from "@/components/property/InvestmentIntelligenceBadge";
 import { usePropertyCtaTracking, type CtaPlacement, type CtaKind } from "@/hooks/usePropertyCtaTracking";
 import { useTrackEvent } from "@/hooks/useTrackEvent";
+import { propertyCanonicalUrl } from "@/lib/canonicalUrl";
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
 
@@ -367,6 +368,8 @@ const PropertyDetail = () => {
   }
 
   const hero = images[idx] || "/placeholder.svg";
+  // Always the singular /property/:id route, even when reached via legacy plural URLs.
+  const canonicalUrl = propertyCanonicalUrl(property.id);
   const loc = [property.district, property.city, property.province].filter(Boolean).join(", ") || property.location || "Bali, Indonesia";
 
 
@@ -380,10 +383,13 @@ const PropertyDetail = () => {
   return (
     <LuxeLayout>
       <SEOHead
-        title={`${property.title} — ASTRA Villa`}
+        fullTitle={`${property.title} — ASTRA Villa`}
         description={property.description?.slice(0, 160) || `Cinematic luxury villa in ${loc}`}
+        ogTitle={`${property.title} — ASTRA Villa`}
+        ogDescription={property.description?.slice(0, 160) || `Cinematic luxury villa in ${loc}`}
+        ogType="product"
         ogImage={images[0]}
-        canonical={`https://astravilla.com/property/${property.id}`}
+        canonical={canonicalUrl}
         jsonLd={seoSchemas.property({
           title: property.title,
           description: property.description?.slice(0, 300) || `Luxury villa in ${loc}`,
@@ -394,9 +400,10 @@ const PropertyDetail = () => {
           bedrooms: property.bedrooms ?? undefined,
           bathrooms: property.bathrooms ?? undefined,
           areaSqm: property.area_sqm ?? undefined,
-          url: `https://astravilla.com/property/${property.id}`,
+          url: canonicalUrl,
         })}
       />
+
 
       {/* ============ EDITORIAL HERO — framed gallery + content block ============ */}
       <section className="px-4 md:px-8 pt-24 md:pt-28">

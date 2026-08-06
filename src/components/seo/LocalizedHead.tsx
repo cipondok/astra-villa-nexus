@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from '@/i18n/useTranslation';
+import { isPropertyDetailPath } from '@/lib/canonicalUrl';
 
 /**
  * Maps the current pathname to a key in the `seo.*` translation namespace.
@@ -54,6 +55,11 @@ const BASE_URL = 'https://astravilla.com';
 export const LocalizedHead = () => {
   const { t, language } = useTranslation();
   const location = useLocation();
+
+  // Property detail pages own their head (canonical + og:url must point at
+  // /property/:id, including when reached via the legacy /properties/:id URL).
+  // Rendering here too would ship a second, wrong <link rel="canonical">.
+  if (isPropertyDetailPath(location.pathname)) return null;
 
   // Do NOT memoize — translation lookups need to re-evaluate on every render
   // so lazy-loaded locale bundles refresh the head as soon as they arrive.
