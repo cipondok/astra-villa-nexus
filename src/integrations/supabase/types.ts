@@ -55987,6 +55987,72 @@ export type Database = {
         }
         Relationships: []
       }
+      social_share_events: {
+        Row: {
+          canonical_url: string | null
+          channel: string | null
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json
+          og_url: string | null
+          path: string
+          property_id: string | null
+          referrer: string | null
+          referrer_host: string | null
+          referrer_source: string | null
+          route_pattern: string
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          canonical_url?: string | null
+          channel?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json
+          og_url?: string | null
+          path: string
+          property_id?: string | null
+          referrer?: string | null
+          referrer_host?: string | null
+          referrer_source?: string | null
+          route_pattern: string
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          canonical_url?: string | null
+          channel?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json
+          og_url?: string | null
+          path?: string
+          property_id?: string | null
+          referrer?: string | null
+          referrer_host?: string | null
+          referrer_source?: string | null
+          route_pattern?: string
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: []
+      }
       spg_checkpoints: {
         Row: {
           checkpoint_type: string
