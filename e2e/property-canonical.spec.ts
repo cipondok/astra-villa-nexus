@@ -70,6 +70,18 @@ test.describe('PropertyDetail — canonical & social URLs', () => {
     expect(twitterDesc).toBe(ogDesc);
   });
 
+  test('og:image and twitter:image are absolute https URLs and match', async ({ page }) => {
+    await gotoDetail(page, `/property/${SEED_ID}`);
+
+    const ogImage = await head.meta(page, 'meta[property="og:image"]');
+    const twitterImage = await head.meta(page, 'meta[name="twitter:image"]');
+
+    expect(ogImage).toBeTruthy();
+    expect(ogImage).toMatch(/^https:\/\//);
+    expect(ogImage).not.toMatch(/^(blob:|data:)/);
+    expect(twitterImage).toBe(ogImage);
+  });
+
   test('canonical never contains the legacy plural path', async ({ page }) => {
     await gotoDetail(page, `/property/${SEED_ID}`);
 

@@ -21,3 +21,22 @@ export function absoluteUrl(pathname: string): string {
   const clean = (pathname.split(/[?#]/)[0] || '/').replace(/\/+$/, '');
   return `${SITE_ORIGIN}${clean === '' ? '/' : clean}`;
 }
+
+/** Site-wide fallback social preview image (absolute URL). */
+export const DEFAULT_SOCIAL_IMAGE = `${SITE_ORIGIN}/icon-512.png`;
+
+/**
+ * Resolve a property photo into an absolute https URL usable by social crawlers.
+ * Returns the site-wide fallback when the candidate is missing, relative to a
+ * blob/data source, or otherwise unusable.
+ */
+export function socialImageUrl(candidate?: string | null): string {
+  const raw = (candidate || '').trim();
+  if (!raw) return DEFAULT_SOCIAL_IMAGE;
+  if (raw.startsWith('blob:') || raw.startsWith('data:')) return DEFAULT_SOCIAL_IMAGE;
+  if (raw.startsWith('https://')) return raw;
+  if (raw.startsWith('http://')) return raw.replace(/^http:\/\//, 'https://');
+  if (raw.startsWith('//')) return `https:${raw}`;
+  if (raw.startsWith('/')) return `${SITE_ORIGIN}${raw}`;
+  return DEFAULT_SOCIAL_IMAGE;
+}
