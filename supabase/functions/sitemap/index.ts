@@ -6,7 +6,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-const SITE_URL = "https://astra-villa-realty.lovable.app";
+const SITE_URL = "https://astravilla.com";
 
 // Public routes that should be indexed (exclude admin, protected, and redirect-only routes)
 const staticRoutes = [
@@ -56,8 +56,6 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const today = new Date().toISOString().split("T")[0];
-
     // Fetch published properties
     const { data: properties } = await supabase
       .from("properties")
@@ -81,7 +79,6 @@ Deno.serve(async (req) => {
     for (const route of staticRoutes) {
       xml += `  <url>
     <loc>${SITE_URL}${route.path}</loc>
-    <lastmod>${today}</lastmod>
     <changefreq>${route.changefreq}</changefreq>
     <priority>${route.priority}</priority>
   </url>
@@ -93,11 +90,10 @@ Deno.serve(async (req) => {
       for (const prop of properties) {
         const lastmod = prop.updated_at
           ? new Date(prop.updated_at).toISOString().split("T")[0]
-          : today;
+          : null;
         xml += `  <url>
-    <loc>${SITE_URL}/properties/${prop.id}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>${SITE_URL}/property/${prop.id}</loc>
+${lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : ""}    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 `;
@@ -110,7 +106,6 @@ Deno.serve(async (req) => {
         if (hs.city_slug) {
           xml += `  <url>
     <loc>${SITE_URL}/invest/${hs.city_slug}</loc>
-    <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
