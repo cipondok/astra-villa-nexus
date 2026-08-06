@@ -404,9 +404,16 @@ const useMaintenanceMode = () => {
 
 const LegacyPropertyRedirect = () => {
   const { id } = useParams();
-  const { search, hash } = useLocation();
-  return <Navigate to={`/property/${id}${search}${hash}`} replace />;
+  const { pathname, search, hash } = useLocation();
+  return (
+    <Navigate
+      to={`/property/${id}${search}${hash}`}
+      replace
+      state={{ legacyPropertyUrl: `${pathname}${search}${hash}` }}
+    />
+  );
 };
+
 
 const AppContent = () => {
   useCLSMonitor(process.env.NODE_ENV === 'development');
