@@ -25,7 +25,7 @@ import AIRecommendedProperties from "@/components/property/AIRecommendedProperti
 import InvestmentIntelligenceBadge from "@/components/property/InvestmentIntelligenceBadge";
 import { usePropertyCtaTracking, type CtaPlacement, type CtaKind } from "@/hooks/usePropertyCtaTracking";
 import { useTrackEvent } from "@/hooks/useTrackEvent";
-import { propertyCanonicalUrl } from "@/lib/canonicalUrl";
+import { propertyCanonicalUrl, socialImageUrl } from "@/lib/canonicalUrl";
 import { LegacyUrlMigrationBanner } from "@/components/property/LegacyUrlMigrationBanner";
 
 
@@ -102,6 +102,9 @@ const PropertyDetail = () => {
     const a = property.images?.length ? property.images : property.image_urls || [];
     return a.filter(Boolean);
   }, [property]);
+
+  /** Absolute, crawler-safe social preview image with a site-wide fallback. */
+  const socialImage = useMemo(() => socialImageUrl(images[0]), [images]);
 
   /* ----- Gallery state ----- */
   const [idx, setIdx] = useState(0);
@@ -390,7 +393,7 @@ const PropertyDetail = () => {
         ogTitle={`${property.title} — ASTRA Villa`}
         ogDescription={property.description?.slice(0, 160) || `Cinematic luxury villa in ${loc}`}
         ogType="product"
-        ogImage={images[0]}
+        ogImage={socialImage}
         canonical={canonicalUrl}
         jsonLd={seoSchemas.property({
           title: property.title,
