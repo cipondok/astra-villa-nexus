@@ -367,6 +367,8 @@ const PropertyDetail = () => {
   }
 
   const hero = images[idx] || "/placeholder.svg";
+  // Always the singular /property/:id route, even when reached via legacy plural URLs.
+  const canonicalUrl = propertyCanonicalUrl(property.id);
   const loc = [property.district, property.city, property.province].filter(Boolean).join(", ") || property.location || "Bali, Indonesia";
 
 
