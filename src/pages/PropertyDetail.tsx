@@ -26,6 +26,8 @@ import InvestmentIntelligenceBadge from "@/components/property/InvestmentIntelli
 import { usePropertyCtaTracking, type CtaPlacement, type CtaKind } from "@/hooks/usePropertyCtaTracking";
 import { useTrackEvent } from "@/hooks/useTrackEvent";
 import { propertyCanonicalUrl } from "@/lib/canonicalUrl";
+import { LegacyUrlMigrationBanner } from "@/components/property/LegacyUrlMigrationBanner";
+
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
 
