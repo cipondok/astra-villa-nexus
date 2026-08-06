@@ -402,8 +402,9 @@ const useMaintenanceMode = () => {
   return { maintenanceMode, maintenanceMessage };
 };
 
-
+const LegacyPropertyRedirect = () => {
   const { id } = useParams();
+
   const { pathname, search, hash } = useLocation();
   return (
     <Navigate
