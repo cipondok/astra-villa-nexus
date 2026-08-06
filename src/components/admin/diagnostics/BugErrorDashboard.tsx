@@ -10,12 +10,15 @@ import {
   TrendingUp,
   TrendingDown,
   Activity,
-  AlertTriangle
+  AlertTriangle,
+  Link2Off
+
 } from 'lucide-react';
 import { useBugErrorDetection } from '@/hooks/useBugErrorDetection';
 import { BugDetectionSystem } from './BugDetectionSystem';
 import { SecurityFindingsPanel } from './SecurityFindingsPanel';
 import { ErrorLogViewer } from './ErrorLogViewer';
+import { NotFoundAnalytics } from './NotFoundAnalytics';
 
 export const BugErrorDashboard = () => {
   const { stats, isLoading, error, refresh } = useBugErrorDetection();
@@ -135,6 +138,10 @@ export const BugErrorDashboard = () => {
             <FileWarning className="h-3 w-3" />
             Error Logs ({stats.errorLogs.length})
           </TabsTrigger>
+          <TabsTrigger value="notfound" className="text-[10px] h-6 px-3 gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <Link2Off className="h-3 w-3" />
+            404 Routes
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="bugs" className="mt-0">
@@ -160,6 +167,10 @@ export const BugErrorDashboard = () => {
             onRefresh={refresh}
             isLoading={isLoading}
           />
+        </TabsContent>
+
+        <TabsContent value="notfound" className="mt-0">
+          <NotFoundAnalytics />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { analyzeRoute } from "@/utils/routeAnalytics";
 import ErrorPage from "./ErrorPage";
 
 const NotFound = () => {
@@ -12,6 +13,8 @@ const NotFound = () => {
       "404 Error: User attempted to access non-existent route:",
       location.pathname
     );
+
+    const { pattern, ids } = analyzeRoute(location.pathname);
 
     // Log the error to Supabase for admin tracking
     const logError = async () => {
@@ -25,7 +28,10 @@ const NotFound = () => {
             timestamp: new Date().toISOString(),
             search: location.search,
             hash: location.hash,
-            errorType: 'page_not_found'
+            errorType: 'page_not_found',
+            route_pattern: pattern,
+            affected_ids: ids,
+            resource_id: ids[0] ?? null
           }
         });
       } catch (error) {
@@ -35,6 +41,7 @@ const NotFound = () => {
 
     logError();
   }, [location.pathname]);
+
 
   return (
     <ErrorPage 
