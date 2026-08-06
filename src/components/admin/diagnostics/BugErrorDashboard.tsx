@@ -10,7 +10,9 @@ import {
   TrendingUp,
   TrendingDown,
   Activity,
-  AlertTriangle
+  AlertTriangle,
+  Link2Off
+
 } from 'lucide-react';
 import { useBugErrorDetection } from '@/hooks/useBugErrorDetection';
 import { BugDetectionSystem } from './BugDetectionSystem';
