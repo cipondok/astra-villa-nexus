@@ -1,4 +1,4 @@
-import { DEFAULT_SITE_URL } from '@/config/seo';
+import { SITE_URL as DEFAULT_SITE_URL } from '@/lib/seoDefaults';
 
 /** Canonical origin for all public URLs. */
 export const SITE_ORIGIN = DEFAULT_SITE_URL.replace(/\/+$/, '');
