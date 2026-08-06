@@ -168,6 +168,10 @@ export const BugErrorDashboard = () => {
             isLoading={isLoading}
           />
         </TabsContent>
+
+        <TabsContent value="notfound" className="mt-0">
+          <NotFoundAnalytics />
+        </TabsContent>
       </Tabs>
     </div>
   );
