@@ -136,6 +136,10 @@ export const BugErrorDashboard = () => {
             <FileWarning className="h-3 w-3" />
             Error Logs ({stats.errorLogs.length})
           </TabsTrigger>
+          <TabsTrigger value="notfound" className="text-[10px] h-6 px-3 gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <Link2Off className="h-3 w-3" />
+            404 Routes
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="bugs" className="mt-0">
