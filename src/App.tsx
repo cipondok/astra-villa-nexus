@@ -29,6 +29,8 @@ import { useCLSMonitor } from '@/hooks/useCLSMonitor';
 import { useScrollRestore } from '@/hooks/useScrollRestore';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useReferralTracking } from '@/hooks/useReferralTracking';
+import { useShareTrafficTracker } from '@/hooks/useShareTrafficTracker';
+
 
 const AuthenticatedHooks = lazy(() => import('@/components/AuthenticatedHooks'));
 
