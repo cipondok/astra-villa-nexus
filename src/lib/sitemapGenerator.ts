@@ -80,18 +80,23 @@ export function buildLanguageSitemap(
   ].join("\n");
 }
 
+export const PROPERTY_SITEMAP_URL =
+  "https://zymrajuuyyfkzdmptebl.supabase.co/functions/v1/sitemap";
+
 export function buildSitemapIndex(base = SITEMAP_BASE_URL): string {
-  const lastmod = today();
+  // No <lastmod>: we have no authoritative per-sitemap change timestamp,
+  // and a generation-time date is meaningless to crawlers.
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     "  <sitemap>",
     `    <loc>${base}/sitemap-en.xml</loc>`,
-    `    <lastmod>${lastmod}</lastmod>`,
     "  </sitemap>",
     "  <sitemap>",
     `    <loc>${base}/sitemap-id.xml</loc>`,
-    `    <lastmod>${lastmod}</lastmod>`,
+    "  </sitemap>",
+    "  <sitemap>",
+    `    <loc>${PROPERTY_SITEMAP_URL}</loc>`,
     "  </sitemap>",
     "</sitemapindex>",
     "",
