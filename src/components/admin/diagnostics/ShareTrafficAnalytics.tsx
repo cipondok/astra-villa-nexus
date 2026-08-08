@@ -3,7 +3,18 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Share2, ExternalLink, RefreshCw, Link2, Users } from 'lucide-react';
+import { Share2, ExternalLink, RefreshCw, Link2, Users, TrendingUp } from 'lucide-react';
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Legend,
+  ReferenceArea,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ShareEventRow {
@@ -127,6 +138,57 @@ export const ShareTrafficAnalytics = () => {
       return sortDir === 'asc' ? (av > bv ? 1 : -1) : av > bv ? -1 : 1;
     });
   }, [rows, selectedProperty, sortKey, sortDir]);
+
+  const trend = useMemo(() => {
+    if (!selectedProperty) return { points: [], spikes: [] as { start: number; end: number }[], bucketMs: 0 };
+    const bucketMs =
+      rangeHours <= 24 ? 3600_000 : rangeHours <= 24 * 7 ? 6 * 3600_000 : 24 * 3600_000;
+    const end = Math.floor(Date.now() / bucketMs) * bucketMs;
+    const start = end - Math.ceil((rangeHours * 3600_000) / bucketMs) * bucketMs;
+
+    const buckets = new Map<number, { clicks: number; visits: number }>();
+    for (let t = start; t <= end; t += bucketMs) buckets.set(t, { clicks: 0, visits: 0 });
+    for (const r of rows) {
+      if (r.property_id !== selectedProperty) continue;
+      const t = Math.floor(new Date(r.created_at).getTime() / bucketMs) * bucketMs;
+      const b = buckets.get(t);
+      if (!b) continue;
+      if (r.event_type === 'share_click') b.clicks += 1;
+      else b.visits += 1;
+    }
+
+    const points = Array.from(buckets.entries())
+      .sort((a, b) => a[0] - b[0])
+      .map(([t, v]) => ({
+        t,
+        label: new Date(t).toLocaleString('id-ID', {
+          day: '2-digit',
+          month: '2-digit',
+          ...(bucketMs < 24 * 3600_000 ? { hour: '2-digit', minute: '2-digit' } : {}),
+        }),
+        clicks: v.clicks,
+        visits: v.visits,
+        total: v.clicks + v.visits,
+      }));
+
+    const totals = points.map((p) => p.total);
+    const mean = totals.reduce((a, b) => a + b, 0) / (totals.length || 1);
+    const variance =
+      totals.reduce((a, b) => a + (b - mean) ** 2, 0) / (totals.length || 1);
+    const std = Math.sqrt(variance);
+    const threshold = Math.max(mean + 1.5 * std, mean * 2, 2);
+
+    const spikes: { start: number; end: number }[] = [];
+    points.forEach((p) => {
+      if (p.total < threshold || p.total === 0) return;
+      const last = spikes[spikes.length - 1];
+      if (last && p.t - last.end <= bucketMs) last.end = p.t;
+      else spikes.push({ start: p.t, end: p.t });
+    });
+
+    return { points, spikes, bucketMs, threshold };
+  }, [rows, selectedProperty, rangeHours]);
+
 
   const toggleSort = (key: SortKey) => {
     if (key === sortKey) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -302,7 +364,92 @@ export const ShareTrafficAnalytics = () => {
                 Select a property on the left to see its share events, referrers and timeline.
               </p>
             ) : (
-              <div className="max-h-[360px] overflow-auto">
+              <>
+                <div className="px-2 pt-2">
+                  <div className="flex items-center justify-between px-1 pb-1">
+                    <span className="text-[10px] text-muted-foreground">
+                      Clicks vs social/campaign visits
+                    </span>
+                    {trend.spikes.length > 0 && (
+                      <Badge variant="outline" className="text-[10px] gap-1">
+                        <TrendingUp className="h-3 w-3" />
+                        {trend.spikes.length} spike{trend.spikes.length > 1 ? 's' : ''}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="h-[180px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={trend.points} margin={{ top: 6, right: 8, bottom: 0, left: -22 }}>
+                        <defs>
+                          <linearGradient id="shareClicksFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
+                            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                          </linearGradient>
+                          <linearGradient id="shareVisitsFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.28} />
+                            <stop offset="100%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                        <XAxis
+                          dataKey="label"
+                          tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
+                          tickLine={false}
+                          axisLine={false}
+                          minTickGap={24}
+                        />
+                        <YAxis
+                          allowDecimals={false}
+                          tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
+                          tickLine={false}
+                          axisLine={false}
+                          width={34}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            background: 'hsl(var(--popover))',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: 8,
+                            fontSize: 11,
+                            color: 'hsl(var(--popover-foreground))',
+                          }}
+                        />
+                        <Legend wrapperStyle={{ fontSize: 10 }} />
+                        {trend.spikes.map((s) => (
+                          <ReferenceArea
+                            key={s.start}
+                            x1={
+                              trend.points.find((p) => p.t === s.start)?.label
+                            }
+                            x2={trend.points.find((p) => p.t === s.end)?.label}
+                            fill="hsl(var(--destructive))"
+                            fillOpacity={0.12}
+                            stroke="hsl(var(--destructive))"
+                            strokeOpacity={0.25}
+                          />
+                        ))}
+                        <Area
+                          type="monotone"
+                          dataKey="clicks"
+                          name="Share clicks"
+                          stroke="hsl(var(--primary))"
+                          fill="url(#shareClicksFill)"
+                          strokeWidth={2}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="visits"
+                          name="Social / campaign visits"
+                          stroke="hsl(var(--accent-foreground))"
+                          fill="url(#shareVisitsFill)"
+                          strokeWidth={2}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="max-h-[360px] overflow-auto">
+
                 <table className="w-full text-[11px]">
                   <thead className="sticky top-0 bg-muted/60 backdrop-blur">
                     <tr className="text-left text-muted-foreground">
@@ -356,8 +503,10 @@ export const ShareTrafficAnalytics = () => {
                     ))}
                   </tbody>
                 </table>
-              </div>
+                </div>
+              </>
             )}
+
           </CardContent>
         </Card>
       </div>
