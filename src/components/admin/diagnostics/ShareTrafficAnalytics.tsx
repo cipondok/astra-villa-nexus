@@ -32,8 +32,13 @@ const RANGES = [
 const fmt = (iso: string) =>
   new Date(iso).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'medium' });
 
+type SortKey = 'created_at' | 'referrer' | 'channel' | 'event_type';
+
 export const ShareTrafficAnalytics = () => {
   const [rangeHours, setRangeHours] = useState(24 * 7);
+  const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<SortKey>('created_at');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ['share-traffic-analytics', rangeHours],
