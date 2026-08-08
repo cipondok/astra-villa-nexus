@@ -492,8 +492,10 @@ export const ShareTrafficAnalytics = () => {
                     ))}
                   </tbody>
                 </table>
-              </div>
+                </div>
+              </>
             )}
+
           </CardContent>
         </Card>
       </div>
