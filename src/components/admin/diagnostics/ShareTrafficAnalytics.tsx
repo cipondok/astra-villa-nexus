@@ -128,6 +128,57 @@ export const ShareTrafficAnalytics = () => {
     });
   }, [rows, selectedProperty, sortKey, sortDir]);
 
+  const trend = useMemo(() => {
+    if (!selectedProperty) return { points: [], spikes: [] as { start: number; end: number }[], bucketMs: 0 };
+    const bucketMs =
+      rangeHours <= 24 ? 3600_000 : rangeHours <= 24 * 7 ? 6 * 3600_000 : 24 * 3600_000;
+    const end = Math.floor(Date.now() / bucketMs) * bucketMs;
+    const start = end - Math.ceil((rangeHours * 3600_000) / bucketMs) * bucketMs;
+
+    const buckets = new Map<number, { clicks: number; visits: number }>();
+    for (let t = start; t <= end; t += bucketMs) buckets.set(t, { clicks: 0, visits: 0 });
+    for (const r of rows) {
+      if (r.property_id !== selectedProperty) continue;
+      const t = Math.floor(new Date(r.created_at).getTime() / bucketMs) * bucketMs;
+      const b = buckets.get(t);
+      if (!b) continue;
+      if (r.event_type === 'share_click') b.clicks += 1;
+      else b.visits += 1;
+    }
+
+    const points = Array.from(buckets.entries())
+      .sort((a, b) => a[0] - b[0])
+      .map(([t, v]) => ({
+        t,
+        label: new Date(t).toLocaleString('id-ID', {
+          day: '2-digit',
+          month: '2-digit',
+          ...(bucketMs < 24 * 3600_000 ? { hour: '2-digit', minute: '2-digit' } : {}),
+        }),
+        clicks: v.clicks,
+        visits: v.visits,
+        total: v.clicks + v.visits,
+      }));
+
+    const totals = points.map((p) => p.total);
+    const mean = totals.reduce((a, b) => a + b, 0) / (totals.length || 1);
+    const variance =
+      totals.reduce((a, b) => a + (b - mean) ** 2, 0) / (totals.length || 1);
+    const std = Math.sqrt(variance);
+    const threshold = Math.max(mean + 1.5 * std, mean * 2, 2);
+
+    const spikes: { start: number; end: number }[] = [];
+    points.forEach((p) => {
+      if (p.total < threshold || p.total === 0) return;
+      const last = spikes[spikes.length - 1];
+      if (last && p.t - last.end <= bucketMs) last.end = p.t;
+      else spikes.push({ start: p.t, end: p.t });
+    });
+
+    return { points, spikes, bucketMs, threshold };
+  }, [rows, selectedProperty, rangeHours]);
+
+
   const toggleSort = (key: SortKey) => {
     if (key === sortKey) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
     else {
