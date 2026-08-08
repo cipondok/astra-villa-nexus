@@ -234,6 +234,136 @@ export const ShareTrafficAnalytics = () => {
         </Card>
       </div>
 
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,320px)_1fr]">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-[12px]">Shared properties</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="max-h-[360px] overflow-auto divide-y divide-border/50">
+              {propertyTally.length === 0 && (
+                <p className="p-3 text-[11px] text-muted-foreground">
+                  No property-level share activity in this range.
+                </p>
+              )}
+              {propertyTally.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setSelectedProperty(p.id === selectedProperty ? null : p.id)}
+                  className={`w-full text-left p-2.5 transition-colors ${
+                    p.id === selectedProperty ? 'bg-primary/10' : 'hover:bg-muted/60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-[10px] truncate">{p.id}</span>
+                    <Badge variant="secondary" className="text-[10px]">{p.total}</Badge>
+                  </div>
+                  <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
+                    <span>{p.clicks} clicks</span>
+                    <span>·</span>
+                    <span>{p.visits} visits</span>
+                    <span className="ml-auto tabular-nums">{fmt(p.last)}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2 flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-[12px]">
+              {selectedProperty ? 'Property timeline' : 'Property drilldown'}
+            </CardTitle>
+            {selectedProperty && (
+              <div className="flex items-center gap-1">
+                <a
+                  href={`/property/${selectedProperty}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[10px] text-primary underline underline-offset-2"
+                >
+                  Open page
+                </a>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 px-2 text-[10px]"
+                  onClick={() => setSelectedProperty(null)}
+                >
+                  Clear
+                </Button>
+              </div>
+            )}
+          </CardHeader>
+          <CardContent className="p-0">
+            {!selectedProperty ? (
+              <p className="p-3 text-[11px] text-muted-foreground">
+                Select a property on the left to see its share events, referrers and timeline.
+              </p>
+            ) : (
+              <div className="max-h-[360px] overflow-auto">
+                <table className="w-full text-[11px]">
+                  <thead className="sticky top-0 bg-muted/60 backdrop-blur">
+                    <tr className="text-left text-muted-foreground">
+                      {([
+                        ['created_at', 'Time'],
+                        ['event_type', 'Type'],
+                        ['channel', 'Channel'],
+                        ['referrer', 'Referrer'],
+                      ] as [SortKey, string][]).map(([key, label]) => (
+                        <th key={key} className="p-2 font-medium">
+                          <button
+                            className="inline-flex items-center gap-1 hover:text-foreground"
+                            onClick={() => toggleSort(key)}
+                          >
+                            {label} <span className="text-[9px]">{sortIcon(key)}</span>
+                          </button>
+                        </th>
+                      ))}
+                      <th className="p-2 font-medium">Campaign</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {drilldownRows.length === 0 && (
+                      <tr>
+                        <td className="p-3 text-muted-foreground" colSpan={5}>
+                          No events for this property in the selected range.
+                        </td>
+                      </tr>
+                    )}
+                    {drilldownRows.map((r) => (
+                      <tr key={r.id} className="border-t border-border/50">
+                        <td className="p-2 whitespace-nowrap tabular-nums">{fmt(r.created_at)}</td>
+                        <td className="p-2">
+                          <Badge
+                            variant={r.event_type === 'share_click' ? 'default' : 'secondary'}
+                            className="text-[10px]"
+                          >
+                            {r.event_type === 'share_click' ? 'click' : 'visit'}
+                          </Badge>
+                        </td>
+                        <td className="p-2 capitalize">
+                          {(r.channel || r.referrer_source || '—').replace(/_/g, ' ')}
+                        </td>
+                        <td className="p-2 max-w-[200px] truncate" title={r.referrer || ''}>
+                          {r.referrer_source || r.referrer_host || '—'}
+                        </td>
+                        <td className="p-2 text-muted-foreground truncate max-w-[140px]">
+                          {r.utm_campaign || r.utm_source || '—'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+
+
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-[12px]">Recent events</CardTitle>
