@@ -353,7 +353,92 @@ export const ShareTrafficAnalytics = () => {
                 Select a property on the left to see its share events, referrers and timeline.
               </p>
             ) : (
-              <div className="max-h-[360px] overflow-auto">
+              <>
+                <div className="px-2 pt-2">
+                  <div className="flex items-center justify-between px-1 pb-1">
+                    <span className="text-[10px] text-muted-foreground">
+                      Clicks vs social/campaign visits
+                    </span>
+                    {trend.spikes.length > 0 && (
+                      <Badge variant="outline" className="text-[10px] gap-1">
+                        <TrendingUp className="h-3 w-3" />
+                        {trend.spikes.length} spike{trend.spikes.length > 1 ? 's' : ''}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="h-[180px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={trend.points} margin={{ top: 6, right: 8, bottom: 0, left: -22 }}>
+                        <defs>
+                          <linearGradient id="shareClicksFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
+                            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                          </linearGradient>
+                          <linearGradient id="shareVisitsFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.28} />
+                            <stop offset="100%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                        <XAxis
+                          dataKey="label"
+                          tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
+                          tickLine={false}
+                          axisLine={false}
+                          minTickGap={24}
+                        />
+                        <YAxis
+                          allowDecimals={false}
+                          tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
+                          tickLine={false}
+                          axisLine={false}
+                          width={34}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            background: 'hsl(var(--popover))',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: 8,
+                            fontSize: 11,
+                            color: 'hsl(var(--popover-foreground))',
+                          }}
+                        />
+                        <Legend wrapperStyle={{ fontSize: 10 }} />
+                        {trend.spikes.map((s) => (
+                          <ReferenceArea
+                            key={s.start}
+                            x1={
+                              trend.points.find((p) => p.t === s.start)?.label
+                            }
+                            x2={trend.points.find((p) => p.t === s.end)?.label}
+                            fill="hsl(var(--destructive))"
+                            fillOpacity={0.12}
+                            stroke="hsl(var(--destructive))"
+                            strokeOpacity={0.25}
+                          />
+                        ))}
+                        <Area
+                          type="monotone"
+                          dataKey="clicks"
+                          name="Share clicks"
+                          stroke="hsl(var(--primary))"
+                          fill="url(#shareClicksFill)"
+                          strokeWidth={2}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="visits"
+                          name="Social / campaign visits"
+                          stroke="hsl(var(--accent-foreground))"
+                          fill="url(#shareVisitsFill)"
+                          strokeWidth={2}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="max-h-[360px] overflow-auto">
+
                 <table className="w-full text-[11px]">
                   <thead className="sticky top-0 bg-muted/60 backdrop-blur">
                     <tr className="text-left text-muted-foreground">
