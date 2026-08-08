@@ -90,6 +90,57 @@ export const ShareTrafficAnalytics = () => {
     };
   }, [rows]);
 
+  const propertyTally = useMemo(() => {
+    const map = new Map<string, { clicks: number; visits: number; last: string }>();
+    for (const r of rows) {
+      if (!r.property_id) continue;
+      const cur = map.get(r.property_id) || { clicks: 0, visits: 0, last: r.created_at };
+      if (r.event_type === 'share_click') cur.clicks += 1;
+      else cur.visits += 1;
+      if (r.created_at > cur.last) cur.last = r.created_at;
+      map.set(r.property_id, cur);
+    }
+    return Array.from(map.entries())
+      .map(([id, v]) => ({ id, ...v, total: v.clicks + v.visits }))
+      .sort((a, b) => b.total - a.total);
+  }, [rows]);
+
+  const drilldownRows = useMemo(() => {
+    if (!selectedProperty) return [];
+    const filtered = rows.filter((r) => r.property_id === selectedProperty);
+    const val = (r: ShareEventRow) => {
+      switch (sortKey) {
+        case 'referrer':
+          return (r.referrer_source || r.referrer_host || '').toLowerCase();
+        case 'channel':
+          return (r.channel || r.referrer_source || '').toLowerCase();
+        case 'event_type':
+          return r.event_type;
+        default:
+          return r.created_at;
+      }
+    };
+    return [...filtered].sort((a, b) => {
+      const av = val(a);
+      const bv = val(b);
+      if (av === bv) return b.created_at.localeCompare(a.created_at);
+      return sortDir === 'asc' ? (av > bv ? 1 : -1) : av > bv ? -1 : 1;
+    });
+  }, [rows, selectedProperty, sortKey, sortDir]);
+
+  const toggleSort = (key: SortKey) => {
+    if (key === sortKey) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    else {
+      setSortKey(key);
+      setSortDir(key === 'created_at' ? 'desc' : 'asc');
+    }
+  };
+
+  const sortIcon = (key: SortKey) =>
+    key === sortKey ? (sortDir === 'asc' ? '▲' : '▼') : '';
+
+
+
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
