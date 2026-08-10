@@ -203,6 +203,67 @@ export const ShareTrafficAnalytics = () => {
     return { points, spikes, bucketMs, threshold };
   }, [rows, selectedProperty, rangeHours]);
 
+  const compareSeries = useMemo(() => {
+    if (compareIds.length === 0) return { points: [], series: [] as { id: string; color: string; clicks: number; visits: number }[] };
+    const bucketMs =
+      rangeHours <= 24 ? 3600_000 : rangeHours <= 24 * 7 ? 6 * 3600_000 : 24 * 3600_000;
+    const end = Math.floor(Date.now() / bucketMs) * bucketMs;
+    const start = end - Math.ceil((rangeHours * 3600_000) / bucketMs) * bucketMs;
+
+    const buckets = new Map<number, Record<string, number>>();
+    for (let t = start; t <= end; t += bucketMs) buckets.set(t, {});
+
+    const totals: Record<string, { clicks: number; visits: number }> = {};
+    for (const id of compareIds) totals[id] = { clicks: 0, visits: 0 };
+
+    for (const r of rows) {
+      if (!r.property_id || !compareIds.includes(r.property_id)) continue;
+      const t = Math.floor(new Date(r.created_at).getTime() / bucketMs) * bucketMs;
+      const b = buckets.get(t);
+      if (!b) continue;
+      const key = `${r.property_id}__${r.event_type === 'share_click' ? 'clicks' : 'visits'}`;
+      b[key] = (b[key] || 0) + 1;
+      if (r.event_type === 'share_click') totals[r.property_id].clicks += 1;
+      else totals[r.property_id].visits += 1;
+    }
+
+    const points = Array.from(buckets.entries())
+      .sort((a, b) => a[0] - b[0])
+      .map(([t, v]) => {
+        const row: Record<string, number | string> = {
+          t,
+          label: new Date(t).toLocaleString('id-ID', {
+            day: '2-digit',
+            month: '2-digit',
+            ...(bucketMs < 24 * 3600_000 ? { hour: '2-digit', minute: '2-digit' } : {}),
+          }),
+        };
+        for (const id of compareIds) {
+          row[`${id}__clicks`] = v[`${id}__clicks`] || 0;
+          row[`${id}__visits`] = v[`${id}__visits`] || 0;
+        }
+        return row;
+      });
+
+    const series = compareIds.map((id, i) => ({
+      id,
+      color: COMPARE_COLORS[i % COMPARE_COLORS.length],
+      clicks: totals[id].clicks,
+      visits: totals[id].visits,
+    }));
+
+    return { points, series };
+  }, [rows, compareIds, rangeHours]);
+
+  const toggleCompare = (id: string) => {
+    setCompareIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((p) => p !== id)
+        : prev.length >= MAX_COMPARE
+          ? prev
+          : [...prev, id],
+    );
+  };
 
   const toggleSort = (key: SortKey) => {
     if (key === sortKey) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -214,6 +275,7 @@ export const ShareTrafficAnalytics = () => {
 
   const sortIcon = (key: SortKey) =>
     key === sortKey ? (sortDir === 'asc' ? '▲' : '▼') : '';
+
 
 
 
