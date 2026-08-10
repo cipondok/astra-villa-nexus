@@ -47,9 +47,21 @@ const fmt = (iso: string) =>
 
 type SortKey = 'created_at' | 'referrer' | 'channel' | 'event_type';
 
+const COMPARE_COLORS = [
+  'hsl(var(--primary))',
+  'hsl(var(--accent-foreground))',
+  'hsl(var(--destructive))',
+  'hsl(var(--chart-4, 199 89% 48%))',
+  'hsl(var(--chart-5, 271 76% 53%))',
+  'hsl(var(--chart-3, 142 71% 45%))',
+];
+const MAX_COMPARE = 6;
+
 export const ShareTrafficAnalytics = () => {
   const [rangeHours, setRangeHours] = useState(24 * 7);
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
   const [sortKey, setSortKey] = useState<SortKey>('created_at');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
