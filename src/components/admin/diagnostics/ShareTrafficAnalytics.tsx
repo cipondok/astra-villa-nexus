@@ -3,12 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Share2, ExternalLink, RefreshCw, Link2, Users, TrendingUp } from 'lucide-react';
+import { Share2, ExternalLink, RefreshCw, Link2, Users, TrendingUp, GitCompare, Check } from 'lucide-react';
 import {
   Area,
   AreaChart,
   CartesianGrid,
   Legend,
+  Line,
+  LineChart,
   ReferenceArea,
   ResponsiveContainer,
   Tooltip,
