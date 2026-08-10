@@ -374,26 +374,73 @@ export const ShareTrafficAnalytics = () => {
 
       <div className="grid gap-3 lg:grid-cols-[minmax(0,320px)_1fr]">
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className="pb-2 flex-row items-center justify-between space-y-0">
             <CardTitle className="text-[12px]">Shared properties</CardTitle>
+            <Button
+              size="sm"
+              variant={compareMode ? 'default' : 'outline'}
+              className="h-6 px-2 text-[10px] gap-1"
+              onClick={() => {
+                setCompareMode((v) => {
+                  if (v) setCompareIds([]);
+                  else if (selectedProperty) setCompareIds([selectedProperty]);
+                  return !v;
+                });
+              }}
+            >
+              <GitCompare className="h-3 w-3" />
+              Compare
+            </Button>
           </CardHeader>
           <CardContent className="p-0">
+            {compareMode && (
+              <p className="px-3 py-1.5 text-[10px] text-muted-foreground border-b border-border/50">
+                Select up to {MAX_COMPARE} properties to overlay ({compareIds.length} selected).
+              </p>
+            )}
             <div className="max-h-[360px] overflow-auto divide-y divide-border/50">
               {propertyTally.length === 0 && (
                 <p className="p-3 text-[11px] text-muted-foreground">
                   No property-level share activity in this range.
                 </p>
               )}
-              {propertyTally.map((p) => (
+              {propertyTally.map((p) => {
+                const compareIndex = compareIds.indexOf(p.id);
+                const isCompared = compareIndex >= 0;
+                const active = compareMode ? isCompared : p.id === selectedProperty;
+                return (
                 <button
                   key={p.id}
-                  onClick={() => setSelectedProperty(p.id === selectedProperty ? null : p.id)}
+                  onClick={() =>
+                    compareMode
+                      ? toggleCompare(p.id)
+                      : setSelectedProperty(p.id === selectedProperty ? null : p.id)
+                  }
                   className={`w-full text-left p-2.5 transition-colors ${
-                    p.id === selectedProperty ? 'bg-primary/10' : 'hover:bg-muted/60'
+                    active ? 'bg-primary/10' : 'hover:bg-muted/60'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-[10px] truncate">{p.id}</span>
+                    <span className="flex min-w-0 items-center gap-1.5">
+                      {compareMode && (
+                        <span
+                          className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[3px] border"
+                          style={
+                            isCompared
+                              ? {
+                                  backgroundColor:
+                                    COMPARE_COLORS[compareIndex % COMPARE_COLORS.length],
+                                  borderColor:
+                                    COMPARE_COLORS[compareIndex % COMPARE_COLORS.length],
+                                }
+                              : undefined
+                          }
+                        >
+                          {isCompared && <Check className="h-2.5 w-2.5 text-background" />}
+                        </span>
+                      )}
+                      <span className="font-mono text-[10px] truncate">{p.id}</span>
+                    </span>
                     <Badge variant="secondary" className="text-[10px]">{p.total}</Badge>
                   </div>
                   <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
@@ -403,10 +450,12 @@ export const ShareTrafficAnalytics = () => {
                     <span className="ml-auto tabular-nums">{fmt(p.last)}</span>
                   </div>
                 </button>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
+
 
         {compareMode && compareIds.length > 0 ? (
         <Card>
