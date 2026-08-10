@@ -3,12 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Share2, ExternalLink, RefreshCw, Link2, Users, TrendingUp } from 'lucide-react';
+import { Share2, ExternalLink, RefreshCw, Link2, Users, TrendingUp, GitCompare, Check } from 'lucide-react';
 import {
   Area,
   AreaChart,
   CartesianGrid,
   Legend,
+  Line,
+  LineChart,
   ReferenceArea,
   ResponsiveContainer,
   Tooltip,
@@ -45,9 +47,21 @@ const fmt = (iso: string) =>
 
 type SortKey = 'created_at' | 'referrer' | 'channel' | 'event_type';
 
+const COMPARE_COLORS = [
+  'hsl(var(--primary))',
+  'hsl(var(--accent-foreground))',
+  'hsl(var(--destructive))',
+  'hsl(var(--chart-4, 199 89% 48%))',
+  'hsl(var(--chart-5, 271 76% 53%))',
+  'hsl(var(--chart-3, 142 71% 45%))',
+];
+const MAX_COMPARE = 6;
+
 export const ShareTrafficAnalytics = () => {
   const [rangeHours, setRangeHours] = useState(24 * 7);
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
   const [sortKey, setSortKey] = useState<SortKey>('created_at');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
@@ -189,6 +203,67 @@ export const ShareTrafficAnalytics = () => {
     return { points, spikes, bucketMs, threshold };
   }, [rows, selectedProperty, rangeHours]);
 
+  const compareSeries = useMemo(() => {
+    if (compareIds.length === 0) return { points: [], series: [] as { id: string; color: string; clicks: number; visits: number }[] };
+    const bucketMs =
+      rangeHours <= 24 ? 3600_000 : rangeHours <= 24 * 7 ? 6 * 3600_000 : 24 * 3600_000;
+    const end = Math.floor(Date.now() / bucketMs) * bucketMs;
+    const start = end - Math.ceil((rangeHours * 3600_000) / bucketMs) * bucketMs;
+
+    const buckets = new Map<number, Record<string, number>>();
+    for (let t = start; t <= end; t += bucketMs) buckets.set(t, {});
+
+    const totals: Record<string, { clicks: number; visits: number }> = {};
+    for (const id of compareIds) totals[id] = { clicks: 0, visits: 0 };
+
+    for (const r of rows) {
+      if (!r.property_id || !compareIds.includes(r.property_id)) continue;
+      const t = Math.floor(new Date(r.created_at).getTime() / bucketMs) * bucketMs;
+      const b = buckets.get(t);
+      if (!b) continue;
+      const key = `${r.property_id}__${r.event_type === 'share_click' ? 'clicks' : 'visits'}`;
+      b[key] = (b[key] || 0) + 1;
+      if (r.event_type === 'share_click') totals[r.property_id].clicks += 1;
+      else totals[r.property_id].visits += 1;
+    }
+
+    const points = Array.from(buckets.entries())
+      .sort((a, b) => a[0] - b[0])
+      .map(([t, v]) => {
+        const row: Record<string, number | string> = {
+          t,
+          label: new Date(t).toLocaleString('id-ID', {
+            day: '2-digit',
+            month: '2-digit',
+            ...(bucketMs < 24 * 3600_000 ? { hour: '2-digit', minute: '2-digit' } : {}),
+          }),
+        };
+        for (const id of compareIds) {
+          row[`${id}__clicks`] = v[`${id}__clicks`] || 0;
+          row[`${id}__visits`] = v[`${id}__visits`] || 0;
+        }
+        return row;
+      });
+
+    const series = compareIds.map((id, i) => ({
+      id,
+      color: COMPARE_COLORS[i % COMPARE_COLORS.length],
+      clicks: totals[id].clicks,
+      visits: totals[id].visits,
+    }));
+
+    return { points, series };
+  }, [rows, compareIds, rangeHours]);
+
+  const toggleCompare = (id: string) => {
+    setCompareIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((p) => p !== id)
+        : prev.length >= MAX_COMPARE
+          ? prev
+          : [...prev, id],
+    );
+  };
 
   const toggleSort = (key: SortKey) => {
     if (key === sortKey) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -200,6 +275,7 @@ export const ShareTrafficAnalytics = () => {
 
   const sortIcon = (key: SortKey) =>
     key === sortKey ? (sortDir === 'asc' ? '▲' : '▼') : '';
+
 
 
 
@@ -298,26 +374,73 @@ export const ShareTrafficAnalytics = () => {
 
       <div className="grid gap-3 lg:grid-cols-[minmax(0,320px)_1fr]">
         <Card>
-          <CardHeader className="pb-2">
+          <CardHeader className="pb-2 flex-row items-center justify-between space-y-0">
             <CardTitle className="text-[12px]">Shared properties</CardTitle>
+            <Button
+              size="sm"
+              variant={compareMode ? 'default' : 'outline'}
+              className="h-6 px-2 text-[10px] gap-1"
+              onClick={() => {
+                setCompareMode((v) => {
+                  if (v) setCompareIds([]);
+                  else if (selectedProperty) setCompareIds([selectedProperty]);
+                  return !v;
+                });
+              }}
+            >
+              <GitCompare className="h-3 w-3" />
+              Compare
+            </Button>
           </CardHeader>
           <CardContent className="p-0">
+            {compareMode && (
+              <p className="px-3 py-1.5 text-[10px] text-muted-foreground border-b border-border/50">
+                Select up to {MAX_COMPARE} properties to overlay ({compareIds.length} selected).
+              </p>
+            )}
             <div className="max-h-[360px] overflow-auto divide-y divide-border/50">
               {propertyTally.length === 0 && (
                 <p className="p-3 text-[11px] text-muted-foreground">
                   No property-level share activity in this range.
                 </p>
               )}
-              {propertyTally.map((p) => (
+              {propertyTally.map((p) => {
+                const compareIndex = compareIds.indexOf(p.id);
+                const isCompared = compareIndex >= 0;
+                const active = compareMode ? isCompared : p.id === selectedProperty;
+                return (
                 <button
                   key={p.id}
-                  onClick={() => setSelectedProperty(p.id === selectedProperty ? null : p.id)}
+                  onClick={() =>
+                    compareMode
+                      ? toggleCompare(p.id)
+                      : setSelectedProperty(p.id === selectedProperty ? null : p.id)
+                  }
                   className={`w-full text-left p-2.5 transition-colors ${
-                    p.id === selectedProperty ? 'bg-primary/10' : 'hover:bg-muted/60'
+                    active ? 'bg-primary/10' : 'hover:bg-muted/60'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-[10px] truncate">{p.id}</span>
+                    <span className="flex min-w-0 items-center gap-1.5">
+                      {compareMode && (
+                        <span
+                          className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[3px] border"
+                          style={
+                            isCompared
+                              ? {
+                                  backgroundColor:
+                                    COMPARE_COLORS[compareIndex % COMPARE_COLORS.length],
+                                  borderColor:
+                                    COMPARE_COLORS[compareIndex % COMPARE_COLORS.length],
+                                }
+                              : undefined
+                          }
+                        >
+                          {isCompared && <Check className="h-2.5 w-2.5 text-background" />}
+                        </span>
+                      )}
+                      <span className="font-mono text-[10px] truncate">{p.id}</span>
+                    </span>
                     <Badge variant="secondary" className="text-[10px]">{p.total}</Badge>
                   </div>
                   <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
@@ -327,11 +450,110 @@ export const ShareTrafficAnalytics = () => {
                     <span className="ml-auto tabular-nums">{fmt(p.last)}</span>
                   </div>
                 </button>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
 
+
+        {compareMode && compareIds.length > 0 ? (
+        <Card>
+          <CardHeader className="pb-2 flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-[12px]">
+              Compare properties ({compareIds.length})
+            </CardTitle>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 px-2 text-[10px]"
+              onClick={() => setCompareIds([])}
+            >
+              Clear all
+            </Button>
+          </CardHeader>
+          <CardContent className="p-3 pt-0 space-y-2">
+            <p className="text-[10px] text-muted-foreground">
+              Clicks (solid) vs social/campaign visits (dashed) for the active time range.
+            </p>
+            <div className="h-[280px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={compareSeries.points} margin={{ top: 6, right: 8, bottom: 0, left: -22 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
+                    tickLine={false}
+                    axisLine={false}
+                    minTickGap={24}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
+                    tickLine={false}
+                    axisLine={false}
+                    width={34}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'hsl(var(--popover))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: 8,
+                      fontSize: 11,
+                      color: 'hsl(var(--popover-foreground))',
+                    }}
+                  />
+                  {compareSeries.series.map((s) => [
+                    <Line
+                      key={`${s.id}-clicks`}
+                      type="monotone"
+                      dataKey={`${s.id}__clicks`}
+                      name={`${s.id.slice(0, 8)} clicks`}
+                      stroke={s.color}
+                      strokeWidth={2}
+                      dot={false}
+                    />,
+                    <Line
+                      key={`${s.id}-visits`}
+                      type="monotone"
+                      dataKey={`${s.id}__visits`}
+                      name={`${s.id.slice(0, 8)} visits`}
+                      stroke={s.color}
+                      strokeWidth={1.5}
+                      strokeDasharray="4 3"
+                      dot={false}
+                    />,
+                  ])}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {compareSeries.series.map((s) => (
+                <div
+                  key={s.id}
+                  className="flex items-center gap-1.5 rounded-md border border-border/60 px-2 py-1 text-[10px]"
+                >
+                  <span
+                    className="h-2 w-2 rounded-full"
+                    style={{ backgroundColor: s.color }}
+                  />
+                  <span className="font-mono">{s.id.slice(0, 8)}…</span>
+                  <span className="text-muted-foreground">
+                    {s.clicks}c · {s.visits}v
+                  </span>
+                  <button
+                    className="ml-1 text-muted-foreground hover:text-foreground"
+                    onClick={() => toggleCompare(s.id)}
+                    aria-label={`Remove ${s.id} from comparison`}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        ) : (
         <Card>
           <CardHeader className="pb-2 flex-row items-center justify-between space-y-0">
             <CardTitle className="text-[12px]">
@@ -509,7 +731,9 @@ export const ShareTrafficAnalytics = () => {
 
           </CardContent>
         </Card>
+        )}
       </div>
+
 
 
 
