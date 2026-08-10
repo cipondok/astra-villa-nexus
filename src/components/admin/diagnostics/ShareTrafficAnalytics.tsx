@@ -408,6 +408,103 @@ export const ShareTrafficAnalytics = () => {
           </CardContent>
         </Card>
 
+        {compareMode && compareIds.length > 0 ? (
+        <Card>
+          <CardHeader className="pb-2 flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-[12px]">
+              Compare properties ({compareIds.length})
+            </CardTitle>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 px-2 text-[10px]"
+              onClick={() => setCompareIds([])}
+            >
+              Clear all
+            </Button>
+          </CardHeader>
+          <CardContent className="p-3 pt-0 space-y-2">
+            <p className="text-[10px] text-muted-foreground">
+              Clicks (solid) vs social/campaign visits (dashed) for the active time range.
+            </p>
+            <div className="h-[280px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={compareSeries.points} margin={{ top: 6, right: 8, bottom: 0, left: -22 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
+                    tickLine={false}
+                    axisLine={false}
+                    minTickGap={24}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
+                    tickLine={false}
+                    axisLine={false}
+                    width={34}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'hsl(var(--popover))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: 8,
+                      fontSize: 11,
+                      color: 'hsl(var(--popover-foreground))',
+                    }}
+                  />
+                  {compareSeries.series.map((s) => [
+                    <Line
+                      key={`${s.id}-clicks`}
+                      type="monotone"
+                      dataKey={`${s.id}__clicks`}
+                      name={`${s.id.slice(0, 8)} clicks`}
+                      stroke={s.color}
+                      strokeWidth={2}
+                      dot={false}
+                    />,
+                    <Line
+                      key={`${s.id}-visits`}
+                      type="monotone"
+                      dataKey={`${s.id}__visits`}
+                      name={`${s.id.slice(0, 8)} visits`}
+                      stroke={s.color}
+                      strokeWidth={1.5}
+                      strokeDasharray="4 3"
+                      dot={false}
+                    />,
+                  ])}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {compareSeries.series.map((s) => (
+                <div
+                  key={s.id}
+                  className="flex items-center gap-1.5 rounded-md border border-border/60 px-2 py-1 text-[10px]"
+                >
+                  <span
+                    className="h-2 w-2 rounded-full"
+                    style={{ backgroundColor: s.color }}
+                  />
+                  <span className="font-mono">{s.id.slice(0, 8)}…</span>
+                  <span className="text-muted-foreground">
+                    {s.clicks}c · {s.visits}v
+                  </span>
+                  <button
+                    className="ml-1 text-muted-foreground hover:text-foreground"
+                    onClick={() => toggleCompare(s.id)}
+                    aria-label={`Remove ${s.id} from comparison`}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        ) : (
         <Card>
           <CardHeader className="pb-2 flex-row items-center justify-between space-y-0">
             <CardTitle className="text-[12px]">
