@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 // Tabs removed - using inline toggle buttons in header
 import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus, ArrowRight, Wand2 } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
+import { getListingAccess, LISTING_ROLES } from "@/lib/listingAccess";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
 import VIPLimitAlert from "@/components/property/VIPLimitAlert";
 import { useToast } from "@/hooks/use-toast";
@@ -97,16 +98,18 @@ const AddProperty = () => {
   }
 
   // Check if user has permission to add properties (role-based).
-  // Accepts roles from user_roles as well as the legacy profile.role field.
-  const LISTING_ROLES = ['agent', 'property_owner', 'vendor', 'developer', 'admin', 'super_admin'];
-  const profileRole = (profile as { role?: string } | null)?.role;
-  const hasRolePermission =
-    isAdmin ||
-    userRoles.some((r) => LISTING_ROLES.includes(r)) ||
-    (!!profileRole && LISTING_ROLES.includes(profileRole));
+  // Shared with the server-side `public.has_listing_role()` RLS check.
+  const profileRole = (profile as { role?: string } | null)?.role ?? null;
+  const access = getListingAccess({
+    isAuthenticated,
+    isAdmin,
+    roles: userRoles,
+    profileRole,
+    isLoading: adminLoading || rolesLoading,
+  });
 
   // Show role upgrade prompt for users without permission
-  if (!adminLoading && !rolesLoading && !hasRolePermission) {
+  if (access === 'upgrade_required') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
         <Card className="w-full max-w-md shadow-lg border-border bg-card">
