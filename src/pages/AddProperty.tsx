@@ -251,7 +251,22 @@ const AddProperty = () => {
               </dl>
             </details>
 
-            <div className="pt-2">
+            <div className="pt-2 space-y-2">
+              <Button
+                onClick={() => void manualRetry()}
+                disabled={isRetrying}
+                className="w-full h-9"
+              >
+                {isRetrying ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" aria-hidden="true" />
+                ) : null}
+                {language === 'en' ? 'Refresh my roles & retry' : 'Segarkan peran & coba lagi'}
+              </Button>
+              <p className="text-[11px] text-center text-muted-foreground">
+                {language === 'en'
+                  ? `Auto-checked ${attempt} of ${maxAttempts} times after your roles loaded.`
+                  : `Diperiksa otomatis ${attempt} dari ${maxAttempts} kali setelah peran dimuat.`}
+              </p>
               <Button 
                 onClick={() => navigate('/dashboard')}
                 variant="outline"
@@ -260,6 +275,7 @@ const AddProperty = () => {
                 {txt.backDashboard}
               </Button>
             </div>
+
           </CardContent>
         </Card>
       </div>
