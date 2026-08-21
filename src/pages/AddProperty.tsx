@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 // Tabs removed - using inline toggle buttons in header
 import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus, ArrowRight, Wand2 } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
+import { getListingAccess, LISTING_ROLES } from "@/lib/listingAccess";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
 import VIPLimitAlert from "@/components/property/VIPLimitAlert";
 import { useToast } from "@/hooks/use-toast";
