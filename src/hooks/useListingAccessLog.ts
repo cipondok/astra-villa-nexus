@@ -24,9 +24,11 @@ export function denialReason({
 }
 
 /**
- * Logs every /add-property access decision. Authenticated attempts are
- * persisted to activity_logs (RLS: user_id must equal auth.uid()); guest
- * attempts are console-only since they cannot write rows.
+ * Logs every /add-property access decision.
+ * - Denied attempts (guests included) are sent to the `log-listing-access`
+ *   edge function, which re-derives roles server-side and persists them to
+ *   `listing_access_logs` with a correlation ID.
+ * - Authenticated attempts are additionally recorded in `activity_logs`.
  */
 export function useListingAccessLog({
   state,
@@ -46,6 +48,11 @@ export function useListingAccessLog({
     if (lastLogged.current === signature) return;
     lastLogged.current = signature;
 
+    const correlationId =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
     const payload = {
       route,
       access_state: state,
@@ -53,10 +60,22 @@ export function useListingAccessLog({
       detected_roles: [...roles],
       profile_role: profileRole,
       is_admin: isAdmin,
+      correlation_id: correlationId,
       at: new Date().toISOString(),
     };
 
     console.info('[listing-access]', payload);
+
+    // Server-side authoritative log for denied attempts (guests included).
+    if (reason) {
+      void supabase.functions
+        .invoke('log-listing-access', {
+          body: { correlation_id: correlationId, route, access_state: state },
+        })
+        .then(({ error }) => {
+          if (error) console.warn('[listing-access] server log failed:', error.message);
+        });
+    }
 
     if (!userId) return;
 
@@ -77,3 +96,4 @@ export function useListingAccessLog({
       });
   }, [state, userId, roles, profileRole, isAdmin, route]);
 }
+
