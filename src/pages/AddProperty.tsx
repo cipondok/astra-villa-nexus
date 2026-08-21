@@ -116,16 +116,8 @@ const AddProperty = () => {
     );
   }
 
-  // Check if user has permission to add properties (role-based).
-  // Shared with the server-side `public.has_listing_role()` RLS check.
-  const profileRole = (profile as { role?: string } | null)?.role ?? null;
-  const access = getListingAccess({
-    isAuthenticated,
-    isAdmin,
-    roles: userRoles,
-    profileRole,
-    isLoading: adminLoading || rolesLoading,
-  });
+
+
 
   // Verifying roles — avoid flashing the Upgrade Required card
   if (access === 'loading') {
