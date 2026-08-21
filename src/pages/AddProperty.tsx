@@ -12,6 +12,8 @@ import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 import { getListingAccess, LISTING_ROLES } from "@/lib/listingAccess";
 import { useListingAccessLog } from "@/hooks/useListingAccessLog";
+import { useListingAccessRetry } from "@/hooks/useListingAccessRetry";
+
 import { useVIPLimits } from "@/hooks/useVIPLimits";
 import VIPLimitAlert from "@/components/property/VIPLimitAlert";
 import { useToast } from "@/hooks/use-toast";
@@ -65,13 +67,19 @@ const AddProperty = () => {
     isLoading: adminLoading || rolesLoading,
   });
 
-  useListingAccessLog({
+  const { isResolving, isRetrying, attempt, maxAttempts, manualRetry } = useListingAccessRetry({
     state: access,
+    userId: user?.id ?? null,
+  });
+
+  useListingAccessLog({
+    state: isResolving ? 'loading' : access,
     userId: user?.id ?? null,
     roles: userRoles,
     profileRole,
     isAdmin,
   });
+
 
   // Show login/register prompt for non-authenticated users
 
@@ -120,8 +128,8 @@ const AddProperty = () => {
 
 
 
-  // Verifying roles — avoid flashing the Upgrade Required card
-  if (access === 'loading') {
+  // Verifying roles (or auto-retrying a delayed role sync) — avoid flashing the Upgrade card
+  if (access === 'loading' || isResolving) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
         <output
@@ -136,10 +144,15 @@ const AddProperty = () => {
               {language === 'en' ? 'Checking your listing access…' : 'Memeriksa akses listing Anda…'}
             </p>
             <p className="text-xs text-muted-foreground">
-              {language === 'en'
+              {isResolving
+                ? language === 'en'
+                  ? `Syncing your latest roles (attempt ${Math.min(attempt + 1, maxAttempts)} of ${maxAttempts})…`
+                  : `Menyinkronkan peran terbaru Anda (percobaan ${Math.min(attempt + 1, maxAttempts)} dari ${maxAttempts})…`
+                : language === 'en'
                 ? 'Verifying your account roles and listing permissions.'
                 : 'Memverifikasi peran akun dan izin listing Anda.'}
             </p>
+
           </div>
           <div className="w-full space-y-2" aria-hidden="true">
             <div className="h-9 w-full animate-pulse rounded-lg bg-muted" />
@@ -238,7 +251,22 @@ const AddProperty = () => {
               </dl>
             </details>
 
-            <div className="pt-2">
+            <div className="pt-2 space-y-2">
+              <Button
+                onClick={() => void manualRetry()}
+                disabled={isRetrying}
+                className="w-full h-9"
+              >
+                {isRetrying ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" aria-hidden="true" />
+                ) : null}
+                {language === 'en' ? 'Refresh my roles & retry' : 'Segarkan peran & coba lagi'}
+              </Button>
+              <p className="text-[11px] text-center text-muted-foreground">
+                {language === 'en'
+                  ? `Auto-checked ${attempt} of ${maxAttempts} times after your roles loaded.`
+                  : `Diperiksa otomatis ${attempt} dari ${maxAttempts} kali setelah peran dimuat.`}
+              </p>
               <Button 
                 onClick={() => navigate('/dashboard')}
                 variant="outline"
@@ -247,6 +275,7 @@ const AddProperty = () => {
                 {txt.backDashboard}
               </Button>
             </div>
+
           </CardContent>
         </Card>
       </div>
