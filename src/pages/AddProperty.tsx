@@ -65,13 +65,19 @@ const AddProperty = () => {
     isLoading: adminLoading || rolesLoading,
   });
 
-  useListingAccessLog({
+  const { isResolving, isRetrying, attempt, maxAttempts, manualRetry } = useListingAccessRetry({
     state: access,
+    userId: user?.id ?? null,
+  });
+
+  useListingAccessLog({
+    state: isResolving ? 'loading' : access,
     userId: user?.id ?? null,
     roles: userRoles,
     profileRole,
     isAdmin,
   });
+
 
   // Show login/register prompt for non-authenticated users
 
