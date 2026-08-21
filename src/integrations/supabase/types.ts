@@ -68761,6 +68761,7 @@ export type Database = {
         }[]
       }
       has_editor_access: { Args: { _user_id: string }; Returns: boolean }
+      has_listing_role: { Args: { _user_id: string }; Returns: boolean }
       has_permission: {
         Args: { _permission: string; _user_id: string }
         Returns: boolean
