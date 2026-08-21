@@ -145,6 +145,53 @@ const AddProperty = () => {
               />
             </div>
 
+            {/* Access diagnostics */}
+            <details className="rounded-lg border border-border bg-muted/40 px-3 py-2 text-left">
+              <summary className="cursor-pointer text-xs font-medium text-foreground">
+                Why is access denied?
+              </summary>
+              <dl className="mt-2 space-y-2 text-[11px] text-muted-foreground">
+                <div>
+                  <dt className="font-medium text-foreground">Required (any one)</dt>
+                  <dd className="mt-1 flex flex-wrap gap-1">
+                    {LISTING_ROLES.map((r) => (
+                      <span key={r} className="rounded bg-primary/10 px-1.5 py-0.5 text-primary">
+                        {r}
+                      </span>
+                    ))}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="font-medium text-foreground">Detected roles (user_roles)</dt>
+                  <dd className="mt-1 flex flex-wrap gap-1">
+                    {userRoles.length > 0 ? (
+                      userRoles.map((r) => (
+                        <span key={r} className="rounded bg-destructive/10 px-1.5 py-0.5 text-destructive">
+                          {r}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="italic">none (no active rows)</span>
+                    )}
+                  </dd>
+                </div>
+                <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                  <span>profile.role</span>
+                  <span className="text-foreground">{profileRole || '—'}</span>
+                  <span>isAdmin</span>
+                  <span className="text-foreground">{String(isAdmin)}</span>
+                  <span>roles loaded</span>
+                  <span className="text-foreground">{String(!rolesLoading && !adminLoading)}</span>
+                  <span>user id</span>
+                  <span className="break-all text-foreground">{user?.id ?? '—'}</span>
+                </div>
+                <p className="pt-1">
+                  Access is granted when any detected role or <code>profile.role</code> matches the
+                  required list. Ask an admin to assign a listing role, or upgrade above.
+                </p>
+              </dl>
+            </details>
+
             <div className="pt-2">
               <Button 
                 onClick={() => navigate('/dashboard')}
