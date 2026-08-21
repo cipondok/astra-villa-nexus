@@ -54,7 +54,26 @@ const AddProperty = () => {
     importSuccess: tr('addProperty.importSuccess', 'Form auto-filled. Please review and submit.'),
   };
 
+  // Access decision (shared with the server-side `public.has_listing_role()` RLS check)
+  const profileRole = (profile as { role?: string } | null)?.role ?? null;
+  const access = getListingAccess({
+    isAuthenticated,
+    isAdmin,
+    roles: userRoles,
+    profileRole,
+    isLoading: adminLoading || rolesLoading,
+  });
+
+  useListingAccessLog({
+    state: access,
+    userId: user?.id ?? null,
+    roles: userRoles,
+    profileRole,
+    isAdmin,
+  });
+
   // Show login/register prompt for non-authenticated users
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
