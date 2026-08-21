@@ -35779,6 +35779,57 @@ export type Database = {
           },
         ]
       }
+      listing_access_logs: {
+        Row: {
+          access_state: string
+          authenticated: boolean
+          correlation_id: string
+          created_at: string
+          denial_reason: string | null
+          detected_roles: string[]
+          id: string
+          ip_address: string | null
+          is_admin: boolean
+          profile_role: string | null
+          required_roles: string[]
+          route: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          access_state: string
+          authenticated?: boolean
+          correlation_id: string
+          created_at?: string
+          denial_reason?: string | null
+          detected_roles?: string[]
+          id?: string
+          ip_address?: string | null
+          is_admin?: boolean
+          profile_role?: string | null
+          required_roles?: string[]
+          route?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          access_state?: string
+          authenticated?: boolean
+          correlation_id?: string
+          created_at?: string
+          denial_reason?: string | null
+          detected_roles?: string[]
+          id?: string
+          ip_address?: string | null
+          is_admin?: boolean
+          profile_role?: string | null
+          required_roles?: string[]
+          route?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       listing_automation_config: {
         Row: {
           ai_description_enhancement: boolean | null
