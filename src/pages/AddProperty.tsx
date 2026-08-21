@@ -108,6 +108,37 @@ const AddProperty = () => {
     isLoading: adminLoading || rolesLoading,
   });
 
+  // Verifying roles — avoid flashing the Upgrade Required card
+  if (access === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
+        <output
+          aria-live="polite"
+          className="flex w-full max-w-sm flex-col items-center gap-4 text-center"
+        >
+          <span className="relative grid h-14 w-14 place-items-center rounded-xl bg-primary/10">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
+          </span>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-foreground">
+              {language === 'en' ? 'Checking your listing access…' : 'Memeriksa akses listing Anda…'}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {language === 'en'
+                ? 'Verifying your account roles and listing permissions.'
+                : 'Memverifikasi peran akun dan izin listing Anda.'}
+            </p>
+          </div>
+          <div className="w-full space-y-2" aria-hidden="true">
+            <div className="h-9 w-full animate-pulse rounded-lg bg-muted" />
+            <div className="h-9 w-full animate-pulse rounded-lg bg-muted" />
+            <div className="h-9 w-2/3 animate-pulse rounded-lg bg-muted" />
+          </div>
+        </output>
+      </div>
+    );
+  }
+
   // Show role upgrade prompt for users without permission
   if (access === 'upgrade_required') {
     return (
