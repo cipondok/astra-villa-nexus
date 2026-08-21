@@ -20,7 +20,7 @@ const AddProperty = () => {
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const [activeTab, setActiveTab] = useState<string>("studio");
   const { toast } = useToast();
-  const { data: userRoles = [] } = useUserRoles();
+  const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
   const navigate = useNavigate();
   const { 
     canAddProperty, 
@@ -96,14 +96,17 @@ const AddProperty = () => {
     );
   }
 
-  // Check if user has permission to add properties (role-based)
-  const hasRolePermission = isAdmin || 
-    userRoles.includes('agent') || 
-    userRoles.includes('property_owner') || 
-    userRoles.includes('vendor');
+  // Check if user has permission to add properties (role-based).
+  // Accepts roles from user_roles as well as the legacy profile.role field.
+  const LISTING_ROLES = ['agent', 'property_owner', 'vendor', 'developer', 'admin', 'super_admin'];
+  const profileRole = (profile as { role?: string } | null)?.role;
+  const hasRolePermission =
+    isAdmin ||
+    userRoles.some((r) => LISTING_ROLES.includes(r)) ||
+    (!!profileRole && LISTING_ROLES.includes(profileRole));
 
   // Show role upgrade prompt for users without permission
-  if (!adminLoading && !hasRolePermission) {
+  if (!adminLoading && !rolesLoading && !hasRolePermission) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
         <Card className="w-full max-w-md shadow-lg border-border bg-card">
