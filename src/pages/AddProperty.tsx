@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus, ArrowRight, Wand2, Loader2 } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 import { getListingAccess, LISTING_ROLES } from "@/lib/listingAccess";
+import { useListingAccessLog } from "@/hooks/useListingAccessLog";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
 import VIPLimitAlert from "@/components/property/VIPLimitAlert";
 import { useToast } from "@/hooks/use-toast";
@@ -54,7 +55,26 @@ const AddProperty = () => {
     importSuccess: tr('addProperty.importSuccess', 'Form auto-filled. Please review and submit.'),
   };
 
+  // Access decision (shared with the server-side `public.has_listing_role()` RLS check)
+  const profileRole = (profile as { role?: string } | null)?.role ?? null;
+  const access = getListingAccess({
+    isAuthenticated,
+    isAdmin,
+    roles: userRoles,
+    profileRole,
+    isLoading: adminLoading || rolesLoading,
+  });
+
+  useListingAccessLog({
+    state: access,
+    userId: user?.id ?? null,
+    roles: userRoles,
+    profileRole,
+    isAdmin,
+  });
+
   // Show login/register prompt for non-authenticated users
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
@@ -97,16 +117,8 @@ const AddProperty = () => {
     );
   }
 
-  // Check if user has permission to add properties (role-based).
-  // Shared with the server-side `public.has_listing_role()` RLS check.
-  const profileRole = (profile as { role?: string } | null)?.role ?? null;
-  const access = getListingAccess({
-    isAuthenticated,
-    isAdmin,
-    roles: userRoles,
-    profileRole,
-    isLoading: adminLoading || rolesLoading,
-  });
+
+
 
   // Verifying roles — avoid flashing the Upgrade Required card
   if (access === 'loading') {
