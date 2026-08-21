@@ -8,7 +8,7 @@ import LuxeListingStudio from "@/components/listing-studio/LuxeListingStudio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 // Tabs removed - using inline toggle buttons in header
-import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus, ArrowRight, Wand2 } from "lucide-react";
+import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus, ArrowRight, Wand2, Loader2 } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 import { getListingAccess, LISTING_ROLES } from "@/lib/listingAccess";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
