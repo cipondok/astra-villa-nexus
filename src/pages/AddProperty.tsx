@@ -20,7 +20,7 @@ const AddProperty = () => {
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
   const [activeTab, setActiveTab] = useState<string>("studio");
   const { toast } = useToast();
-  const { data: userRoles = [] } = useUserRoles();
+  const { data: userRoles = [], isLoading: rolesLoading } = useUserRoles();
   const navigate = useNavigate();
   const { 
     canAddProperty, 
