@@ -128,8 +128,8 @@ const AddProperty = () => {
 
 
 
-  // Verifying roles — avoid flashing the Upgrade Required card
-  if (access === 'loading') {
+  // Verifying roles (or auto-retrying a delayed role sync) — avoid flashing the Upgrade card
+  if (access === 'loading' || isResolving) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-3 py-6">
         <output
@@ -144,10 +144,15 @@ const AddProperty = () => {
               {language === 'en' ? 'Checking your listing access…' : 'Memeriksa akses listing Anda…'}
             </p>
             <p className="text-xs text-muted-foreground">
-              {language === 'en'
+              {isResolving
+                ? language === 'en'
+                  ? `Syncing your latest roles (attempt ${Math.min(attempt + 1, maxAttempts)} of ${maxAttempts})…`
+                  : `Menyinkronkan peran terbaru Anda (percobaan ${Math.min(attempt + 1, maxAttempts)} dari ${maxAttempts})…`
+                : language === 'en'
                 ? 'Verifying your account roles and listing permissions.'
                 : 'Memverifikasi peran akun dan izin listing Anda.'}
             </p>
+
           </div>
           <div className="w-full space-y-2" aria-hidden="true">
             <div className="h-9 w-full animate-pulse rounded-lg bg-muted" />
