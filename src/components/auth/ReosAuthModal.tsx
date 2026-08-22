@@ -13,6 +13,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import heroImg from "@/assets/reos-hero.jpg";
+import { REGISTRATION_ROLE_OPTIONS, toSignupRole, toProfileType } from "@/lib/registrationRoles";
+
 
 /* ============================================================
    ASTRA Villa — Premium Auth Modal
@@ -21,16 +23,9 @@ import heroImg from "@/assets/reos-hero.jpg";
 
 type Mode = "login" | "register" | "loading" | "success";
 
-const profileTypes = [
-  { v: "buyer",      label: "Property Buyer",  icon: Home,      desc: "Discover & purchase premium properties" },
-  { v: "investor",   label: "Investor",        icon: TrendingUp, desc: "Fractional & full-asset opportunities" },
-  { v: "developer",  label: "Developer",       icon: Hammer,    desc: "List & manage development projects" },
-  { v: "owner",      label: "Property Owner",  icon: KeyRound,  desc: "Manage your portfolio & tenants" },
-  { v: "agent",      label: "Agent",           icon: Users,     desc: "Represent buyers, sellers & landlords" },
-  { v: "vendor",     label: "Vendor",          icon: Store,     desc: "Architects, contractors, suppliers" },
-  { v: "lawyer",     label: "Lawyer",          icon: Scale,     desc: "Legal & due diligence services" },
-  { v: "consultant", label: "Consultant",      icon: Briefcase, desc: "Advisory & specialist services" },
-];
+// Public account purposes live in a shared module so the modal and the
+// /auth page stay in sync with the role/profile schema.
+
 
 const interestOptions = [
   { v: "luxury_villas",       label: "Luxury Villas",       icon: Building2 },
@@ -99,9 +94,11 @@ export function ReosAuthModal({
   const [reg, setReg] = useState({
     fullName: "", email: "", password: "",
     country: "Indonesia", language: "en",
+    purpose: "" as string,
     profileType: "" as string,
     interests: [] as string[],
   });
+
   const [regErr, setRegErr] = useState<Record<string, string>>({});
 
   // loading state
@@ -151,7 +148,7 @@ export function ReosAuthModal({
 
   const handleRegisterSubmit = async () => {
     setSubmitting(true);
-    const { error } = await signUp(reg.email, reg.password, reg.fullName);
+    const { error } = await signUp(reg.email, reg.password, reg.fullName, toSignupRole(reg.purpose));
     if (error) {
       setSubmitting(false);
       toast.error(error.message || "Sign up failed");
@@ -165,7 +162,7 @@ export function ReosAuthModal({
           full_name: reg.fullName,
           country: reg.country,
           language: reg.language,
-          profile_type: reg.profileType as any,
+          profile_type: toProfileType(reg.purpose) as any,
           interests: reg.interests,
           onboarded_at: new Date().toISOString(),
         }).eq("id", user.id);
@@ -176,6 +173,7 @@ export function ReosAuthModal({
     setSubmitting(false);
     setStep(4);
   };
+
 
   const runSuccessLoader = () => {
     setMode("loading"); setLoadingStep(0);
@@ -352,14 +350,54 @@ export function ReosAuthModal({
                     transition={{ duration: 0.25 }}
                     className="flex-1 overflow-y-auto p-6 md:p-7 flex flex-col">
                     <Header
-                      title={step === 4 ? "You're in." : "Create Your Account"}
-                      subtitle={step === 4 ? "Your Real Estate Operating System is ready." : "Join Southeast Asia's premier real estate investor network."}
+                      title={step === 4 ? "You're in." : step === 1 ? "What are you joining ASTRA Villa for?" : "Create Your Account"}
+                      subtitle={step === 4
+                        ? "Your Real Estate Operating System is ready."
+                        : step === 1
+                          ? "Pick your main account purpose. You can add more roles later in Profile settings."
+                          : "Join Southeast Asia's premier real estate investor network."}
                     />
 
                     {step < 4 && <Stepper step={step} total={3} />}
 
-                    {/* Step 1 — Account info */}
+                    {/* Step 1 — Account purpose (role) */}
                     {step === 1 && (
+                      <div className="mt-4 flex-1 flex flex-col">
+                        <div
+                          role="radiogroup"
+                          aria-label="Account purpose"
+                          className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1 overflow-y-auto pr-1"
+                        >
+                          {REGISTRATION_ROLE_OPTIONS.map(p => {
+                            const active = reg.purpose === p.value;
+                            return (
+                              <button key={p.value} type="button"
+                                role="radio" aria-checked={active}
+                                onClick={() => setReg(r => ({ ...r, purpose: p.value }))}
+                                className={`text-left rounded-xl border p-3 min-h-[44px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/70 ${active ? "border-[#D4AF37]" : "bg-white/[0.02] border-white/10 hover:border-[#D4AF37]/40"}`}
+                                style={active ? { borderColor: "#D4AF37", background: "rgba(200,169,106,0.08)" } : {}}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#D4AF37] text-black" : "bg-white/5"}`}>
+                                    <p.icon className="h-3.5 w-3.5" />
+                                  </div>
+                                  <div className="text-[12.5px] font-semibold">{p.label}</div>
+                                  {active && <Check className="ml-auto h-3.5 w-3.5" style={{ color: "#E0C384" }} />}
+                                </div>
+                                <div className="mt-1.5 text-[10.5px] text-[#9A958A] leading-snug">{p.description}</div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <div className="pt-3 flex gap-2">
+                          <SecondaryButton onClick={() => setMode("login")}><ArrowLeft className="h-4 w-4" /> Back to login</SecondaryButton>
+                          <PrimaryButton disabled={!reg.purpose} onClick={() => setStep(2)}>Continue <ArrowRight className="h-4 w-4" /></PrimaryButton>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step 2 — Account info */}
+                    {step === 2 && (
                       <div className="mt-4 space-y-3 flex-1">
                         <Field id="reg-name" label="Full Name" error={regErr.fullName}>
                           <input id="reg-name" autoComplete="name" value={reg.fullName}
@@ -397,42 +435,12 @@ export function ReosAuthModal({
                           </Field>
                         </div>
                         <div className="pt-2 flex gap-2">
-                          <SecondaryButton onClick={() => setMode("login")}><ArrowLeft className="h-4 w-4" /> Back to login</SecondaryButton>
-                          <PrimaryButton onClick={() => { if (validateStep1()) setStep(2); }}>Continue <ArrowRight className="h-4 w-4" /></PrimaryButton>
+                          <SecondaryButton onClick={() => setStep(1)}><ArrowLeft className="h-4 w-4" /> Back</SecondaryButton>
+                          <PrimaryButton onClick={() => { if (validateStep1()) setStep(3); }}>Continue <ArrowRight className="h-4 w-4" /></PrimaryButton>
                         </div>
                       </div>
                     )}
 
-                    {/* Step 2 — Profile type */}
-                    {step === 2 && (
-                      <div className="mt-4 flex-1 flex flex-col">
-                        <p className="text-[12px] text-[#9A958A] mb-3">Choose how you'll use ASTRA Villa. You can change this later.</p>
-                        <div className="grid grid-cols-2 gap-2 flex-1 overflow-y-auto pr-1">
-                          {profileTypes.map(p => {
-                            const active = reg.profileType === p.v;
-                            return (
-                              <button key={p.v} type="button"
-                                onClick={() => setReg(r => ({ ...r, profileType: p.v }))}
-                                className={`text-left rounded-xl border p-3 transition group ${active ? "bg-[#D4AF37]/12 border-[#D4AF37]" : "bg-white/[0.02] border-white/8 hover:border-[#D4AF37]/40"}`}
-                                style={active ? { borderColor: "#D4AF37", background: "rgba(200,169,106,0.08)" } : {}}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#D4AF37] text-black" : "bg-white/5"}`}>
-                                    <p.icon className="h-3.5 w-3.5" />
-                                  </div>
-                                  <div className="text-[12.5px] font-semibold">{p.label}</div>
-                                </div>
-                                <div className="mt-1.5 text-[10.5px] text-[#9A958A] leading-snug">{p.desc}</div>
-                              </button>
-                            );
-                          })}
-                        </div>
-                        <div className="pt-3 flex gap-2">
-                          <SecondaryButton onClick={() => setStep(1)}><ArrowLeft className="h-4 w-4" /> Back</SecondaryButton>
-                          <PrimaryButton disabled={!reg.profileType} onClick={() => setStep(3)}>Continue <ArrowRight className="h-4 w-4" /></PrimaryButton>
-                        </div>
-                      </div>
-                    )}
 
                     {/* Step 3 — Interests */}
                     {step === 3 && (

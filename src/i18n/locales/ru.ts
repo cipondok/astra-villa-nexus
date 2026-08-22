@@ -180,6 +180,10 @@ const ru: TranslationMap = {
     },
   },
   auth: {
+    rolePickerTitle: "С какой целью вы присоединяетесь к ASTRA Villa?",
+    rolePickerSubtitle: "Выберите основную цель аккаунта. Другие роли можно добавить позже в настройках профиля.",
+    selectPurposeTitle: "Выберите цель аккаунта",
+    selectPurposeDesc: "Укажите, с какой целью вы присоединяетесь к ASTRA Villa.",
     signIn: 'Войти',
     signUp: 'Регистрация',
     signOut: 'Выйти',

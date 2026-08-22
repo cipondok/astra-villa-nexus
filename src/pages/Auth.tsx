@@ -17,6 +17,9 @@ import { EmailValidationIndicator } from "@/components/auth/EmailValidationIndic
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 import SignupPromotionBanner from "@/components/auth/SignupPromotionBanner";
 import { useLoginSecurity } from "@/hooks/useLoginSecurity";
+import { REGISTRATION_ROLE_OPTIONS, toSignupRole, toProfileType } from "@/lib/registrationRoles";
+import { Check } from "lucide-react";
+
 import {
   Dialog,
   DialogContent,
@@ -52,6 +55,8 @@ const Auth = () => {
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [registerPurpose, setRegisterPurpose] = useState<string>("");
+
 
   // Password reset state
   const [resetEmail, setResetEmail] = useState("");
@@ -214,6 +219,17 @@ const Auth = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!registerPurpose) {
+      toast({
+        title: t('auth.selectPurposeTitle', 'Select an account purpose'),
+        description: t('auth.selectPurposeDesc', 'Tell us what you are joining ASTRA Villa for.'),
+        variant: "destructive",
+      });
+      return;
+    }
+
+
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(registerEmail)) {
@@ -275,14 +291,34 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      const { success, error } = await signUp(registerEmail, registerPassword, registerName);
-      
+      const { success, error } = await signUp(
+        registerEmail,
+        registerPassword,
+        registerName,
+        toSignupRole(registerPurpose),
+      );
+
       if (success) {
+        // Best-effort: mirror the selection on the profile (role itself is set
+        // server-side by the signup trigger from auth metadata).
+        try {
+          const { data: { user: newUser } } = await supabase.auth.getUser();
+          if (newUser) {
+            await supabase
+              .from('profiles')
+              .update({ profile_type: toProfileType(registerPurpose) as any })
+              .eq('id', newUser.id);
+          }
+        } catch (profileErr) {
+          console.warn('profile_type update skipped', profileErr);
+        }
+
         toast({
           title: "Registration successful!",
           description: "Please check your email to verify your account before logging in.",
         });
       } else {
+
         toast({
           title: "Registration failed",
           description: error?.message || "Unable to create account",
@@ -467,8 +503,50 @@ const Auth = () => {
             </TabsContent>
 
             <TabsContent value="register" className="space-y-4 mt-4">
+              {/* Step 1 — account purpose (role) */}
+              <div className="space-y-3">
+                <div>
+                  <h2 className="text-base font-semibold text-foreground">
+                    {t('auth.rolePickerTitle', 'What are you joining ASTRA Villa for?')}
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {t('auth.rolePickerSubtitle', 'Choose your main account purpose. You can add more roles later in Profile settings.')}
+                  </p>
+                </div>
+                <div role="radiogroup" aria-label={t('auth.rolePickerTitle', 'What are you joining ASTRA Villa for?')} className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {REGISTRATION_ROLE_OPTIONS.map((opt) => {
+                    const active = registerPurpose === opt.value;
+                    const Icon = opt.icon;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={active}
+                        onClick={() => setRegisterPurpose(opt.value)}
+                        className={`text-left rounded-xl border p-3 min-h-[44px] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-primary/50 ${
+                          active
+                            ? 'border-gold-primary bg-gold-primary/10'
+                            : 'border-gold-primary/15 hover:border-gold-primary/40 hover:bg-gold-primary/5'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? 'bg-gold-primary text-background' : 'bg-muted text-muted-foreground'}`}>
+                            <Icon className="h-3.5 w-3.5" />
+                          </span>
+                          <span className="text-[13px] font-semibold text-foreground">{opt.label}</span>
+                          {active && <Check className="ml-auto h-4 w-4 text-gold-primary" />}
+                        </span>
+                        <span className="mt-1.5 block text-[11px] leading-snug text-muted-foreground">{opt.description}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Social Registration Buttons */}
               <div className="space-y-3">
+
                 <Button
                   type="button"
                   variant="outline"

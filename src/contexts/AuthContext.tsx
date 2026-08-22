@@ -5,6 +5,8 @@ import { isSessionCheckSuppressed } from '@/hooks/useSessionMonitor';
 import { isValidUUID } from '@/utils/uuid-validation';
 import { validateUUIDWithLogging } from '@/utils/uuid-validation-logger';
 import { logAuthFailure } from '@/utils/globalErrorReporter';
+import { PUBLIC_SIGNUP_ROLES } from '@/lib/registrationRoles';
+
 
 export type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service' | 'super_admin';
 
@@ -44,7 +46,7 @@ interface AuthContextType {
   loading: boolean;
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any; success?: boolean }>;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: any; success?: boolean }>;
+  signUp: (email: string, password: string, fullName: string, role?: string) => Promise<{ error: any; success?: boolean }>;
   signInWithGoogle: () => Promise<{ error: any; success?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
@@ -464,7 +466,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = async (email: string, password: string, fullName: string, role?: string) => {
     try {
       console.log('Attempting sign up for:', email);
       setLoading(true);
@@ -476,16 +478,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLoading(false);
       }, 10000); // 10 second timeout
 
+      // Only publicly self-selectable roles are forwarded; the database trigger
+      // re-validates and falls back to 'general_user' for anything else.
+      const safeRole = role && PUBLIC_SIGNUP_ROLES.includes(role) ? role : 'general_user';
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            full_name: fullName
+            full_name: fullName,
+            role: safeRole
           },
           emailRedirectTo: `${window.location.origin}/`
         }
       });
+
 
       clearTimeout(timeoutId);
 

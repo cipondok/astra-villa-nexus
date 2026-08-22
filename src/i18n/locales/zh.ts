@@ -180,6 +180,10 @@ const zh: TranslationMap = {
     },
   },
   auth: {
+    rolePickerTitle: "您加入 ASTRA Villa 的目的是什么？",
+    rolePickerSubtitle: "请选择您的主要账户用途。之后可在个人资料设置中添加更多角色。",
+    selectPurposeTitle: "请选择账户用途",
+    selectPurposeDesc: "请告诉我们您加入 ASTRA Villa 的目的。",
     signIn: '登录',
     signUp: '注册',
     signOut: '退出',
