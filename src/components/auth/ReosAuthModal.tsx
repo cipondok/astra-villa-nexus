@@ -13,6 +13,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import heroImg from "@/assets/reos-hero.jpg";
+import { REGISTRATION_ROLE_OPTIONS, toSignupRole, toProfileType } from "@/lib/registrationRoles";
+
 
 /* ============================================================
    ASTRA Villa — Premium Auth Modal
