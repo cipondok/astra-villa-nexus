@@ -464,7 +464,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = async (email: string, password: string, fullName: string, role?: string) => {
     try {
       console.log('Attempting sign up for:', email);
       setLoading(true);
@@ -476,16 +476,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLoading(false);
       }, 10000); // 10 second timeout
 
+      // Only publicly self-selectable roles are forwarded; the database trigger
+      // re-validates and falls back to 'general_user' for anything else.
+      const safeRole = role && PUBLIC_SIGNUP_ROLES.includes(role) ? role : 'general_user';
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            full_name: fullName
+            full_name: fullName,
+            role: safeRole
           },
           emailRedirectTo: `${window.location.origin}/`
         }
       });
+
 
       clearTimeout(timeoutId);
 
