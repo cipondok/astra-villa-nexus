@@ -288,14 +288,34 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      const { success, error } = await signUp(registerEmail, registerPassword, registerName);
-      
+      const { success, error } = await signUp(
+        registerEmail,
+        registerPassword,
+        registerName,
+        toSignupRole(registerPurpose),
+      );
+
       if (success) {
+        // Best-effort: mirror the selection on the profile (role itself is set
+        // server-side by the signup trigger from auth metadata).
+        try {
+          const { data: { user: newUser } } = await supabase.auth.getUser();
+          if (newUser) {
+            await supabase
+              .from('profiles')
+              .update({ profile_type: toProfileType(registerPurpose) as any })
+              .eq('id', newUser.id);
+          }
+        } catch (profileErr) {
+          console.warn('profile_type update skipped', profileErr);
+        }
+
         toast({
           title: "Registration successful!",
           description: "Please check your email to verify your account before logging in.",
         });
       } else {
+
         toast({
           title: "Registration failed",
           description: error?.message || "Unable to create account",
