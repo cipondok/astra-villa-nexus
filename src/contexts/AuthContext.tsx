@@ -44,7 +44,7 @@ interface AuthContextType {
   loading: boolean;
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any; success?: boolean }>;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: any; success?: boolean }>;
+  signUp: (email: string, password: string, fullName: string, role?: string) => Promise<{ error: any; success?: boolean }>;
   signInWithGoogle: () => Promise<{ error: any; success?: boolean }>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<Profile>) => Promise<{ error: any; success?: boolean }>;
