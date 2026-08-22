@@ -52,6 +52,8 @@ const Auth = () => {
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [registerPurpose, setRegisterPurpose] = useState<string>("");
+
 
   // Password reset state
   const [resetEmail, setResetEmail] = useState("");
