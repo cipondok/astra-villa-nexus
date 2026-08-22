@@ -153,7 +153,7 @@ export function ReosAuthModal({
 
   const handleRegisterSubmit = async () => {
     setSubmitting(true);
-    const { error } = await signUp(reg.email, reg.password, reg.fullName);
+    const { error } = await signUp(reg.email, reg.password, reg.fullName, toSignupRole(reg.purpose));
     if (error) {
       setSubmitting(false);
       toast.error(error.message || "Sign up failed");
@@ -167,7 +167,7 @@ export function ReosAuthModal({
           full_name: reg.fullName,
           country: reg.country,
           language: reg.language,
-          profile_type: reg.profileType as any,
+          profile_type: toProfileType(reg.purpose) as any,
           interests: reg.interests,
           onboarded_at: new Date().toISOString(),
         }).eq("id", user.id);
@@ -178,6 +178,7 @@ export function ReosAuthModal({
     setSubmitting(false);
     setStep(4);
   };
+
 
   const runSuccessLoader = () => {
     setMode("loading"); setLoadingStep(0);
