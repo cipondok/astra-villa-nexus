@@ -17,6 +17,9 @@ import { EmailValidationIndicator } from "@/components/auth/EmailValidationIndic
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 import SignupPromotionBanner from "@/components/auth/SignupPromotionBanner";
 import { useLoginSecurity } from "@/hooks/useLoginSecurity";
+import { REGISTRATION_ROLE_OPTIONS, toSignupRole, toProfileType } from "@/lib/registrationRoles";
+import { Check } from "lucide-react";
+
 import {
   Dialog,
   DialogContent,
