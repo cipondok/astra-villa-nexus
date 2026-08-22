@@ -5,6 +5,8 @@ import { isSessionCheckSuppressed } from '@/hooks/useSessionMonitor';
 import { isValidUUID } from '@/utils/uuid-validation';
 import { validateUUIDWithLogging } from '@/utils/uuid-validation-logger';
 import { logAuthFailure } from '@/utils/globalErrorReporter';
+import { PUBLIC_SIGNUP_ROLES } from '@/lib/registrationRoles';
+
 
 export type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service' | 'super_admin';
 
