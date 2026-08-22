@@ -216,6 +216,17 @@ const Auth = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!registerPurpose) {
+      toast({
+        title: t('auth.selectPurposeTitle', 'Select an account purpose'),
+        description: t('auth.selectPurposeDesc', 'Tell us what you are joining ASTRA Villa for.'),
+        variant: "destructive",
+      });
+      return;
+    }
+
+
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(registerEmail)) {
