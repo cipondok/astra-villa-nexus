@@ -99,9 +99,11 @@ export function ReosAuthModal({
   const [reg, setReg] = useState({
     fullName: "", email: "", password: "",
     country: "Indonesia", language: "en",
+    purpose: "" as string,
     profileType: "" as string,
     interests: [] as string[],
   });
+
   const [regErr, setRegErr] = useState<Record<string, string>>({});
 
   // loading state
