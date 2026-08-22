@@ -21,16 +21,9 @@ import heroImg from "@/assets/reos-hero.jpg";
 
 type Mode = "login" | "register" | "loading" | "success";
 
-const profileTypes = [
-  { v: "buyer",      label: "Property Buyer",  icon: Home,      desc: "Discover & purchase premium properties" },
-  { v: "investor",   label: "Investor",        icon: TrendingUp, desc: "Fractional & full-asset opportunities" },
-  { v: "developer",  label: "Developer",       icon: Hammer,    desc: "List & manage development projects" },
-  { v: "owner",      label: "Property Owner",  icon: KeyRound,  desc: "Manage your portfolio & tenants" },
-  { v: "agent",      label: "Agent",           icon: Users,     desc: "Represent buyers, sellers & landlords" },
-  { v: "vendor",     label: "Vendor",          icon: Store,     desc: "Architects, contractors, suppliers" },
-  { v: "lawyer",     label: "Lawyer",          icon: Scale,     desc: "Legal & due diligence services" },
-  { v: "consultant", label: "Consultant",      icon: Briefcase, desc: "Advisory & specialist services" },
-];
+// Public account purposes live in a shared module so the modal and the
+// /auth page stay in sync with the role/profile schema.
+
 
 const interestOptions = [
   { v: "luxury_villas",       label: "Luxury Villas",       icon: Building2 },
