@@ -180,6 +180,10 @@ const ko: TranslationMap = {
     },
   },
   auth: {
+    rolePickerTitle: "ASTRA Villa에 어떤 목적으로 가입하시나요?",
+    rolePickerSubtitle: "주요 계정 목적을 선택하세요. 역할은 나중에 프로필 설정에서 추가할 수 있습니다.",
+    selectPurposeTitle: "계정 목적을 선택하세요",
+    selectPurposeDesc: "ASTRA Villa 가입 목적을 알려주세요.",
     signIn: '로그인',
     signUp: '회원가입',
     signOut: '로그아웃',

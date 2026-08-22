@@ -180,6 +180,10 @@ const en: TranslationMap = {
     },
   },
   auth: {
+    rolePickerTitle: "What are you joining ASTRA Villa for?",
+    rolePickerSubtitle: "Choose your main account purpose. You can add more roles later in Profile settings.",
+    selectPurposeTitle: "Select an account purpose",
+    selectPurposeDesc: "Tell us what you are joining ASTRA Villa for.",
     signIn: 'Sign In',
     signUp: 'Sign Up',
     signOut: 'Sign Out',

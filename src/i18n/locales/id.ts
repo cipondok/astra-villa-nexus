@@ -180,6 +180,10 @@ const id: TranslationMap = {
     },
   },
   auth: {
+    rolePickerTitle: "Untuk apa Anda bergabung dengan ASTRA Villa?",
+    rolePickerSubtitle: "Pilih tujuan utama akun Anda. Anda dapat menambah peran lain nanti di Pengaturan Profil.",
+    selectPurposeTitle: "Pilih tujuan akun",
+    selectPurposeDesc: "Beri tahu kami untuk apa Anda bergabung dengan ASTRA Villa.",
     signIn: 'Masuk',
     signUp: 'Daftar',
     signOut: 'Keluar',

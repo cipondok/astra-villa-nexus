@@ -180,6 +180,10 @@ const ja: TranslationMap = {
     },
   },
   auth: {
+    rolePickerTitle: "ASTRA Villa をどのような目的で利用しますか？",
+    rolePickerSubtitle: "主なアカウント目的を選択してください。役割は後からプロフィール設定で追加できます。",
+    selectPurposeTitle: "アカウント目的を選択してください",
+    selectPurposeDesc: "ASTRA Villa の利用目的をお知らせください。",
     signIn: 'ログイン',
     signUp: '新規登録',
     signOut: 'ログアウト',
