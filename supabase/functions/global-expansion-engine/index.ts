@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -21,6 +22,13 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const __auth = await getAuthContext(req);
+    if (!__auth.isAdmin) {
+      return new Response(JSON.stringify({ error: __auth.userId ? "Admin access required" : "Authentication required" }), {
+        status: __auth.userId ? 403 : 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const { mode, params = {} } = await req.json();
     const s = sb();
 

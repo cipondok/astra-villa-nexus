@@ -1,4 +1,8 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { isInternalCall } from '../_shared/auth.ts'
+
+// Only the verified sender subdomain may receive the Lovable API key.
+const ALLOWED_SENDER_DOMAINS = new Set(['notify.astravilla.com'])
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -30,6 +34,14 @@ interface QueueMessage {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
+  }
+
+  // Only the scheduler (cron secret) or other server functions may drain the queue.
+  if (!(await isInternalCall(req))) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
   }
 
   const supabase = createClient(
@@ -123,7 +135,10 @@ Deno.serve(async (req) => {
 
       // Send email via Lovable Email API
       try {
-        const emailApiUrl = `https://${payload.sender_domain}/api/send`
+        if (!payload.sender_domain || !ALLOWED_SENDER_DOMAINS.has(String(payload.sender_domain).toLowerCase())) {
+          throw new Error('Unapproved sender domain')
+        }
+        const emailApiUrl = `https://${String(payload.sender_domain).toLowerCase()}/api/send`
         const response = await fetch(emailApiUrl, {
           method: 'POST',
           headers: {

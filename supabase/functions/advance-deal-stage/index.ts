@@ -71,10 +71,11 @@ Deno.serve(async (req) => {
 
     const currentStage = offer.deal_stage || "inquiry";
 
-    // 2. Determine user role in this deal
-    let userRole = "investor";
+    // 2. Determine user role in this deal (only actual participants get a role)
+    let userRole: string | null = null;
     if (offer.agent_id === userId) userRole = "agent";
     else if (offer.seller_id === userId) userRole = "owner";
+    else if (offer.buyer_id === userId) userRole = "investor";
 
     // Check admin
     const { data: adminCheck } = await adminClient
@@ -83,6 +84,22 @@ Deno.serve(async (req) => {
       .eq("user_id", userId)
       .maybeSingle();
     if (adminCheck) userRole = "admin";
+    if (!adminCheck) {
+      const { data: roleRows } = await adminClient
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .in("role", ["admin", "super_admin"])
+        .limit(1);
+      if (roleRows && roleRows.length > 0) userRole = "admin";
+    }
+
+    if (!userRole) {
+      return new Response(JSON.stringify({ error: "You are not a participant in this offer" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // 3. Validate transition against deal_stage_rules
     const { data: rule, error: ruleErr } = await adminClient

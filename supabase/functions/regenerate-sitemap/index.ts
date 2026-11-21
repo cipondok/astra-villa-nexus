@@ -1,9 +1,10 @@
 import { createClient } from "npm:@supabase/supabase-js@2.45.0";
+import { isInternalCall } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-sitemap-cron",
+    "authorization, x-client-info, apikey, content-type, x-sitemap-cron, x-cron-secret",
 };
 
 const BASE_URL = "https://astravilla.com";
@@ -86,8 +87,9 @@ Deno.serve(async (req) => {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const supabase = createClient(supabaseUrl, serviceKey);
 
-  // Authz: either a logged-in admin user, OR pg_cron via the special header
-  const isCron = req.headers.get("x-sitemap-cron") === "true";
+  // Authz: either a logged-in admin user, OR pg_cron proven by the vault-backed cron secret.
+  // The x-sitemap-cron header alone is not trusted.
+  const isCron = await isInternalCall(req);
   let triggeredBy = "cron";
 
   if (!isCron) {

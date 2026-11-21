@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+import { HttpError, userIsAdmin } from "../_shared/auth.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
@@ -97,6 +98,12 @@ function buildMidtransPayload(params: Record<string, any>) {
 
 async function createCheckout(params: Record<string, any>, supabase: any, userId: string | null) {
   if (!userId) throw new Error("Authentication required for checkout");
+  // The charged amount must come from a trusted server-side caller, never from the shopper's request.
+  if (!params.__is_admin && !params.__is_cron) {
+    throw new HttpError(403, "Checkout amounts are set by the server; use the booking payment flow");
+  }
+  const amount = Number(params.gross_amount);
+  if (!Number.isFinite(amount) || amount <= 0) throw new Error("gross_amount must be a positive number");
   const payload = buildMidtransPayload(params);
   const res = await fetch(MIDTRANS_SNAP_URL, {
     method: "POST",
@@ -124,8 +131,14 @@ async function createCheckout(params: Record<string, any>, supabase: any, userId
 }
 
 async function processRefund(params: Record<string, any>, supabase: any, userId: string | null) {
-  if (!userId) throw new Error("Authentication required for refund operations");
+  if (!userId && !params.__is_cron) throw new Error("Authentication required for refund operations");
+  // Refunds move money: admins (or the scheduler) only.
+  if (!params.__is_admin && !params.__is_cron) throw new HttpError(403, "Admin access required for refunds");
   const { order_id, amount, reason } = params;
+  if (!order_id || typeof order_id !== "string") throw new Error("order_id required");
+  const { data: txn } = await supabase.from("payment_transactions").select("id, amount").eq("order_id", order_id).maybeSingle();
+  if (!txn) throw new HttpError(404, "Payment not found");
+  if (amount && (Number(amount) <= 0 || Number(amount) > Number(txn.amount))) throw new Error("Invalid refund amount");
   const body: Record<string, any> = { reason: reason || "Customer request" };
   if (amount) {
     body.refund_key = `refund-${order_id}-${Date.now()}`;
@@ -329,7 +342,11 @@ async function generateInvoice(params: Record<string, any>, supabase: any, userI
 async function verifyPayment(params: Record<string, any>, supabase: any, userId: string | null) {
   if (!userId) throw new Error("Authentication required for payment verification");
   const { order_id } = params;
-  if (!order_id) throw new Error("order_id required");
+  if (!order_id || typeof order_id !== "string") throw new Error("order_id required");
+  // Callers may only check their own payments (admins may check any).
+  const { data: txn } = await supabase.from("payment_transactions").select("user_id").eq("order_id", order_id).maybeSingle();
+  if (!txn) throw new HttpError(404, "Payment not found");
+  if (!params.__is_admin && txn.user_id !== userId) throw new HttpError(403, "Not your payment");
 
   const res = await fetch(`${MIDTRANS_BASE_URL}/v2/${order_id}/status`, {
     method: "GET",
@@ -423,6 +440,8 @@ serve(async (req) => {
     // Strip any client-supplied body secret to prevent body-based bypass.
     if ('__cron_secret' in (params as any)) delete (params as any).__cron_secret;
     (params as any).__is_cron = isCronCall;
+    if ('__is_admin' in (params as any)) delete (params as any).__is_admin;
+    (params as any).__is_admin = userId ? await userIsAdmin(userId) : false;
     log("Invoked", { action, userId: userId?.slice(0, 8), isCronCall });
 
     let result: Record<string, unknown>;
@@ -458,7 +477,7 @@ serve(async (req) => {
     const msg = error instanceof Error ? error.message : String(error);
     log("ERROR", { message: msg });
     return new Response(JSON.stringify({ success: false, error: msg }), {
-      status: 400,
+      status: error instanceof HttpError ? error.status : 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }

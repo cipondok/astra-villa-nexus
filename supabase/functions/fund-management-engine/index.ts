@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { getAuthContext, HttpError } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,12 +11,6 @@ function sb() {
   return createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 }
 
-function uid(req: Request): string | null {
-  try {
-    const t = req.headers.get("authorization")?.replace("Bearer ", "") || "";
-    return JSON.parse(atob(t.split(".")[1])).sub || null;
-  } catch { return null; }
-}
 
 function ok(d: unknown) {
   return new Response(JSON.stringify(d), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -30,7 +25,17 @@ Deno.serve(async (req) => {
   try {
     const { mode, params = {} } = await req.json();
     const s = sb();
-    const userId = uid(req);
+    const auth = await getAuthContext(req);
+    const userId = auth.isInternal ? null : auth.userId;
+    const isAdmin = auth.isAdmin;
+    const PUBLIC_MODES = ["list_funds"];
+    const ADMIN_MODES = ["dashboard", "calculate_nav", "distribute"];
+    if (!PUBLIC_MODES.includes(mode) && !userId && !auth.isInternal) {
+      return err("Authentication required", 401);
+    }
+    if (ADMIN_MODES.includes(mode) && !isAdmin) {
+      return err("Admin access required", 403);
+    }
 
     // ── Dashboard ─────────────────────────────────────────────────────────
     if (mode === "dashboard") {
@@ -87,8 +92,13 @@ Deno.serve(async (req) => {
         s.from("fund_property_allocations").select("*").eq("fund_id", fund_id),
         s.from("fund_nav_history").select("*").eq("fund_id", fund_id).order("valuation_timestamp", { ascending: false }).limit(30),
         s.from("fund_distributions").select("*").eq("fund_id", fund_id).order("distribution_date", { ascending: false }),
-        s.from("fund_investor_positions").select("*").eq("fund_id", fund_id),
+        isAdmin
+          ? s.from("fund_investor_positions").select("*").eq("fund_id", fund_id)
+          : s.from("fund_investor_positions").select("*").eq("fund_id", fund_id).eq("investor_user_id", userId),
       ]);
+      const investorCount = isAdmin
+        ? new Set((positions.data || []).map((p: any) => p.investor_user_id)).size
+        : (await s.from("fund_investor_positions").select("id", { count: "exact", head: true }).eq("fund_id", fund_id)).count ?? 0;
       if (fund.error) throw fund.error;
 
       return ok({
@@ -97,7 +107,7 @@ Deno.serve(async (req) => {
         nav_history: navs.data || [],
         distributions: dists.data || [],
         positions: positions.data || [],
-        investor_count: new Set((positions.data || []).map((p: any) => p.investor_user_id)).size,
+        investor_count: investorCount,
       });
     }
 
@@ -301,6 +311,7 @@ Deno.serve(async (req) => {
 
     throw new Error(`Unknown mode: ${mode}`);
   } catch (e) {
-    return err(e.message);
+    if (e instanceof HttpError) return err(e.message, e.status);
+    return err(e instanceof Error ? e.message : "Request failed");
   }
 });

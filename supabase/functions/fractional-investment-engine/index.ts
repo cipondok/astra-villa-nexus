@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { getAuthContext } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,18 +14,6 @@ function supaAdmin() {
   );
 }
 
-function getUserId(req: Request): string | null {
-  const authHeader = req.headers.get("authorization");
-  if (!authHeader) return null;
-  try {
-    const token = authHeader.replace("Bearer ", "");
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.sub || null;
-  } catch {
-    return null;
-  }
-}
-
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -33,7 +22,14 @@ Deno.serve(async (req) => {
   try {
     const { mode, params = {} } = await req.json();
     const sb = supaAdmin();
-    const userId = getUserId(req);
+    const auth = await getAuthContext(req);
+    const userId = auth.isInternal ? null : auth.userId;
+    const deny = (msg: string, status: number) =>
+      new Response(JSON.stringify({ error: msg }), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (mode !== "list_offers" && !userId && !auth.isInternal) return deny("Authentication required", 401);
+    if (["dashboard", "create_offer", "assign_syndication_role"].includes(mode) && !auth.isAdmin) {
+      return deny("Admin access required", 403);
+    }
 
     // ── Dashboard summary ───────────────────────────────────────────────
     if (mode === "dashboard") {
@@ -78,7 +74,7 @@ Deno.serve(async (req) => {
     if (mode === "reserve_shares") {
       if (!userId) throw new Error("Authentication required");
       const { offer_id, share_units } = params;
-      if (!offer_id || !share_units || share_units < 1) throw new Error("offer_id and share_units required");
+      if (!offer_id || !Number.isInteger(share_units) || share_units < 1) throw new Error("offer_id and a whole number of share_units required");
 
       // Get offer
       const { data: offer, error: offerErr } = await sb

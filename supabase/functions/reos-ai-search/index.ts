@@ -2,6 +2,7 @@
 // Uses Lovable AI Gateway (google/gemini-3-flash-preview)
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -24,6 +25,13 @@ interface AiRanked {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
+    const __auth = await getAuthContext(req);
+    if (!__auth.userId && !__auth.isInternal) {
+      return new Response(JSON.stringify({ error: "Please sign in to use this feature" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const body = (await req.json()) as SearchReq;
     const query = (body.query || "").trim();
     const limit = Math.min(body.limit ?? 8, 20);

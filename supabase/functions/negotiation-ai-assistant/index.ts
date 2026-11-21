@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -32,7 +33,11 @@ Deno.serve(async (req) => {
       return json({ ...msg });
     }
 
-    // ── MODE: Score all active negotiations ────────────────────────────────
+    // ── MODE: Score all active negotiations (platform-wide: admins/scheduler only) ──
+    const __auth = await getAuthContext(req);
+    if (!__auth.isAdmin) {
+      return json({ error: __auth.userId ? "Admin access required" : "Authentication required" }, __auth.userId ? 403 : 401);
+    }
     // Fetch deal transactions in negotiation stages
     const { data: deals } = await supabase
       .from("deal_transactions" as any)
@@ -204,8 +209,9 @@ Deno.serve(async (req) => {
   }
 });
 
-function json(data: any) {
+function json(data: any, status = 200) {
   return new Response(JSON.stringify(data), {
+    status,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",

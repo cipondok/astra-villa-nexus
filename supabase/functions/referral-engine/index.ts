@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
 
+import { userIsAdmin } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -161,8 +162,13 @@ serve(async (req) => {
 
     // ── PROCESS COMMISSION (for deal completion) ──
     if (action === "process_commission") {
-      const { referral_id, order_id, order_amount } = body;
-      if (!referral_id || !order_amount) return json({ error: "referral_id and order_amount required" }, 400);
+      // Commissions are created by admins (deal completion review) only.
+      if (!(await userIsAdmin(user.id))) return json({ error: "Admin access required" }, 403);
+      const { referral_id, order_id } = body;
+      const order_amount = Number(body.order_amount);
+      if (!referral_id || !Number.isFinite(order_amount) || order_amount <= 0) {
+        return json({ error: "referral_id and a positive order_amount required" }, 400);
+      }
 
       // Find the referral
       const { data: referral } = await supabase
@@ -172,6 +178,7 @@ serve(async (req) => {
         .single();
 
       if (!referral) return json({ error: "Referral not found" }, 404);
+      if (referral.status === "rewarded") return json({ error: "Referral already rewarded" }, 409);
 
       // Find affiliate
       const { data: affiliate } = await supabase

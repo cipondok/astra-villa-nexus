@@ -241,7 +241,7 @@ Deno.serve(async (req) => {
 
         if (emailRes.ok) {
           emailSent = true;
-          console.log("[KPI-ALERT] Email sent to", adminEmail);
+          console.log("[KPI-ALERT] Alert email sent");
         } else {
           const err = await emailRes.text();
           console.error("[KPI-ALERT] Email failed:", err);

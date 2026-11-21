@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { getAuthContext } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,7 +17,15 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    const auth = await getAuthContext(req);
+    if (!auth.isInternal && !auth.userId) return json({ error: "Authentication required" }, 401);
+
     const { mode, params = {} } = await req.json();
+
+    // Every mode here changes or reports fund-wide accounting: fund managers (admins) only.
+    if (mode !== "fund_dashboard" && !auth.isAdmin) {
+      return json({ error: "Admin access required" }, 403);
+    }
 
     switch (mode) {
       case "calculate_nav": {

@@ -197,6 +197,7 @@ Deno.serve(async (req) => {
       if (role === "buyer") query = query.eq("buyer_user_id", user.id);
       else if (role === "seller") query = query.eq("seller_user_id", user.id);
       else if (role === "agent") query = query.eq("agent_id", user.id);
+      else query = query.or(`buyer_user_id.eq.${user.id},seller_user_id.eq.${user.id},agent_id.eq.${user.id}`);
       if (status_filter) query = query.eq("deal_status", status_filter);
       const { data, error } = await query.limit(100);
       if (error) throw error;

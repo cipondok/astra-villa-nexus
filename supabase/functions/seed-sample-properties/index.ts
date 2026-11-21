@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2.49.1";
 
+import { userIsAdmin } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -145,11 +146,8 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Verify user with the service role client instead of creating a second client
-    const { data: userData, error: userErr } = await supabase.auth.admin.getUserById(
-      // First decode the JWT to get user id without a second client
-      JSON.parse(atob(accessToken.split('.')[1])).sub
-    );
+    // Verify the token signature with Supabase Auth (never trust decoded claims)
+    const { data: userData, error: userErr } = await supabase.auth.getUser(accessToken);
 
     if (userErr || !userData?.user) {
       return new Response(
@@ -159,6 +157,12 @@ Deno.serve(async (req) => {
     }
 
     const userId = userData.user.id;
+    if (!(await userIsAdmin(userId))) {
+      return new Response(JSON.stringify({ error: "Admin access required" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const body = await req.json();
     const { province, offset = 0, skipExisting = true } = body;
 

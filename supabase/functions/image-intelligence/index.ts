@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
+import { getAuthContext, serviceClient } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -51,6 +52,31 @@ serve(async (req) => {
         JSON.stringify({ error: "property_id and image_urls[] required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    // Only the listing's owner/agent (or an admin) may run paid analysis and overwrite its features.
+    const auth = await getAuthContext(req);
+    if (!auth.userId && !auth.isInternal) {
+      return new Response(JSON.stringify({ error: "Authentication required" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!Array.isArray(image_urls) || image_urls.length > 20 || !image_urls.every((u: unknown) => typeof u === "string" && /^https:\/\//.test(u))) {
+      return new Response(JSON.stringify({ error: "image_urls must be up to 20 https URLs" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!auth.isAdmin) {
+      const { data: prop } = await serviceClient()
+        .from("properties")
+        .select("owner_id, agent_id")
+        .eq("id", property_id)
+        .maybeSingle();
+      if (!prop || (prop.owner_id !== auth.userId && prop.agent_id !== auth.userId)) {
+        return new Response(JSON.stringify({ error: "You can only analyse your own listings" }), {
+          status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");

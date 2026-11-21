@@ -177,7 +177,20 @@ Deno.serve(async (req) => {
       // ─── MANAGE VENDOR SERVICES ───
       case 'manage_vendor_services': {
         const { user } = await getUser();
-        const { operation, serviceId, serviceData } = params;
+        const { operation, serviceId } = params;
+        // Vendors may only set form fields; approval, rating, featured and booking stats stay server-controlled.
+        const VENDOR_EDITABLE_SERVICE_FIELDS = [
+          'service_name', 'service_description', 'service_category', 'price_range', 'availability', 'is_active',
+          'category_id', 'business_profile_id', 'service_images', 'duration_minutes', 'location_type', 'requirements',
+          'cancellation_policy', 'main_category_id', 'subcategory_id', 'duration_unit', 'duration_value',
+          'service_location_types', 'delivery_options', 'holiday_schedule_id', 'currency', 'approved_service_name_id',
+          'sub_category_id', 'service_location_state', 'service_location_city', 'service_location_area', 'category_ref',
+          'category_hierarchy_id', 'service_capacity', 'pricing_rules', 'geofencing_areas', 'discount_percentage',
+          'discount_start_date', 'discount_end_date', 'discount_description', 'is_discount_active',
+        ];
+        const serviceData = params.serviceData && typeof params.serviceData === 'object'
+          ? Object.fromEntries(Object.entries(params.serviceData).filter(([k]) => VENDOR_EDITABLE_SERVICE_FIELDS.includes(k)))
+          : null;
 
         switch (operation) {
           case 'list': {

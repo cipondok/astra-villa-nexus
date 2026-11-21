@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -40,7 +41,22 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { mode, user_id, property_id, sell_price } = await req.json();
+    const { mode, user_id: requestedUserId, property_id, sell_price } = await req.json();
+
+    const auth = await getAuthContext(req);
+    if (!auth.userId && !auth.isInternal) {
+      return new Response(JSON.stringify({ error: "Authentication required" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (requestedUserId && !auth.isAdmin && requestedUserId !== auth.userId) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const user_id = auth.isAdmin ? (requestedUserId || auth.userId) : auth.userId;
 
     // ── Sell Simulation ──
     if (mode === "simulate_sell") {

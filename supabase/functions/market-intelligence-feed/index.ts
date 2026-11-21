@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getVerifiedUserId } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -104,7 +105,15 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { mode, category, limit: reqLimit, offset: reqOffset, user_id, article_id } = await req.json();
+    const { mode, category, limit: reqLimit, offset: reqOffset, user_id: requestedUserId, article_id } = await req.json();
+    // Saved-article state always belongs to the verified signed-in user, never a caller-chosen id.
+    const verifiedUserId = await getVerifiedUserId(req);
+    if (requestedUserId && requestedUserId !== verifiedUserId) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const user_id = verifiedUserId;
 
     // ── Generate AI Articles ──
     if (mode === "generate") {

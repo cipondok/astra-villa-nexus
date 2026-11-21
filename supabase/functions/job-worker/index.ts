@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
+import { getAuthContext } from "../_shared/auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,6 +27,15 @@ serve(async (req) => {
   try {
     const body = await req.json().catch(() => ({}));
     const action = body.action || "process";
+
+    // Creating or cancelling jobs is restricted to admins and trusted backend callers.
+    if (action === "create" || action === "cancel") {
+      const auth = await getAuthContext(req);
+      if (!auth.isAdmin) {
+        return json({ error: auth.userId ? "Admin access required" : "Authentication required" }, auth.userId ? 403 : 401);
+      }
+      if (action === "create" && auth.userId) body.created_by = auth.userId;
+    }
 
     // ── Create a new job ──
     if (action === "create") {

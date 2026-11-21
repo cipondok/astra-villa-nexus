@@ -3,6 +3,7 @@ import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
 import { Resend } from "npm:resend@4.0.0";
 
+import { userIsAdmin } from "../_shared/auth.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
@@ -152,6 +153,23 @@ async function sendEmail(params: Record<string, any>, supabase: any, req: Reques
 }
 
 // ─── push_notification ──────────────────────────────────────────────
+// Push deliveries may only go to real browser push services, never arbitrary URLs.
+const PUSH_HOST_SUFFIXES = [
+  'fcm.googleapis.com', 'android.googleapis.com', 'push.services.mozilla.com',
+  'notify.windows.com', 'push.apple.com',
+];
+function isAllowedPushEndpoint(endpoint: unknown): boolean {
+  if (typeof endpoint !== 'string' || endpoint.length > 2048) return false;
+  try {
+    const u = new URL(endpoint);
+    if (u.protocol !== 'https:') return false;
+    const host = u.hostname.toLowerCase();
+    return PUSH_HOST_SUFFIXES.some((sfx) => host === sfx || host.endsWith('.' + sfx));
+  } catch {
+    return false;
+  }
+}
+
 async function pushNotification(params: Record<string, any>, supabase: any, req: Request, isInternalCall: boolean) {
   const { push_action = 'send_to_user', userId, notification, subscription } = params;
 
@@ -167,8 +185,7 @@ async function pushNotification(params: Record<string, any>, supabase: any, req:
     const { data: userData, error: userError } = await supabaseAuth.auth.getUser(token);
     if (userError || !userData?.user) throw new Error('Invalid token');
     callerId = userData.user.id;
-    const { data: isAdmin } = await supabase.rpc('has_role', { user_id: callerId, role: 'admin' });
-    callerIsAdmin = !!isAdmin;
+    callerIsAdmin = await userIsAdmin(callerId);
   }
 
   // For subscribe/unsubscribe, the user can only manage their own subscription
@@ -192,7 +209,13 @@ async function pushNotification(params: Record<string, any>, supabase: any, req:
   if (push_action === 'subscribe') {
     if (!userId || !subscription) throw new Error('userId and subscription required');
     const { endpoint, keys, deviceType, browser } = subscription;
-    const { data: existing } = await supabase.from('push_subscriptions').select('id').eq('endpoint', endpoint).maybeSingle();
+    if (!isAllowedPushEndpoint(endpoint)) throw new Error('Unsupported push endpoint');
+    if (!keys?.p256dh || !keys?.auth) throw new Error('subscription keys required');
+    const { data: existing } = await supabase.from('push_subscriptions').select('id, user_id').eq('endpoint', endpoint).maybeSingle();
+    if (existing && existing.user_id && existing.user_id !== userId && !isInternalCall && !callerIsAdmin) {
+      // Never move another user's device subscription onto this account.
+      throw new Error('This push endpoint is already registered to another account');
+    }
     if (existing) {
       await supabase.from('push_subscriptions').update({ user_id: userId, p256dh_key: keys.p256dh, auth_key: keys.auth, device_type: deviceType || 'web', browser, is_active: true, updated_at: new Date().toISOString() }).eq('id', existing.id);
       return { success: true, subscription_id: existing.id, updated: true };
@@ -247,6 +270,7 @@ async function pushNotification(params: Record<string, any>, supabase: any, req:
     await supabase.from('notification_history').insert({ user_id: uid, title: notification.title, body: notification.body, icon: notification.icon, image: notification.image, action_url: notification.actionUrl, notification_type: notification.type, metadata: notification.metadata, is_sent: true, sent_at: new Date().toISOString() });
 
     for (const sub of subs) {
+      if (!isAllowedPushEndpoint(sub.endpoint)) continue;
       try {
         await fetch(sub.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'TTL': '86400' }, body: JSON.stringify({ title: notification.title, body: notification.body, icon: notification.icon || '/icon-192.png', data: { actionUrl: notification.actionUrl, type: notification.type } }) });
         totalSent++;

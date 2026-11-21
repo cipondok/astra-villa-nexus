@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -115,6 +116,21 @@ Deno.serve(async (req: Request) => {
       .eq("id", request_id)
       .single();
     if (reqErr || !request) throw new Error("Service request not found");
+
+    // Only admins (or the scheduler) may override or auto-assign; the requesting
+    // customer may view the ranked vendor suggestions for their own request.
+    const auth = await getAuthContext(req);
+    if (!auth.userId && !auth.isInternal) {
+      return new Response(JSON.stringify({ error: "Authentication required" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const isRequester = !!auth.userId && request.requested_by === auth.userId;
+    if (!auth.isAdmin && (admin_override_vendor_id || auto_assign || !isRequester)) {
+      return new Response(JSON.stringify({ error: "Admin access required" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // 2. Admin override path
     if (admin_override_vendor_id) {

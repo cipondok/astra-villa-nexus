@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { HttpError } from "../_shared/auth.ts";
 
 // ─── Geo-IP lookup via Cloudflare headers + fallback API ────────────
 interface GeoData {
@@ -141,33 +142,27 @@ async function checkLockout(params: Record<string, any>, supabase: any) {
       locked: true,
       remaining_seconds: remainingSec,
       unlock_at: lockout.unlock_at,
-      failed_attempts: lockout.failed_attempts,
-      tier: lockout.lockout_tier,
     };
   }
 
-  // Count recent failures (last 60 min) to show warnings
-  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  const { count } = await supabase
-    .from('server_login_attempts')
-    .select('*', { count: 'exact', head: true })
-    .eq('email', email.toLowerCase())
-    .eq('success', false)
-    .gte('created_at', oneHourAgo);
-
-  return {
-    locked: false,
-    recent_failures: count || 0,
-    next_lockout_at: count && count >= 3 ? 5 - (count % 5) : null,
-  };
+  // Public pre-sign-in check: only reveal whether sign-in is currently blocked.
+  return { locked: false };
 }
 
 
 
+
   // ─── record_login_attempt with real geo-IP ──────────────────────────
-async function recordLoginAttempt(params: Record<string, any>, supabase: any, req: Request) {
-  const { email, success, failure_reason, device_fingerprint, user_id } = params;
-  if (!email) throw new Error('email required');
+async function recordLoginAttempt(params: Record<string, any>, supabase: any, req: Request, verifiedUserId: string | null, verifiedEmail: string) {
+  const { email, failure_reason, device_fingerprint } = params;
+  if (!email || typeof email !== 'string') throw new Error('email required');
+  // A successful login can only be reported by the signed-in user themselves;
+  // failures are anonymous and never attributed to a caller-chosen user.
+  let success = !!params.success;
+  if (success && (!verifiedUserId || verifiedEmail.toLowerCase() !== email.toLowerCase())) {
+    throw new HttpError(401, 'Successful sign-ins must be reported by the signed-in user');
+  }
+  const user_id: string | null = success ? verifiedUserId : null;
 
   const ip = clientIp(req);
   const ua = req.headers.get('user-agent') || 'unknown';
@@ -253,8 +248,8 @@ async function recordLoginAttempt(params: Record<string, any>, supabase: any, re
     geo_anomaly: geoAnomaly,
   });
 
-  // Security alerts for high-risk events
-  if (geoAnomaly || impossibleTravel || isHighRiskCountry) {
+  // Security alerts for high-risk events (only for verified successful sign-ins)
+  if (success && (geoAnomaly || impossibleTravel || isHighRiskCountry)) {
     const alertType = impossibleTravel ? 'impossible_travel' : geoAnomaly ? 'new_country_login' : 'high_risk_country';
     const severity = impossibleTravel ? 'critical' : geoAnomaly ? 'high' : 'medium';
 
@@ -338,17 +333,10 @@ async function recordLoginAttempt(params: Record<string, any>, supabase: any, re
         locked: true,
         lockout_duration_min: lockTier.durationMin,
         unlock_at: unlockAt,
-        tier: lockTier.tier,
-        total_failures: totalFailures,
       };
     }
 
-    return {
-      recorded: true,
-      locked: false,
-      total_failures: totalFailures,
-      attempts_until_lock: Math.max(0, 5 - totalFailures),
-    };
+    return { recorded: true, locked: false };
   }
 
   // Success: clear active lockouts
@@ -411,8 +399,11 @@ async function getSecurityEvents(supabase: any, userId: string, limit = 50) {
 // ─── generate_otp ───────────────────────────────────────────────────
 async function generateOtp(params: Record<string, any>, supabase: any, userId: string, userEmail: string, req: Request) {
   const purpose = params.purpose || 'mfa';
-  const email = params.email || userEmail;
-  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  // Codes always go to the account's own email address.
+  const email = userEmail;
+  const rand = new Uint32Array(1);
+  crypto.getRandomValues(rand);
+  const code = (100000 + (rand[0] % 900000)).toString();
   const expiresAt = new Date();
   expiresAt.setMinutes(expiresAt.getMinutes() + 10);
   const ip = clientIp(req);
@@ -825,7 +816,7 @@ serve(async (req) => {
         result = await checkLockout(params, supabase);
         break;
       case 'record_login_attempt':
-        result = await recordLoginAttempt(params, supabase, req);
+        result = await recordLoginAttempt(params, supabase, req, userId, userEmail);
         break;
       case 'get_user_sessions':
         result = await getUserSessions(supabase, userId!);
@@ -1087,7 +1078,7 @@ serve(async (req) => {
     const msg = error instanceof Error ? error.message : String(error);
     log("ERROR", { message: msg });
     return new Response(JSON.stringify({ success: false, error: msg }), {
-      status: 400,
+      status: error instanceof HttpError ? error.status : 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }

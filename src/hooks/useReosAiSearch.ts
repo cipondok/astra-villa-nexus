@@ -43,7 +43,13 @@ export function useReosAiSearch() {
       const { data: res, error: e } = await supabase.functions.invoke<ReosAiResponse>("reos-ai-search", {
         body: { query, limit: 8 },
       });
-      if (e) throw e;
+      if (e) {
+        if ((e as { context?: { status?: number } })?.context?.status === 401) {
+          setError("Sign in to use AI search.");
+          return;
+        }
+        throw e;
+      }
       setData(res ?? null);
     } catch (err: any) {
       const msg = err?.message ?? "AI search failed";

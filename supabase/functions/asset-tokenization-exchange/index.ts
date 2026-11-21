@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -15,8 +16,28 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { mode, params } = await req.json();
+    const { mode, params: rawParams } = await req.json();
+    const params = { ...(rawParams || {}) };
     let result: Record<string, unknown>;
+
+    const auth = await getAuthContext(req);
+    const deny = (msg: string, status: number) =>
+      new Response(JSON.stringify({ error: msg }), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!auth.userId && !auth.isInternal) return deny("Authentication required", 401);
+    if (mode === "place_order") {
+      // Orders are always placed for the signed-in investor, never a caller-chosen id.
+      if (!auth.isInternal) params.investor_id = auth.userId;
+      const qty = Number(params.quantity);
+      const price = Number(params.price_per_token);
+      if (!Number.isFinite(qty) || qty <= 0 || !Number.isFinite(price) || price <= 0) {
+        return deny("quantity and price_per_token must be positive numbers", 400);
+      }
+      if (!["buy", "sell", "limit_buy", "limit_sell", "market_buy", "market_sell"].includes(String(params.order_type))) {
+        return deny("Invalid order_type", 400);
+      }
+    } else if (!auth.isAdmin) {
+      return deny("Admin access required", 403);
+    }
 
     switch (mode) {
       case "tokenize_asset":

@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
 
+import { sanitizeChatMessages } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -549,7 +550,7 @@ ADAPT YOUR RESPONSE STYLE: ${toneGuide}`;
     // Intelligent token limiting: keep system prompt under ~3000 tokens
     // and conversation history to last 8 messages to stay within budget
     const maxHistory = 8;
-    const trimmedMessages = messages.slice(-maxHistory);
+    const trimmedMessages = sanitizeChatMessages(messages, maxHistory);
 
     // Save conversation if user is authenticated
     let convId = conversation_id;

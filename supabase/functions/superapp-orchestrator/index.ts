@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -16,7 +17,20 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { mode, params } = await req.json();
+    const { mode, params: rawParams } = await req.json();
+    const auth = await getAuthContext(req);
+    if (!auth.userId && !auth.isInternal) return json({ error: "Authentication required" }, 401);
+    const params = { ...(rawParams || {}) };
+    if (["wealth_compute", "identity_sync"].includes(mode)) {
+      // Personal modes: non-admins can only compute for themselves.
+      if (!auth.isAdmin) {
+        if (params.user_id && params.user_id !== auth.userId) return json({ error: "Forbidden" }, 403);
+        params.user_id = auth.userId;
+      }
+    } else if (!auth.isAdmin) {
+      // Platform-wide modes (reindex, lifecycle, health) are admin/scheduler only.
+      return json({ error: "Admin access required" }, 403);
+    }
 
     switch (mode) {
       case "discovery_reindex":

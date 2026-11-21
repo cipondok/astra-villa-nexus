@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { userIsAdmin } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -123,11 +124,14 @@ Deno.serve(async (req) => {
 
     if (action === "nudge_check") {
       // Check pending nudges for this deal
-      const { data: pendingActions } = await supabase
+      // Non-admins only see their own pending nudges for this deal.
+      let nudgeQuery = supabase
         .from("escrow_commitment_actions")
         .select("*")
         .eq("deal_id", deal_id)
-        .eq("status", "pending")
+        .eq("status", "pending");
+      if (!(await userIsAdmin(user.id))) nudgeQuery = nudgeQuery.eq("user_id", user.id);
+      const { data: pendingActions } = await nudgeQuery
         .lte("scheduled_time", new Date().toISOString())
         .order("scheduled_time", { ascending: true });
 

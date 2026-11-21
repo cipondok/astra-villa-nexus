@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -14,7 +15,28 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { mode, user_id, portfolio_id, params } = await req.json();
+    const { mode, user_id: requestedUserId, portfolio_id, params } = await req.json();
+
+    const auth = await getAuthContext(req);
+    if (!auth.userId && !auth.isInternal) return json({ error: "Authentication required" }, 401);
+    if (mode === "dashboard_stats" && !auth.isAdmin) return json({ error: "Admin access required" }, 403);
+    // Users act only on their own portfolio; admins/scheduler may target any.
+    const user_id = auth.isAdmin ? (requestedUserId || auth.userId) : auth.userId;
+    if (requestedUserId && !auth.isAdmin && requestedUserId !== auth.userId) {
+      return json({ error: "Forbidden" }, 403);
+    }
+    if (["valuate", "forecast", "risk_analysis", "recommend"].includes(mode)) {
+      if (!portfolio_id) return json({ error: "portfolio_id required" }, 400);
+      if (!auth.isAdmin) {
+        const { data: owned } = await supabase
+          .from("investor_portfolios")
+          .select("id")
+          .eq("id", portfolio_id)
+          .eq("user_id", auth.userId)
+          .maybeSingle();
+        if (!owned) return json({ error: "Portfolio not found" }, 404);
+      }
+    }
 
     switch (mode) {
       case "valuate": return json(await valuatePortfolio(supabase, portfolio_id));
@@ -26,7 +48,7 @@ Deno.serve(async (req) => {
       default: return json({ error: "Unknown mode" }, 400);
     }
   } catch (e) {
-    return json({ error: e.message }, 500);
+    return json({ error: e instanceof Error ? e.message : "Request failed" }, 500);
   }
 });
 

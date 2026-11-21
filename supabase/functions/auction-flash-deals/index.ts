@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -19,6 +20,27 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     const { mode } = body;
+
+    // Write actions always act as the verified signed-in user.
+    if (["create_flash_deal", "place_bid", "create_auction"].includes(mode)) {
+      const auth = await getAuthContext(req);
+      if (!auth.userId && !auth.isInternal) {
+        return new Response(JSON.stringify({ error: "Authentication required" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (!auth.isAdmin && auth.userId) {
+        if (mode === "create_flash_deal") body.seller_id = auth.userId;
+        if (mode === "place_bid") body.bidder_id = auth.userId;
+        if (mode === "create_auction") body.created_by = auth.userId;
+      }
+      if (mode === "place_bid") {
+        const amt = Number(body.bid_amount);
+        if (!Number.isFinite(amt) || amt <= 0) throw new Error("bid_amount must be a positive number");
+        body.bid_amount = amt;
+      }
+    }
 
     // ── Flash Deals: List active ──
     if (mode === "list_flash_deals") {

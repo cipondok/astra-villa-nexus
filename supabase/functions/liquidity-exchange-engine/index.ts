@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -13,9 +14,15 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
     const authHeader = req.headers.get("authorization") || "";
-    const { data: { user } } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+    const { data: { user } } = await supabase.auth.getUser(authHeader.replace(/^Bearer\s+/i, ""));
 
     const { mode, params } = await req.json();
+
+    // Order matching moves ownership between investors: admins / scheduler only.
+    if (mode === "match_orders") {
+      const auth = await getAuthContext(req);
+      if (!auth.isAdmin) return json({ error: auth.userId ? "Admin access required" : "Authentication required" }, auth.userId ? 403 : 401);
+    }
 
     switch (mode) {
       case "place_sell_order": {
@@ -94,6 +101,17 @@ Deno.serve(async (req) => {
             if (buy.max_price_per_percent >= sell.price_per_percent) {
               const exec_pct = Math.min(sell.percentage_for_sale, buy.desired_percentage);
               const exec_price = exec_pct * sell.price_per_percent;
+
+              // The sell order must reference a unit the seller still owns on this property.
+              const { data: unitRow } = await supabase
+                .from("property_ownership_units")
+                .select("id, current_owner_user_id, property_id")
+                .eq("id", sell.unit_id)
+                .maybeSingle();
+              if (!unitRow || unitRow.current_owner_user_id !== sell.seller_user_id || unitRow.property_id !== property_id) {
+                await supabase.from("liquidity_sell_orders").update({ order_status: "cancelled" }).eq("id", sell.id);
+                break;
+              }
 
               // Create trade execution
               await supabase.from("liquidity_trade_executions").insert({

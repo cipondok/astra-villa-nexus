@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext, sanitizeChatMessages } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -291,6 +292,13 @@ serve(async (req) => {
   }
 
   try {
+    const __auth = await getAuthContext(req);
+    if (!__auth.isAdmin) {
+      return new Response(JSON.stringify({ error: __auth.userId ? "Admin access required" : "Authentication required" }), {
+        status: __auth.userId ? 403 : 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const body = await req.json();
     const { messages } = body;
 
@@ -304,7 +312,7 @@ serve(async (req) => {
     const systemPrompt = buildSystemPrompt(context);
 
     // Keep last 10 messages for context
-    const trimmedMessages = messages.slice(-10);
+    const trimmedMessages = sanitizeChatMessages(messages, 10);
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

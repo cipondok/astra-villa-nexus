@@ -149,16 +149,22 @@ export function AIFeedbackAnalytics() {
       return;
     }
 
-    // Convert to CSV
+    // Convert to CSV. Cells are quoted and formula-leading values neutralised so
+    // user-submitted text can't run as a spreadsheet formula.
+    const csvCell = (value: unknown) => {
+      let v = String(value ?? '');
+      if (/^[=+\-@\t\r]/.test(v)) v = `'${v}`;
+      return `"${v.replace(/"/g, '""')}"`;
+    };
     const csv = [
-      ['Date', 'Message ID', 'Reaction', 'User ID', 'Conversation ID'].join(','),
+      ['Date', 'Message ID', 'Reaction', 'User ID', 'Conversation ID'].map(csvCell).join(','),
       ...(data || []).map(row => [
         format(new Date(row.created_at), 'yyyy-MM-dd HH:mm:ss'),
         row.message_id,
         row.reaction_type,
         row.user_id || 'anonymous',
         row.conversation_id || 'N/A',
-      ].join(',')),
+      ].map(csvCell).join(',')),
     ].join('\n');
 
     const blob = new Blob([csv], { type: 'text/csv' });

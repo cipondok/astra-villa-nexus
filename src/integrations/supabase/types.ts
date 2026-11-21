@@ -69211,6 +69211,7 @@ export type Database = {
         }
         Returns: Json
       }
+      verify_edge_cron_secret: { Args: { p_secret: string }; Returns: boolean }
     }
     Enums: {
       admin_permission:

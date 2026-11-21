@@ -67,7 +67,9 @@ export const useVisualPropertySearch = () => {
       toast.success(`Found ${data.matched_properties.length} similar properties`);
     },
     onError: (error: any) => {
-      if (error?.status === 429) {
+      if (error?.status === 401 || error?.context?.status === 401) {
+        toast.error('Please sign in to use visual search.');
+      } else if (error?.status === 429) {
         toast.error('Rate limited. Please try again shortly.');
       } else if (error?.status === 402) {
         toast.error('AI credits exhausted. Please add funds.');

@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+import { getAuthContext } from "../_shared/auth.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -649,6 +650,11 @@ serve(async (req: Request) => {
 
   const supabase = createClient(supabaseUrl, serviceKey);
   const workerId = crypto.randomUUID().slice(0, 8);
+
+  const __auth = await getAuthContext(req);
+  if (!__auth.isAdmin) {
+    return json({ error: __auth.userId ? "Admin access required" : "Authentication required" }, __auth.userId ? 403 : 401);
+  }
 
   let body: Record<string, any> = {};
   try { body = await req.json(); } catch { /* empty body ok */ }
