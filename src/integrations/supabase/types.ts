@@ -68083,6 +68083,20 @@ export type Database = {
         Args: { p_property_id: string }
         Returns: Json
       }
+      get_investor_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          deals_shared: number
+          follower_count: number
+          following_count: number
+          full_name: string
+          reputation_score: number
+          tier: string
+          total_likes_received: number
+          user_id: string
+        }[]
+      }
       get_latest_platform_metrics: {
         Args: never
         Returns: {
