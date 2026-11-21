@@ -36,7 +36,7 @@ function GlassCard({ children, className }: { children: React.ReactNode; classNa
   return (
     <div className={cn(
       'rounded-[20px] border border-[hsl(var(--border))]/10',
-      'bg-[#090909]/70 backdrop-blur-xl shadow-2xl',
+      'bg-[#2B3036]/70 backdrop-blur-xl shadow-2xl',
       className
     )}>
       {children}
@@ -71,7 +71,7 @@ function useDeviceCapability() {
 // ── 3D Viewer Loading ──
 function ViewerLoader() {
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#090909]">
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#2B3036]">
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
@@ -85,7 +85,7 @@ function ViewerLoader() {
 // ── Static fallback for weak devices ──
 function StaticFallback({ onRequestLoad }: { onRequestLoad: () => void }) {
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#090909]">
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#2B3036]">
       <div className="text-center px-6 max-w-sm">
         <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#C6A66B]/20 to-[#C6A66B]/5 border border-[#C6A66B]/15 flex items-center justify-center mx-auto mb-5">
           <Building2 className="h-9 w-9 text-[#C6A66B]" />
@@ -98,7 +98,7 @@ function StaticFallback({ onRequestLoad }: { onRequestLoad: () => void }) {
         </p>
         <button
           onClick={onRequestLoad}
-          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C6A66B] to-[#8C7142] text-[#090909] text-xs font-bold hover:shadow-lg hover:shadow-[#C6A66B]/20 transition-all"
+          className="px-5 py-2.5 rounded-xl bg-[#C6A66B] text-[#1F2328] text-xs font-bold transition-all"
         >
           Load 3D Viewer Anyway
         </button>
@@ -137,7 +137,7 @@ export default function AstraImmersiveViewer() {
 
   return (
     <div className={cn(
-      "h-screen w-full bg-[#090909] text-foreground overflow-hidden relative",
+      "h-screen w-full bg-[#2B3036] text-foreground overflow-hidden relative",
       fullscreen ? "flex" : "grid grid-cols-12"
     )}>
       {/* ── Left Panel: Property Info (3 cols) ── */}
@@ -155,7 +155,7 @@ export default function AstraImmersiveViewer() {
             <div className="px-5 pt-6 pb-4">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#C6A66B] to-[#C6A66B]/40 flex items-center justify-center">
-                  <Building2 className="h-4 w-4 text-[#090909]" />
+                  <Building2 className="h-4 w-4 text-[#1F2328]" />
                 </div>
                 <span className="text-xs font-bold tracking-[0.2em] text-[#C6A66B]">ASTRA VILLA</span>
               </div>
@@ -229,7 +229,7 @@ export default function AstraImmersiveViewer() {
 
             {/* CTAs */}
             <div className="px-5 pb-6 mt-auto space-y-2">
-              <button className="w-full h-12 rounded-xl bg-gradient-to-r from-[#C6A66B] to-[#8C7142] text-[#090909] text-sm font-bold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#C6A66B]/20 transition-all">
+              <button className="w-full h-12 rounded-xl bg-[#C6A66B] text-[#1F2328] text-sm font-bold flex items-center justify-center gap-2 transition-all">
                 <DollarSign className="h-4 w-4" /> Invest Now
               </button>
               <button className="w-full h-10 rounded-xl border border-[#C6A66B]/20 text-[#C6A66B] text-xs font-semibold flex items-center justify-center gap-2 hover:bg-[#C6A66B]/5 transition-all">
@@ -255,7 +255,7 @@ export default function AstraImmersiveViewer() {
                 stencil: false,
                 depth: true,
               }}
-              style={{ background: '#090909' }}
+              style={{ background: '#2B3036' }}
               frameloop="always"
             >
               <PerformanceMonitor
@@ -263,8 +263,8 @@ export default function AstraImmersiveViewer() {
                 onIncline={() => setDprCap(Math.min(1.5, window.devicePixelRatio))}
               />
               <AdaptiveDpr pixelated />
-              <color attach="background" args={['#090909']} />
-              <fog attach="fog" args={['#090909', 20, 40]} />
+              <color attach="background" args={['#2B3036']} />
+              <fog attach="fog" args={['#2B3036', 20, 40]} />
               <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} cameraCommand={cameraCommand} onCameraCommandComplete={handleCameraCommandComplete} />
             </Canvas>
           </Suspense>
@@ -279,7 +279,7 @@ export default function AstraImmersiveViewer() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-5 left-1/2 -translate-x-1/2 px-5 py-2.5 rounded-2xl bg-[#090909]/80 backdrop-blur-xl border border-[#C6A66B]/30 z-20"
+              className="absolute top-5 left-1/2 -translate-x-1/2 px-5 py-2.5 rounded-2xl bg-[#2B3036]/80 backdrop-blur-xl border border-[#C6A66B]/30 z-20"
             >
               <div className="flex items-center gap-2">
                 <Sparkles className="h-3.5 w-3.5 text-[#C6A66B]" />
@@ -336,13 +336,13 @@ export default function AstraImmersiveViewer() {
           <>
             <button
               onClick={() => setShowLeft(!showLeft)}
-              className="absolute top-4 left-4 w-8 h-8 rounded-xl bg-[#090909]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 flex items-center justify-center text-muted-foreground hover:text-foreground z-20"
+              className="absolute top-4 left-4 w-8 h-8 rounded-xl bg-[#2B3036]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 flex items-center justify-center text-muted-foreground hover:text-foreground z-20"
             >
               <PanelLeftClose className={cn('h-4 w-4 transition-transform', !showLeft && 'rotate-180')} />
             </button>
             <button
               onClick={() => setShowRight(!showRight)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-[#090909]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 flex items-center justify-center text-muted-foreground hover:text-foreground z-20"
+              className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-[#2B3036]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 flex items-center justify-center text-muted-foreground hover:text-foreground z-20"
             >
               <PanelRightClose className={cn('h-4 w-4 transition-transform', !showRight && 'rotate-180')} />
             </button>

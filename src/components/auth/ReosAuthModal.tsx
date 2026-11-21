@@ -423,14 +423,14 @@ export function ReosAuthModal({
                             <select id="reg-country" value={reg.country}
                               onChange={(e) => setReg(r => ({ ...r, country: e.target.value }))}
                               className={inputCls + " appearance-none"}>
-                              {countries.map(c => <option key={c} value={c} className="bg-[#101010]">{c}</option>)}
+                              {countries.map(c => <option key={c} value={c} className="bg-[#363B42]">{c}</option>)}
                             </select>
                           </Field>
                           <Field id="reg-lang" label="Language" icon={Languages} error={regErr.language}>
                             <select id="reg-lang" value={reg.language}
                               onChange={(e) => setReg(r => ({ ...r, language: e.target.value }))}
                               className={inputCls + " appearance-none"}>
-                              {languages.map(l => <option key={l.v} value={l.v} className="bg-[#101010]">{l.label}</option>)}
+                              {languages.map(l => <option key={l.v} value={l.v} className="bg-[#363B42]">{l.label}</option>)}
                             </select>
                           </Field>
                         </div>
@@ -591,7 +591,7 @@ function PrimaryButton({ children, loading, className = "", ...props }: any) {
   return (
     <button {...props}
       className={`relative w-full h-11 rounded-xl text-[13px] font-semibold inline-flex items-center justify-center gap-2 transition disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
-      style={{ background: "#C6A66B", color: "#090909" }}
+      style={{ background: "#C6A66B", color: "#1F2328" }}
     >
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : children}
     </button>

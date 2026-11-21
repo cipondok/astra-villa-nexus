@@ -34,11 +34,12 @@ import { formatDistanceToNow } from "date-fns";
 export const reosTokens = `
   .reos {
     /* ASTRA Villa REOS — Matte charcoal + satin champagne gold (approved emblem palette) */
-    --bg: #090909;            /* primary background */
-    --bg-2: #101010;          /* secondary surface */
-    --surface: #151515;       /* elevated card */
-    --surface-2: #101010;     /* nested card */
-    --inset: #0C0C0C;         /* deep inset */
+    --bg: #30343A;            /* primary background — charcoal gray */
+    --header: #2B3036;        /* header / sidebar */
+    --bg-2: #363B42;          /* secondary / section */
+    --surface: #3B4149;       /* card surface */
+    --surface-2: #424851;     /* elevated / popover */
+    --inset: #292E34;         /* inset fields */
     --line: rgba(255,255,255,0.08);          /* dividers */
     --line-gold: rgba(198,166,107,0.22);     /* restrained gold border */
     --line-strong: rgba(198,166,107,0.34);   /* selected / hover border */
@@ -47,20 +48,20 @@ export const reosTokens = `
     --gold-hover: #B99A62;    /* secondary muted gold */
     --gold-soft: rgba(198,166,107,0.07);
     --text: #F5F3EE;
-    --text-2: #B8B3A8;
-    --text-3: #858078;
+    --text-2: #C2C0BA;
+    --text-3: #96999D;
     --success: #4ADE80;
     --danger: #F87171;
-    --gold-fg: #090909;
-    --promo-gradient: linear-gradient(180deg, #101010, #090909);
-    --promo-gradient-diag: linear-gradient(135deg, #101010, #090909);
-    --hotspot-bg: #0C0C0C;
-    --hero-overlay: linear-gradient(110deg, rgba(9,9,9,0.94) 0%, rgba(9,9,9,0.62) 55%, transparent 100%);
+    --gold-fg: #1F2328;
+    --promo-gradient: linear-gradient(180deg, #363B42, #30343A);
+    --promo-gradient-diag: linear-gradient(135deg, #363B42, #30343A);
+    --hotspot-bg: #292E34;
+    --hero-overlay: linear-gradient(110deg, rgba(43,48,54,0.92) 0%, rgba(43,48,54,0.6) 55%, transparent 100%);
     --hero-text: #F5F3EE;
     --hero-text-2: #B8B3A8;
-    --shadow-soft: 0 8px 32px rgba(0,0,0,0.45);
-    --shadow-lift: 0 4px 16px rgba(0,0,0,0.35);
-    --shadow-popover: 0 24px 48px -12px rgba(0,0,0,0.6);
+    --shadow-soft: 0 8px 28px rgba(16,19,24,0.30);
+    --shadow-lift: 0 4px 14px rgba(16,19,24,0.22);
+    --shadow-popover: 0 20px 40px -12px rgba(16,19,24,0.45);
     color: var(--text);
     background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
@@ -73,6 +74,7 @@ export const reosTokens = `
     --surface: #FCFBF8;
     --surface-2: #F8F6F1;
     --inset: #EFEBE3;
+    --header: #FCFBF8;
     --line: #E0DBD2;
     --line-gold: rgba(198,166,107,0.32);
     --line-strong: rgba(160,128,72,0.45);
@@ -85,7 +87,7 @@ export const reosTokens = `
     --text-3: #858078;
     --success: #22C55E;
     --danger: #EF4444;
-    --gold-fg: #090909;
+    --gold-fg: #1F2328;
     --promo-gradient: linear-gradient(180deg, #FCFBF8 0%, #F5F3EE 100%);
     --promo-gradient-diag: linear-gradient(135deg, #FCFBF8 0%, #F5F3EE 100%);
     --hotspot-bg: #FCFBF8;
@@ -254,7 +256,7 @@ export function ReosHeader() {
 
   return (
     <>
-      <header className={`reos-shell-header sticky top-0 z-40 bg-[var(--bg)] border-b border-[var(--line)] transition-shadow duration-300 ${scrolled ? "shadow-[var(--shadow-soft)]" : "shadow-[var(--shadow-lift)]"}`}>
+      <header className={`reos-shell-header sticky top-0 z-40 bg-[var(--header)] border-b border-[var(--line)] transition-shadow duration-300 ${scrolled ? "shadow-[var(--shadow-soft)]" : "shadow-[var(--shadow-lift)]"}`}>
         <div className="mx-auto max-w-[1600px] px-4 md:px-6 h-full flex items-center gap-3 md:gap-6">
           <button
             type="button"
@@ -527,7 +529,7 @@ export function ReosHeader() {
           </div>
         </div>
 
-        <div className="border-t border-[var(--line)] bg-[var(--bg)]">
+        <div className="border-t border-[var(--line)] bg-[var(--header)]">
           <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-8 overflow-x-auto reos-scrollbar">
             {topTabs.map(tab => {
               const active = isActive(tab.to);

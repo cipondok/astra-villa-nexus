@@ -73,13 +73,13 @@ const config: Config = {
           900: 'hsl(0, 0%, 9%)',
         },
         // ASTRA Villa Property Brand Colors — matte charcoal + satin champagne gold
-        // Base #090909 | Surface #101010 | Elevated #151515 | Gold #C6A66B / #B99A62
+        // Base #30343A | Section #363B42 | Card #3B4149 | Elevated #424851 | Gold #C6A66B / #B99A62
         // (legacy `navy` key retained for compatibility; it now resolves to charcoal)
         'astra': {
           navy: {
-            DEFAULT: 'hsl(0, 0%, 3.5%)',  // #090909
-            light: 'hsl(0, 0%, 8.2%)',    // #151515
-            dark: 'hsl(0, 0%, 4.7%)',     // #0C0C0C
+            DEFAULT: 'hsl(216, 9%, 21%)',  // #30343A
+            light: 'hsl(214, 11%, 26%)',   // #3B4149
+            dark: 'hsl(213, 11%, 19%)',    // #2B3036
           },
           gold: {
             DEFAULT: 'hsl(39, 44%, 60%)', // #C6A66B

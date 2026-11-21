@@ -368,63 +368,65 @@ html, body {
 
 
   .dark {
-    /* ── ASTRA Black Gold — matte charcoal + satin champagne gold ──
-       #090909 base · #101010 surface · #151515 elevated · #0C0C0C inset */
-    --background: 0 0% 3.5%;           /* #090909 */
+    /* ── ASTRA Charcoal Gray (abu tua) + satin champagne gold ──
+       #30343A base · #363B42 section · #2B3036 header/sidebar · #3B4149 card
+       #424851 elevated/popover · #292E34 inset · text #F5F3EE / #C2C0BA / #96999D */
+    --surface-header: 213 11% 19%;
+    --background: 216 9% 21%;
     --foreground: 43 26% 95%;          /* #F5F3EE */
-    --card: 0 0% 8.2%;                 /* #151515 elevated cards */
+    --card: 214 11% 26%;
     --card-foreground: 43 26% 95%;
-    --popover: 0 0% 8.2%;
+    --popover: 216 10% 29%;
     --popover-foreground: 43 26% 95%;
     --primary: 39 44% 60%;             /* #C6A66B champagne gold */
-    --primary-foreground: 0 0% 3.5%;   /* dark readable text on gold */
+    --primary-foreground: 213 12% 14%;
     --primary-strong: 39 44% 60%;
-    --secondary: 0 0% 6.3%;            /* #101010 surfaces */
+    --secondary: 215 10% 24%;
     --secondary-foreground: 43 26% 95%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 41 10% 69%;    /* #B8B3A8 secondary text */
+    --muted: 214 10% 28%;
+    --muted-foreground: 45 6% 75%;
     --accent: 39 38% 55%;              /* #B99A62 muted gold */
-    --accent-foreground: 0 0% 3.5%;
+    --accent-foreground: 213 12% 14%;
     --destructive: 0 70% 55%;          /* semantic — unchanged */
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 11.5%;              /* ≈ rgba(255,255,255,0.08) on #090909 */
-    --input: 0 0% 15%;
+    --border: 214 8% 32%;
+    --input: 214 9% 34%;
     --ring: 39 44% 60%;
 
-    --surface-inset: 0 0% 4.7%;        /* #0C0C0C */
+    --surface-inset: 213 12% 18%;
     --line-gold: hsl(39 44% 60% / 0.22);
     --line-gold-strong: hsl(39 44% 60% / 0.36);
     --tint-gold: hsl(39 44% 60% / 0.07);
     --line-divider: hsl(0 0% 100% / 0.08);
-    --shadow-soft: 0 8px 32px hsl(0 0% 0% / 0.45);
-    --shadow-lift: 0 4px 16px hsl(0 0% 0% / 0.35);
-    --shadow-popover: 0 24px 48px -12px hsl(0 0% 0% / 0.6);
+    --shadow-soft: 0 8px 28px hsl(216 20% 8% / 0.30);
+    --shadow-lift: 0 4px 14px hsl(216 20% 8% / 0.22);
+    --shadow-popover: 0 20px 40px -12px hsl(216 20% 8% / 0.45);
 
     /* Brand aliases */
     --gold-primary: 39 44% 60%;
     --gold-secondary: 39 38% 55%;
     --orange-primary: 39 38% 55%;
-    --navy-primary: 0 0% 3.5%;
-    --navy-secondary: 0 0% 8.2%;
-    --dark-bg: 0 0% 3.5%;
-    --dark-card: 0 0% 8.2%;
+    --navy-primary: 216 9% 21%;
+    --navy-secondary: 214 11% 26%;
+    --dark-bg: 216 9% 21%;
+    --dark-card: 214 11% 26%;
     --text-light: 43 26% 95%;
-    --text-muted: 37 5% 50%;           /* #858078 muted text */
+    --text-muted: 214 3% 60%;
 
     /* Hero */
-    --hero-from: 0 0% 3.5%;
-    --hero-via: 0 0% 4.7%;
-    --hero-to: 0 0% 6.3%;
-    --hero-mid: 0 0% 7%;
-    --hero-end: 0 0% 8.2%;
-    --hero-fade: 0 0% 9%;
+    --hero-from: 216 9% 21%;
+    --hero-via: 215 10% 24%;
+    --hero-to: 215 10% 24%;
+    --hero-mid: 214 11% 26%;
+    --hero-end: 214 11% 26%;
+    --hero-fade: 216 10% 29%;
 
     /* Glass */
-    --glass-bg: 0 0% 6.3%;
-    --glass-border: 0 0% 16%;
+    --glass-bg: 215 10% 24%;
+    --glass-border: 214 9% 36%;
     --glass-shadow: 0 0% 0%;
 
-    --titanium-light: 0 0% 10%;
+    --titanium-light: 214 10% 28%;
     --titanium-white: 0 0% 100%;
     --samsung-blue-primary: 39 44% 60%;
 
@@ -459,40 +461,40 @@ html, body {
     --shadow-elevated: 0 12px 40px hsl(0 0% 0% / 0.65), 0 0 0 1px hsl(0 0% 100% / 0.06);
 
     /* Panel (dashboards) */
-    --panel-bg: 0 0% 6.3%;
-    --panel-bg-elevated: 0 0% 8.2%;
-    --panel-border: 0 0% 12%;
-    --panel-border-subtle: 0 0% 10%;
-    --panel-hover: 0 0% 10%;
-    --panel-active: 39 15% 12%;
+    --panel-bg: 215 10% 24%;
+    --panel-bg-elevated: 214 11% 26%;
+    --panel-border: 214 8% 32%;
+    --panel-border-subtle: 214 9% 29%;
+    --panel-hover: 214 10% 30%;
+    --panel-active: 39 14% 28%;
     --panel-text: 43 26% 95%;
-    --panel-text-secondary: 41 10% 69%;
-    --panel-text-muted: 37 5% 50%;
+    --panel-text-secondary: 45 6% 75%;
+    --panel-text-muted: 214 3% 60%;
     --panel-accent: 39 44% 60%;
     --panel-accent-dim: 39 38% 55%;
     --panel-success: 152 69% 48%;
     --panel-danger: 350 65% 55%;
     --panel-warning: 38 92% 56%;
     --panel-info: 210 40% 62%;
-    --panel-tooltip-bg: 0 0% 8.2%;
-    --panel-tooltip-border: 0 0% 16%;
+    --panel-tooltip-bg: 216 10% 29%;
+    --panel-tooltip-border: 214 9% 36%;
     --panel-tooltip-text: 41 10% 80%;
     --panel-glow-accent: 39 44% 60%;
     --panel-shadow: 0 1px 3px hsl(0 0% 0% / 0.5), 0 0 0 1px hsl(0 0% 12% / 0.9);
     --panel-shadow-hover: 0 4px 16px hsl(0 0% 0% / 0.55), 0 0 0 1px hsl(39 44% 60% / 0.22);
 
     /* Admin */
-    --admin-bg-main: 0 0% 3.5%;
-    --admin-bg-sidebar: 0 0% 4.7%;
-    --admin-bg-card: 0 0% 8.2%;
-    --admin-bg-hover: 0 0% 10%;
-    --admin-bg-glass: 0 0% 8.2%;
-    --admin-border-subtle: 0 0% 11.5%;
-    --admin-border-strong: 0 0% 16%;
+    --admin-bg-main: 216 9% 21%;
+    --admin-bg-sidebar: 213 11% 19%;
+    --admin-bg-card: 214 11% 26%;
+    --admin-bg-hover: 214 10% 30%;
+    --admin-bg-glass: 214 11% 26%;
+    --admin-border-subtle: 214 8% 32%;
+    --admin-border-strong: 214 9% 38%;
     --admin-divider: 0 0% 100%;
     --admin-text-primary: 43 26% 95%;
-    --admin-text-secondary: 41 10% 69%;
-    --admin-text-muted: 37 5% 50%;
+    --admin-text-secondary: 45 6% 75%;
+    --admin-text-muted: 214 3% 60%;
     --admin-accent-ai: 160 100% 44%;
     --admin-accent-warning: 36 100% 56%;
     --admin-accent-danger: 352 100% 67%;
@@ -3036,7 +3038,7 @@ html:not(.dark) [class*="shadow-accent"], html:not(.dark) [class*="shadow-orange
 
 /* ── Scrollbar + selection ── */
 .dark ::-webkit-scrollbar-track { background: hsl(var(--background)); }
-.dark ::-webkit-scrollbar-thumb { background: hsl(0 0% 18%); }
+.dark ::-webkit-scrollbar-thumb { background: hsl(214 9% 40%); }
 .dark ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
 .dark ::selection { background: hsl(var(--primary) / 0.3); color: hsl(var(--foreground)); }
 

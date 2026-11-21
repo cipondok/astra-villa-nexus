@@ -423,7 +423,7 @@ const PropertyDetail = () => {
               <div className="absolute top-5 left-5 right-5 z-20 flex items-center justify-between">
                 <button
                   onClick={() => navigate(-1)}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#090909)] shadow-sm hover:bg-white transition-all text-[11px] font-semibold uppercase tracking-[0.15em]"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#2B3036)] shadow-sm hover:bg-white transition-all text-[11px] font-semibold uppercase tracking-[0.15em]"
                   aria-label="Go back"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
@@ -432,21 +432,21 @@ const PropertyDetail = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => toggleFavorite(property.id)}
-                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#090909)] shadow-sm hover:bg-white transition-all"
+                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#2B3036)] shadow-sm hover:bg-white transition-all"
                     aria-label="Favorite"
                   >
                     <Heart className={cn("h-4 w-4", isFavorite(property.id) && "fill-[var(--luxe-gold)] text-[var(--luxe-gold)]")} />
                   </button>
                   <button
                     onClick={handleShare}
-                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#090909)] shadow-sm hover:bg-white transition-all"
+                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#2B3036)] shadow-sm hover:bg-white transition-all"
                     aria-label="Share"
                   >
                     <Share2 className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => setFullscreen(true)}
-                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#090909)] shadow-sm hover:bg-white transition-all"
+                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#2B3036)] shadow-sm hover:bg-white transition-all"
                     aria-label="Expand"
                   >
                     <Maximize2 className="h-4 w-4" />
@@ -668,7 +668,7 @@ const PropertyDetail = () => {
                   trackStickyClick("reserve", "booking_initiated");
                   navigate(`/booking/${property.id}`);
                 }}
-                className="px-6 md:px-10 py-3 bg-[color:var(--luxe-ink,#090909)] text-[var(--luxe-gold)] rounded-xl font-bold text-[11px] uppercase tracking-widest shadow-xl shadow-[color:var(--luxe-ink,#090909)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
+                className="px-6 md:px-10 py-3 bg-[color:var(--luxe-ink,#2B3036)] text-[var(--luxe-gold)] rounded-xl font-bold text-[11px] uppercase tracking-widest shadow-xl shadow-[color:var(--luxe-ink,#2B3036)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
                 tabIndex={scrolled ? 0 : -1}
               >
                 Reserve Now
@@ -966,7 +966,7 @@ const PropertyDetail = () => {
                 ref={ctaRef("contact", "sidebar")}
                 onClick={handleSendMessage}
                 disabled={sending}
-                className="mt-5 w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#090909)] font-bold py-4 rounded-xl transition-all uppercase tracking-[0.2em] text-[11px] inline-flex items-center justify-center gap-2 disabled:opacity-60"
+                className="mt-5 w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#2B3036)] font-bold py-4 rounded-xl transition-all uppercase tracking-[0.2em] text-[11px] inline-flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 <Send className="h-3.5 w-3.5" />
                 {sending ? "Sending…" : "Send Message"}
@@ -1023,7 +1023,7 @@ const PropertyDetail = () => {
                   </div>
                   <button
                     onClick={handleRequestVisit}
-                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#090909)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
+                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#2B3036)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
                   >
                     Confirm Visit
                   </button>
@@ -1045,7 +1045,7 @@ const PropertyDetail = () => {
                   </label>
                   <button
                     onClick={handlePriceAlert}
-                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#090909)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
+                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#2B3036)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
                   >
                     Activate Alert
                   </button>
@@ -1055,7 +1055,7 @@ const PropertyDetail = () => {
               {/* Agent block */}
               <div className="mt-8 pt-6 border-t border-luxe">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-[color:var(--luxe-ink,#090909)] border border-[var(--luxe-gold)]/40 flex items-center justify-center text-[var(--luxe-gold)] font-serif-l text-lg">
+                  <div className="w-12 h-12 rounded-full bg-[color:var(--luxe-ink,#2B3036)] border border-[var(--luxe-gold)]/40 flex items-center justify-center text-[var(--luxe-gold)] font-serif-l text-lg">
                     A
                   </div>
                   <div className="min-w-0">

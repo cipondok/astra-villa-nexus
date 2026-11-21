@@ -166,7 +166,7 @@ function HotspotMarker({
       {(hovered || isActive) && (
         <Float speed={2} floatIntensity={0.2}>
           <Html position={[hotspot.position[0], hotspot.position[1] + 0.45, hotspot.position[2]]} center distanceFactor={8}>
-            <div className="px-3 py-1.5 rounded-xl bg-[#090909]/85 backdrop-blur-xl border border-[#C6A66B]/30 whitespace-nowrap select-none pointer-events-none">
+            <div className="px-3 py-1.5 rounded-xl bg-[#2B3036]/85 backdrop-blur-xl border border-[#C6A66B]/30 whitespace-nowrap select-none pointer-events-none">
               <span className="text-[11px] font-semibold text-[#C6A66B]">{hotspot.icon} {hotspot.label}</span>
             </div>
           </Html>
@@ -344,11 +344,11 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
 
   return (
     <div ref={containerRef}
-      className={cn('relative w-full h-full min-h-[400px] bg-[#090909] rounded-[20px] overflow-hidden border border-[hsl(var(--border))]/10', isFullscreen && 'rounded-none', className)}>
+      className={cn('relative w-full h-full min-h-[400px] bg-[#2B3036] rounded-[20px] overflow-hidden border border-[hsl(var(--border))]/10', isFullscreen && 'rounded-none', className)}>
       <Canvas camera={{ position: [8, 5, 8], fov: 45, near: 0.1, far: 100 }} shadows dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }} style={{ background: '#090909' }}>
-        <color attach="background" args={['#090909']} />
-        <fog attach="fog" args={['#090909', 25, 50]} />
+        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }} style={{ background: '#2B3036' }}>
+        <color attach="background" args={['#2B3036']} />
+        <fog attach="fog" args={['#2B3036', 25, 50]} />
         <SceneContent
           modelPath={modelPath} scale={scale} position={position} environment={envPreset}
           hotspots={resolvedHotspots} activeHotspot={activeHotspot} onHotspotClick={handleHotspotClick}
@@ -359,7 +359,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
 
       {/* ── Camera Preset Buttons (left side) ── */}
       <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
-        <div className="px-1.5 py-1.5 rounded-2xl bg-[#090909]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 flex flex-col gap-1">
+        <div className="px-1.5 py-1.5 rounded-2xl bg-[#2B3036]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 flex flex-col gap-1">
           {CAMERA_PRESETS.map(p => (
             <ToolBtn key={p.id} onClick={() => handlePreset(p)} title={p.label}>
               <p.icon className="h-4 w-4" />
@@ -370,7 +370,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
 
       {/* ── Bottom Toolbar ── */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
-        <div className="flex items-center gap-1 px-2 py-1.5 rounded-2xl bg-[#090909]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 shadow-2xl">
+        <div className="flex items-center gap-1 px-2 py-1.5 rounded-2xl bg-[#2B3036]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 shadow-2xl">
           <ToolBtn onClick={() => setIsNight(!isNight)} active={isNight} title={isNight ? 'Switch to Day' : 'Switch to Night'}>
             {isNight ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
           </ToolBtn>
@@ -391,7 +391,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
       {/* ── Environment Label ── */}
       <AnimatePresence>
         <motion.div key={`${envPreset}-${isNight}`} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-          className="absolute top-3 right-3 px-3 py-1 rounded-lg bg-[#090909]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 z-10">
+          className="absolute top-3 right-3 px-3 py-1 rounded-lg bg-[#2B3036]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 z-10">
           <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
             {isNight ? '🌙 night' : `☀️ ${envPreset}`}
           </span>
@@ -408,7 +408,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
             className="absolute bottom-20 left-1/2 z-20 w-[320px]"
           >
-            <div className="rounded-2xl bg-[#090909]/85 backdrop-blur-xl border border-[#C6A66B]/20 shadow-2xl p-4">
+            <div className="rounded-2xl bg-[#2B3036]/85 backdrop-blur-xl border border-[#C6A66B]/20 shadow-2xl p-4">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">{hotspotInfo.icon}</span>
