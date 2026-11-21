@@ -254,11 +254,8 @@ export function useInvestorLeaderboard() {
   return useQuery({
     queryKey: ['investor-leaderboard'],
     queryFn: async (): Promise<InvestorProfile[]> => {
-      const { data, error } = await db
-        .from('investor_credibility')
-        .select('*, profile:profiles!investor_credibility_user_id_fkey(full_name, avatar_url)')
-        .order('reputation_score', { ascending: false })
-        .limit(20);
+      // Leaderboard comes from a limited public lookup; raw credibility rows are owner/admin only.
+      const { data, error } = await db.rpc('get_investor_leaderboard', { _limit: 20 });
       if (error) throw error;
 
       let followingSet = new Set<string>();
@@ -272,8 +269,8 @@ export function useInvestorLeaderboard() {
 
       return (data || []).map((c: any) => ({
         user_id: c.user_id,
-        full_name: c.profile?.full_name || 'Investor',
-        avatar_url: c.profile?.avatar_url || null,
+        full_name: c.full_name || 'Investor',
+        avatar_url: c.avatar_url || null,
         reputation_score: c.reputation_score,
         tier: c.tier,
         deals_shared: c.deals_shared,
