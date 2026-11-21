@@ -218,7 +218,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             <Button
               size="lg"
               onClick={() => navigate("/search")}
-              className="bg-gradient-to-r from-[#ffe14d] to-[#ffb800] hover:from-[#ffb800] hover:to-[#ffe14d] text-gray-900 font-bold px-6 py-5 text-sm rounded-xl shadow-lg shadow-yellow-500/30 transition-all duration-300"
+              className="bg-gradient-to-r from-[#ffe14d] to-[#ffb800] hover:from-[#ffb800] hover:to-[#ffe14d] text-gray-900 font-bold px-6 py-5 text-sm rounded-xl shadow-lg transition-all duration-300"
             >
               <Search className="mr-2 h-4 w-4" />
               {t('hero.exploreInvestment')}

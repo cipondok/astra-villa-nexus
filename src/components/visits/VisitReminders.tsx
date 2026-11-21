@@ -58,7 +58,7 @@ export default function VisitReminders({ visits }: VisitRemindersProps) {
           <Card
             className={`border-border/30 backdrop-blur-xl transition-all ${
               isVisitToday 
-                ? 'bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border-amber-500/20 shadow-sm shadow-amber-500/5' 
+                ? 'bg-primary/5 border-amber-500/20 shadow-sm' 
                 : 'bg-card/60'
             }`}
           >

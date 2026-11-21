@@ -743,22 +743,22 @@ export default function InvestmentAnalysisTools() {
 
       <Tabs defaultValue="roi" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4 h-11 bg-muted/50 backdrop-blur-sm border border-border/30">
-          <TabsTrigger value="roi" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+          <TabsTrigger value="roi" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
             <Calculator className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">ROI Calculator</span>
             <span className="sm:hidden">ROI</span>
           </TabsTrigger>
-          <TabsTrigger value="rental" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+          <TabsTrigger value="rental" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
             <BarChart3 className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Rental Yield</span>
             <span className="sm:hidden">Yield</span>
           </TabsTrigger>
-          <TabsTrigger value="forecast" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+          <TabsTrigger value="forecast" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
             <TrendingUp className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Appreciation</span>
             <span className="sm:hidden">Forecast</span>
           </TabsTrigger>
-          <TabsTrigger value="area" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+          <TabsTrigger value="area" className="text-xs sm:text-sm gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
             <Globe className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Area Growth</span>
             <span className="sm:hidden">Areas</span>

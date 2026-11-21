@@ -227,7 +227,7 @@ export default function ListingVisibilityAnalytics({ propertyId }: ListingVisibi
             </div>
             <Button
               size="sm"
-              className="w-full h-8 text-xs font-bold gap-1.5 bg-primary hover:from-amber-600 hover:to-amber-700 text-primary-foreground border-0"
+              className="w-full h-8 text-xs font-bold gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground border-0"
               onClick={() => navigate('/membership')}
             >
               <Zap className="h-3.5 w-3.5" />

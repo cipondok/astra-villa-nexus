@@ -178,11 +178,11 @@ const PortfolioDashboard = () => {
         {/* Header */}
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-amber-400/10 border border-emerald-500/20 flex items-center justify-center">
+            <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-emerald-500/20 flex items-center justify-center">
               <Briefcase className="h-6 w-6 text-emerald-500" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-600 via-amber-500 to-emerald-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl md:text-3xl font-bold text-primary">
                 Investor Portfolio Dashboard
               </h1>
               <p className="text-sm text-muted-foreground">AI-powered portfolio analysis with risk scoring & diversification insights</p>
@@ -192,7 +192,7 @@ const PortfolioDashboard = () => {
 
         {/* Selection Panel */}
         <Card className="border-border/50 bg-card/80 backdrop-blur-xl shadow-xl overflow-hidden">
-          <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-amber-500 to-emerald-500" />
+          <div className="h-1.5 w-full bg-primary/60" />
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">Build Your Portfolio</CardTitle>
             <p className="text-sm text-muted-foreground">Select properties and hold period to run portfolio analysis</p>
@@ -268,7 +268,7 @@ const PortfolioDashboard = () => {
                 <Button
                   onClick={runAnalysis}
                   disabled={loading || selectedIds.length < 1}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-amber-500 hover:from-emerald-700 hover:to-amber-600 text-white shadow-lg shadow-emerald-500/20"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-emerald-500/20"
                   size="lg"
                 >
                   {loading ? (

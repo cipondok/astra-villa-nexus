@@ -518,9 +518,9 @@ export function ReosHeader() {
               </div>
             ) : (
               <>
-                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-9 px-4 rounded-lg text-[12.5px] hover:bg-[var(--surface)] text-[var(--text)] transition">{t("shell.signIn")}</button>
-                <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-9 px-4 rounded-lg reos-cta text-[12.5px] inline-flex items-center gap-1.5">
-                  {t("shell.getStarted")} <ChevronRight className="h-3.5 w-3.5" />
+                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-9 px-2.5 sm:px-4 rounded-lg text-[12.5px] whitespace-nowrap hover:bg-[var(--surface)] text-[var(--text)] transition">{t("shell.signIn")}</button>
+                <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-9 px-3 sm:px-4 rounded-lg reos-cta text-[12.5px] whitespace-nowrap inline-flex items-center gap-1.5">
+                  {t("shell.getStarted")} <ChevronRight className="hidden sm:block h-3.5 w-3.5" aria-hidden="true" />
                 </button>
               </>
             )}

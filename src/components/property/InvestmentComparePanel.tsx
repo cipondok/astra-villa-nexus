@@ -136,13 +136,13 @@ const InvestmentComparePanel = () => {
     <div className="space-y-6">
       {/* Selection Panel */}
       <Card className="border-border/50 bg-card/80 backdrop-blur-xl shadow-xl overflow-hidden">
-        <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-amber-500 to-emerald-500" />
+        <div className="h-1.5 w-full bg-primary/60" />
         <CardHeader className="pb-4">
           <CardTitle className="text-xl flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/20 to-amber-400/10 border border-emerald-500/20 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-primary/10 border border-emerald-500/20 flex items-center justify-center">
               <TrendingUp className="h-5 w-5 text-emerald-500" />
             </div>
-            <span className="bg-gradient-to-r from-emerald-600 via-amber-500 to-emerald-600 bg-clip-text text-transparent">
+            <span className="text-primary">
               AI Investment Comparison
             </span>
           </CardTitle>
@@ -215,7 +215,7 @@ const InvestmentComparePanel = () => {
           <Button
             onClick={runComparison}
             disabled={loading || !propertyA || !propertyB}
-            className="w-full md:w-auto bg-gradient-to-r from-emerald-600 to-amber-500 hover:from-emerald-700 hover:to-amber-600 text-white shadow-lg shadow-emerald-500/20"
+            className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-emerald-500/20"
             size="lg"
           >
             {loading ? (
@@ -247,7 +247,7 @@ const InvestmentComparePanel = () => {
             <Card className="border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent shadow-xl shadow-emerald-500/5 overflow-hidden">
               <CardContent className="py-5 px-6">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-amber-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                     <Trophy className="h-5 w-5 text-white" />
                   </div>
                   <div>
@@ -276,7 +276,7 @@ const InvestmentComparePanel = () => {
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
-                      <TableRow className="border-b border-amber-500/10 bg-gradient-to-r from-amber-500/5 to-transparent">
+                      <TableRow className="border-b border-amber-500/10 bg-primary/5">
                         <TableHead className="w-[180px] sticky left-0 bg-card z-10 font-semibold text-foreground">Metric</TableHead>
                         {result.comparison.map(c => {
                           const isWinner = c.property_id === winnerId;
@@ -289,7 +289,7 @@ const InvestmentComparePanel = () => {
                                 <span className="font-semibold text-foreground truncate max-w-[180px]">{c.title || c.property_id.slice(0, 8)}</span>
                                 <span className="text-xs text-muted-foreground">{c.city} · {c.property_type}</span>
                                 {isWinner && (
-                                  <Badge className="bg-gradient-to-r from-emerald-500/20 to-amber-400/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] gap-0.5">
+                                  <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] gap-0.5">
                                     <Trophy className="h-2.5 w-2.5" /> Winner
                                   </Badge>
                                 )}
@@ -423,7 +423,7 @@ const InvestmentComparePanel = () => {
                       {renderMetricRow('Return Tahunan (5 Tahun)', result.comparison, winnerId, c => c.annualized_return_5y, v => `${v.toFixed(2)}%`, true)}
 
                       {/* Composite Score */}
-                      <TableRow className="bg-gradient-to-r from-amber-500/5 to-transparent border-t-2 border-amber-500/20">
+                      <TableRow className="bg-primary/5 border-t-2 border-amber-500/20">
                         <TableCell className="font-bold text-foreground sticky left-0 bg-card z-10">
                           <span className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-500" />Skor Komposit</span>
                         </TableCell>
@@ -492,7 +492,7 @@ const InvestmentComparePanel = () => {
 
 // ─── Helper: Winner Badge ────────────────────────────────────────────
 const WinnerBadge = () => (
-  <Badge className="text-[10px] px-1.5 py-0 bg-gradient-to-r from-emerald-500/20 to-amber-400/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 gap-0.5">
+  <Badge className="text-[10px] px-1.5 py-0 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 gap-0.5">
     <Trophy className="h-2.5 w-2.5" /> Best
   </Badge>
 );

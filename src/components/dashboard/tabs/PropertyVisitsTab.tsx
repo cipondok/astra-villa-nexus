@@ -67,7 +67,7 @@ export default function PropertyVisitsTab() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 }}
       >
-        <Card className="bg-card/70 backdrop-blur-xl border-border/30 hover:border-amber-500/20 hover:shadow-md hover:shadow-amber-500/5 transition-all">
+        <Card className="bg-card/70 backdrop-blur-xl border-border/30 hover:border-amber-500/20 hover:shadow-md transition-all">
           <CardContent className="p-3 space-y-2">
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2.5 min-w-0">

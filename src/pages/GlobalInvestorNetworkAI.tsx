@@ -86,7 +86,7 @@ const GlobalInvestorNetworkAI = () => {
                   <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 text-[9px] uppercase tracking-widest">Investor Network</Badge>
                   <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-[9px] uppercase tracking-widest">AI-Orchestrated</Badge>
                 </div>
-                <h1 className="text-xl md:text-2xl font-semibold tracking-tight bg-gradient-to-r from-cyan-300 via-violet-300 to-amber-200 bg-clip-text text-transparent">
+                <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
                   Autonomous Investor Network
                 </h1>
                 <p className="text-xs text-slate-500 mt-0.5">AI-driven connection intelligence across global real estate investors</p>

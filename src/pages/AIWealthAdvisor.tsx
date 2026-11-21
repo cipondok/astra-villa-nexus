@@ -45,7 +45,7 @@ const tagStyle = (p: string) =>
 
 const AIWealthAdvisor = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-white to-amber-50/20 text-slate-900 font-sans">
+    <div className="min-h-screen bg-background text-slate-900 font-sans">
       {/* Header */}
       <div className="border-b border-slate-200/60 bg-white/70 backdrop-blur-sm">
         <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-5">

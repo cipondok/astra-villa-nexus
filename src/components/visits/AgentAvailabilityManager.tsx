@@ -103,7 +103,7 @@ export default function AgentAvailabilityManager() {
                 transition={{ delay: i * 0.04 }}
                 className={`flex items-center gap-2 py-2 px-2 rounded-lg border transition-all duration-200 ${
                   days[i].enabled 
-                    ? 'border-amber-500/20 bg-gradient-to-r from-amber-500/[0.04] to-transparent' 
+                    ? 'border-amber-500/20 bg-primary/5' 
                     : 'border-transparent hover:bg-muted/30'
                 }`}
               >
@@ -158,7 +158,7 @@ export default function AgentAvailabilityManager() {
             ))}
             <Button
               onClick={handleSave}
-              className="w-full h-9 text-xs mt-3 bg-primary hover:from-amber-500 hover:to-yellow-400 text-primary-foreground shadow-md shadow-amber-500/20 border-0"
+              className="w-full h-9 text-xs mt-3 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md border-0"
               disabled={saveAvailability.isPending}
             >
               {saveAvailability.isPending ? (
@@ -218,7 +218,7 @@ export default function AgentAvailabilityManager() {
                       transition={{ delay: idx * 0.05 }}
                       className={`p-2.5 rounded-xl border space-y-2 transition-all ${
                         visit.status === 'pending'
-                          ? 'border-amber-500/30 bg-gradient-to-r from-amber-500/[0.06] via-amber-500/[0.02] to-transparent shadow-sm shadow-amber-500/5'
+                          ? 'border-amber-500/30 bg-primary/5 shadow-sm'
                           : 'border-border/30 bg-muted/20'
                       }`}
                     >
@@ -248,7 +248,7 @@ export default function AgentAvailabilityManager() {
                         <div className="flex gap-1.5 pt-0.5">
                           <Button
                             size="sm"
-                            className="h-7 text-[10px] flex-1 bg-primary hover:from-amber-500 hover:to-yellow-400 text-primary-foreground border-0 shadow-sm shadow-amber-500/20"
+                            className="h-7 text-[10px] flex-1 bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-sm"
                             onClick={() => updateStatus.mutate({ visitId: visit.id, status: 'confirmed' })}
                           >
                             <CheckCircle2 className="h-3 w-3 mr-0.5" /> Confirm

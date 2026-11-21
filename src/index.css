@@ -3039,3 +3039,20 @@ html:not(.dark) [class*="shadow-accent"], html:not(.dark) [class*="shadow-orange
 .dark ::-webkit-scrollbar-thumb { background: hsl(0 0% 18%); }
 .dark ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
 .dark ::selection { background: hsl(var(--primary) / 0.3); color: hsl(var(--foreground)); }
+
+/* ── Matte finish pass 2: gold gradient text, halo blobs, pulsing gold lights ── */
+.bg-clip-text.text-transparent:is([class*="from-amber"], [class*="via-amber"], [class*="to-amber"],
+  [class*="from-yellow"], [class*="via-yellow"], [class*="to-yellow"],
+  [class*="from-gold"], [class*="to-gold"], [class*="from-primary"], [class*="to-primary"]) {
+  background-image: none !important;
+  color: hsl(var(--primary-strong, var(--primary))) !important;
+  -webkit-text-fill-color: currentColor;
+}
+:is(.blur-2xl, .blur-3xl, .blur-\[80px\], .blur-\[100px\], .blur-\[120px\], .blur-\[140px\], .blur-\[160px\]):is(
+  [class*="amber"], [class*="yellow"], [class*="gold"], [class*="primary"]) {
+  display: none !important;
+}
+:is(.animate-ping, .animate-pulse):is([class*="bg-amber"], [class*="bg-yellow"], [class*="bg-gold"], [class*="bg-primary"],
+  [class*="text-amber"], [class*="text-yellow"], [class*="text-gold"], [class*="text-primary"]) {
+  animation: none !important;
+}

@@ -121,7 +121,7 @@ export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, ag
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto border-amber-500/20 bg-gradient-to-br from-card via-card to-amber-500/[0.02] p-0">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto border-amber-500/20 bg-card p-0">
         {/* Gold top bar */}
         <div className="h-1.5 w-full bg-primary" />
 
@@ -149,7 +149,7 @@ export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, ag
                     <div className={cn(
                       "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all",
                       i <= currentStepIdx
-                        ? "bg-primary text-primary-foreground shadow-md shadow-amber-500/20"
+                        ? "bg-primary text-primary-foreground shadow-md"
                         : "bg-muted text-muted-foreground"
                     )}>
                       {s.num}
@@ -193,7 +193,7 @@ export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, ag
                   <Sparkles className="h-3 w-3 text-amber-500 inline mr-1" />
                   You'll receive a notification once the agent confirms your visit.
                 </div>
-                <Button onClick={handleClose} className="mt-2 bg-primary hover:from-amber-700 hover:to-yellow-600 text-primary-foreground shadow-lg shadow-amber-500/20">
+                <Button onClick={handleClose} className="mt-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg">
                   Done
                 </Button>
               </motion.div>
@@ -243,7 +243,7 @@ export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, ag
                               "text-xs h-9 rounded-lg transition-all",
                               !slot.available && "opacity-30 line-through",
                               selectedSlot?.start_time === slot.start_time
-                                ? "bg-primary text-primary-foreground border-0 shadow-md shadow-amber-500/20"
+                                ? "bg-primary text-primary-foreground border-0 shadow-md"
                                 : "border-border/50 hover:border-amber-500/30 hover:bg-amber-500/5"
                             )}
                             onClick={() => setSelectedSlot(slot)}
@@ -257,7 +257,7 @@ export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, ag
                 )}
 
                 <Button
-                  className="w-full bg-primary hover:from-amber-700 hover:to-yellow-600 text-primary-foreground shadow-lg shadow-amber-500/20 h-11"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg h-11"
                   disabled={!selectedDate || !selectedSlot}
                   onClick={() => setStep('details')}
                 >
@@ -308,7 +308,7 @@ export default function ScheduleVisitDialog({ open, onOpenChange, propertyId, ag
                 </div>
 
                 <Button
-                  className="w-full bg-primary hover:from-amber-700 hover:to-yellow-600 text-primary-foreground shadow-lg shadow-amber-500/20 h-11"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg h-11"
                   onClick={handleBook}
                   disabled={bookVisit.isPending}
                 >

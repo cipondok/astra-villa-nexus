@@ -67,7 +67,7 @@ const DealSyndicationHub = () => {
               <Button variant="outline" className="border-white/10 text-slate-300 hover:bg-white/5 text-xs" onClick={() => toast.success('Deal documents requested')}>
                 <FileText className="w-4 h-4 mr-2" /> Request Documents
               </Button>
-              <Button className="bg-primary hover:from-amber-500 hover:to-orange-500 text-primary-foreground border-0 text-xs" onClick={() => toast.success('Entering Syndicate Deal Room...')}>
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 text-xs" onClick={() => toast.success('Entering Syndicate Deal Room...')}>
                 <ArrowRight className="w-4 h-4 mr-2" /> Enter Deal Room
               </Button>
             </div>
@@ -186,7 +186,7 @@ const DealSyndicationHub = () => {
               </div>
 
               <Button
-                className="w-full mt-5 bg-primary hover:from-amber-500 hover:to-orange-500 text-primary-foreground border-0"
+                className="w-full mt-5 bg-primary hover:bg-primary/90 text-primary-foreground border-0"
                 onClick={() => toast.success(`Syndicate participation of ${formatIDR(commitAmt)} submitted for review`)}
               >
                 <Users className="w-4 h-4 mr-2" /> Join Syndicate — {formatIDR(commitAmt)}

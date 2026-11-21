@@ -148,7 +148,7 @@ const PropertyComparison = () => {
             <p className="text-muted-foreground mb-8">
               Add properties to your comparison list to see detailed side-by-side analysis with KPR simulations, neighborhood data, and visual charts.
             </p>
-            <Button onClick={() => navigate('/dijual')} className="bg-primary hover:from-amber-700 hover:to-yellow-600 text-primary-foreground shadow-lg shadow-amber-500/20">
+            <Button onClick={() => navigate('/dijual')} className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg">
               <Building className="h-4 w-4 mr-2" />
               Browse Properties
             </Button>
@@ -304,7 +304,7 @@ const PropertyComparison = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Decorative top glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-amber-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
         {/* Header */}
@@ -339,28 +339,28 @@ const PropertyComparison = () => {
         <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
           <Tabs defaultValue="specs" className="space-y-6">
             <TabsList className="grid w-full grid-cols-8 lg:w-auto lg:inline-grid bg-muted/50 backdrop-blur-sm border border-border/50">
-              <TabsTrigger value="specs" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+              <TabsTrigger value="specs" className="gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <Building className="h-4 w-4" />Specs
               </TabsTrigger>
-              <TabsTrigger value="3d" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+              <TabsTrigger value="3d" className="gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <Box className="h-4 w-4" />3D
               </TabsTrigger>
-              <TabsTrigger value="kpr" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+              <TabsTrigger value="kpr" className="gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <Banknote className="h-4 w-4" />KPR
               </TabsTrigger>
-              <TabsTrigger value="neighborhood" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+              <TabsTrigger value="neighborhood" className="gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <MapPin className="h-4 w-4" />Area
               </TabsTrigger>
-              <TabsTrigger value="investment" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+              <TabsTrigger value="investment" className="gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <TrendingUp className="h-4 w-4" />Invest
               </TabsTrigger>
               <TabsTrigger value="ai-insight" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/10 data-[state=active]:to-chart-2/10 data-[state=active]:text-primary">
                 <Shield className="h-4 w-4" />AI Insight
               </TabsTrigger>
-              <TabsTrigger value="ai-compare" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500/10 data-[state=active]:to-amber-400/10 data-[state=active]:text-emerald-700 dark:data-[state=active]:text-emerald-400">
+              <TabsTrigger value="ai-compare" className="gap-1.5 data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-700 dark:data-[state=active]:text-emerald-400">
                 <Sparkles className="h-4 w-4" />AI Compare
               </TabsTrigger>
-              <TabsTrigger value="charts" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+              <TabsTrigger value="charts" className="gap-1.5 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <BarChart3 className="h-4 w-4" />Charts
               </TabsTrigger>
             </TabsList>
@@ -372,7 +372,7 @@ const PropertyComparison = () => {
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="border-b border-amber-500/10 bg-gradient-to-r from-amber-500/5 to-transparent">
+                        <TableRow className="border-b border-amber-500/10 bg-primary/5">
                           <TableHead className="w-[140px] sticky left-0 bg-card z-10 font-semibold text-foreground">Spec</TableHead>
                           {selectedProperties.map((p, i) => (
                             <TableHead key={p.id} className="min-w-[200px]">
@@ -407,7 +407,7 @@ const PropertyComparison = () => {
                           </TableRow>
                         ))}
                         {(activeAmenities.length > 0 || extraKeys.size > 0) && (
-                          <TableRow className="bg-gradient-to-r from-amber-500/5 to-transparent">
+                          <TableRow className="bg-primary/5">
                             <TableCell colSpan={selectedProperties.length + 1} className="font-semibold text-amber-700 dark:text-amber-400 sticky left-0 z-10">
                               <span className="flex items-center gap-1.5">
                                 <Sparkles className="h-3.5 w-3.5" />
@@ -460,7 +460,7 @@ const PropertyComparison = () => {
 
             {/* ═══ KPR TAB ═══ */}
             <TabsContent value="kpr" className="space-y-6">
-              <Card className="border-amber-500/20 bg-gradient-to-br from-amber-500/5 via-card to-card backdrop-blur-xl shadow-xl overflow-hidden">
+              <Card className="border-amber-500/20 bg-card backdrop-blur-xl shadow-xl overflow-hidden">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
@@ -516,7 +516,7 @@ const PropertyComparison = () => {
                   const isLowest = r.kpr.monthlyPayment === lowestMonthly && kprResults.length > 1;
                   return (
                     <motion.div key={r.property.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-                      <Card className={`border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden ${isLowest ? 'ring-2 ring-amber-500/30 shadow-lg shadow-amber-500/10' : ''}`}>
+                      <Card className={`border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden ${isLowest ? 'ring-2 ring-amber-500/30 shadow-lg' : ''}`}>
                         <div className="h-1.5 w-full" style={{ background: `linear-gradient(90deg, ${CHART_COLORS[i % CHART_COLORS.length]}, ${CHART_COLORS[i % CHART_COLORS.length]}80)` }} />
                         <CardContent className="p-4 space-y-3">
                           <div className="flex items-center gap-2">
@@ -586,7 +586,7 @@ const PropertyComparison = () => {
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="border-b border-amber-500/10 bg-gradient-to-r from-amber-500/5 to-transparent">
+                        <TableRow className="border-b border-amber-500/10 bg-primary/5">
                           <TableHead className="w-[180px] sticky left-0 bg-card z-10 font-semibold text-foreground">Neighborhood</TableHead>
                           {selectedProperties.map((p, i) => (
                             <TableHead key={p.id} className="min-w-[180px]">
@@ -631,7 +631,7 @@ const PropertyComparison = () => {
                           );
                         })}
 
-                        <TableRow className="bg-gradient-to-r from-amber-500/5 to-transparent">
+                        <TableRow className="bg-primary/5">
                           <TableCell colSpan={selectedProperties.length + 1} className="font-semibold text-amber-700 dark:text-amber-400 sticky left-0 z-10">
                             <span className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5" />Scores</span>
                           </TableCell>
@@ -761,7 +761,7 @@ const PropertyComparison = () => {
                         const isFastestBE = d.metrics.breakEvenYears === fastestBreakEven && d.metrics.breakEvenYears > 0 && investmentData.length > 1;
                         return (
                           <motion.div key={d.property.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-                            <Card className={`border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden ${(isbestYield || isBestGrowth) ? 'ring-2 ring-amber-500/30 shadow-lg shadow-amber-500/10' : ''}`}>
+                            <Card className={`border-border/50 bg-card/80 backdrop-blur-xl overflow-hidden ${(isbestYield || isBestGrowth) ? 'ring-2 ring-amber-500/30 shadow-lg' : ''}`}>
                               <div className="h-1.5 w-full" style={{ background: `linear-gradient(90deg, ${CHART_COLORS[i % CHART_COLORS.length]}, ${CHART_COLORS[i % CHART_COLORS.length]}80)` }} />
                               <CardContent className="p-4 space-y-3">
                                 <div className="flex items-center gap-2">
@@ -788,7 +788,7 @@ const PropertyComparison = () => {
                                     <p className="font-semibold">{d.metrics.breakEvenYears > 0 ? `${d.metrics.breakEvenYears} yrs` : '—'}{isFastestBE && <WinnerBadge label="Fastest" />}</p>
                                   </div>
                                 </div>
-                                <div className="p-2.5 rounded-lg bg-gradient-to-r from-amber-500/[0.06] to-transparent border border-amber-500/10 text-center">
+                                <div className="p-2.5 rounded-lg bg-primary/5 border border-amber-500/10 text-center">
                                   <p className="text-[10px] text-muted-foreground">5-Year Value</p>
                                   <p className="text-lg font-bold text-foreground"><Price amount={d.metrics.fiveYearValue} /></p>
                                   <p className="text-[10px] font-bold text-emerald-500">+<Price amount={d.metrics.fiveYearValue - d.metrics.price} /></p>
@@ -870,7 +870,7 @@ const PropertyComparison = () => {
               {selectedProperties.length > 1 && <ComparisonCharts selectedProperties={selectedProperties} />}
 
               {selectedProperties.length > 1 && (
-                <Card className="border-amber-500/20 bg-gradient-to-br from-amber-500/5 via-card to-card backdrop-blur-xl shadow-xl">
+                <Card className="border-amber-500/20 bg-card backdrop-blur-xl shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Trophy className="h-5 w-5 text-amber-500" />

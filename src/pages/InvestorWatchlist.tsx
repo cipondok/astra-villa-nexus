@@ -272,7 +272,7 @@ const InvestorWatchlist = () => {
                       <Card
                         className={cn(
                           'rounded-2xl border-border/30 hover:border-primary/20 transition-all cursor-pointer active:scale-[0.98]',
-                          isElite && 'ring-1 ring-amber-400/30 shadow-amber-400/20',
+                          isElite && 'ring-1 ring-amber-400/30',
                           item.has_new_alert && 'border-primary/40'
                         )}
                         onClick={() => navigate(`/property/${p.id}`)}

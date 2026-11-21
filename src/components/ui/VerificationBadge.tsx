@@ -90,8 +90,8 @@ const badgeConfig: Record<
     shortLabel: "Premium",
     icon: Crown,
     tooltip: "Listed by an exclusive Premium Partner with top trust rating",
-    gradient: "from-gold-primary to-amber-500",
-    hoverGradient: "hover:from-gold-primary/90 hover:to-amber-500/80",
+    gradient: "from-primary to-primary",
+    hoverGradient: "hover:from-primary/90 hover:to-primary/90",
   },
   // Database-driven badge types (from property_verification_badges table)
   ownership_verified: {
@@ -123,8 +123,8 @@ const badgeConfig: Record<
     shortLabel: "Premium",
     icon: Crown,
     tooltip: "Exclusive premium listing with enhanced visibility",
-    gradient: "from-gold-primary to-amber-500",
-    hoverGradient: "hover:from-gold-primary/90 hover:to-amber-500/80",
+    gradient: "from-primary to-primary",
+    hoverGradient: "hover:from-primary/90 hover:to-primary/90",
   },
   eco_certified: {
     label: "Eco Certified",

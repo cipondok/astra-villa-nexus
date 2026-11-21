@@ -44,7 +44,7 @@ const StatCard = ({ icon: Icon, value, label, color, delay }: { icon: any; value
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.35 }}
   >
-    <Card className="p-3 sm:p-4 bg-card/60 backdrop-blur-xl border-border/30 hover:border-amber-500/20 hover:shadow-md hover:shadow-amber-500/5 transition-all group">
+    <Card className="p-3 sm:p-4 bg-card/60 backdrop-blur-xl border-border/30 hover:border-amber-500/20 hover:shadow-md transition-all group">
       <div className="flex items-center gap-2 sm:gap-3">
         <div className={`h-9 w-9 sm:h-11 sm:w-11 rounded-xl ${color} flex items-center justify-center transition-transform group-hover:scale-105`}>
           <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -65,7 +65,7 @@ const QuickAction = ({ icon: Icon, title, desc, color, onClick, delay }: { icon:
     transition={{ delay, duration: 0.3 }}
   >
     <Card 
-      className="cursor-pointer bg-card/60 backdrop-blur-xl border-border/30 hover:border-amber-500/20 hover:shadow-lg hover:shadow-amber-500/5 hover:-translate-y-0.5 active:scale-[0.98] transition-all group" 
+      className="cursor-pointer bg-card/60 backdrop-blur-xl border-border/30 hover:border-amber-500/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] transition-all group" 
       onClick={onClick}
     >
       <CardHeader className="p-3 sm:p-4 flex flex-row items-center justify-between">
@@ -211,24 +211,24 @@ const UserDashboard = () => {
             <Tabs defaultValue={isInvestor ? "properties" : "overview"} className="space-y-4">
               <TabsList className={`grid w-full h-10 sm:h-11 bg-muted/50 backdrop-blur-sm border border-border/30 ${isInvestor ? 'grid-cols-5' : 'grid-cols-4'}`}>
                 {isInvestor && (
-                  <TabsTrigger value="properties" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400 data-[state=active]:border-amber-500/30">
+                  <TabsTrigger value="properties" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400 data-[state=active]:border-amber-500/30">
                     <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="hidden sm:inline">Properties</span>
                   </TabsTrigger>
                 )}
-                <TabsTrigger value="overview" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+                <TabsTrigger value="overview" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                   <Home className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">Overview</span>
                 </TabsTrigger>
-                <TabsTrigger value="orders" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+                <TabsTrigger value="orders" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                   <Package className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">Orders</span>
                 </TabsTrigger>
-                <TabsTrigger value="support" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+                <TabsTrigger value="support" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                   <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">Support</span>
                 </TabsTrigger>
-                <TabsTrigger value="settings" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/20 data-[state=active]:to-yellow-400/20 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
+                <TabsTrigger value="settings" className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm px-1 sm:px-3 data-[state=active]:bg-primary/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                   <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">Settings</span>
                 </TabsTrigger>
@@ -313,7 +313,7 @@ const UserDashboard = () => {
                         </p>
                         <Button 
                           size="sm" 
-                          className="mt-4 h-8 sm:h-9 text-xs sm:text-sm bg-primary hover:from-amber-500 hover:to-yellow-400 text-primary-foreground border-0 shadow-sm shadow-amber-500/20" 
+                          className="mt-4 h-8 sm:h-9 text-xs sm:text-sm bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-sm" 
                           onClick={() => navigate('/dijual')}
                         >
                           <Search className="h-3.5 w-3.5 mr-1.5" />
@@ -389,7 +389,7 @@ const UserDashboard = () => {
                       </div>
                       <Button 
                         onClick={() => navigate('/profile')} 
-                        className="w-full sm:w-auto h-9 text-xs sm:text-sm bg-primary hover:from-amber-500 hover:to-yellow-400 text-primary-foreground border-0 shadow-sm shadow-amber-500/20"
+                        className="w-full sm:w-auto h-9 text-xs sm:text-sm bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-sm"
                       >
                         <Settings className="h-3.5 w-3.5 mr-1.5" />
                         Edit Profile

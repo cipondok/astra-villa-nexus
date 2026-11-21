@@ -55,7 +55,7 @@ export const MEMBERSHIP_LEVELS: Record<MembershipLevel, MembershipConfig> = {
     color: 'text-amber-600 dark:text-amber-400',
     bgColor: 'bg-amber-50 dark:bg-amber-950/50',
     borderColor: 'border-amber-300 dark:border-amber-700',
-    glowColor: 'shadow-amber-500/20',
+    glowColor: '',
     priority: 1,
     benefits: [
       '2x listing exposure',
