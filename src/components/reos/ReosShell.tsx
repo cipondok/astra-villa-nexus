@@ -57,7 +57,7 @@ export const reosTokens = `
     --promo-gradient-diag: linear-gradient(135deg, #363B42, #30343A);
     --hotspot-bg: #292E34;
     --hero-overlay: linear-gradient(110deg, rgba(43,48,54,0.92) 0%, rgba(43,48,54,0.6) 55%, transparent 100%);
-    --hero-overlay-mobile: linear-gradient(180deg, rgba(43,48,54,0.88) 0%, rgba(43,48,54,0.72) 55%, rgba(43,48,54,0.86) 100%);
+    --hero-overlay-mobile: linear-gradient(180deg, rgba(43,48,54,0.35) 0%, rgba(43,48,54,0.55) 35%, rgba(48,52,58,0.92) 75%, var(--bg) 100%);
     --scrim: rgba(31,35,40,0.72);
     --hero-text: #F5F3EE;
     --hero-text-2: #B8B3A8;
@@ -94,7 +94,7 @@ export const reosTokens = `
     --promo-gradient-diag: linear-gradient(135deg, #FCFBF8 0%, #F5F3EE 100%);
     --hotspot-bg: #FCFBF8;
     --hero-overlay: linear-gradient(110deg, rgba(245,243,238,0.92) 0%, rgba(245,243,238,0.55) 55%, rgba(245,243,238,0.15) 100%);
-    --hero-overlay-mobile: linear-gradient(180deg, rgba(245,243,238,0.92) 0%, rgba(245,243,238,0.78) 55%, rgba(245,243,238,0.9) 100%);
+    --hero-overlay-mobile: linear-gradient(180deg, rgba(245,243,238,0.30) 0%, rgba(245,243,238,0.62) 35%, rgba(245,243,238,0.94) 75%, var(--bg) 100%);
     --scrim: rgba(23,22,20,0.45);
     --hero-text: #171614;
     --hero-text-2: #5F5A52;
@@ -120,6 +120,11 @@ export const reosTokens = `
   .reos-no-scrollbar{scrollbar-width:none;-ms-overflow-style:none}
   .reos-no-scrollbar::-webkit-scrollbar{display:none}
   /* Enlarges the tap area to at least 44x44 without changing the visual size. Element must be positioned. */
+  /* Phone layout (<768px): flat sections that sit directly on the page, and a full-bleed hero. */
+  @media (max-width: 767px) {
+    .reos-m-flat{background:transparent;border-color:transparent;border-radius:0;padding:0;box-shadow:none}
+    .reos-m-bleed{margin-left:-1rem;margin-right:-1rem;border-radius:0;border:0;box-shadow:none;background:var(--bg)}
+  }
   .reos-hit::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
 `;
 
