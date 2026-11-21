@@ -31,6 +31,9 @@ import { formatDistanceToNow } from "date-fns";
    the marketing surfaces (home, properties, etc.)
    ============================================================ */
 
+/** Fired by the phone bottom bar ("Ecosystem") to open the sections menu. */
+export const REOS_OPEN_MENU_EVENT = "reos:open-menu";
+
 export const reosTokens = `
   .reos {
     /* ASTRA Villa REOS — Matte charcoal + satin champagne gold (approved emblem palette) */
@@ -57,7 +60,7 @@ export const reosTokens = `
     --promo-gradient-diag: linear-gradient(135deg, #363B42, #30343A);
     --hotspot-bg: #292E34;
     --hero-overlay: linear-gradient(110deg, rgba(43,48,54,0.92) 0%, rgba(43,48,54,0.6) 55%, transparent 100%);
-    --hero-overlay-mobile: linear-gradient(180deg, rgba(43,48,54,0.35) 0%, rgba(43,48,54,0.55) 35%, rgba(48,52,58,0.92) 75%, var(--bg) 100%);
+    --hero-overlay-mobile: linear-gradient(180deg, transparent 72%, var(--bg) 100%), linear-gradient(90deg, rgba(43,48,54,0.95) 0%, rgba(43,48,54,0.80) 48%, rgba(43,48,54,0.30) 100%);
     --scrim: rgba(31,35,40,0.72);
     --hero-text: #F5F3EE;
     --hero-text-2: #B8B3A8;
@@ -94,7 +97,7 @@ export const reosTokens = `
     --promo-gradient-diag: linear-gradient(135deg, #FCFBF8 0%, #F5F3EE 100%);
     --hotspot-bg: #FCFBF8;
     --hero-overlay: linear-gradient(110deg, rgba(245,243,238,0.92) 0%, rgba(245,243,238,0.55) 55%, rgba(245,243,238,0.15) 100%);
-    --hero-overlay-mobile: linear-gradient(180deg, rgba(245,243,238,0.30) 0%, rgba(245,243,238,0.62) 35%, rgba(245,243,238,0.94) 75%, var(--bg) 100%);
+    --hero-overlay-mobile: linear-gradient(180deg, transparent 72%, var(--bg) 100%), linear-gradient(90deg, rgba(245,243,238,0.96) 0%, rgba(245,243,238,0.84) 48%, rgba(245,243,238,0.35) 100%);
     --scrim: rgba(23,22,20,0.45);
     --hero-text: #171614;
     --hero-text-2: #5F5A52;
@@ -230,6 +233,11 @@ export function ReosHeader() {
   const drawerCloseRef = useRef<HTMLButtonElement>(null);
   useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
   useEffect(() => {
+    const open = () => setMobileMenuOpen(true);
+    window.addEventListener(REOS_OPEN_MENU_EVENT, open);
+    return () => window.removeEventListener(REOS_OPEN_MENU_EVENT, open);
+  }, []);
+  useEffect(() => {
     if (!mobileMenuOpen) return;
     // Class-based lock: global CSS forces body overflow with !important, so inline styles are ignored.
     document.documentElement.classList.add("reos-scroll-lock");
@@ -290,7 +298,7 @@ export function ReosHeader() {
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         <div
-          className="mx-auto max-w-[1600px] px-3 sm:px-4 md:px-6 h-full flex items-center gap-2 sm:gap-3 md:gap-6"
+          className="mx-auto max-w-[1600px] px-3 sm:px-4 md:px-6 h-full flex items-center gap-1.5 min-[360px]:gap-2 sm:gap-3 md:gap-6"
           style={{ paddingLeft: "max(0.75rem, env(safe-area-inset-left, 0px))", paddingRight: "max(0.75rem, env(safe-area-inset-right, 0px))" }}
         >
           <button
@@ -300,15 +308,16 @@ export function ReosHeader() {
             aria-haspopup="dialog"
             aria-expanded={mobileMenuOpen}
             aria-controls="reos-mobile-drawer"
-            className="lg:hidden shrink-0 h-11 w-11 -ml-1 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center touch-manipulation"
+            className="lg:hidden order-last sm:order-none shrink-0 h-11 w-11 rounded-full sm:rounded-lg border border-[var(--line)] sm:border-transparent bg-[var(--surface)]/60 sm:bg-transparent sm:-ml-1 hover:bg-[var(--surface)] flex items-center justify-center touch-manipulation"
           >
             <Menu className="h-5 w-5 text-[var(--text)]" />
           </button>
 
-          <Link to="/" aria-label="ASTRA Villa home" className="flex items-center gap-2.5 shrink-0 min-h-11 min-w-11">
-            <img src={headerLogo} alt="ASTRA Villa" className="h-9 w-9 rounded-full object-contain shadow-sm" />
-            <div className="leading-none hidden sm:block">
-              <div className="font-semibold tracking-[0.18em] text-[15px]">ASTRA<span className="reos-gold ml-1">VILLA</span></div>
+          <Link to="/" aria-label="ASTRA Villa home" className="flex items-center gap-2 min-[360px]:gap-2.5 shrink-0 min-h-11 min-w-11">
+            <img src={headerLogo} alt="ASTRA Villa" className="h-8 w-8 min-[360px]:h-9 min-[360px]:w-9 rounded-full object-contain shadow-sm" />
+            <div className="leading-none">
+              <div className="font-semibold tracking-[0.06em] min-[360px]:tracking-[0.16em] sm:tracking-[0.18em] text-[13px] min-[360px]:text-[15px] whitespace-nowrap">ASTRA<span className="reos-gold ml-1">VILLA</span></div>
+              <div className="sm:hidden text-[9px] min-[360px]:text-[10px] tracking-[0.3em] min-[360px]:tracking-[0.4em] text-[var(--text-2)] mt-1">PROPERTY</div>
               <div className="hidden xl:block text-[9px] tracking-[0.28em] text-[var(--text-3)] mt-1">REAL ESTATE OPERATING SYSTEM</div>
             </div>
           </Link>
@@ -324,7 +333,21 @@ export function ReosHeader() {
           </div>
 
 
-          <div className="flex items-center gap-1 md:gap-2 shrink-0 ml-auto">
+          <div className="flex items-center gap-1 min-[360px]:gap-1.5 sm:gap-1 md:gap-2 shrink-0 ml-auto">
+            {/* Phones: search + notifications as round icon buttons (sign-in lives in the menu) */}
+            <Link to="/search" aria-label="Search" className="sm:hidden h-11 w-11 rounded-full sm:rounded-lg border border-[var(--line)] sm:border-transparent bg-[var(--surface)]/60 sm:bg-transparent flex items-center justify-center hover:bg-[var(--surface)]">
+              <Search className="h-[18px] w-[18px] text-[var(--text)]" aria-hidden="true" />
+            </Link>
+            {!user && (
+              <button
+                type="button"
+                onClick={() => { setAuthInitial("login"); setShowAuth(true); }}
+                aria-label={t("shell.notifications")}
+                className="sm:hidden h-11 w-11 rounded-full sm:rounded-lg border border-[var(--line)] sm:border-transparent bg-[var(--surface)]/60 sm:bg-transparent flex items-center justify-center hover:bg-[var(--surface)]"
+              >
+                <Bell className="h-[18px] w-[18px] text-[var(--text)]" aria-hidden="true" />
+              </button>
+            )}
             <div className="relative hidden sm:block" ref={langRef}>
               <button
                 type="button"
@@ -374,11 +397,11 @@ export function ReosHeader() {
                   aria-label={t("shell.notifications")}
                   aria-haspopup="menu"
                   aria-expanded={notifOpen}
-                  className="h-11 w-11 lg:h-9 lg:w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
+                  className="h-11 w-11 rounded-full sm:rounded-lg border border-[var(--line)] sm:border-transparent bg-[var(--surface)]/60 sm:bg-transparent lg:h-9 lg:w-9 hover:bg-[var(--surface)] flex items-center justify-center relative"
                 >
-                  <Bell className="h-4 w-4 text-[var(--text-2)]" />
+                  <Bell className="h-[18px] w-[18px] sm:h-4 sm:w-4 text-[var(--text)] sm:text-[var(--text-2)]" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 h-4 min-w-[16px] px-1 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">{unreadCount}</span>
+                    <span className="absolute -top-0.5 -right-0.5 sm:top-1.5 sm:right-1.5 h-4 min-w-[16px] px-1 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">{unreadCount}</span>
                   )}
                 </button>
                 {notifOpen && (
@@ -487,7 +510,7 @@ export function ReosHeader() {
 
 
             {user ? (
-              <div className="relative" ref={profileRef}>
+              <div className="relative hidden sm:block" ref={profileRef}>
                 <button
                   type="button"
                   ref={profileTriggerRef}
@@ -559,8 +582,8 @@ export function ReosHeader() {
               </div>
             ) : (
               <>
-                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-11 lg:h-9 px-2.5 sm:px-4 rounded-lg text-[12.5px] whitespace-nowrap hover:bg-[var(--surface)] text-[var(--text)] transition">{t("shell.signIn")}</button>
-                <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-11 lg:h-9 px-3 sm:px-4 rounded-lg reos-cta text-[12.5px] whitespace-nowrap inline-flex items-center gap-1.5">
+                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="hidden sm:inline-flex items-center h-11 lg:h-9 px-2.5 sm:px-4 rounded-lg text-[12.5px] whitespace-nowrap hover:bg-[var(--surface)] text-[var(--text)] transition">{t("shell.signIn")}</button>
+                <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="hidden sm:inline-flex h-11 lg:h-9 px-3 sm:px-4 rounded-lg reos-cta text-[12.5px] whitespace-nowrap items-center gap-1.5">
                   {t("shell.getStarted")} <ChevronRight className="hidden sm:block h-3.5 w-3.5" aria-hidden="true" />
                 </button>
               </>
@@ -632,6 +655,16 @@ export function ReosHeader() {
                   <div className="grid grid-cols-2 gap-2 mb-3">
                     <button type="button" onClick={() => { setMobileMenuOpen(false); setAuthInitial("login"); setShowAuth(true); }} className="h-11 rounded-lg border border-[var(--line-strong)] text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)]">{t("shell.signIn")}</button>
                     <button type="button" onClick={() => { setMobileMenuOpen(false); setAuthInitial("register"); setShowAuth(true); }} className="h-11 rounded-lg reos-cta text-[13px]">{t("shell.getStarted")}</button>
+                  </div>
+                )}
+                {user && (
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <Link to={dashboardPath} onClick={() => setMobileMenuOpen(false)} className="h-11 rounded-lg border border-[var(--line-strong)] text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)] inline-flex items-center justify-center gap-2">
+                      <LayoutDashboard className="h-4 w-4 reos-gold" aria-hidden="true" /> Dashboard
+                    </Link>
+                    <button type="button" onClick={async () => { setMobileMenuOpen(false); await signOut(); }} className="h-11 rounded-lg border border-[var(--line)] text-[13px] font-medium text-[var(--danger)] hover:bg-[var(--surface)] inline-flex items-center justify-center gap-2">
+                      <LogOut className="h-4 w-4" aria-hidden="true" /> {t("shell.signOut")}
+                    </button>
                   </div>
                 )}
                 <Link

@@ -8,6 +8,7 @@ import {
   ArrowLeftRight, Calendar, FileText, LifeBuoy, Crown, ArrowUpRight,
   MapPin, BedDouble, Bath, Maximize, Shield, BarChart3, Loader2, X,
   Sliders, Plus, Minus, CheckCircle2, Sun, Moon, Menu, LogOut, User,
+  Home, Coins, Layers, Database, ArrowRight,
 } from "lucide-react";
 import {
   LineChart, Line, ResponsiveContainer,
@@ -66,6 +67,19 @@ const hubs = [
   { icon: Shield,     title: "Legal\nHub", desc: "Verified & Secure", to: "/legal-services" },
   { icon: Sparkles,   title: "AI Investment\nAdvisor", desc: "Smart Recommendations", to: "/ai-search" },
   { icon: Wrench,     title: "Property\nManagement", desc: "Manage Your Assets", to: "/agent-dashboard" },
+];
+
+/* ---------- Phone ecosystem shortcuts (3x3) — every tile links to an existing page ---------- */
+const mobileHubs = [
+  { icon: Home,      title: "Properties Marketplace", to: "/properties" },
+  { icon: BarChart3, title: "Investment Hub",         to: "/investment" },
+  { icon: Coins,     title: "Finance Hub",            to: "/wallet" },
+  { icon: Scale,     title: "Legal Services",         to: "/legal-services" },
+  { icon: Layers,    title: "Property Management",    to: "/agent-dashboard" },
+  { icon: Wrench,    title: "Vendor Marketplace",     to: "/services" },
+  { icon: Cpu,       title: "AI Center",              to: "/ai-center" },
+  { icon: Database,  title: "Property Data Cloud",    to: "/market-data" },
+  { icon: Globe,     title: "ASEAN Expansion",        to: "/investment-map-explorer" },
 ];
 
 /* ---------- Search tabs ---------- */
@@ -224,10 +238,10 @@ const spark = (seed: number) =>
   Array.from({ length: 24 }, (_, i) => ({ i, v: 50 + Math.sin(i / 2 + seed) * 8 + Math.cos(i / 3 + seed) * 6 + i * 0.4 }));
 
 const marketKPIs = [
-  { label: "Property Price Index", value: "132.45", delta: "+6.24%", seed: 1 },
-  { label: "Rental Yield Index", value: "8.74%", delta: "+2.13%", seed: 2 },
-  { label: "Market Growth", value: "5.62%", delta: "+1.34%", seed: 3 },
-  { label: "Tourism Growth", value: "12.38%", delta: "+3.87%", seed: 4 },
+  { label: "Property Price Index", short: "Property Index", value: "132.45", delta: "+6.24%", seed: 1 },
+  { label: "Rental Yield Index", short: "Rental Yield", value: "8.74%", delta: "+2.13%", seed: 2 },
+  { label: "Market Growth", short: "Market Growth", value: "5.62%", delta: "+1.34%", seed: 3 },
+  { label: "Tourism Growth", short: "Tourism Growth", value: "12.38%", delta: "+3.87%", seed: 4 },
 ];
 
 /* ---------- Hotspots ---------- */
@@ -366,6 +380,79 @@ export default function AstraReosHome() {
     return src.slice(0, 4).map((p: any, i: number) => ({ ...p, _badge: badges[i % badges.length] }));
   }, [market]);
 
+  const searchPanel = (
+                    <div className="reos-card md:backdrop-blur-xl shadow-[var(--shadow-soft)] p-3 md:p-4">
+                      <div className="flex flex-wrap items-center gap-2 mb-2.5">
+                        <div className="w-full md:w-auto max-w-full overflow-x-auto overflow-y-hidden reos-no-scrollbar overscroll-x-contain">
+                          <SegmentedSearchTabs
+                            tabs={searchTabs}
+                            value={activeSearchTab}
+                            onChange={setActiveSearchTab}
+                          />
+                        </div>
+                        <div className="hidden md:flex items-center gap-1.5 ml-auto text-[10px] uppercase tracking-[0.2em] text-[var(--text-3)]">
+                          <Sparkles className="h-3 w-3 reos-gold" /> AI-Powered Property Search
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="relative flex flex-1 min-w-0 items-center gap-2 bg-[var(--surface)]/50 backdrop-blur-md border border-[var(--line)]/60 rounded-full px-1.5 h-12 sm:h-11">
+                          <Search className="h-4 w-4 text-[var(--text-2)] ml-3 shrink-0" aria-hidden="true" />
+                          <input
+                            type="search"
+                            enterKeyHint="search"
+                            aria-label="Search properties, locations, ROI, developers, laws"
+                            value={aiQuery}
+                            onChange={(e) => setAiQuery(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === "Enter") runSearch(); }}
+                            placeholder="Search properties, locations, ROI, developers, laws…"
+                            className="flex-1 self-stretch bg-transparent outline-none text-base sm:text-sm placeholder:text-[var(--text-2)] min-w-0 [&::-webkit-search-cancel-button]:hidden"
+                          />
+                          {aiQuery && (
+                            <button
+                              type="button"
+                              onClick={() => setAiQuery("")}
+                              aria-label="Clear search"
+                              className="relative reos-hit shrink-0 h-8 w-8 inline-flex items-center justify-center rounded-full hover:bg-[var(--surface-2)] text-[var(--text-3)] transition"
+                            >
+                              <X className="h-3.5 w-3.5" aria-hidden="true" />
+                            </button>
+                          )}
+                          <button onClick={submitAi} disabled={aiLoading} className="hidden sm:inline-flex btn-titanium h-8 pl-1.5 pr-3 rounded-full text-[11px] items-center gap-1.5 font-semibold disabled:opacity-60 shrink-0">
+                            <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0">
+                              {aiLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                            </span>
+                            <span className="relative">AI Search</span>
+                          </button>
+                        </div>
+                        {/* Phones: full-width AI search action under the field */}
+                        <button onClick={submitAi} disabled={aiLoading} className="sm:hidden w-full h-11 rounded-full reos-cta text-[13px] inline-flex items-center justify-center gap-2 disabled:opacity-60">
+                          {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                          AI Search
+                        </button>
+                      </div>
+                      <div className="mt-2.5 -mx-1 px-1 flex gap-1.5 overflow-x-auto overflow-y-hidden reos-no-scrollbar sm:flex-wrap sm:overflow-visible">
+                        {locationChips.map(c => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => navigate(`/search?q=${encodeURIComponent(`Properties in ${c}`)}`)}
+                            className="btn-titanium shrink-0 inline-flex items-center h-11 sm:h-auto text-[12px] sm:text-[10px] md:text-[11px] px-3.5 sm:px-2.5 md:px-3 sm:py-1 rounded-full font-semibold whitespace-nowrap"
+                          >
+                            {c}
+                          </button>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => navigate("/search-advanced")}
+                          aria-label="More location filters"
+                          className="btn-titanium shrink-0 h-11 sm:h-auto text-[12px] sm:text-[10px] md:text-[11px] px-3.5 sm:px-2.5 md:px-3 sm:py-1 rounded-full font-semibold inline-flex items-center gap-1 whitespace-nowrap"
+                        >
+                          More <ChevronDown className="h-3 w-3" aria-hidden="true" />
+                        </button>
+                      </div>
+                    </div>
+  );
+
   return (
     <>
       <style>{tokens}</style>
@@ -479,116 +566,67 @@ export default function AstraReosHome() {
             <Section className="grid grid-cols-12 gap-4 sm:gap-5">
               {/* Hero */}
               <motion.div variants={fadeUp} className="col-span-12 lg:col-span-8 2xl:col-span-9 reos-card reos-m-bleed overflow-hidden relative md:min-h-[480px]">
-                {/* Phones: photo band across the top that fades into the page; tablet/desktop: full-card photo. */}
-                <div className="absolute inset-x-0 top-0 h-[340px] min-[390px]:h-[380px] md:h-auto md:bottom-0">
-                  <img src={heroImg} alt="Luxury villa overlooking the ocean" width={1600} height={900} {...({ fetchpriority: "high" } as Record<string, string>)} decoding="async" className="absolute inset-0 w-full h-full object-cover object-[68%_center] md:object-center" />
+                {/* Photo fills the hero; phones darken the left side for the copy and fade into the page at the bottom. */}
+                <div className="absolute inset-0">
+                  <img src={heroImg} alt="Luxury villa overlooking the ocean" width={1600} height={900} {...({ fetchpriority: "high" } as Record<string, string>)} decoding="async" className="absolute inset-0 w-full h-full object-cover object-[72%_center] md:object-center" />
                   <div className="absolute inset-0 hidden md:block" style={{ background: "var(--hero-overlay)" }} />
                   <div className="absolute inset-0 md:hidden" style={{ background: "var(--hero-overlay-mobile)" }} />
                 </div>
 
-                <div className="relative px-4 pt-[132px] min-[390px]:pt-[150px] pb-2 md:p-10 lg:p-8 2xl:p-10 flex flex-col h-full" style={{ color: "var(--hero-text)" }}>
-                  <span className="self-start inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border border-[var(--line-strong)] bg-[var(--bg)]/70 text-[10px] font-semibold uppercase tracking-[0.16em] reos-gold md:hidden">
-                    <Sparkles className="h-3 w-3" aria-hidden="true" /> AI Real Estate OS
-                  </span>
-                  <h1 className="mt-3 md:mt-0 text-[26px] min-[390px]:text-[30px] sm:text-4xl md:text-5xl font-semibold leading-[1.12] md:leading-[1.05] tracking-tight max-w-xl break-words" style={{ color: "var(--hero-text)" }}>
-                    <span className="md:block">Southeast Asia's </span>
-                    <span className="md:block"><span className="reos-gold">AI-Powered</span> Real Estate </span>
-                    <span className="md:block">Operating System</span>
+                <div className="relative px-4 pt-6 pb-8 md:p-10 lg:p-8 2xl:p-10 flex flex-col h-full" style={{ color: "var(--hero-text)" }}>
+                  <div className="md:hidden">
+                    <div className="text-[10px] font-medium uppercase tracking-[0.2em]" style={{ color: "var(--hero-text-2)" }}>Real Estate Operating System (REOS)</div>
+                    <div aria-hidden="true" className="mt-2 h-[2px] w-8 rounded-full bg-[var(--gold)]" />
+                  </div>
+                  <h1 className="mt-3 md:mt-0 text-[26px] min-[390px]:text-[28px] sm:text-4xl md:text-5xl font-semibold leading-[1.12] md:leading-[1.05] tracking-tight max-w-[15ch] md:max-w-xl break-words" style={{ color: "var(--hero-text)" }}>
+                    <span className="block">Southeast Asia's</span>
+                    <span className="block"><span className="md:text-[var(--gold-2)]">AI-Powered</span><span className="md:hidden"><br /></span> Real Estate</span>
+                    <span className="block">Operating System</span>
                   </h1>
-                  <p className="mt-2.5 md:mt-4 text-[14px] md:text-[15px] max-w-md leading-relaxed" style={{ color: "var(--hero-text-2)" }}>Buy. Invest. Manage. Finance. Verify. Grow.</p>
+                  <p className="mt-3 md:mt-4 text-[14px] md:text-[15px] max-w-md leading-relaxed" style={{ color: "var(--hero-text-2)" }}>Buy. Invest. Manage.<br className="md:hidden" /> Finance. Verify. Grow.</p>
 
-                  {/* Primary actions: stacked full-width on phones, inline from tablet up */}
-                  <div className="mt-5 md:mt-6 grid grid-cols-1 min-[480px]:grid-cols-2 md:flex gap-2.5 max-w-md md:max-w-none">
-                    <Link to="/properties" className="h-12 md:h-11 px-5 rounded-full reos-cta text-[14px] md:text-[13px] inline-flex items-center justify-center gap-2">
-                      <Building2 className="h-4 w-4" aria-hidden="true" /> Explore Properties
+                  {/* Primary actions: gold Explore, then two outline actions side by side on phones */}
+                  <div className="mt-5 md:mt-6 grid grid-cols-2 md:flex gap-2.5 max-w-md md:max-w-none">
+                    <Link to="/properties" className="col-span-2 min-[430px]:col-span-1 whitespace-nowrap h-12 md:h-11 pl-3.5 pr-3 md:px-5 rounded-xl md:rounded-full reos-cta text-[13.5px] md:text-[13px] inline-flex items-center justify-between md:justify-center gap-2">
+                      <span className="inline-flex items-center gap-2"><Home className="h-4 w-4" aria-hidden="true" /> Explore Properties</span>
+                      <ChevronRight className="h-4 w-4 md:hidden" aria-hidden="true" />
                     </Link>
-                    <Link to="/investment" className="h-12 md:h-11 px-5 rounded-full reos-outline bg-[var(--bg)]/60 text-[14px] md:text-[13px] font-semibold inline-flex items-center justify-center gap-2 hover:bg-[var(--surface)]" style={{ color: "var(--hero-text)" }}>
-                      <TrendingUp className="h-4 w-4 reos-gold" aria-hidden="true" /> Start Investing
+                    <Link to="/investment" className="col-start-1 min-h-12 md:h-11 pl-3 pr-2.5 md:px-5 rounded-xl md:rounded-full reos-outline bg-[var(--bg)]/60 text-[12.5px] md:text-[13px] leading-tight font-semibold inline-flex items-center justify-between md:justify-center gap-1.5 hover:bg-[var(--surface)]" style={{ color: "var(--hero-text)" }}>
+                      <span className="inline-flex items-center gap-2"><BarChart3 className="h-4 w-4 shrink-0 reos-gold" aria-hidden="true" /> Start Investing</span>
+                      <ChevronRight className="h-4 w-4 shrink-0 md:hidden" aria-hidden="true" />
+                    </Link>
+                    <Link to="/wealth-advisor" className="min-h-12 md:h-11 pl-3 pr-2.5 md:px-5 rounded-xl md:rounded-full reos-outline bg-[var(--bg)]/60 text-[12.5px] md:text-[13px] leading-tight font-semibold inline-flex items-center justify-between md:justify-center gap-1.5 hover:bg-[var(--surface)]" style={{ color: "var(--hero-text)" }}>
+                      <span className="inline-flex items-center gap-2 text-left"><Sparkles className="h-4 w-4 shrink-0 reos-gold" aria-hidden="true" /> AI Investment Advisor</span>
+                      <ChevronRight className="h-4 w-4 shrink-0 md:hidden" aria-hidden="true" />
                     </Link>
                   </div>
 
-                  {/* Search Panel */}
-                  <div className="mt-6 md:mt-8 w-full max-w-2xl">
-                    <div className="reos-card md:backdrop-blur-xl shadow-[var(--shadow-soft)] p-3 md:p-4">
-                      <div className="flex flex-wrap items-center gap-2 mb-2.5">
-                        <div className="w-full md:w-auto max-w-full overflow-x-auto overflow-y-hidden reos-no-scrollbar overscroll-x-contain">
-                          <SegmentedSearchTabs
-                            tabs={searchTabs}
-                            value={activeSearchTab}
-                            onChange={setActiveSearchTab}
-                          />
-                        </div>
-                        <div className="hidden md:flex items-center gap-1.5 ml-auto text-[10px] uppercase tracking-[0.2em] text-[var(--text-3)]">
-                          <Sparkles className="h-3 w-3 reos-gold" /> AI-Powered Property Search
-                        </div>
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <div className="relative flex flex-1 min-w-0 items-center gap-2 bg-[var(--surface)]/50 backdrop-blur-md border border-[var(--line)]/60 rounded-full px-1.5 h-12 sm:h-11">
-                          <Search className="h-4 w-4 text-[var(--text-2)] ml-3 shrink-0" aria-hidden="true" />
-                          <input
-                            type="search"
-                            enterKeyHint="search"
-                            aria-label="Search properties, locations, ROI, developers, laws"
-                            value={aiQuery}
-                            onChange={(e) => setAiQuery(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === "Enter") runSearch(); }}
-                            placeholder="Search properties, locations, ROI, developers, laws…"
-                            className="flex-1 self-stretch bg-transparent outline-none text-base sm:text-sm placeholder:text-[var(--text-2)] min-w-0 [&::-webkit-search-cancel-button]:hidden"
-                          />
-                          {aiQuery && (
-                            <button
-                              type="button"
-                              onClick={() => setAiQuery("")}
-                              aria-label="Clear search"
-                              className="relative reos-hit shrink-0 h-8 w-8 inline-flex items-center justify-center rounded-full hover:bg-[var(--surface-2)] text-[var(--text-3)] transition"
-                            >
-                              <X className="h-3.5 w-3.5" aria-hidden="true" />
-                            </button>
-                          )}
-                          <button onClick={submitAi} disabled={aiLoading} className="hidden sm:inline-flex btn-titanium h-8 pl-1.5 pr-3 rounded-full text-[11px] items-center gap-1.5 font-semibold disabled:opacity-60 shrink-0">
-                            <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0">
-                              {aiLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                            </span>
-                            <span className="relative">AI Search</span>
-                          </button>
-                        </div>
-                        {/* Phones: full-width AI search action under the field */}
-                        <button onClick={submitAi} disabled={aiLoading} className="sm:hidden w-full h-11 rounded-full reos-cta text-[13px] inline-flex items-center justify-center gap-2 disabled:opacity-60">
-                          {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                          AI Search
-                        </button>
-                      </div>
-                      <div className="mt-2.5 -mx-1 px-1 flex gap-1.5 overflow-x-auto overflow-y-hidden reos-no-scrollbar sm:flex-wrap sm:overflow-visible">
-                        {locationChips.map(c => (
-                          <button
-                            key={c}
-                            type="button"
-                            onClick={() => navigate(`/search?q=${encodeURIComponent(`Properties in ${c}`)}`)}
-                            className="btn-titanium shrink-0 inline-flex items-center h-11 sm:h-auto text-[12px] sm:text-[10px] md:text-[11px] px-3.5 sm:px-2.5 md:px-3 sm:py-1 rounded-full font-semibold whitespace-nowrap"
-                          >
-                            {c}
-                          </button>
-                        ))}
-                        <button
-                          type="button"
-                          onClick={() => navigate("/search-advanced")}
-                          aria-label="More location filters"
-                          className="btn-titanium shrink-0 h-11 sm:h-auto text-[12px] sm:text-[10px] md:text-[11px] px-3.5 sm:px-2.5 md:px-3 sm:py-1 rounded-full font-semibold inline-flex items-center gap-1 whitespace-nowrap"
-                        >
-                          More <ChevronDown className="h-3 w-3" aria-hidden="true" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Search panel: inside the hero from tablet up; on phones it sits below Live Market Overview */}
+                  <div className="hidden md:block mt-8 w-full max-w-2xl">{searchPanel}</div>
                 </div>
               </motion.div>
 
 
+              {/* Phones: 3x3 ecosystem shortcuts directly under the hero */}
+              <motion.nav variants={fadeUp} aria-label="ASTRA ecosystem" className="md:hidden col-span-12 -mt-1">
+                <ul className="grid grid-cols-3 gap-2.5">
+                  {mobileHubs.map(h => (
+                    <li key={h.title}>
+                      <Link to={h.to} className="reos-card h-full min-h-[92px] px-1.5 py-3 flex flex-col items-center justify-center gap-2 text-center hover:border-[var(--line-strong)] transition-colors">
+                        <h.icon className="h-6 w-6 reos-gold" strokeWidth={1.6} aria-hidden="true" />
+                        <span className="text-[11.5px] min-[390px]:text-[12px] font-medium leading-tight">{h.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </motion.nav>
+
               {/* Market overview */}
               <motion.div variants={fadeUp} className="col-span-12 lg:col-span-4 2xl:col-span-3 reos-card reos-m-flat p-4 sm:p-5">
                 <div className="flex items-center justify-between gap-2">
-                  <h2 className="text-[17px] md:text-[14px] font-semibold">Market Overview</h2>
-                  <div className="relative" ref={countryRef}>
+                  <h2 className="text-[17px] md:text-[14px] font-semibold"><span className="md:hidden">Live </span>Market Overview</h2>
+                  <Link to="/market-heatmap" className="md:hidden min-h-11 -my-2 inline-flex items-center gap-1 text-[12.5px] font-medium reos-gold">View Details <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></Link>
+                  <div className="relative hidden md:block" ref={countryRef}>
                     <button
                       type="button"
                       onClick={() => setCountryOpen(o => !o)}
@@ -617,35 +655,37 @@ export default function AstraReosHome() {
                 {/* Phones: swipeable KPI tiles; tablet/desktop: compact list */}
                 <div className="mt-3 md:mt-4 -mx-4 px-4 flex gap-2.5 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-px-4 reos-no-scrollbar overscroll-x-contain md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-1 md:gap-x-8 md:gap-y-4 md:overflow-visible">
                   {marketKPIs.map(k => (
-                    <div key={k.label} className="snap-start shrink-0 w-[46%] min-[430px]:w-[42%] rounded-xl bg-[var(--surface)] border border-[var(--line-gold)] p-3 md:w-auto md:p-0 md:bg-transparent md:border-0 md:rounded-none md:grid md:grid-cols-[24px_minmax(0,1fr)_minmax(64px,90px)] md:items-center md:gap-2">
+                    <div key={k.label} className="snap-start shrink-0 w-[max(96px,calc((100%_-_30px)/4))] rounded-xl bg-[var(--surface)] border border-[var(--line-gold)] px-2.5 py-3 md:w-auto md:p-0 md:bg-transparent md:border-0 md:rounded-none md:grid md:grid-cols-[24px_minmax(0,1fr)_minmax(64px,90px)] md:items-center md:gap-2">
                       <div className="hidden md:flex h-6 w-6 rounded-md bg-[var(--gold-soft)] items-center justify-center">
                         <BarChart3 className="h-3.5 w-3.5 reos-gold" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-[11px] text-[var(--text-2)] truncate">{k.label}</div>
-                        <div className="flex flex-wrap items-baseline gap-x-2">
-                          <div className="text-[18px] md:text-[15px] font-semibold">{k.value}</div>
+                        <div className="text-[11px] leading-tight text-[var(--text-2)] md:truncate"><span className="md:hidden">{k.short}</span><span className="hidden md:inline">{k.label}</span></div>
+                        <div className="mt-1 md:mt-0 flex flex-wrap items-baseline gap-x-2">
+                          <div className="text-[17px] md:text-[15px] font-semibold whitespace-nowrap">{k.value}</div>
                           <div className="text-[10px] text-[var(--success)] whitespace-nowrap">▲ {k.delta}</div>
                         </div>
                       </div>
-                      <Spark seed={k.seed} color="#C6A66B" />
+                      <div className="hidden md:block"><Spark seed={k.seed} color="#C6A66B" /></div>
                     </div>
                   ))}
                 </div>
                 <button
                   type="button"
                   onClick={() => navigate("/market-heatmap")}
-                  className="mt-3 min-h-11 text-[12px] reos-gold inline-flex items-center gap-1 hover:underline"
+                  className="hidden md:inline-flex mt-3 min-h-11 text-[12px] reos-gold inline-flex items-center gap-1 hover:underline"
                 >
                   View Full Market Report <ArrowUpRight className="h-3 w-3" />
                 </button>
               </motion.div>
+
+              {/* Phones: search sits after the market tiles (tablet/desktop keep it in the hero) */}
+              <motion.div variants={fadeUp} className="md:hidden col-span-12">{searchPanel}</motion.div>
             </Section>
 
-            {/* ===== HUB CARDS ===== */}
-            <Section>
-              <h2 className="md:hidden text-[17px] font-semibold mb-3">Explore ASTRA</h2>
-              <div className="grid grid-cols-3 lg:grid-cols-6 gap-2.5 md:gap-3">
+            {/* ===== HUB CARDS (tablet/desktop) ===== */}
+            <Section className="hidden md:block">
+              <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
               {hubs.map(h => (
                 <motion.div key={h.title} variants={fadeUp} whileHover={{ y: -3 }}>
                   <Link to={h.to} className="flex flex-col items-center text-center md:block md:text-left reos-card px-2 py-3.5 md:p-4 h-full min-h-[104px] md:min-h-[120px] hover:border-[var(--line-strong)] transition">
