@@ -50,27 +50,43 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
   // Chatbot logo from admin settings
   const { logoUrl: chatbotLogoUrl } = useChatbotLogo();
 
-  // Load saved position on mount
+  // Load saved position on mount. On phones the button must stay above the
+  // bottom tab bar and the iOS home-indicator area so it never covers navigation.
   useEffect(() => {
-    const saved = localStorage.getItem('chat_button_pos');
-    if (saved) {
-      const savedPos = JSON.parse(saved);
-      // Ensure position is within viewport bounds
-      const buttonSize = window.innerWidth >= 768 ? 56 : 48;
+    const buttonSize = 55;
+    const bottomReserve = () => {
+      if (window.innerWidth >= 768) return 0;
+      const probe = document.createElement('div');
+      probe.style.cssText = 'position:fixed;bottom:0;height:0;padding-bottom:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none';
+      document.body.appendChild(probe);
+      const safe = probe.getBoundingClientRect().height || 0;
+      probe.remove();
+      return 56 + safe;
+    };
+    const place = () => {
+      const reserve = bottomReserve();
       const maxX = window.innerWidth - buttonSize - 12;
-      const maxY = window.innerHeight - buttonSize - 12;
-      setPosition({
-        x: Math.min(Math.max(12, savedPos.x), maxX),
-        y: Math.min(Math.max(12, savedPos.y), maxY),
-      });
-    } else {
-      // Default: bottom-right corner with mobile-safe margins
-      const buttonSize = window.innerWidth >= 768 ? 56 : 48;
-      setPosition({
-        x: window.innerWidth - buttonSize - 20,
-        y: window.innerHeight - buttonSize - 20,
-      });
-    }
+      const maxY = window.innerHeight - buttonSize - 12 - reserve;
+      const saved = localStorage.getItem('chat_button_pos');
+      if (saved) {
+        try {
+          const savedPos = JSON.parse(saved);
+          setPosition({
+            x: Math.min(Math.max(12, savedPos.x), maxX),
+            y: Math.min(Math.max(12, savedPos.y), maxY),
+          });
+          return;
+        } catch { /* fall through to default */ }
+      }
+      setPosition({ x: window.innerWidth - buttonSize - 16, y: maxY - 4 });
+    };
+    place();
+    window.addEventListener('resize', place);
+    window.addEventListener('orientationchange', place);
+    return () => {
+      window.removeEventListener('resize', place);
+      window.removeEventListener('orientationchange', place);
+    };
   }, []);
 
   // Scroll detection - activate button on scroll
@@ -119,18 +135,16 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
   // Premium glassy royal styling with active/inactive states
   const getVariantStyles = () => {
     const activeStyles = cn(
-      "bg-gradient-to-br from-background/90 via-background/80 to-primary/20",
-      "shadow-[0_4px_24px_hsla(var(--primary),0.3),0_8px_40px_hsla(var(--primary),0.2)]",
-      "border-2 border-primary/50",
-      "backdrop-blur-xl",
-      !isDragging && "animate-chat-float md:animate-chat-float"
+      // Matte finish: solid surface + restrained gold border, neutral shadow (no glow/float).
+      "bg-card",
+      "shadow-[0_6px_18px_rgba(16,19,24,0.28)]",
+      "border-2 border-primary/50"
     );
 
     const inactiveStyles = cn(
-      "bg-gradient-to-br from-background/70 via-background/60 to-muted/40",
-      "shadow-[0_2px_12px_hsla(var(--primary),0.1)]",
-      "border border-primary/20",
-      "backdrop-blur-lg"
+      "bg-card/95",
+      "shadow-[0_4px_12px_rgba(16,19,24,0.2)]",
+      "border border-primary/25"
     );
 
     if (isButtonActive) {
@@ -184,11 +198,12 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
   };
 
   const handleDragEnd = (_: any, info: { point: { x: number; y: number } }) => {
-    const buttonSize = window.innerWidth >= 768 ? 56 : 48;
+    const buttonSize = 55;
     const halfSize = buttonSize / 2;
-    // Constrain to viewport with 20px padding
+    // Phones keep the button above the bottom tab bar.
+    const reserve = window.innerWidth < 768 ? 56 : 0;
     const newX = Math.max(20, Math.min(window.innerWidth - buttonSize - 20, info.point.x - halfSize));
-    const newY = Math.max(20, Math.min(window.innerHeight - buttonSize - 20, info.point.y - halfSize));
+    const newY = Math.max(20, Math.min(window.innerHeight - buttonSize - 20 - reserve, info.point.y - halfSize));
     
     setPosition({ x: newX, y: newY });
     localStorage.setItem('chat_button_pos', JSON.stringify({ x: newX, y: newY }));

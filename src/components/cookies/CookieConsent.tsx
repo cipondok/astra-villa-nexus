@@ -104,7 +104,7 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
 
       {/* Cookie Banner - Compact for mobile */}
       <div className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 p-2 md:p-3 transition-all duration-300 ease-out",
+        "fixed bottom-0 left-0 right-0 z-50 p-2 md:p-3 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] transition-all duration-300 ease-out",
         show && !isClosing ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       )}>
         <div className="max-w-sm mx-auto">
@@ -156,14 +156,14 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
                       </h3>
                       <p className="text-[10px] text-muted-foreground leading-tight">
                         We use cookies to enhance your experience.{" "}
-                        <a href="/cookies" className="underline hover:text-foreground">Learn more</a>
+                        <a href="/cookies" className="underline hover:text-foreground inline-block py-2 -my-2 md:py-0 md:my-0">Learn more</a>
                       </p>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={handleReject}
-                      className="h-6 w-6 hover:bg-muted"
+                      className="shrink-0 h-11 w-11 md:h-6 md:w-6 -m-2 md:m-0 hover:bg-muted"
                     >
                       <X className="w-3 h-3" />
                     </Button>
@@ -174,7 +174,7 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
                       onClick={() => setShowCustomize(true)}
                       variant="outline"
                       size="sm"
-                      className="flex-1 h-7 text-[10px] gap-1 border-border/50"
+                      className="flex-1 h-11 md:h-7 text-[12px] md:text-[10px] gap-1 border-border/50"
                     >
                       <Settings className="w-2.5 h-2.5" />
                       Settings
@@ -182,7 +182,7 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
                     <Button
                       onClick={handleAcceptAll}
                       size="sm"
-                      className="flex-1 h-7 text-[10px] gap-1 bg-primary hover:bg-primary/90"
+                      className="flex-1 h-11 md:h-7 text-[12px] md:text-[10px] gap-1 bg-primary hover:bg-primary/90"
                     >
                       <Shield className="w-2.5 h-2.5" />
                       Accept
@@ -200,7 +200,7 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
                       variant="ghost"
                       size="icon"
                       onClick={() => setShowCustomize(false)}
-                      className="h-6 w-6 hover:bg-muted"
+                      className="shrink-0 h-11 w-11 md:h-6 md:w-6 -m-2 md:m-0 hover:bg-muted"
                     >
                       <X className="w-3 h-3" />
                     </Button>
@@ -249,14 +249,14 @@ const CookieConsent = ({ onAccept, onReject, show }: CookieConsentProps) => {
                       onClick={handleReject}
                       variant="outline"
                       size="sm"
-                      className="flex-1 h-7 text-[10px] border-border/50"
+                      className="flex-1 h-11 md:h-7 text-[12px] md:text-[10px] border-border/50"
                     >
                       Reject All
                     </Button>
                     <Button
                       onClick={handleSavePreferences}
                       size="sm"
-                      className="flex-1 h-7 text-[10px] bg-primary hover:bg-primary/90"
+                      className="flex-1 h-11 md:h-7 text-[12px] md:text-[10px] bg-primary hover:bg-primary/90"
                     >
                       Save
                     </Button>

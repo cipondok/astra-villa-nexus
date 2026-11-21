@@ -57,6 +57,8 @@ export const reosTokens = `
     --promo-gradient-diag: linear-gradient(135deg, #363B42, #30343A);
     --hotspot-bg: #292E34;
     --hero-overlay: linear-gradient(110deg, rgba(43,48,54,0.92) 0%, rgba(43,48,54,0.6) 55%, transparent 100%);
+    --hero-overlay-mobile: linear-gradient(180deg, rgba(43,48,54,0.88) 0%, rgba(43,48,54,0.72) 55%, rgba(43,48,54,0.86) 100%);
+    --scrim: rgba(31,35,40,0.72);
     --hero-text: #F5F3EE;
     --hero-text-2: #B8B3A8;
     --shadow-soft: 0 8px 28px rgba(16,19,24,0.30);
@@ -92,6 +94,8 @@ export const reosTokens = `
     --promo-gradient-diag: linear-gradient(135deg, #FCFBF8 0%, #F5F3EE 100%);
     --hotspot-bg: #FCFBF8;
     --hero-overlay: linear-gradient(110deg, rgba(245,243,238,0.92) 0%, rgba(245,243,238,0.55) 55%, rgba(245,243,238,0.15) 100%);
+    --hero-overlay-mobile: linear-gradient(180deg, rgba(245,243,238,0.92) 0%, rgba(245,243,238,0.78) 55%, rgba(245,243,238,0.9) 100%);
+    --scrim: rgba(23,22,20,0.45);
     --hero-text: #171614;
     --hero-text-2: #5F5A52;
     --shadow-soft: 0 8px 30px rgba(23,22,20,0.06);
@@ -113,6 +117,10 @@ export const reosTokens = `
   .reos-shadow { box-shadow: 0 24px 60px -28px rgba(0,0,0,0.45); }
   .reos-scrollbar::-webkit-scrollbar{width:6px;height:6px}
   .reos-scrollbar::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:3px}
+  .reos-no-scrollbar{scrollbar-width:none;-ms-overflow-style:none}
+  .reos-no-scrollbar::-webkit-scrollbar{display:none}
+  /* Enlarges the tap area to at least 44x44 without changing the visual size. Element must be positioned. */
+  .reos-hit::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
 `;
 
 const topTabs = [
@@ -213,6 +221,22 @@ export function ReosHeader() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
+  // Mobile drawer: close on navigation, close on Escape, lock page scroll while open.
+  const drawerCloseRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    // Class-based lock: global CSS forces body overflow with !important, so inline styles are ignored.
+    document.documentElement.classList.add("reos-scroll-lock");
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMobileMenuOpen(false); };
+    document.addEventListener("keydown", onKey);
+    requestAnimationFrame(() => drawerCloseRef.current?.focus());
+    return () => {
+      document.documentElement.classList.remove("reos-scroll-lock");
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [mobileMenuOpen]);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     onScroll();
@@ -256,26 +280,35 @@ export function ReosHeader() {
 
   return (
     <>
-      <header className={`reos-shell-header sticky top-0 z-40 bg-[var(--header)] border-b border-[var(--line)] transition-shadow duration-300 ${scrolled ? "shadow-[var(--shadow-soft)]" : "shadow-[var(--shadow-lift)]"}`}>
-        <div className="mx-auto max-w-[1600px] px-4 md:px-6 h-full flex items-center gap-3 md:gap-6">
+      <header
+        className={`reos-shell-header sticky top-0 z-40 bg-[var(--header)] border-b border-[var(--line)] transition-shadow duration-300 ${scrolled ? "shadow-[var(--shadow-soft)]" : "shadow-[var(--shadow-lift)]"}`}
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+      >
+        <div
+          className="mx-auto max-w-[1600px] px-3 sm:px-4 md:px-6 h-full flex items-center gap-2 sm:gap-3 md:gap-6"
+          style={{ paddingLeft: "max(0.75rem, env(safe-area-inset-left, 0px))", paddingRight: "max(0.75rem, env(safe-area-inset-right, 0px))" }}
+        >
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
             aria-label={t("shell.openMenu")}
-            className="lg:hidden h-10 w-10 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
+            aria-haspopup="dialog"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="reos-mobile-drawer"
+            className="lg:hidden shrink-0 h-11 w-11 -ml-1 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center touch-manipulation"
           >
             <Menu className="h-5 w-5 text-[var(--text)]" />
           </button>
 
-          <Link to="/" aria-label="ASTRA Villa home" className="flex items-center gap-2.5 shrink-0">
+          <Link to="/" aria-label="ASTRA Villa home" className="flex items-center gap-2.5 shrink-0 min-h-11 min-w-11">
             <img src={headerLogo} alt="ASTRA Villa" className="h-9 w-9 rounded-full object-contain shadow-sm" />
             <div className="leading-none hidden sm:block">
               <div className="font-semibold tracking-[0.18em] text-[15px]">ASTRA<span className="reos-gold ml-1">VILLA</span></div>
-              <div className="text-[9px] tracking-[0.28em] text-[var(--text-3)] mt-1">REAL ESTATE OPERATING SYSTEM</div>
+              <div className="hidden xl:block text-[9px] tracking-[0.28em] text-[var(--text-3)] mt-1">REAL ESTATE OPERATING SYSTEM</div>
             </div>
           </Link>
 
-          <div className="flex-1 hidden md:flex items-center justify-center">
+          <div className="flex-1 hidden lg:flex items-center justify-center">
             <Link
               to="/add-property"
               className="btn-titanium inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-[11px] font-semibold tracking-wide hover:opacity-90 transition"
@@ -287,13 +320,14 @@ export function ReosHeader() {
 
 
           <div className="flex items-center gap-1 md:gap-2 shrink-0 ml-auto">
-            <div className="relative" ref={langRef}>
+            <div className="relative hidden sm:block" ref={langRef}>
               <button
                 type="button"
                 onClick={() => { setLangOpen(o => !o); setNotifOpen(false); setProfileOpen(false); }}
-                className="h-9 px-3 rounded-lg inline-flex items-center gap-1.5 text-xs hover:bg-[var(--surface)] text-[var(--text-2)]"
+                className="h-11 lg:h-9 px-3 rounded-lg inline-flex items-center gap-1.5 text-xs hover:bg-[var(--surface)] text-[var(--text-2)]"
                 aria-haspopup="menu"
                 aria-expanded={langOpen}
+                aria-label={t("shell.language")}
               >
                 <Globe className="h-4 w-4" /> {language.toUpperCase()} <ChevronDown className="h-3 w-3" />
               </button>
@@ -322,7 +356,7 @@ export function ReosHeader() {
               type="button"
               onClick={toggleTheme}
               aria-label={t("shell.toggleTheme")}
-              className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
+              className="hidden sm:flex h-11 w-11 lg:h-9 lg:w-9 rounded-lg hover:bg-[var(--surface)] items-center justify-center"
             >
               {theme === "dark" ? <Sun className="h-4 w-4 text-[var(--text-2)]" /> : <Moon className="h-4 w-4 text-[var(--text-2)]" />}
             </button>
@@ -335,7 +369,7 @@ export function ReosHeader() {
                   aria-label={t("shell.notifications")}
                   aria-haspopup="menu"
                   aria-expanded={notifOpen}
-                  className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
+                  className="h-11 w-11 lg:h-9 lg:w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
                 >
                   <Bell className="h-4 w-4 text-[var(--text-2)]" />
                   {unreadCount > 0 && (
@@ -343,7 +377,7 @@ export function ReosHeader() {
                   )}
                 </button>
                 {notifOpen && (
-                  <div role="menu" className="absolute right-0 mt-2 w-[340px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
+                  <div role="menu" className="fixed left-3 right-3 top-[calc(var(--reos-header-h)+env(safe-area-inset-top,0px)+8px)] sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-[340px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
                       <div className="text-[12.5px] font-semibold text-[var(--text)]">{t("shell.notifications")}</div>
                       <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{unreadCount} {t("shell.newSuffix")}</span>
@@ -391,14 +425,14 @@ export function ReosHeader() {
               </div>
             )}
             {user && (
-              <div className="relative" ref={savedRef}>
+              <div className="relative hidden sm:block" ref={savedRef}>
                 <button
                   type="button"
                   onClick={() => { setSavedOpen(o => !o); setLangOpen(false); setNotifOpen(false); setProfileOpen(false); }}
                   aria-label={t("shell.saved")}
                   aria-haspopup="menu"
                   aria-expanded={savedOpen}
-                  className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
+                  className="h-11 w-11 lg:h-9 lg:w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
                 >
                   <Heart className="h-4 w-4 text-[var(--text-2)]" />
                   {savedCount > 0 && (
@@ -406,7 +440,7 @@ export function ReosHeader() {
                   )}
                 </button>
                 {savedOpen && (
-                  <div role="menu" className="absolute right-0 mt-2 w-[320px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
+                  <div role="menu" className="fixed left-3 right-3 top-[calc(var(--reos-header-h)+env(safe-area-inset-top,0px)+8px)] sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-[320px] reos-card p-0 z-50 shadow-[var(--shadow-popover)] overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
                       <div className="text-[12.5px] font-semibold text-[var(--text)]">{t("shell.saved")}</div>
                       <span className="text-[10px] uppercase tracking-[0.18em] reos-gold">{savedCount} {t("shell.itemsSuffix")}</span>
@@ -463,7 +497,7 @@ export function ReosHeader() {
                   aria-label={t("shell.openUserMenu")}
                   aria-haspopup="menu"
                   aria-expanded={profileOpen}
-                  className="h-9 pl-1 pr-2 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-1.5 hover:border-[var(--line-strong)]"
+                  className="h-11 lg:h-9 pl-1.5 pr-2 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-1.5 hover:border-[var(--line-strong)]"
                 >
                   <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">
                     {(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}
@@ -476,7 +510,7 @@ export function ReosHeader() {
                     ref={profileMenuRef}
                     aria-label={t("shell.openUserMenu")}
                     onKeyDown={handleProfileMenuKeyDown}
-                    className="absolute right-0 mt-2 w-60 reos-card p-1 z-50 shadow-[var(--shadow-popover)]"
+                    className="absolute right-0 mt-2 w-60 max-w-[calc(100vw-24px)] reos-card p-1 z-50 shadow-[var(--shadow-popover)]"
                   >
 
                     {/* Identity block — full name & email live INSIDE the dropdown only */}
@@ -494,16 +528,16 @@ export function ReosHeader() {
                       </div>
                     </div>
 
-                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> {t("shell.dashboard")}</button>
-                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> {t("shell.myProfile")}</button>
-                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> {t("shell.wallet")}</button>
-                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> {t("shell.saved")}</button>
+                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate(dashboardPath); }} className="w-full text-left px-3 py-2 min-h-11 lg:min-h-0 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><LayoutDashboard className="h-3.5 w-3.5" /> {t("shell.dashboard")}</button>
+                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 min-h-11 lg:min-h-0 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><User className="h-3.5 w-3.5" /> {t("shell.myProfile")}</button>
+                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 min-h-11 lg:min-h-0 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Wallet className="h-3.5 w-3.5" /> {t("shell.wallet")}</button>
+                    <button type="button" role="menuitem" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 min-h-11 lg:min-h-0 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2 text-[var(--text)]"><Heart className="h-3.5 w-3.5" /> {t("shell.saved")}</button>
                     {canManage && (
                       <button
                         type="button" role="menuitem"
                         aria-current={isManagementActive ? "page" : undefined}
                         onClick={() => { setProfileOpen(false); navigate("/my-properties"); }}
-                        className={`w-full text-left px-3 py-2 rounded-md text-[12.5px] inline-flex items-center gap-2 transition outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C6A66B)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--surface)] ${
+                        className={`w-full text-left px-3 py-2 min-h-11 lg:min-h-0 rounded-md text-[12.5px] inline-flex items-center gap-2 transition outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C6A66B)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--surface)] ${
                           isManagementActive
                             ? "bg-[var(--surface-2)] text-[var(--gold,#C6A66B)] font-semibold border-l-2 border-[var(--gold,#C6A66B)] pl-[10px]"
                             : "text-[var(--text)] hover:bg-[var(--surface-2)]"
@@ -514,14 +548,14 @@ export function ReosHeader() {
                       </button>
                     )}
                     <div className="reos-divider my-1" />
-                    <button type="button" role="menuitem" onClick={async () => { setProfileOpen(false); await signOut(); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] text-[var(--danger)] inline-flex items-center gap-2"><LogOut className="h-3.5 w-3.5" /> {t("shell.signOut")}</button>
+                    <button type="button" role="menuitem" onClick={async () => { setProfileOpen(false); await signOut(); }} className="w-full text-left px-3 py-2 min-h-11 lg:min-h-0 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] text-[var(--danger)] inline-flex items-center gap-2"><LogOut className="h-3.5 w-3.5" /> {t("shell.signOut")}</button>
                   </div>
                 )}
               </div>
             ) : (
               <>
-                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-9 px-2.5 sm:px-4 rounded-lg text-[12.5px] whitespace-nowrap hover:bg-[var(--surface)] text-[var(--text)] transition">{t("shell.signIn")}</button>
-                <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-9 px-3 sm:px-4 rounded-lg reos-cta text-[12.5px] whitespace-nowrap inline-flex items-center gap-1.5">
+                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-11 lg:h-9 px-2.5 sm:px-4 rounded-lg text-[12.5px] whitespace-nowrap hover:bg-[var(--surface)] text-[var(--text)] transition">{t("shell.signIn")}</button>
+                <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-11 lg:h-9 px-3 sm:px-4 rounded-lg reos-cta text-[12.5px] whitespace-nowrap inline-flex items-center gap-1.5">
                   {t("shell.getStarted")} <ChevronRight className="hidden sm:block h-3.5 w-3.5" aria-hidden="true" />
                 </button>
               </>
@@ -529,58 +563,132 @@ export function ReosHeader() {
           </div>
         </div>
 
-        <div className="border-t border-[var(--line)] bg-[var(--header)]">
-          <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-8 overflow-x-auto reos-scrollbar">
+        <nav aria-label="Main sections" className="hidden md:block border-t border-[var(--line)] bg-[var(--header)]">
+          <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-6 lg:gap-8 overflow-x-auto overflow-y-hidden reos-no-scrollbar">
             {topTabs.map(tab => {
               const active = isActive(tab.to);
               return (
                 <Link
                   key={tab.tKey}
                   to={tab.to}
-                  className={`relative inline-flex items-center gap-2 text-[13px] whitespace-nowrap transition-colors ${active ? "reos-tab-active font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
+                  aria-current={active ? "page" : undefined}
+                  className={`relative inline-flex items-center gap-2 h-11 text-[13px] whitespace-nowrap transition-colors ${active ? "reos-tab-active font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
                 >
                   <tab.icon className="h-4 w-4" /> {t(tab.tKey)}
                 </Link>
               );
             })}
           </div>
-        </div>
+        </nav>
       </header>
 
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-50 backdrop-blur-sm lg:hidden"
+            style={{ background: "var(--scrim)" }}
             onClick={() => setMobileMenuOpen(false)}
           >
             <motion.aside
+              id="reos-mobile-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label={t("shell.openMenu")}
               initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 280, damping: 32 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-[82%] max-w-[320px] h-full overflow-y-auto reos-scrollbar border-r border-[var(--line-strong)] p-4"
-              style={{ background: "var(--bg)" }}
+              className="w-[86%] max-w-[340px] h-full flex flex-col border-r border-[var(--line-strong)] overscroll-contain"
+              style={{
+                background: "var(--header)",
+                paddingTop: "env(safe-area-inset-top, 0px)",
+                paddingBottom: "env(safe-area-inset-bottom, 0px)",
+                paddingLeft: "env(safe-area-inset-left, 0px)",
+              }}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <img src={headerLogo} alt="ASTRA Villa" className="h-8 w-8 rounded-full object-contain shadow-sm" />
+              <div className="flex items-center justify-between px-4 h-14 shrink-0 border-b border-[var(--line)]">
+                <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 min-h-11">
+                  <img src={headerLogo} alt="" aria-hidden="true" className="h-8 w-8 rounded-full object-contain shadow-sm" />
                   <span className="font-semibold tracking-[0.18em] text-[14px]">ASTRA<span className="reos-gold ml-1">VILLA</span></span>
-                </div>
-                <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label={t("shell.closeMenu")} className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
+                </Link>
+                <button
+                  ref={drawerCloseRef}
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-label={t("shell.closeMenu")}
+                  className="h-11 w-11 -mr-2 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
-              <div className="space-y-1">
-                {topTabs.map(tab => (
-                  <Link key={tab.tKey} to={tab.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
-                    <tab.icon className="h-4 w-4" /> {t(tab.tKey)}
-                  </Link>
-                ))}
+
+              <div className="flex-1 overflow-y-auto reos-scrollbar px-3 py-3">
+                {!user && (
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <button type="button" onClick={() => { setMobileMenuOpen(false); setAuthInitial("login"); setShowAuth(true); }} className="h-11 rounded-lg border border-[var(--line-strong)] text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)]">{t("shell.signIn")}</button>
+                    <button type="button" onClick={() => { setMobileMenuOpen(false); setAuthInitial("register"); setShowAuth(true); }} className="h-11 rounded-lg reos-cta text-[13px]">{t("shell.getStarted")}</button>
+                  </div>
+                )}
+                <Link
+                  to="/add-property"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="mb-3 flex items-center justify-center gap-2 h-11 rounded-lg border border-[var(--line-gold)] bg-[var(--surface)] text-[13px] font-semibold text-[var(--text)] hover:border-[var(--line-strong)]"
+                >
+                  <Plus className="h-4 w-4 reos-gold" /> {t("shell.addProperty")}
+                </Link>
+
+                <ul className="space-y-0.5">
+                  {topTabs.map(tab => {
+                    const active = isActive(tab.to);
+                    return (
+                      <li key={tab.tKey}>
+                        <Link to={tab.to} onClick={() => setMobileMenuOpen(false)} aria-current={active ? "page" : undefined} className={`flex items-center gap-3 px-3 min-h-11 rounded-lg text-[14px] ${active ? "bg-[var(--gold-soft)] reos-gold font-medium" : "text-[var(--text-2)] hover:bg-[var(--surface)] hover:text-[var(--text)]"}`}>
+                          <tab.icon className="h-4 w-4 shrink-0" /> {t(tab.tKey)}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
                 <div className="reos-divider my-3" />
-                {sideNav.map(n => (
-                  <Link key={n.tKey} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
-                    <n.icon className="h-4 w-4" /><span className="flex-1">{t(n.tKey)}</span>
-                    {n.badge && <span className="text-[10px] bg-[var(--gold)] text-[var(--gold-fg)] font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
-                  </Link>
-                ))}
+                <ul className="space-y-0.5">
+                  {sideNav.map(n => (
+                    <li key={n.tKey}>
+                      <Link to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 min-h-11 rounded-lg text-[14px] text-[var(--text-2)] hover:bg-[var(--surface)] hover:text-[var(--text)]">
+                        <n.icon className="h-4 w-4 shrink-0" /><span className="flex-1">{t(n.tKey)}</span>
+                        {n.badge && <span className="text-[10px] bg-[var(--gold)] text-[var(--gold-fg)] font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Preferences — language + theme live here on phones */}
+              <div className="shrink-0 border-t border-[var(--line)] px-4 py-3 space-y-3">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)] mb-2">{t("shell.language")}</div>
+                  <div className="grid grid-cols-6 gap-1" role="group" aria-label={t("shell.language")}>
+                    {languages.map(l => (
+                      <button
+                        key={l.code}
+                        type="button"
+                        onClick={() => setLanguage(l.code)}
+                        aria-pressed={language === l.code}
+                        aria-label={l.native}
+                        className={`h-11 rounded-lg text-[11px] font-semibold border ${language === l.code ? "border-[var(--gold)] reos-gold bg-[var(--gold-soft)]" : "border-[var(--line)] text-[var(--text-2)] hover:border-[var(--line-strong)]"}`}
+                      >
+                        {l.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  className="w-full h-11 rounded-lg border border-[var(--line)] flex items-center justify-between px-3 text-[13px] text-[var(--text)] hover:border-[var(--line-strong)]"
+                >
+                  <span>{t("shell.toggleTheme")}</span>
+                  {theme === "dark" ? <Sun className="h-4 w-4 text-[var(--text-2)]" /> : <Moon className="h-4 w-4 text-[var(--text-2)]" />}
+                </button>
               </div>
             </motion.aside>
           </motion.div>
@@ -646,19 +754,19 @@ export function ReosFooter() {
   ];
 
   return (
-    <footer className="mx-auto max-w-[1600px] px-6 pb-10 pt-4">
-      <div className="reos-card p-5">
-        <div className="flex items-center flex-wrap gap-5 justify-between">
+    <footer className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 pb-8 sm:pb-10 pt-4">
+      <div className="reos-card p-4 sm:p-5">
+        <div className="flex items-start lg:items-center flex-col lg:flex-row flex-wrap gap-4 lg:gap-5 justify-between">
           <div className="text-[12px] text-[var(--text-2)]">{t("shell.trust.trustedBy")}</div>
-          <div className="flex items-center flex-wrap gap-x-7 gap-y-2">
+          <div className="flex items-center flex-wrap gap-x-5 sm:gap-x-7 gap-y-2">
             {banks.map(b => (
               <span key={b} className="text-[12px] font-bold tracking-wider text-[var(--text-2)]/70 hover:text-[var(--text)] transition">{b}</span>
             ))}
           </div>
-          <div className="flex items-center gap-5 text-[11px]">
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-3 lg:flex lg:items-center lg:gap-5 w-full lg:w-auto text-[11px]">
             {trust.map(item => (
-              <div key={item.labelKey} className="flex items-center gap-2">
-                <item.icon className="h-4 w-4 reos-gold" />
+              <div key={item.labelKey} className="flex items-center gap-2 min-w-0">
+                <item.icon className="h-4 w-4 reos-gold shrink-0" />
                 <div className="leading-tight">
                   <div className="text-[11px] font-medium text-[var(--text)]">{t(item.labelKey)}</div>
                   <div className="text-[9px] text-[var(--text-2)]">{t(item.subKey)}</div>
@@ -670,19 +778,19 @@ export function ReosFooter() {
       </div>
 
       {/* Sitemap weblinks */}
-      <div className="mt-4 reos-card p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="mt-4 reos-card p-4 sm:p-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 sm:gap-6">
           {footerLinks.map((col) => (
             <div key={col.titleKey}>
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] reos-gold mb-3">
                 {t(col.titleKey)}
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-0 md:space-y-2">
                 {col.links.map((l) => (
                   <li key={l.labelKey}>
                     <Link
                       to={l.to}
-                      className="group flex items-center gap-2 text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
+                      className="group flex items-center gap-2 min-h-11 md:min-h-0 py-1 md:py-0 text-[13px] md:text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
                     >
                       <l.icon className="h-3.5 w-3.5 text-[var(--gold)] group-hover:text-[var(--gold-2)] transition shrink-0" />
                       <span>{t(l.labelKey)}</span>

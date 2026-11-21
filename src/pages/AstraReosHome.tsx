@@ -139,6 +139,8 @@ function SegmentedSearchTabs({
   };
 
   const handlePointerDown = (e: React.PointerEvent) => {
+    // Touch: let the browser scroll the tab strip natively; taps are handled by onClick.
+    if (e.pointerType === "touch") return;
     if (rects.length === 0) return;
     didDrag.current = false;
     isDragging.current = true;
@@ -161,6 +163,7 @@ function SegmentedSearchTabs({
     const handleUp = (ev: PointerEvent) => {
       document.removeEventListener("pointermove", handleMove);
       document.removeEventListener("pointerup", handleUp);
+      document.removeEventListener("pointercancel", handleUp);
       const finalIdx = indexAt(ev.clientX);
       const r = rects[finalIdx];
       if (r) {
@@ -173,13 +176,16 @@ function SegmentedSearchTabs({
 
     document.addEventListener("pointermove", handleMove);
     document.addEventListener("pointerup", handleUp);
+    document.addEventListener("pointercancel", handleUp);
   };
 
   return (
     <div
       ref={containerRef}
       onPointerDown={handlePointerDown}
-      className="relative inline-flex items-center rounded-full p-1 bg-[var(--surface)]/60 backdrop-blur-md border border-[var(--line)]/50 touch-none select-none cursor-pointer"
+      role="tablist"
+      aria-label="Search category"
+      className="relative inline-flex shrink-0 items-center rounded-full p-1 bg-[var(--surface)]/60 backdrop-blur-md border border-[var(--line)]/50 touch-pan-x md:touch-none select-none cursor-pointer"
     >
       {rects.length > 0 && (
         <motion.div
@@ -194,11 +200,13 @@ function SegmentedSearchTabs({
           key={t}
           ref={(el) => (btnRefs.current[i] = el)}
           type="button"
+          role="tab"
+          aria-selected={value === t}
           onClick={(e) => {
             if (didDrag.current) { e.preventDefault(); return; }
             onChange(t);
           }}
-          className={`relative z-10 px-3 md:px-4 h-7 rounded-full transition-colors duration-150 text-[11px] md:text-[12px] font-semibold whitespace-nowrap ${
+          className={`relative z-10 min-w-11 md:min-w-0 px-3.5 md:px-4 lg:px-3 2xl:px-4 h-11 md:h-7 rounded-full transition-colors duration-150 text-[11px] md:text-[12px] font-semibold whitespace-nowrap ${
             value === t
               ? "text-[var(--gold-fg)]"
               : "text-[var(--text-2)] hover:text-[var(--text)]"
@@ -224,13 +232,21 @@ const marketKPIs = [
 
 /* ---------- Hotspots ---------- */
 const hotspots = [
-  { city: "Phuket",       roi: "16.6%", x: 25, y: 28, slug: "phuket" },
-  { city: "Kuala Lumpur", roi: "11.2%", x: 36, y: 38, slug: "kuala-lumpur" },
-  { city: "Singapore",    roi: "9.7%",  x: 44, y: 50, slug: "singapore" },
-  { city: "Jakarta",      roi: "12.4%", x: 50, y: 70, slug: "jakarta" },
-  { city: "Bali",         roi: "18.5%", x: 78, y: 70, slug: "bali" },
-  { city: "Lombok",       roi: "24.3%", x: 88, y: 72, slug: "lombok" },
-];
+  { city: "Phuket",       roi: "16.6%", x: 25, y: 28, slug: "phuket",       label: "left" },
+  { city: "Kuala Lumpur", roi: "11.2%", x: 36, y: 38, slug: "kuala-lumpur", label: "right" },
+  { city: "Singapore",    roi: "9.7%",  x: 44, y: 50, slug: "singapore",    label: "right" },
+  { city: "Jakarta",      roi: "12.4%", x: 50, y: 70, slug: "jakarta",      label: "right" },
+  { city: "Bali",         roi: "18.5%", x: 78, y: 70, slug: "bali",         label: "top" },
+  { city: "Lombok",       roi: "24.3%", x: 88, y: 72, slug: "lombok",       label: "bottom" },
+] as const;
+
+/* Label placement keeps hotspot names from colliding on narrow phone maps. */
+const hotspotLabelPos: Record<string, string> = {
+  right: "left-4 top-1/2 -translate-y-1/2 text-left",
+  left: "right-4 top-1/2 -translate-y-1/2 text-right",
+  top: "bottom-3.5 left-1/2 -translate-x-1/2 text-center",
+  bottom: "top-3.5 left-1/2 -translate-x-1/2 text-center",
+};
 
 const aiRecs = [
   { city: "Bali", title: "Luxury Villa in Bali",  roi: "18.5%", tag: "High Demand",   color: "#4ADE80" },
@@ -400,7 +416,7 @@ export default function AstraReosHome() {
 
 
         {/* ===================== LAYOUT ===================== */}
-        <div className="mx-auto max-w-[1600px] px-6 py-6 flex gap-6">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 py-4 sm:py-6 flex gap-6">
           {/* ============ SIDEBAR ============ */}
           <aside className="hidden xl:flex flex-col w-[230px] shrink-0 gap-4">
             <div className="reos-card p-2">
@@ -420,7 +436,6 @@ export default function AstraReosHome() {
 
             {/* Investor club promo */}
             <div className="reos-card relative overflow-hidden p-5 text-center" style={{ background: "var(--promo-gradient)" }}>
-              <div className="absolute inset-0 opacity-30" style={{ background: "radial-gradient(circle at 50% 0%, var(--gold), transparent 60%)" }} />
               <div className="relative">
                 <Crown className="h-6 w-6 reos-gold mx-auto" />
                 <div className="mt-2 font-semibold tracking-wider text-sm">ASTRA VILLA</div>
@@ -458,69 +473,82 @@ export default function AstraReosHome() {
           </aside>
 
           {/* ============ MAIN ============ */}
-          <main className="flex-1 min-w-0 space-y-6">
+          <main className="flex-1 min-w-0 space-y-4 sm:space-y-6">
 
             {/* ===== HERO + MARKET OVERVIEW ===== */}
-            <Section className="grid grid-cols-12 gap-5">
+            <Section className="grid grid-cols-12 gap-4 sm:gap-5">
               {/* Hero */}
-              <motion.div variants={fadeUp} className="col-span-12 lg:col-span-9 reos-card overflow-hidden relative min-h-[480px]">
-                <img src={heroImg} alt="Luxury villa overlooking the ocean" width={1600} height={900} fetchPriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
+              <motion.div variants={fadeUp} className="col-span-12 lg:col-span-8 2xl:col-span-9 reos-card overflow-hidden relative sm:min-h-[480px]">
+                <img src={heroImg} alt="Luxury villa overlooking the ocean" width={1600} height={900} {...({ fetchpriority: "high" } as Record<string, string>)} decoding="async" className="absolute inset-0 w-full h-full object-cover object-[68%_center] sm:object-center" />
+                <div className="absolute inset-0 hidden sm:block" style={{ background: "var(--hero-overlay)" }} />
+                <div className="absolute inset-0 sm:hidden" style={{ background: "var(--hero-overlay-mobile)" }} />
 
-                <div className="relative p-6 md:p-10 flex flex-col h-full" style={{ color: "var(--hero-text)" }}>
-                  <h1 className="text-3xl md:text-5xl font-semibold leading-[1.05] tracking-tight max-w-xl" style={{ color: "var(--hero-text)" }}>
+                <div className="relative p-4 min-[380px]:p-5 sm:p-6 md:p-10 lg:p-8 2xl:p-10 flex flex-col h-full" style={{ color: "var(--hero-text)" }}>
+                  <h1 className="text-[28px] min-[380px]:text-[32px] sm:text-4xl md:text-5xl font-semibold leading-[1.1] md:leading-[1.05] tracking-tight max-w-xl break-words" style={{ color: "var(--hero-text)" }}>
                     <span className="block">Southeast Asia's</span>
                     <span className="block"><span className="reos-gold">AI-Powered</span> Real Estate</span>
                     <span className="block">Operating System</span>
                   </h1>
-                  <p className="mt-3 md:mt-4 text-[14px] md:text-[15px] max-w-md" style={{ color: "var(--hero-text-2)" }}>Buy. Invest. Manage. Finance. Verify. Grow.</p>
+                  <p className="mt-3 md:mt-4 text-[14px] md:text-[15px] max-w-md leading-relaxed" style={{ color: "var(--hero-text-2)" }}>Buy. Invest. Manage. Finance. Verify. Grow.</p>
 
                   {/* Search Panel */}
-                  <div className="mt-6 md:mt-8 w-full max-w-2xl">
-                    <div className="reos-card bg-transparent backdrop-blur-xl border border-[var(--line)]/40 shadow-[var(--shadow-soft)] p-3 md:p-4">
+                  <div className="mt-5 md:mt-8 w-full max-w-2xl">
+                    <div className="reos-card bg-transparent backdrop-blur-xl border border-[var(--line)]/40 shadow-[var(--shadow-soft)] p-2.5 min-[380px]:p-3 md:p-4">
                       <div className="flex flex-wrap items-center gap-2 mb-2.5">
-                        <SegmentedSearchTabs
-                          tabs={searchTabs}
-                          value={activeSearchTab}
-                          onChange={setActiveSearchTab}
-                        />
+                        <div className="w-full md:w-auto max-w-full overflow-x-auto overflow-y-hidden reos-no-scrollbar overscroll-x-contain">
+                          <SegmentedSearchTabs
+                            tabs={searchTabs}
+                            value={activeSearchTab}
+                            onChange={setActiveSearchTab}
+                          />
+                        </div>
                         <div className="hidden md:flex items-center gap-1.5 ml-auto text-[10px] uppercase tracking-[0.2em] text-[var(--text-3)]">
                           <Sparkles className="h-3 w-3 reos-gold" /> AI-Powered Property Search
                         </div>
                       </div>
-                      <div className="relative flex items-center gap-2 bg-[var(--surface)]/50 backdrop-blur-md border border-[var(--line)]/60 rounded-full px-1.5 h-11">
-                        <Search className="h-4 w-4 text-[var(--text-2)] ml-3 shrink-0" />
-                        <input
-                          value={aiQuery}
-                          onChange={(e) => setAiQuery(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === "Enter") runSearch(); }}
-                          placeholder="Search properties, locations, ROI, developers, laws…"
-                          className="flex-1 bg-transparent outline-none text-sm placeholder:text-[var(--text-2)] min-w-0"
-                        />
-                        {aiQuery && (
-                          <button
-                            type="button"
-                            onClick={() => setAiQuery("")}
-                            aria-label="Clear search"
-                            className="shrink-0 p-1 rounded-full hover:bg-[var(--surface-2)] text-[var(--text-3)] transition"
-                          >
-                            <X className="h-3.5 w-3.5" aria-hidden="true" />
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="relative flex flex-1 min-w-0 items-center gap-2 bg-[var(--surface)]/50 backdrop-blur-md border border-[var(--line)]/60 rounded-full px-1.5 h-12 sm:h-11">
+                          <Search className="h-4 w-4 text-[var(--text-2)] ml-3 shrink-0" aria-hidden="true" />
+                          <input
+                            type="search"
+                            enterKeyHint="search"
+                            aria-label="Search properties, locations, ROI, developers, laws"
+                            value={aiQuery}
+                            onChange={(e) => setAiQuery(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === "Enter") runSearch(); }}
+                            placeholder="Search properties, locations, ROI, developers, laws…"
+                            className="flex-1 self-stretch bg-transparent outline-none text-base sm:text-sm placeholder:text-[var(--text-2)] min-w-0 [&::-webkit-search-cancel-button]:hidden"
+                          />
+                          {aiQuery && (
+                            <button
+                              type="button"
+                              onClick={() => setAiQuery("")}
+                              aria-label="Clear search"
+                              className="relative reos-hit shrink-0 h-8 w-8 inline-flex items-center justify-center rounded-full hover:bg-[var(--surface-2)] text-[var(--text-3)] transition"
+                            >
+                              <X className="h-3.5 w-3.5" aria-hidden="true" />
+                            </button>
+                          )}
+                          <button onClick={submitAi} disabled={aiLoading} className="hidden sm:inline-flex btn-titanium h-8 pl-1.5 pr-3 rounded-full text-[11px] items-center gap-1.5 font-semibold disabled:opacity-60 shrink-0">
+                            <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0">
+                              {aiLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                            </span>
+                            <span className="relative">AI Search</span>
                           </button>
-                        )}
-                        <button onClick={submitAi} disabled={aiLoading} className="btn-titanium h-8 pl-1.5 pr-3 rounded-full text-[11px] inline-flex items-center gap-1.5 font-semibold disabled:opacity-60 shrink-0">
-                          <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0">
-                            {aiLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                          </span>
-                          <span className="relative">AI Search</span>
+                        </div>
+                        {/* Phones: full-width AI search action under the field */}
+                        <button onClick={submitAi} disabled={aiLoading} className="sm:hidden w-full h-11 rounded-full reos-cta text-[13px] inline-flex items-center justify-center gap-2 disabled:opacity-60">
+                          {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                          AI Search
                         </button>
                       </div>
-                      <div className="mt-2.5 flex flex-wrap gap-1.5">
+                      <div className="mt-2.5 -mx-1 px-1 flex gap-1.5 overflow-x-auto overflow-y-hidden reos-no-scrollbar sm:flex-wrap sm:overflow-visible">
                         {locationChips.map(c => (
                           <button
                             key={c}
                             type="button"
                             onClick={() => navigate(`/search?q=${encodeURIComponent(`Properties in ${c}`)}`)}
-                            className="btn-titanium text-[10px] md:text-[11px] px-2.5 md:px-3 py-1 rounded-full font-semibold"
+                            className="btn-titanium shrink-0 inline-flex items-center h-11 sm:h-auto text-[12px] sm:text-[10px] md:text-[11px] px-3.5 sm:px-2.5 md:px-3 sm:py-1 rounded-full font-semibold whitespace-nowrap"
                           >
                             {c}
                           </button>
@@ -529,7 +557,7 @@ export default function AstraReosHome() {
                           type="button"
                           onClick={() => navigate("/search-advanced")}
                           aria-label="More location filters"
-                          className="btn-titanium text-[10px] md:text-[11px] px-2.5 md:px-3 py-1 rounded-full font-semibold inline-flex items-center gap-1"
+                          className="btn-titanium shrink-0 h-11 sm:h-auto text-[12px] sm:text-[10px] md:text-[11px] px-3.5 sm:px-2.5 md:px-3 sm:py-1 rounded-full font-semibold inline-flex items-center gap-1 whitespace-nowrap"
                         >
                           More <ChevronDown className="h-3 w-3" aria-hidden="true" />
                         </button>
@@ -541,14 +569,14 @@ export default function AstraReosHome() {
 
 
               {/* Market overview */}
-              <motion.div variants={fadeUp} className="col-span-12 lg:col-span-3 reos-card p-5">
-                <div className="flex items-center justify-between">
+              <motion.div variants={fadeUp} className="col-span-12 lg:col-span-4 2xl:col-span-3 reos-card p-4 sm:p-5">
+                <div className="flex items-center justify-between gap-2">
                   <h2 className="text-[14px] font-semibold">Market Overview</h2>
                   <div className="relative" ref={countryRef}>
                     <button
                       type="button"
                       onClick={() => setCountryOpen(o => !o)}
-                      className="text-[11px] text-[var(--text-2)] inline-flex items-center gap-1 hover:text-[var(--text)]"
+                      className="min-h-11 -my-2 -mr-2 px-2 text-[11px] text-[var(--text-2)] inline-flex items-center gap-1 hover:text-[var(--text)]"
                       aria-haspopup="menu"
                       aria-expanded={countryOpen}
                     >
@@ -561,7 +589,7 @@ export default function AstraReosHome() {
                             key={c}
                             type="button"
                             onClick={() => { setCountry(c); setCountryOpen(false); }}
-                            className={`w-full text-left px-3 py-2 rounded-md text-[12px] hover:bg-[var(--surface-2)] ${country === c ? "reos-gold" : "text-[var(--text)]"}`}
+                            className={`w-full text-left px-3 py-2 min-h-11 lg:min-h-0 rounded-md text-[12px] hover:bg-[var(--surface-2)] ${country === c ? "reos-gold" : "text-[var(--text)]"}`}
                           >
                             {c}
                           </button>
@@ -570,9 +598,9 @@ export default function AstraReosHome() {
                     )}
                   </div>
                 </div>
-                <div className="mt-4 space-y-4">
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-x-8 gap-y-4">
                   {marketKPIs.map(k => (
-                    <div key={k.label} className="grid grid-cols-[24px_1fr_90px] items-center gap-2">
+                    <div key={k.label} className="grid grid-cols-[24px_minmax(0,1fr)_minmax(64px,90px)] items-center gap-2">
                       <div className="h-6 w-6 rounded-md bg-[var(--gold-soft)] flex items-center justify-center">
                         <BarChart3 className="h-3.5 w-3.5 reos-gold" />
                       </div>
@@ -590,7 +618,7 @@ export default function AstraReosHome() {
                 <button
                   type="button"
                   onClick={() => navigate("/market-heatmap")}
-                  className="mt-5 text-[12px] reos-gold inline-flex items-center gap-1 hover:underline"
+                  className="mt-3 min-h-11 text-[12px] reos-gold inline-flex items-center gap-1 hover:underline"
                 >
                   View Full Market Report <ArrowUpRight className="h-3 w-3" />
                 </button>
@@ -601,11 +629,11 @@ export default function AstraReosHome() {
             <Section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {hubs.map(h => (
                 <motion.div key={h.title} variants={fadeUp} whileHover={{ y: -3 }}>
-                  <Link to={h.to} className="block reos-card p-4 h-full hover:border-[var(--line-strong)] transition">
+                  <Link to={h.to} className="block reos-card p-3.5 sm:p-4 h-full min-h-[120px] hover:border-[var(--line-strong)] transition">
                     <div className="h-9 w-9 rounded-lg bg-[var(--gold-soft)] flex items-center justify-center mb-3">
                       <h.icon className="h-4.5 w-4.5 reos-gold" />
                     </div>
-                    <div className="text-[13px] font-semibold whitespace-pre-line leading-tight">{h.title}</div>
+                    <div className="text-[13px] font-semibold whitespace-pre-line leading-tight break-words">{h.title}</div>
                     <div className="mt-1.5 text-[11px] text-[var(--text-2)]">{h.desc}</div>
                   </Link>
                 </motion.div>
@@ -614,14 +642,14 @@ export default function AstraReosHome() {
 
 
             {/* ===== FEATURED + HOTSPOTS + AI RECS ===== */}
-            <div className="grid grid-cols-12 gap-5">
+            <div className="grid grid-cols-12 gap-4 sm:gap-5">
               {/* Featured Properties */}
-              <Section className="col-span-12 lg:col-span-5 reos-card p-5">
+              <Section className="col-span-12 lg:col-span-6 2xl:col-span-5 reos-card p-4 sm:p-5">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-[14px] font-semibold">Featured Properties</h2>
-                  <Link to="/properties" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                  <Link to="/properties" className="min-h-11 -my-3 text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 min-[480px]:grid-cols-2 gap-3">
                   {featured.map((p: any) => {
                     const badgeColor: Record<string, string> = {
                       FEATURED: "bg-[var(--gold)] text-[var(--gold-fg)]",
@@ -632,16 +660,16 @@ export default function AstraReosHome() {
                     const img = p.cover_image || p.images?.[0] || heroImg;
                     return (
                       <motion.div key={p.id} variants={fadeUp} whileHover={{ y: -3 }} className="reos-card-2 overflow-hidden group">
-                        <Link to={`/property/${p.slug ?? p.id}`}>
-                          <div className="relative h-28 overflow-hidden">
+                        <Link to={`/property/${p.slug ?? p.id}`} className="flex min-[480px]:block h-full">
+                          <div className="relative w-[38%] max-w-[150px] shrink-0 min-h-[116px] min-[480px]:w-auto min-[480px]:max-w-none min-[480px]:h-28 overflow-hidden">
                             <img src={img} alt={p.title} width={400} height={224} loading="lazy" decoding="async" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             <span className={`absolute top-2 left-2 text-[9px] font-bold tracking-wider px-1.5 py-0.5 rounded ${badgeColor[p._badge]}`}>{p._badge}</span>
                           </div>
-                          <div className="p-3">
+                          <div className="p-3 min-w-0 flex-1">
                             <div className="text-[10px] text-[var(--text-2)] truncate">{p.city || p.location}</div>
-                            <div className="text-[12px] font-semibold leading-tight mt-0.5 line-clamp-1">{p.title}</div>
+                            <div className="text-[13px] min-[480px]:text-[12px] font-semibold leading-tight mt-0.5 line-clamp-2 min-[480px]:line-clamp-1">{p.title}</div>
                             <div className="text-[10px] text-[var(--text-3)] capitalize">{p.type || "Property"}</div>
-                            <div className="mt-2 flex items-baseline justify-between">
+                            <div className="mt-2 flex items-baseline justify-between gap-2 flex-wrap">
                               <div className="text-[12px] font-bold reos-gold">{formatIDR(Number(p.price))}</div>
                               {(p.roi || p.roi_percentage) && (
                                 <div className="text-[10px] text-[var(--success)] font-medium">ROI {Number(p.roi || p.roi_percentage).toFixed(1)}%</div>
@@ -658,16 +686,16 @@ export default function AstraReosHome() {
                     );
                   })}
                 </div>
-                <div className="mt-4 flex justify-center gap-1.5">
+                <div className="mt-4 hidden min-[480px]:flex justify-center gap-1.5" aria-hidden="true">
                   {[0,1,2,3].map(i => <span key={i} className={`h-1.5 rounded-full transition-all ${i === 0 ? "w-5 bg-[var(--gold)]" : "w-1.5 bg-[var(--line-strong)]"}`} />)}
                 </div>
               </Section>
 
               {/* Investment Hotspots */}
-              <Section className="col-span-12 lg:col-span-4 reos-card p-5">
+              <Section className="col-span-12 md:col-span-6 2xl:col-span-4 reos-card p-4 sm:p-5">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-[14px] font-semibold">Investment Hotspots</h2>
-                  <Link to="/market-heatmap" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                  <Link to="/market-heatmap" className="min-h-11 -my-3 text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
                 </div>
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "var(--hotspot-bg)" }}>
                   <div className="absolute inset-0 origin-center transition-transform" style={{ transform: `scale(${hotspotZoom})` }}>
@@ -682,23 +710,22 @@ export default function AstraReosHome() {
                         type="button"
                         onClick={() => navigate(`/invest/${h.slug}`)}
                         aria-label={`${h.city} investment hotspot`}
-                        className="absolute -translate-x-1/2 -translate-y-1/2 group cursor-pointer"
+                        className="absolute reos-hit -translate-x-1/2 -translate-y-1/2 group cursor-pointer"
                         style={{ left: `${h.x}%`, top: `${h.y}%` }}
                       >
                         <div className="relative">
-                          <div className="absolute inset-0 rounded-full bg-[var(--gold)] opacity-30 blur-md scale-150 group-hover:opacity-60" />
                           <div className="relative h-2.5 w-2.5 rounded-full bg-[var(--gold-2)] ring-2 ring-[var(--gold)]/40 group-hover:scale-125 transition-transform" />
                         </div>
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 whitespace-nowrap text-left">
+                        <div className={`absolute whitespace-nowrap pointer-events-none ${hotspotLabelPos[h.label]}`}>
                           <div className="text-[10px] font-semibold">{h.city}</div>
                           <div className="text-[9px] reos-gold">ROI {h.roi}</div>
                         </div>
                       </button>
                     ))}
                   </div>
-                  <div className="absolute bottom-2 left-2 flex flex-col gap-1 z-10">
-                    <button type="button" onClick={() => setHotspotZoom(z => Math.min(2, +(z + 0.2).toFixed(2)))} aria-label="Zoom in" className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center hover:border-[var(--line-strong)]"><Plus className="h-3 w-3" /></button>
-                    <button type="button" onClick={() => setHotspotZoom(z => Math.max(0.6, +(z - 0.2).toFixed(2)))} aria-label="Zoom out" className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center hover:border-[var(--line-strong)]"><Minus className="h-3 w-3" /></button>
+                  <div className="absolute bottom-2 left-2 flex flex-col gap-2 z-10">
+                    <button type="button" onClick={() => setHotspotZoom(z => Math.min(2, +(z + 0.2).toFixed(2)))} aria-label="Zoom in" className="relative reos-hit h-8 w-8 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center hover:border-[var(--line-strong)]"><Plus className="h-3 w-3" /></button>
+                    <button type="button" onClick={() => setHotspotZoom(z => Math.max(0.6, +(z - 0.2).toFixed(2)))} aria-label="Zoom out" className="relative reos-hit h-8 w-8 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center hover:border-[var(--line-strong)]"><Minus className="h-3 w-3" /></button>
                   </div>
                 </div>
                 <div className="mt-3 flex items-center justify-between text-[10px] text-[var(--text-2)]">
@@ -709,11 +736,11 @@ export default function AstraReosHome() {
               </Section>
 
               {/* AI Recommendation + Market Intelligence */}
-              <div className="col-span-12 lg:col-span-3 space-y-5">
-                <Section className="reos-card p-5">
+              <div className="col-span-12 md:col-span-6 lg:col-span-12 2xl:col-span-3 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-1 gap-4 sm:gap-5 content-start">
+                <Section className="reos-card p-4 sm:p-5">
                   <div className="flex items-center justify-between mb-3">
                     <h2 className="text-[13px] font-semibold">AI Recommendation</h2>
-                    <Link to="/ai-search" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                    <Link to="/ai-search" className="min-h-11 -my-3 text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
                   </div>
                   <div className="space-y-3">
                     {aiRecs.map(r => (
@@ -733,10 +760,10 @@ export default function AstraReosHome() {
                   </div>
                 </Section>
 
-                <Section className="reos-card p-5">
+                <Section className="reos-card p-4 sm:p-5">
                   <div className="flex items-center justify-between mb-3">
                     <h2 className="text-[13px] font-semibold">Market Intelligence</h2>
-                    <Link to="/market-heatmap" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                    <Link to="/market-heatmap" className="min-h-11 -my-3 text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
                   </div>
                   <div className="space-y-2.5">
                     {marketReports.map(r => (
@@ -745,7 +772,7 @@ export default function AstraReosHome() {
                         <div className="min-w-0 flex-1">
                           <div className="text-[11px] font-medium truncate">{r.title}</div>
                         </div>
-                        <div className="text-[10px] text-[var(--text-2)]">{r.date}</div>
+                        <div className="text-[10px] text-[var(--text-2)] shrink-0">{r.date}</div>
                       </motion.div>
                     ))}
                   </div>
@@ -762,12 +789,12 @@ export default function AstraReosHome() {
                 { label: "Total Rental Income", value: "IDR 245.8 M", delta: "▲ 12.3% This Year" },
                 { label: "Active Tenants", value: "23", sub: "Tenants" },
               ].map(s => (
-                <motion.div key={s.label} variants={fadeUp} className="reos-card p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="text-[11px] text-[var(--text-2)]">{s.label}</div>
-                    <MoreHorizontal className="h-3.5 w-3.5 text-[var(--text-3)]" />
+                <motion.div key={s.label} variants={fadeUp} className="reos-card p-3.5 sm:p-4 min-w-0">
+                  <div className="flex items-start justify-between gap-1">
+                    <div className="text-[11px] text-[var(--text-2)] leading-snug">{s.label}</div>
+                    <MoreHorizontal className="h-3.5 w-3.5 text-[var(--text-3)] shrink-0" aria-hidden="true" />
                   </div>
-                  <div className="mt-2 text-[18px] font-semibold reos-gold">{s.value}</div>
+                  <div className="mt-2 text-[16px] sm:text-[18px] font-semibold reos-gold whitespace-nowrap">{s.value}</div>
                   {s.sub && <div className="text-[10px] text-[var(--text-2)] mt-0.5">{s.sub}</div>}
                   {s.delta && <div className="text-[10px] text-[var(--success)] mt-0.5">{s.delta}</div>}
                   {s.chart && <div className="mt-2"><Spark seed={Math.random() * 10} color="#C6A66B" /></div>}
@@ -775,15 +802,14 @@ export default function AstraReosHome() {
               ))}
 
               {/* Generate report */}
-              <motion.div variants={fadeUp} className="reos-card p-4 relative overflow-hidden" style={{ background: "var(--promo-gradient-diag)" }}>
-                <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full blur-2xl" style={{ background: "radial-gradient(circle, var(--gold), transparent 70%)" }} />
+              <motion.div variants={fadeUp} className="reos-card p-3.5 sm:p-4 relative overflow-hidden min-w-0" style={{ background: "var(--promo-gradient-diag)" }}>
                 <div className="relative">
                   <div className="text-[11px] font-semibold">Get AI Investment Report</div>
                   <div className="text-[10px] text-[var(--text-2)] mt-1 leading-tight">Personalized report based on your investment goals.</div>
                   <button
                     type="button"
                     onClick={() => user ? navigate("/wealth-advisor") : (setAuthInitial("login"), setShowAuth(true))}
-                    className="mt-3 h-8 px-3 rounded-lg reos-cta text-[11px] inline-flex items-center gap-1.5"
+                    className="mt-3 w-full sm:w-auto h-11 lg:h-8 px-3 rounded-lg reos-cta text-[11px] inline-flex items-center justify-center gap-1.5"
                   >
                     <Sparkles className="h-3 w-3" /> Generate Now
                   </button>
@@ -798,28 +824,32 @@ export default function AstraReosHome() {
         <AnimatePresence>
           {showAiSheet && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-end"
+              className="fixed inset-0 z-50 backdrop-blur-sm flex justify-end"
+              style={{ background: "var(--scrim)" }}
               onClick={() => { setShowAiSheet(false); resetAi(); }}>
               <motion.aside
                 initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
                 transition={{ type: "spring", stiffness: 280, damping: 32 }}
                 onClick={(e) => e.stopPropagation()}
-                className="w-full md:w-[560px] h-full overflow-y-auto reos-scrollbar border-l border-[var(--line-strong)]"
-                style={{ background: "var(--bg)" }}
+                role="dialog"
+                aria-modal="true"
+                aria-label="AI Investment Results"
+                className="w-full md:w-[560px] h-full overflow-y-auto overscroll-contain reos-scrollbar border-l border-[var(--line-strong)]"
+                style={{ background: "var(--bg)", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
               >
-                <div className="sticky top-0 backdrop-blur-xl bg-[var(--bg)]/85 border-b border-[var(--line)] px-5 py-4 flex items-center justify-between z-10">
+                <div className="sticky top-0 backdrop-blur-xl bg-[var(--bg)] border-b border-[var(--line)] px-4 sm:px-5 pb-3 flex items-center justify-between z-10" style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0px))" }}>
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-4 w-4 reos-gold" />
                     <span className="text-sm font-semibold tracking-wide">AI Investment Results</span>
                   </div>
-                  <button onClick={() => { setShowAiSheet(false); resetAi(); }} aria-label="Close AI results" className="h-8 w-8 rounded-md hover:bg-[var(--surface)] flex items-center justify-center">
+                  <button onClick={() => { setShowAiSheet(false); resetAi(); }} aria-label="Close AI results" className="h-11 w-11 -mr-2 rounded-md hover:bg-[var(--surface)] flex items-center justify-center">
                     <X className="h-4 w-4" />
                   </button>
                 </div>
 
-                <div className="p-5 space-y-4">
+                <div className="p-4 sm:p-5 space-y-4">
                   <div className="text-xs uppercase tracking-[0.2em] text-[var(--text-2)]">Query</div>
-                  <div className="reos-card p-3 text-sm">{aiQuery}</div>
+                  <div className="reos-card p-3 text-sm break-words">{aiQuery}</div>
 
                   {aiLoading && (
                     <div className="reos-card p-6 flex items-center gap-3 text-sm">
