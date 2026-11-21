@@ -189,6 +189,11 @@ html, body {
   scrollbar-gutter: stable !important;
 }
 
+/* Touch phones/tablets use overlay scrollbars: never reserve a gutter strip on the right edge. */
+@media (hover: none) and (pointer: coarse) {
+  html, body { scrollbar-gutter: auto !important; }
+}
+
 
 
 
