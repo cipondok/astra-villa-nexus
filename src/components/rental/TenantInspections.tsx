@@ -57,7 +57,7 @@ const TenantInspections = () => {
   });
 
   const uploadPhoto = async (itemId: string, file: File, currentPhotos: string[]) => {
-    const path = `tenant/${user?.id}/${itemId}/${Date.now()}_${file.name}`;
+    const path = `${user?.id}/tenant/${itemId}/${Date.now()}_${file.name}`;
     const { error } = await supabase.storage.from("inspection-photos").upload(path, file);
     if (error) { toast.error("Gagal upload foto"); return; }
 

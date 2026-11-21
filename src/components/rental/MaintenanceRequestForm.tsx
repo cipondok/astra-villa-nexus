@@ -90,7 +90,7 @@ const MaintenanceRequestForm = ({ open, onOpenChange, bookingId, propertyId, onS
     const urls: string[] = [];
     for (const file of images) {
       const ext = file.name.split(".").pop() || "jpg";
-      const path = `maintenance/${bookingId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `${user?.id}/maintenance/${bookingId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       const { error } = await supabase.storage.from("inspection-photos").upload(path, file);
       if (error) throw error;
       const { data: urlData } = supabase.storage.from("inspection-photos").getPublicUrl(path);

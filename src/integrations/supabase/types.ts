@@ -50097,6 +50097,7 @@ export type Database = {
           status: string
           survey_type: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           admin_notes?: string | null
@@ -50115,6 +50116,7 @@ export type Database = {
           status?: string
           survey_type?: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           admin_notes?: string | null
@@ -50133,6 +50135,7 @@ export type Database = {
           status?: string
           survey_type?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -67593,6 +67596,7 @@ export type Database = {
         Returns: boolean
       }
       can_edit_profile: { Args: { user_id: string }; Returns: Json }
+      can_owner_view_tenant_file: { Args: { _name: string }; Returns: boolean }
       check_account_lockout: { Args: { p_email: string }; Returns: boolean }
       check_admin_access: { Args: never; Returns: boolean }
       check_financial_admin_access: { Args: never; Returns: boolean }
@@ -68852,6 +68856,10 @@ export type Database = {
       is_ip_blocked: { Args: { check_ip: string }; Returns: boolean }
       is_ip_whitelisted: { Args: { check_ip: string }; Returns: boolean }
       is_owner: { Args: { _user_id: string }; Returns: boolean }
+      is_service_request_owner: {
+        Args: { _request_id: string }
+        Returns: boolean
+      }
       is_super_admin: { Args: never; Returns: boolean }
       is_super_admin_by_email: { Args: never; Returns: boolean }
       is_super_admin_direct: { Args: never; Returns: boolean }
@@ -68861,6 +68869,7 @@ export type Database = {
         Args: { phone_number: string }
         Returns: boolean
       }
+      is_vendor_on_request: { Args: { _request_id: string }; Returns: boolean }
       job_queue_watchdog: { Args: never; Returns: Json }
       log_database_error: {
         Args: {
