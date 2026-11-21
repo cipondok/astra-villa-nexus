@@ -42,7 +42,7 @@ export function LuxeThemeToggle({ className, variant = "icon" }: LuxeThemeToggle
               className={cn(
                 "relative w-9 h-9 grid place-items-center rounded-full transition-all duration-300 luxe-tap",
                 active
-                  ? "luxe-gold-btn shadow-[0_8px_22px_-10px_rgba(200,169,107,0.7)]"
+                  ? "luxe-gold-btn shadow-[0_8px_22px_-10px_rgba(198,166,107,0.7)]"
                   : "text-luxe-mut hover:text-luxe-gold"
               )}
             >

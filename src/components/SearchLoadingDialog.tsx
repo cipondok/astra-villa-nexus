@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-import { Bot, Search, Sparkles } from "lucide-react";
+import { Bot, Search } from "lucide-react";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface SearchLoadingDialogProps {
@@ -105,18 +105,14 @@ export const SearchLoadingDialog: React.FC<SearchLoadingDialogProps> = ({
         <div className="flex flex-col items-center justify-center px-12 py-12 space-y-8">
           {/* ASTRA AI Logo with Animation */}
           <div className="relative">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center animate-pulse">
+            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
               <Bot className="h-8 w-8 text-primary-foreground" />
             </div>
-            {/* Floating sparkles */}
-            <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-primary animate-bounce" />
-            <div className="absolute -top-2 -left-2 w-3 h-3 bg-primary/30 rounded-full animate-ping" />
-            <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-secondary rounded-full animate-pulse" />
           </div>
 
           {/* ASTRA Villa Branding */}
           <div className="text-center space-y-2">
-            <h3 className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <h3 className="text-xl font-bold text-primary">
               ASTRA Villa
             </h3>
             <p className="text-sm text-muted-foreground font-medium">

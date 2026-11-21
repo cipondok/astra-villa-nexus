@@ -53,7 +53,7 @@ function AtmosDivider({ tone = "gold" }: { tone?: "gold" | "emerald" | "cool" })
   const tint =
     tone === "emerald" ? "rgba(125,155,118,0.22)"
     : tone === "cool"  ? "rgba(63,163,184,0.14)"
-    : "rgba(200,169,107,0.20)";
+    : "rgba(198,166,107,0.20)";
   return (
     <div aria-hidden className="relative h-32 md:h-44 -my-16 md:-my-20 pointer-events-none overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-1/2"
@@ -61,7 +61,7 @@ function AtmosDivider({ tone = "gold" }: { tone?: "gold" | "emerald" | "cool" })
       <div className="absolute inset-x-0 bottom-0 h-1/2"
            style={{ background: "linear-gradient(to top, var(--luxe-bg), rgba(245,240,232,0))" }} />
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-px"
-           style={{ background: "linear-gradient(90deg, transparent, rgba(200,169,107,0.45), transparent)" }} />
+           style={{ background: "linear-gradient(90deg, transparent, rgba(198,166,107,0.45), transparent)" }} />
     </div>
   );
 }
@@ -532,7 +532,7 @@ export default function LuxeExperience() {
               variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } } }}
               className="mt-9 md:mt-10 flex flex-wrap items-center gap-3"
             >
-              <Link to="/properties" className="luxe-gold-btn luxe-tap rounded-full px-6 py-4 md:py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(200,169,107,0.6)] min-h-[48px]">
+              <Link to="/properties" className="luxe-gold-btn luxe-tap rounded-full px-6 py-4 md:py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(198,166,107,0.6)] min-h-[48px]">
                 Begin Your Stay <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link to="/vr-tour" className="luxe-tap rounded-full px-5 py-4 md:py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-all duration-300 hover:-translate-y-0.5 inline-flex items-center gap-2 min-h-[48px]">
@@ -550,7 +550,7 @@ export default function LuxeExperience() {
           >
             <div className="flex items-center justify-between mb-4">
               <span className="luxe-eyebrow">Live Signal</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-emerald)] shadow-[0_0_12px_rgba(79,178,134,0.8)]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-emerald)]" />
             </div>
             <div className="font-serif-l text-3xl mb-1">+12.7%</div>
             <div className="text-[11px] text-luxe-mut mb-4">Bali villa YoY appreciation</div>
@@ -984,12 +984,12 @@ export default function LuxeExperience() {
             <div className="relative [perspective:1400px]">
               <TiltCard className="luxe-glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-[var(--luxe-shadow-float)] will-change-transform">
                 <div aria-hidden className="absolute -top-32 -right-32 w-80 h-80 rounded-full luxe-bloom-a pointer-events-none"
-                     style={{ background: "radial-gradient(circle, rgba(200,169,107,0.28), transparent 70%)" }} />
+                     style={{ background: "radial-gradient(circle, rgba(198,166,107,0.28), transparent 70%)" }} />
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <span className="relative flex">
                       <span className="absolute inset-0 rounded-full bg-[color:var(--luxe-emerald)] luxe-pulse" />
-                      <span className="relative w-2 h-2 rounded-full bg-[color:var(--luxe-emerald)] shadow-[0_0_10px_rgba(79,178,134,0.8)]" />
+                      <span className="relative w-2 h-2 rounded-full bg-[color:var(--luxe-emerald)]" />
                     </span>
                     <span className="text-[11px] font-mono-l text-luxe-mut">PORTFOLIO · LIVE</span>
                   </div>
@@ -1018,8 +1018,8 @@ export default function LuxeExperience() {
                   <svg viewBox="0 0 320 80" className="w-full h-20">
                     <defs>
                       <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
-                        <stop offset="0%" stopColor="#C8A96B" stopOpacity="0.5" />
-                        <stop offset="100%" stopColor="#C8A96B" stopOpacity="0" />
+                        <stop offset="0%" stopColor="#C6A66B" stopOpacity="0.5" />
+                        <stop offset="100%" stopColor="#C6A66B" stopOpacity="0" />
                       </linearGradient>
                     </defs>
                     <motion.path
@@ -1030,7 +1030,7 @@ export default function LuxeExperience() {
                     />
                     <motion.path
                       d="M0 60 L30 50 L60 55 L90 40 L120 45 L150 32 L180 38 L210 24 L240 30 L270 18 L300 22 L320 10"
-                      fill="none" stroke="#C8A96B" strokeWidth="1.5"
+                      fill="none" stroke="#C6A66B" strokeWidth="1.5"
                       initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }}
                       viewport={{ once: true }} transition={{ duration: 2, ease: EASE }}
                     />
@@ -1075,7 +1075,7 @@ export default function LuxeExperience() {
           <div className="relative overflow-hidden rounded-[32px] border border-luxe luxe-grain"
                style={{ background: "var(--luxe-cta-bg)" }}>
             <div aria-hidden className="absolute -top-40 -right-40 w-[480px] h-[480px] rounded-full pointer-events-none"
-                 style={{ background: "radial-gradient(circle, rgba(200,169,107,0.22), transparent 70%)" }} />
+                 style={{ background: "radial-gradient(circle, rgba(198,166,107,0.22), transparent 70%)" }} />
             <div className="relative p-10 md:p-20 grid md:grid-cols-[1.4fr_1fr] gap-10 items-center">
               <div>
                 <span className="luxe-eyebrow">Begin</span>

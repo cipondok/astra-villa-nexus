@@ -70,7 +70,7 @@ function OpportunityScoreRing({ score, size = 44 }: { score: number; size?: numb
   const isElite = score >= 85;
 
   return (
-    <div className={cn('relative', isElite && 'drop-shadow-[0_0_8px_hsl(var(--chart-2)/0.4)]')}>
+    <div className={cn('relative', isElite && '')}>
       <svg width={size} height={size} className="-rotate-90">
         <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="hsl(var(--muted))" strokeWidth="3" />
         <circle

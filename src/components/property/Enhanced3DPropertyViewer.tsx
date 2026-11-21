@@ -113,7 +113,7 @@ function HouseModel({ scale = 1 }: { scale?: number }) {
       
       {/* Door Handle */}
       <Sphere args={[0.04]} position={[1.5, 1.2, 1.74]}>
-        <meshStandardMaterial color="#ffd700" />
+        <meshStandardMaterial color="#C6A66B" />
       </Sphere>
       
       {/* Window Frames */}

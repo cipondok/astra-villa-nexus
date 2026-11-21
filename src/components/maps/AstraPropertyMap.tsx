@@ -189,7 +189,7 @@ export default function AstraPropertyMap({
 }
 
 function buildIcon(google: any, highlighted: boolean) {
-  const gold = "#D4AF37";
+  const gold = "#C6A66B";
   const fill = highlighted ? gold : "#0b0b0c";
   const stroke = gold;
   const scale = highlighted ? 10 : 7;

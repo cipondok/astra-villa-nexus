@@ -94,7 +94,7 @@ const VirtualTourSettings = () => {
   const [themes, setThemes] = useState([
     { id: 1, name: 'Modern Dark', active: true, preview: '#1a1a1a' },
     { id: 2, name: 'Classic Light', active: false, preview: '#ffffff' },
-    { id: 3, name: 'Luxury Gold', active: false, preview: '#d4af37' },
+    { id: 3, name: 'Luxury Gold', active: false, preview: '#C6A66B' },
     { id: 4, name: 'Ocean Blue', active: false, preview: '#0077be' }
   ]);
 

@@ -111,7 +111,7 @@ export default function Locations() {
           className="absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(60% 70% at 50% 0%, rgba(200,169,107,0.15) 0%, transparent 60%), radial-gradient(40% 50% at 80% 100%, rgba(200,169,107,0.08) 0%, transparent 70%)",
+              "radial-gradient(60% 70% at 50% 0%, rgba(198,166,107,0.15) 0%, transparent 60%), radial-gradient(40% 50% at 80% 100%, rgba(198,166,107,0.08) 0%, transparent 70%)",
           }}
         />
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">

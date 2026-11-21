@@ -57,7 +57,7 @@ export default function VisitDayDetail({ date, visits, onCancel, onReschedule }:
     return (
       <Card className="bg-card/60 backdrop-blur-xl border-border/30">
         <CardContent className="p-4 text-center">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-500/10 to-yellow-400/10 flex items-center justify-center mx-auto mb-1.5">
+          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
             <Calendar className="h-4 w-4 text-amber-500/40" />
           </div>
           <p className="text-xs text-muted-foreground">No visits on {format(date, 'MMM d, yyyy')}</p>

@@ -47,11 +47,11 @@ export function LuxeMobileDock() {
             )}
             <span className="relative flex flex-col items-center gap-0.5">
               {(it as any).accent ? (
-                <span className="w-10 h-10 grid place-items-center rounded-full luxe-gold-btn shadow-[0_10px_24px_-8px_rgba(200,169,107,0.7)]">
+                <span className="w-10 h-10 grid place-items-center rounded-full luxe-gold-btn shadow-[0_10px_24px_-8px_rgba(198,166,107,0.7)]">
                   <Icon className="w-[18px] h-[18px]" />
                 </span>
               ) : (
-                <Icon className={cn("w-[20px] h-[20px] transition-transform", isActive && "scale-110 drop-shadow-[0_0_8px_rgba(200,169,107,0.55)]")} />
+                <Icon className={cn("w-[20px] h-[20px] transition-transform", isActive && "scale-110")} />
               )}
               <span className="text-[9px] tracking-[0.16em] uppercase font-mono-l opacity-80">{it.label}</span>
             </span>

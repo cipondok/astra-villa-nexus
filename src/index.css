@@ -246,64 +246,76 @@ html, body {
   :root,
   .light,
   .astra-pearl-white {
-    /* ── ASTRA Pearl White — Luxury Ivory + Champagne Gold ─────────────── */
-    --background: 42 33% 95%;          /* #F7F5F0 warm ivory */
-    --foreground: 217 66% 12%;           /* #0A1931 deep navy */
-    --card: 0 0% 100%;                 /* #FFFFFF */
-    --card-foreground: 217 66% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 217 66% 12%;
-    --primary: 46 65% 52%;             /* #D4AF37 luxury gold */
-    --primary-foreground: 217 66% 12%; /* navy on gold for AA */
-    --secondary: 0 0% 99%;             /* #FCFCFC secondary card */
-    --secondary-foreground: 217 66% 12%;
-    --muted: 42 20% 93%;
-    --muted-foreground: 220 9% 46%;    /* #6B7280 */
-    --accent: 51 100% 50%;             /* #FFD700 accent gold */
-    --accent-foreground: 217 66% 12%;
-    --destructive: 0 84% 60%;          /* #EF4444 */
+    /* ── ASTRA Pearl White — warm pearl surfaces + matte champagne gold ── */
+    --background: 43 26% 95%;          /* #F5F3EE warm pearl */
+    --foreground: 40 6% 9%;            /* warm charcoal text */
+    --card: 45 33% 98.5%;              /* #FCFBF8 off-white card */
+    --card-foreground: 40 6% 9%;
+    --popover: 45 33% 98.5%;
+    --popover-foreground: 40 6% 9%;
+    --primary: 39 44% 60%;             /* #C6A66B matte champagne gold */
+    --primary-foreground: 0 0% 3.5%;   /* charcoal on champagne for AA */
+    --primary-strong: 38 38% 38%;      /* deeper champagne for gold text on pearl (AA) */
+    --secondary: 43 24% 92%;
+    --secondary-foreground: 40 6% 9%;
+    --muted: 42 20% 91%;
+    --muted-foreground: 37 7% 35%;
+    --accent: 39 38% 55%;              /* #B99A62 secondary muted gold */
+    --accent-foreground: 0 0% 3.5%;
+    --destructive: 0 84% 60%;          /* semantic — unchanged */
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;             /* #E5E7EB */
-    --input: 220 13% 91%;
-    --ring: 46 65% 52%;                /* gold focus ring */
+    --border: 40 14% 86%;
+    --input: 40 12% 82%;
+    --ring: 38 38% 38%;
     --radius: 14px;
 
-    /* ASTRA brand convenience tokens — official brand guide */
-    --gold-primary: 46 65% 52%;        /* #D4AF37 */
-    --gold-secondary: 51 100% 50%;     /* #FFD700 */
-    --navy-primary: 217 66% 12%;      /* #0A1931 */
-    --navy-secondary: 217 54% 18%;     /* #12264A */
-    --dark-bg: 42 33% 95%;
-    --dark-card: 0 0% 100%;
-    --text-light: 217 66% 12%;
-    --text-muted: 220 9% 46%;
+    /* Surface scale + brand line tokens */
+    --surface-inset: 42 20% 93%;
+    --line-gold: hsl(39 44% 60% / 0.32);
+    --line-gold-strong: hsl(39 44% 50% / 0.5);
+    --tint-gold: hsl(39 44% 60% / 0.08);
+    --line-divider: hsl(40 10% 20% / 0.1);
+    --shadow-soft: 0 8px 30px hsl(40 10% 20% / 0.06);
+    --shadow-lift: 0 4px 14px hsl(40 10% 20% / 0.05);
+    --shadow-popover: 0 20px 40px -12px hsl(40 10% 20% / 0.12);
 
-    /* Hero gradients — Ivory wash */
-    --hero-from: 0 0% 100%;
-    --hero-via: 0 0% 99%;
-    --hero-to: 42 33% 95%;
-    --hero-mid: 42 25% 96%;
-    --hero-end: 42 33% 95%;
-    --hero-fade: 42 22% 97%;
+    /* Brand aliases (legacy names kept; values = ASTRA champagne system) */
+    --gold-primary: 39 44% 60%;
+    --gold-secondary: 39 38% 55%;
+    --orange-primary: 39 38% 55%;
+    --navy-primary: 40 6% 9%;
+    --navy-secondary: 0 0% 15%;
+    --dark-bg: 43 26% 95%;
+    --dark-card: 45 33% 98.5%;
+    --text-light: 40 6% 9%;
+    --text-muted: 37 7% 35%;
 
-    /* Glass — Pearl White */
-    --glass-bg: 0 0% 100%;
-    --glass-border: 220 13% 91%;
-    --glass-shadow: 222 39% 11%;
+    /* Hero */
+    --hero-from: 45 33% 98.5%;
+    --hero-via: 43 30% 97%;
+    --hero-to: 43 26% 95%;
+    --hero-mid: 43 26% 96%;
+    --hero-end: 43 26% 95%;
+    --hero-fade: 43 25% 97%;
 
-    --titanium-light: 42 20% 93%;
+    /* Glass */
+    --glass-bg: 45 33% 98.5%;
+    --glass-border: 40 14% 86%;
+    --glass-shadow: 40 10% 20%;
+
+    --titanium-light: 42 20% 91%;
     --titanium-white: 0 0% 100%;
-    --samsung-blue-primary: 46 65% 52%;
+    --samsung-blue-primary: 39 44% 60%;
 
-    /* Charts — gold-led, warm support */
-    --chart-1: 46 65% 52%;     /* luxury gold */
-    --chart-2: 51 100% 50%;    /* accent gold */
+    /* Charts */
+    --chart-1: 39 44% 52%;     /* champagne gold */
+    --chart-2: 39 30% 70%;     /* pale champagne */
     --chart-3: 142 71% 45%;    /* success green */
-    --chart-4: 222 39% 11%;    /* graphite */
+    --chart-4: 40 6% 25%;      /* graphite */
     --chart-5: 0 84% 60%;      /* danger red */
 
-    --intel-blue: 205 90% 48%;
-    --intel-blue-glow: 200 95% 60%;
+    --intel-blue: 38 38% 42%;          /* AI signal = champagne (legacy name) */
+    --intel-blue-glow: 39 44% 60%;
     --intel-success: 160 70% 30%;
     --intel-success-soft: 160 70% 30%;
     --intel-warning: 38 92% 42%;
@@ -318,167 +330,173 @@ html, body {
 
     --intel-radius: 16px;
     --intel-radius-lg: 20px;
-    --shadow-intel: 0 4px 20px hsl(205 90% 48% / 0.10);
-    --shadow-intel-active: 0 8px 32px hsl(205 90% 48% / 0.18), 0 0 0 1px hsl(205 90% 48% / 0.12);
+    --shadow-intel: 0 4px 20px hsl(40 10% 20% / 0.06);
+    --shadow-intel-active: 0 8px 28px hsl(40 10% 20% / 0.10), 0 0 0 1px hsl(39 44% 60% / 0.28);
 
-    /* Admin panel — Pearl tokens (sky accent) */
-    --panel-bg: 42 40% 96%;
-    --panel-bg-elevated: 0 0% 100%;
-    --panel-border: 205 30% 86%;
-    --panel-border-subtle: 205 25% 90%;
-    --panel-hover: 205 50% 95%;
-    --panel-active: 205 55% 92%;
-    --panel-text: 28 19% 9%;
-    --panel-text-secondary: 32 14% 37%;
-    --panel-text-muted: 32 10% 50%;
-    --panel-accent: 205 90% 48%;
-    --panel-accent-dim: 205 80% 40%;
+    /* Panel (dashboards) */
+    --panel-bg: 43 26% 96%;
+    --panel-bg-elevated: 45 33% 98.5%;
+    --panel-border: 40 14% 86%;
+    --panel-border-subtle: 40 14% 90%;
+    --panel-hover: 40 20% 93%;
+    --panel-active: 39 35% 90%;
+    --panel-text: 40 6% 9%;
+    --panel-text-secondary: 37 7% 35%;
+    --panel-text-muted: 37 5% 45%;
+    --panel-accent: 38 38% 38%;
+    --panel-accent-dim: 38 38% 32%;
     --panel-success: 152 60% 32%;
     --panel-danger: 350 60% 42%;
     --panel-warning: 38 92% 42%;
-    --panel-info: 205 90% 48%;
-    --panel-tooltip-bg: 28 19% 9%;
-    --panel-tooltip-border: 205 90% 48%;
+    --panel-info: 205 70% 40%;
+    --panel-tooltip-bg: 40 6% 9%;
+    --panel-tooltip-border: 39 44% 60%;
     --panel-tooltip-text: 0 0% 100%;
-    --panel-glow-accent: 205 90% 55%;
-    --panel-shadow: 0 1px 3px hsl(205 40% 20% / 0.06), 0 0 0 1px hsl(205 30% 86% / 0.8);
-    --panel-shadow-hover: 0 4px 12px hsl(205 60% 30% / 0.10), 0 0 0 1px hsl(205 90% 48% / 0.22);
+    --panel-glow-accent: 39 44% 60%;
+    --panel-shadow: 0 1px 3px hsl(40 10% 20% / 0.06), 0 0 0 1px hsl(40 14% 86% / 0.8);
+    --panel-shadow-hover: 0 4px 12px hsl(40 10% 20% / 0.08), 0 0 0 1px hsl(39 44% 60% / 0.32);
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 28 19% 9%;
-    --sidebar-primary: 205 90% 48%;
+    --sidebar-background: 45 33% 98.5%;
+    --sidebar-foreground: 40 6% 9%;
+    --sidebar-primary: 38 38% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 205 60% 95%;
-    --sidebar-accent-foreground: 205 90% 22%;
-    --sidebar-border: 205 30% 86%;
-    --sidebar-ring: 205 90% 48%;
+    --sidebar-accent: 39 35% 92%;
+    --sidebar-accent-foreground: 38 38% 28%;
+    --sidebar-border: 40 14% 86%;
+    --sidebar-ring: 38 38% 38%;
   }
 
 
   .dark {
-    /* Dark mode = ASTRA Navy (#0A1931) + Champagne Gold (#D4AF37) */
-    --background: 217 66% 12%;    /* #0A1931 deep navy primary */
-    --foreground: 42 30% 94%;      /* warm ivory text */
-    --card: 217 60% 8%;           /* deeper navy card */
-    --card-foreground: 42 30% 94%;
-    --popover: 217 60% 9%;
-    --popover-foreground: 42 30% 94%;
-    --primary: 46 65% 52%;        /* #D4AF37 gold accent */
-    --primary-foreground: 217 66% 12%;
-    --secondary: 217 50% 16%;
-    --secondary-foreground: 42 30% 94%;
-    --muted: 217 50% 16%;
-    --muted-foreground: 42 15% 65%;
-    --accent: 46 70% 62%;
-    --accent-foreground: 217 66% 12%;
-    --destructive: 0 70% 55%;
+    /* ── ASTRA Black Gold — matte charcoal + satin champagne gold ──
+       #090909 base · #101010 surface · #151515 elevated · #0C0C0C inset */
+    --background: 0 0% 3.5%;           /* #090909 */
+    --foreground: 43 26% 95%;          /* #F5F3EE */
+    --card: 0 0% 8.2%;                 /* #151515 elevated cards */
+    --card-foreground: 43 26% 95%;
+    --popover: 0 0% 8.2%;
+    --popover-foreground: 43 26% 95%;
+    --primary: 39 44% 60%;             /* #C6A66B champagne gold */
+    --primary-foreground: 0 0% 3.5%;   /* dark readable text on gold */
+    --primary-strong: 39 44% 60%;
+    --secondary: 0 0% 6.3%;            /* #101010 surfaces */
+    --secondary-foreground: 43 26% 95%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 41 10% 69%;    /* #B8B3A8 secondary text */
+    --accent: 39 38% 55%;              /* #B99A62 muted gold */
+    --accent-foreground: 0 0% 3.5%;
+    --destructive: 0 70% 55%;          /* semantic — unchanged */
     --destructive-foreground: 0 0% 100%;
-    --border: 217 40% 22%;
-    --input: 217 40% 22%;
-    --ring: 46 65% 52%;
+    --border: 0 0% 11.5%;              /* ≈ rgba(255,255,255,0.08) on #090909 */
+    --input: 0 0% 15%;
+    --ring: 39 44% 60%;
 
-    /* ASTRA Brand Colors - Dark Mode (official brand guide) */
-    --gold-primary: 46 65% 52%;   /* #D4AF37 */
-    --gold-secondary: 51 100% 50%;
-    --navy-primary: 217 66% 12%; /* #0A1931 */
-    --navy-secondary: 217 54% 18%;
-    --dark-bg: 217 66% 12%;
-    --dark-card: 217 60% 8%;
-    --text-light: 0 0% 100%;
-    --text-muted: 42 15% 65%;
+    --surface-inset: 0 0% 4.7%;        /* #0C0C0C */
+    --line-gold: hsl(39 44% 60% / 0.22);
+    --line-gold-strong: hsl(39 44% 60% / 0.36);
+    --tint-gold: hsl(39 44% 60% / 0.07);
+    --line-divider: hsl(0 0% 100% / 0.08);
+    --shadow-soft: 0 8px 32px hsl(0 0% 0% / 0.45);
+    --shadow-lift: 0 4px 16px hsl(0 0% 0% / 0.35);
+    --shadow-popover: 0 24px 48px -12px hsl(0 0% 0% / 0.6);
 
-    /* Hero & Search Section Gradients - Dark Mode */
-    --hero-from: 217 66% 10%;
-    --hero-via: 217 62% 12%;
-    --hero-to: 217 58% 14%;
-    --hero-mid: 217 54% 16%;
-    --hero-end: 217 50% 18%;
-    --hero-fade: 217 48% 20%;
+    /* Brand aliases */
+    --gold-primary: 39 44% 60%;
+    --gold-secondary: 39 38% 55%;
+    --orange-primary: 39 38% 55%;
+    --navy-primary: 0 0% 3.5%;
+    --navy-secondary: 0 0% 8.2%;
+    --dark-bg: 0 0% 3.5%;
+    --dark-card: 0 0% 8.2%;
+    --text-light: 43 26% 95%;
+    --text-muted: 37 5% 50%;           /* #858078 muted text */
 
-    /* Glassy effect colors - Dark Mode */
-    --glass-bg: 217 60% 10%;
-    --glass-border: 217 45% 30%;
-    --glass-shadow: 217 70% 5%;
+    /* Hero */
+    --hero-from: 0 0% 3.5%;
+    --hero-via: 0 0% 4.7%;
+    --hero-to: 0 0% 6.3%;
+    --hero-mid: 0 0% 7%;
+    --hero-end: 0 0% 8.2%;
+    --hero-fade: 0 0% 9%;
 
-    /* Theme Colors - Dark */
-    --titanium-light: 217 40% 16%;
+    /* Glass */
+    --glass-bg: 0 0% 6.3%;
+    --glass-border: 0 0% 16%;
+    --glass-shadow: 0 0% 0%;
+
+    --titanium-light: 0 0% 10%;
     --titanium-white: 0 0% 100%;
-    --samsung-blue-primary: 217 66% 50%;
+    --samsung-blue-primary: 39 44% 60%;
 
-    /* Chart / Data-Viz Colors - Dark Mode (boosted luminance for contrast) */
-    --chart-1: 39 45% 60%;
-    --chart-2: 40 60% 70%;
+    /* Charts */
+    --chart-1: 39 44% 60%;
+    --chart-2: 39 30% 74%;
     --chart-3: 142 65% 55%;
-    --chart-4: 40 30% 94%;
+    --chart-4: 43 10% 80%;
     --chart-5: 0 65% 55%;
 
-
-    /* ═══ AI Intelligence Signal Colors - Dark ═══ */
-    --intel-blue: 217 91% 65%;
-    --intel-blue-glow: 217 91% 65%;
+    --intel-blue: 39 44% 60%;
+    --intel-blue-glow: 39 38% 55%;
     --intel-success: 160 84% 48%;
     --intel-success-soft: 160 84% 48%;
     --intel-warning: 38 92% 58%;
     --intel-danger: 0 72% 55%;
     --intel-purple: 270 70% 65%;
 
-    /* Market Heat Gradient Stops - Dark */
     --heat-cold: 210 30% 35%;
     --heat-cool: 200 80% 55%;
     --heat-warm: 38 92% 58%;
     --heat-hot: 0 84% 55%;
     --heat-fire: 346 90% 55%;
 
-    /* Intelligence Card Elevation - Dark */
     --intel-radius: 16px;
     --intel-radius-lg: 20px;
-    --shadow-intel: 0 4px 20px hsl(210 60% 3% / 0.5), 0 0 0 1px hsl(217 91% 65% / 0.08);
-    --shadow-intel-active: 0 8px 32px hsl(210 60% 3% / 0.6), 0 0 16px hsl(217 91% 65% / 0.12), 0 0 0 1px hsl(217 91% 65% / 0.15);
+    --shadow-intel: 0 4px 20px hsl(0 0% 0% / 0.45), 0 0 0 1px hsl(39 44% 60% / 0.08);
+    --shadow-intel-active: 0 8px 28px hsl(0 0% 0% / 0.55), 0 0 0 1px hsl(39 44% 60% / 0.22);
 
-    /* Dark mode shadow tokens */
-    --shadow-card: 0 4px 24px hsl(210 60% 3% / 0.6), 0 0 0 1px hsl(200 50% 30% / 0.12);
-    --shadow-card-hover: 0 8px 32px hsl(210 60% 3% / 0.7), 0 0 0 1px hsl(45 100% 60% / 0.15);
-    --shadow-elevated: 0 12px 40px hsl(210 60% 3% / 0.8), 0 0 0 1px hsl(200 50% 40% / 0.15);
+    --shadow-card: 0 4px 24px hsl(0 0% 0% / 0.5), 0 0 0 1px hsl(0 0% 100% / 0.04);
+    --shadow-card-hover: 0 8px 28px hsl(0 0% 0% / 0.55), 0 0 0 1px hsl(39 44% 60% / 0.22);
+    --shadow-elevated: 0 12px 40px hsl(0 0% 0% / 0.65), 0 0 0 1px hsl(0 0% 100% / 0.06);
 
-    /* ═══ Astra Villa Admin Panel Tokens - Dark ═══ */
-    --panel-bg: 217 60% 11%;
-    --panel-bg-elevated: 217 58% 14%;
-    --panel-border: 217 35% 19%;
-    --panel-border-subtle: 217 30% 16%;
-    --panel-hover: 217 32% 16%;
-    --panel-active: 217 35% 19%;
-    --panel-text: 42 30% 94%;
-    --panel-text-secondary: 42 12% 62%;
-    --panel-text-muted: 42 8% 42%;
-    --panel-accent: 46 65% 52%;
-    --panel-accent-dim: 46 55% 42%;
+    /* Panel (dashboards) */
+    --panel-bg: 0 0% 6.3%;
+    --panel-bg-elevated: 0 0% 8.2%;
+    --panel-border: 0 0% 12%;
+    --panel-border-subtle: 0 0% 10%;
+    --panel-hover: 0 0% 10%;
+    --panel-active: 39 15% 12%;
+    --panel-text: 43 26% 95%;
+    --panel-text-secondary: 41 10% 69%;
+    --panel-text-muted: 37 5% 50%;
+    --panel-accent: 39 44% 60%;
+    --panel-accent-dim: 39 38% 55%;
     --panel-success: 152 69% 48%;
     --panel-danger: 350 65% 55%;
     --panel-warning: 38 92% 56%;
-    --panel-info: 217 66% 60%;
-    --panel-tooltip-bg: 217 55% 14%;
-    --panel-tooltip-border: 217 35% 24%;
-    --panel-tooltip-text: 42 15% 78%;
-    --panel-glow-accent: 46 65% 52%;
-    --panel-shadow: 0 1px 3px hsl(217 70% 5% / 0.5), 0 0 0 1px hsl(217 35% 19% / 0.9);
-    --panel-shadow-hover: 0 4px 16px hsl(217 70% 5% / 0.6), 0 0 0 1px hsl(46 65% 52% / 0.2), 0 0 20px hsl(46 65% 52% / 0.04);
+    --panel-info: 210 40% 62%;
+    --panel-tooltip-bg: 0 0% 8.2%;
+    --panel-tooltip-border: 0 0% 16%;
+    --panel-tooltip-text: 41 10% 80%;
+    --panel-glow-accent: 39 44% 60%;
+    --panel-shadow: 0 1px 3px hsl(0 0% 0% / 0.5), 0 0 0 1px hsl(0 0% 12% / 0.9);
+    --panel-shadow-hover: 0 4px 16px hsl(0 0% 0% / 0.55), 0 0 0 1px hsl(39 44% 60% / 0.22);
 
-    /* ═══ Enterprise Admin Design System Tokens ═══ */
-    --admin-bg-main: 217 66% 8%;
-    --admin-bg-sidebar: 217 60% 10%;
-    --admin-bg-card: 217 55% 12%;
-    --admin-bg-hover: 217 50% 14%;
-    --admin-bg-glass: 217 50% 14%;
-    --admin-border-subtle: 217 35% 17%;
-    --admin-border-strong: 217 30% 24%;
+    /* Admin */
+    --admin-bg-main: 0 0% 3.5%;
+    --admin-bg-sidebar: 0 0% 4.7%;
+    --admin-bg-card: 0 0% 8.2%;
+    --admin-bg-hover: 0 0% 10%;
+    --admin-bg-glass: 0 0% 8.2%;
+    --admin-border-subtle: 0 0% 11.5%;
+    --admin-border-strong: 0 0% 16%;
     --admin-divider: 0 0% 100%;
-    --admin-text-primary: 42 30% 93%;
-    --admin-text-secondary: 42 15% 67%;
-    --admin-text-muted: 42 10% 49%;
+    --admin-text-primary: 43 26% 95%;
+    --admin-text-secondary: 41 10% 69%;
+    --admin-text-muted: 37 5% 50%;
     --admin-accent-ai: 160 100% 44%;
     --admin-accent-warning: 36 100% 56%;
     --admin-accent-danger: 352 100% 67%;
-    --admin-accent-info: 217 66% 65%;
+    --admin-accent-info: 210 40% 62%;
 
     /* Sidebar specific */
     --sidebar-background: var(--admin-bg-sidebar);
@@ -508,10 +526,7 @@ html, body {
   }
 
   html.dark {
-    background: linear-gradient(135deg, 
-      hsl(217 70% 8%) 0%, 
-      hsl(217 66% 12%) 50%, 
-      hsl(217 60% 16%) 100%);
+    background: hsl(var(--background));
   }
 
   body {
@@ -527,11 +542,7 @@ html, body {
   }
 
   .dark body {
-    background: linear-gradient(135deg, 
-      hsl(217 70% 8%) 0%, 
-      hsl(217 66% 12%) 50%, 
-      hsl(217 60% 16%) 100%);
-    background-attachment: fixed;
+    background: hsl(var(--background));
   }
 }
 
@@ -2647,12 +2658,12 @@ html:not(.dark) .bg-card > svg.lucide {
   --reos-header-h: 64px;
   --reos-bottomnav-h: 56px;
   --shadow-luxe:
-    0 1px 2px rgba(17, 24, 39, 0.04),
-    0 8px 24px -12px rgba(17, 24, 39, 0.10);
+    0 1px 2px hsl(40 10% 20% / 0.04),
+    0 8px 24px -12px hsl(40 10% 20% / 0.10);
   --shadow-card:
-    0 1px 0 rgba(17, 24, 39, 0.04),
-    0 12px 32px -16px rgba(212, 175, 55, 0.18);
-  --gold-line: rgba(212, 175, 55, 0.28);
+    0 1px 0 hsl(40 10% 20% / 0.04),
+    0 12px 32px -16px hsl(40 10% 20% / 0.12);
+  --gold-line: rgba(198, 166, 107, 0.32);
 }
 .dark {
   --shadow-luxe:
@@ -2660,8 +2671,8 @@ html:not(.dark) .bg-card > svg.lucide {
     0 8px 24px -12px rgba(0, 0, 0, 0.6);
   --shadow-card:
     0 1px 0 rgba(0, 0, 0, 0.4),
-    0 12px 32px -16px rgba(212, 175, 55, 0.18);
-  --gold-line: rgba(212, 175, 55, 0.34);
+    0 12px 32px -16px rgba(0, 0, 0, 0.55);
+  --gold-line: rgba(198, 166, 107, 0.22);
 }
 @media (max-width: 767px) {
   :root { --reos-header-h: 56px; }
@@ -2776,3 +2787,255 @@ header.reos-shell-header > div:first-child { height: var(--reos-header-h); }
 @media (prefers-reduced-motion: reduce) {
   [style*="reos-shimmer"] { animation: none !important; }
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   ASTRA MATTE CHAMPAGNE FINISH — global no-shine layer
+   Brand finish: satin / brushed champagne gold on matte charcoal.
+   Rule: no glow, neon, sparkle, glossy sheen, bloom or light sweeps.
+   Hover/focus may change background or border opacity only.
+   This layer neutralizes legacy effect classes in one place so every
+   route inherits the same finish. Keep it last in this file.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Light-mode gold text uses the deeper champagne for AA contrast on pearl */
+html:not(.dark) .text-primary,
+html:not(.dark) .text-gold-primary,
+html:not(.dark) .reos-gold { color: hsl(var(--primary-strong)); }
+
+/* Colored (tinted) Tailwind shadows read as glow → force neutral shadow color */
+.dark [class*="shadow-primary"], .dark [class*="shadow-gold"], .dark [class*="shadow-amber"],
+.dark [class*="shadow-yellow"], .dark [class*="shadow-accent"], .dark [class*="shadow-orange"] {
+  --tw-shadow-color: hsl(0 0% 0% / 0.4) !important;
+}
+html:not(.dark) [class*="shadow-primary"], html:not(.dark) [class*="shadow-gold"],
+html:not(.dark) [class*="shadow-amber"], html:not(.dark) [class*="shadow-yellow"],
+html:not(.dark) [class*="shadow-accent"], html:not(.dark) [class*="shadow-orange"] {
+  --tw-shadow-color: hsl(40 10% 20% / 0.10) !important;
+}
+
+/* Theme switch overlay — neutral fade, no gold bloom */
+.theme-motion-flash { background: hsl(var(--background) / 0.35); }
+
+/* Dividers */
+.gold-accent-line,
+.dark .gold-accent-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--line-gold-strong) 50%, transparent 100%);
+  filter: none;
+}
+
+/* Shimmer / glow utilities → static matte */
+.gold-shimmer,
+.dark .gold-shimmer {
+  background: hsl(var(--primary));
+  animation: none;
+  filter: none;
+}
+.dark .gold-glow,
+.dark .gold-glow-sm,
+.dark .gold-glow-lg { box-shadow: var(--shadow-lift); }
+.dark .gold-text-glow { text-shadow: none; }
+.dark .gold-border-glow { border-color: var(--line-gold-strong); box-shadow: none; }
+.gold-glow-hover::before { display: none; }
+.gold-glow-hover:hover { box-shadow: none; animation: none; }
+.signal-shimmer, .pulse-dot, .admin-kpi-pulse { animation: none; }
+.gradient-text {
+  background-image: none;
+  color: hsl(var(--primary-strong, var(--primary)));
+  -webkit-text-fill-color: currentColor;
+}
+.samsung-gradient { background: hsl(var(--primary)); }
+
+/* Card hovers — neutral depth + restrained gold hairline */
+.dark .card-hover:hover,
+.dark .card-smooth:hover,
+.dark .professional-card:hover,
+.dark .card-grid-item:hover {
+  box-shadow: 0 12px 28px -12px hsl(0 0% 0% / 0.6), 0 0 0 1px var(--line-gold);
+}
+.card-hover-lift:hover {
+  box-shadow: 0 12px 28px -10px hsl(0 0% 0% / 0.18), 0 4px 10px -4px hsl(0 0% 0% / 0.08);
+}
+.dark .card-hover-lift:hover {
+  box-shadow: 0 12px 28px -10px hsl(0 0% 0% / 0.6), 0 0 0 1px var(--line-gold);
+}
+
+/* ── Buttons: solid muted champagne, dark text, no sheen ── */
+.btn-cta,
+.btn-gold-orange,
+.reos-cta-gold,
+.luxe-gold-btn {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: 1px solid hsl(var(--primary));
+  box-shadow: none;
+  text-shadow: none;
+  animation: none;
+  filter: none;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+.btn-cta:hover,
+.btn-gold-orange:hover,
+.reos-cta-gold:hover,
+.luxe-gold-btn:hover {
+  background: hsl(var(--accent));
+  border-color: hsl(var(--accent));
+  box-shadow: none;
+  filter: none;
+  transform: none;
+}
+/* Compact pill (legacy "titanium" name): quiet champagne tint, thin gold hairline */
+.btn-titanium {
+  background: var(--tint-gold);
+  color: hsl(var(--foreground));
+  border: 1px solid var(--line-gold);
+  box-shadow: none;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+.btn-titanium::before { display: none; }
+.btn-titanium:hover {
+  background: hsl(var(--primary) / 0.14);
+  border-color: var(--line-gold-strong);
+  transform: none;
+}
+.btn-titanium .titanium-icon {
+  background: hsl(var(--primary) / 0.14);
+  border: 1px solid var(--line-gold);
+  color: hsl(var(--primary-strong, var(--primary)));
+  box-shadow: none;
+}
+.btn-glass {
+  background: var(--tint-gold);
+  border: 1px solid var(--line-gold);
+  color: hsl(var(--primary-strong, var(--primary)));
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.btn-glass:hover {
+  background: hsl(var(--primary) / 0.14);
+  border-color: var(--line-gold-strong);
+  box-shadow: none;
+  transform: none;
+}
+.btn-outline-emboss {
+  background: transparent;
+  border: 1px solid var(--line-gold-strong);
+  color: hsl(var(--primary-strong, var(--primary)));
+  text-shadow: none;
+  box-shadow: none;
+}
+.btn-outline-emboss:hover {
+  background: hsl(var(--primary) / 0.12);
+  color: hsl(var(--primary-strong, var(--primary)));
+  border-color: hsl(var(--primary));
+  box-shadow: none;
+  transform: none;
+}
+
+/* ── Tabs / search segment / header (legacy iOS styles) ── */
+.tab-trigger-ios[data-state="active"] {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: none;
+  transform: none;
+}
+.tab-trigger-ios::before { display: none; }
+.search-tab-slider {
+  background: hsl(var(--primary));
+  animation: none;
+  box-shadow: none;
+}
+.search-tab-slider::after { display: none; }
+.search-tab-btn.active { color: hsl(var(--primary-foreground)); text-shadow: none; }
+.search-tab-btn:not(.active) { color: hsl(var(--muted-foreground)); }
+.search-tab-btn:not(.active):hover { color: hsl(var(--foreground)); transform: none; }
+.search-tab-btn:not(.active):hover .tab-icon { transform: none; }
+.light .header-ios,
+.dark .header-ios {
+  background: hsl(var(--background) / 0.92);
+  border-color: hsl(var(--border));
+  box-shadow: var(--shadow-lift);
+}
+.light .header-button-ios,
+.dark .header-button-ios {
+  background: var(--tint-gold);
+  border-color: var(--line-gold);
+  color: hsl(var(--foreground));
+}
+.light .header-button-ios:hover,
+.dark .header-button-ios:hover {
+  background: hsl(var(--primary) / 0.14);
+  border-color: var(--line-gold-strong);
+  box-shadow: none;
+  transform: none;
+}
+.dark .tab-list-ios { background: hsl(var(--card) / 0.92); border-color: var(--line-gold); }
+
+/* ── HUD / AI terminal styles → champagne, no neon ── */
+.hud-grid, .light .hud-grid {
+  background-image:
+    linear-gradient(hsl(var(--primary) / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.06) 1px, transparent 1px);
+}
+.hud-border, .light .hud-border { border: 1px solid var(--line-gold); background: var(--tint-gold); }
+.hud-glow, .light .hud-glow { box-shadow: none; }
+.hud-text, .light .hud-text,
+.hud-accent, .light .hud-accent { color: hsl(var(--primary-strong, var(--primary))); text-shadow: none; }
+.data-stream::before { display: none; }
+.score-ring[data-signal="elite"] .ring-fill { filter: none; stroke: hsl(var(--primary)); }
+.neon-progress .neon-fill { background: hsl(var(--primary)); }
+.neon-progress .neon-fill::after { display: none; }
+.intel-skeleton::after { display: none; }
+.elite-highlight::before,
+.dark .elite-highlight::before { background: var(--tint-gold); }
+.dark .intel-card-t1 { box-shadow: var(--shadow-intel-active); border-color: var(--line-gold-strong); }
+.intel-card:hover, .intel-card[data-active="true"],
+.dark .intel-card:hover, .dark .intel-card[data-active="true"] { border-color: var(--line-gold-strong); }
+
+/* ── Dark glass / overlay surfaces → matte charcoal ── */
+.dark .glass-effect,
+.dark .glass-card,
+.dark .intel-card {
+  background: hsl(var(--card) / 0.96);
+  border: 1px solid var(--line-gold);
+  box-shadow: var(--shadow-soft);
+}
+.dark .glass-popup,
+.dark .glass-menu,
+.dark .glass-dropdown,
+.dark .glass-tooltip,
+.dark .modal-surface,
+.dark .command-surface {
+  background: hsl(var(--popover));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--popover-foreground));
+  box-shadow: var(--shadow-popover);
+}
+.dark .modal-overlay,
+.dark .command-overlay { background: hsl(0 0% 0% / 0.72); }
+.glass-menu-item:hover,
+.dark .glass-menu-item:hover { background: hsl(var(--primary) / 0.10); color: hsl(var(--foreground)); }
+.dark .glass-input {
+  background: hsl(var(--surface-inset));
+  border: 1px solid hsl(var(--input));
+}
+.glass-input:focus,
+.dark .glass-input:focus {
+  border-color: hsl(var(--primary) / 0.55);
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
+}
+
+/* ── REOS shared primitives ── */
+.reos-chip-gold { background: var(--tint-gold); border-color: var(--line-gold); }
+.reos-card-interactive:hover {
+  box-shadow: 0 18px 40px -20px hsl(0 0% 0% / 0.35);
+  border-color: var(--line-gold-strong);
+}
+.dark .reos-card-interactive:hover { box-shadow: 0 18px 40px -20px hsl(0 0% 0% / 0.7); }
+
+/* ── Scrollbar + selection ── */
+.dark ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+.dark ::-webkit-scrollbar-thumb { background: hsl(0 0% 18%); }
+.dark ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
+.dark ::selection { background: hsl(var(--primary) / 0.3); color: hsl(var(--foreground)); }

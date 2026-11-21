@@ -26,7 +26,7 @@ const FloatingThemeToggle = () => {
             exit={{ rotate: 90, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <Sun className="h-5 w-5 text-gold-primary group-hover:drop-shadow-[0_0_6px_hsl(var(--gold-primary)/0.6)]" />
+            <Sun className="h-5 w-5 text-gold-primary" />
           </motion.div>
         ) : (
           <motion.div
@@ -36,7 +36,7 @@ const FloatingThemeToggle = () => {
             exit={{ rotate: -90, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <Moon className="h-5 w-5 text-gold-primary group-hover:drop-shadow-[0_0_6px_hsl(var(--gold-primary)/0.6)]" />
+            <Moon className="h-5 w-5 text-gold-primary" />
           </motion.div>
         )}
       </AnimatePresence>

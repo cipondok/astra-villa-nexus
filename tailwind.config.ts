@@ -72,21 +72,25 @@ const config: Config = {
           800: 'hsl(0, 0%, 15%)',
           900: 'hsl(0, 0%, 9%)',
         },
-        // ASTRA Villa Property Brand Colors
-        // Primary: #0A1931 | Secondary: #FFFFFF | Accent: #D4AF37
+        // ASTRA Villa Property Brand Colors — matte charcoal + satin champagne gold
+        // Base #090909 | Surface #101010 | Elevated #151515 | Gold #C6A66B / #B99A62
+        // (legacy `navy` key retained for compatibility; it now resolves to charcoal)
         'astra': {
           navy: {
-            DEFAULT: 'hsl(217, 66%, 12%)', // #0A1931
-            light: 'hsl(217, 54%, 18%)',    // #12264A
-            dark: 'hsl(217, 70%, 8%)',      // #071225
+            DEFAULT: 'hsl(0, 0%, 3.5%)',  // #090909
+            light: 'hsl(0, 0%, 8.2%)',    // #151515
+            dark: 'hsl(0, 0%, 4.7%)',     // #0C0C0C
           },
           gold: {
-            DEFAULT: 'hsl(46, 65%, 52%)', // #D4AF37
-            light: 'hsl(46, 70%, 62%)',   // #E4C56A
-            muted: 'hsl(46, 55%, 42%)',   // #B08C26
+            DEFAULT: 'hsl(39, 44%, 60%)', // #C6A66B
+            light: 'hsl(39, 44%, 60%)',   // #C6A66B
+            muted: 'hsl(39, 38%, 55%)',   // #B99A62
           },
-          cream: 'hsl(41, 52%, 91%)', // #F3ECDC
+          cream: 'hsl(43, 26%, 95%)', // #F5F3EE
         },
+        'gold-line': 'var(--line-gold)',
+        'gold-tint': 'var(--tint-gold)',
+        'surface-inset': 'hsl(var(--surface-inset))',
         'gold': {
           primary: 'hsl(var(--gold-primary))',
           secondary: 'hsl(var(--gold-secondary))',
@@ -304,21 +308,21 @@ const config: Config = {
         "chat-float": {
           "0%, 100%": {
             transform: "translateY(0px)",
-            boxShadow: "0 4px 20px hsla(217, 91%, 60%, 0.4), 0 8px 40px hsla(271, 91%, 65%, 0.3)"
+            boxShadow: "0 4px 20px hsla(0, 0%, 0%, 0.35)"
           },
           "50%": {
             transform: "translateY(-8px)",
-            boxShadow: "0 8px 30px hsla(217, 91%, 60%, 0.6), 0 12px 60px hsla(271, 91%, 65%, 0.5)"
+            boxShadow: "0 8px 28px hsla(0, 0%, 0%, 0.4)"
           }
         },
         "chat-float-mobile": {
           "0%, 100%": {
             transform: "translateY(0px)",
-            boxShadow: "0 2px 10px hsla(217, 91%, 60%, 0.3), 0 4px 20px hsla(271, 91%, 65%, 0.2)"
+            boxShadow: "0 2px 10px hsla(0, 0%, 0%, 0.3)"
           },
           "50%": {
             transform: "translateY(-5px)",
-            boxShadow: "0 4px 15px hsla(217, 91%, 60%, 0.5), 0 6px 30px hsla(271, 91%, 65%, 0.4)"
+            boxShadow: "0 4px 15px hsla(0, 0%, 0%, 0.35)"
           }
         },
         "slide-in-right": {
@@ -399,10 +403,10 @@ const config: Config = {
         },
         "pulse-glow": {
           "0%, 100%": {
-            boxShadow: "0 0 10px hsl(var(--primary) / 0.4), 0 0 20px hsl(var(--primary) / 0.2), 0 0 30px hsl(var(--accent) / 0.1)"
+            boxShadow: "none" // matte finish — no glow
           },
           "50%": {
-            boxShadow: "0 0 20px hsl(var(--primary) / 0.6), 0 0 40px hsl(var(--primary) / 0.4), 0 0 60px hsl(var(--accent) / 0.3)"
+            boxShadow: "none"
           }
         },
         "logo-3d-float": {
@@ -462,8 +466,7 @@ const config: Config = {
           "100%": { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
         },
         "hero-brand-glow": {
-          "0%, 100%": { textShadow: "0 0 20px hsl(var(--gold-primary) / 0.35), 0 0 60px hsl(var(--gold-primary) / 0.12)" },
-          "50%": { textShadow: "0 0 35px hsl(var(--gold-primary) / 0.55), 0 0 90px hsl(var(--gold-primary) / 0.25)" },
+          "0%, 100%": { textShadow: "none" }, // matte finish — no glow
         },
         "shimmer-slide": {
           "0%": { transform: "translateX(-100%) skewX(-12deg)" },

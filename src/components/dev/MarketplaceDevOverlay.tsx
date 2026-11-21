@@ -83,7 +83,7 @@ export function MarketplaceDevOverlay({
       style={{ pointerEvents: "auto" }}
     >
       <div className="flex items-center justify-between px-3 py-2 border-b border-white/10">
-        <span className="uppercase tracking-[0.18em] text-[10px] text-[#D4AF37]">
+        <span className="uppercase tracking-[0.18em] text-[10px] text-[#C6A66B]">
           Marketplace · Dev
         </span>
         <div className="flex items-center gap-1">
@@ -141,7 +141,7 @@ export function MarketplaceDevOverlay({
           <div
             className={`mt-2 rounded px-2 py-1.5 text-center text-[10px] uppercase tracking-[0.16em] ${
               hasDuplicates
-                ? "bg-[#D4AF37]/20 text-[#D4AF37]"
+                ? "bg-[#C6A66B]/20 text-[#C6A66B]"
                 : "bg-emerald-500/15 text-emerald-300"
             }`}
           >
@@ -173,7 +173,7 @@ function Row({
 }) {
   const toneCls =
     tone === "warn"
-      ? "text-[#D4AF37]"
+      ? "text-[#C6A66B]"
       : tone === "active"
       ? "text-emerald-300"
       : tone === "muted"

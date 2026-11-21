@@ -65,7 +65,7 @@ export default function VisitReminders({ visits }: VisitRemindersProps) {
             <CardContent className="p-2.5 flex items-center gap-2.5">
               <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
                 isVisitToday 
-                  ? 'bg-gradient-to-br from-amber-500/20 to-yellow-400/10 border border-amber-500/20' 
+                  ? 'bg-primary/20 border border-amber-500/20' 
                   : 'bg-muted'
               }`}>
                 {isVisitToday ? <Bell className="h-3.5 w-3.5 text-amber-500" /> : <Clock className="h-3.5 w-3.5 text-muted-foreground" />}
@@ -78,7 +78,7 @@ export default function VisitReminders({ visits }: VisitRemindersProps) {
               </div>
               <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
                 isVisitToday
-                  ? 'bg-gradient-to-r from-amber-500/15 to-yellow-400/10 text-amber-600 dark:text-amber-400'
+                  ? 'bg-primary/15 text-amber-600 dark:text-amber-400'
                   : 'bg-muted text-muted-foreground'
               }`}>
                 {isVisitToday ? '⚡ Today' : 'Tomorrow'}

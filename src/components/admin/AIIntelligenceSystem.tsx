@@ -41,9 +41,9 @@ const statusColors: Record<SystemStatus, string> = {
 
 const statusGlow: Record<SystemStatus, string> = {
   nominal:     'shadow-none',
-  warning:     'shadow-[0_0_12px_hsl(var(--chart-3)/0.4)]',
-  danger:      'shadow-[0_0_12px_hsl(var(--destructive)/0.5)]',
-  opportunity: 'shadow-[0_0_12px_hsl(var(--chart-2)/0.4)]',
+  warning:     '',
+  danger:      '',
+  opportunity: '',
 };
 
 /* ──────────────────────────────────────────

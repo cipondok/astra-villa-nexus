@@ -140,7 +140,7 @@ function FloatingParticles() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial size={0.03} color="#D4AF37" transparent opacity={0.5} sizeAttenuation />
+      <pointsMaterial size={0.03} color="#C6A66B" transparent opacity={0.5} sizeAttenuation />
     </points>
   );
 }
@@ -223,8 +223,8 @@ function HotspotMarker({ position, label, onClick }: { position: [number, number
         onPointerOut={() => setHovered(false)}
       >
         <meshPhysicalMaterial
-          color={hovered ? '#FFD700' : '#D4AF37'}
-          emissive={hovered ? '#D4AF37' : '#8B7340'}
+          color={hovered ? '#C6A66B' : '#C6A66B'}
+          emissive={hovered ? '#C6A66B' : '#8B7340'}
           emissiveIntensity={hovered ? 1.5 : 0.6}
           roughness={0.2}
           metalness={0.8}
@@ -235,7 +235,7 @@ function HotspotMarker({ position, label, onClick }: { position: [number, number
           <Text
             position={[position[0], position[1] + 0.5, position[2]]}
             fontSize={0.2}
-            color="#D4AF37"
+            color="#C6A66B"
             anchorX="center"
             anchorY="bottom"
             font={undefined}

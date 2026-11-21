@@ -141,7 +141,7 @@ function demandTrendConfig(trend: string) {
 }
 
 function opportunityGrade(score: number) {
-  if (score >= 85) return { label: 'Elite', color: 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0' };
+  if (score >= 85) return { label: 'Elite', color: 'bg-primary text-primary-foreground border-0' };
   if (score >= 70) return { label: 'Strong', color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' };
   if (score >= 50) return { label: 'Fair', color: 'bg-muted/50 text-muted-foreground border-border/40' };
   return null;

@@ -113,9 +113,9 @@ export default function MarketIntelligenceHeatmap() {
 
   const getGlowClass = (score: number): string => {
     const ratio = score / maxScore;
-    if (ratio >= 0.7) return 'shadow-[0_0_20px_hsl(var(--chart-1)/0.5)]';
-    if (ratio >= 0.4) return 'shadow-[0_0_16px_hsl(var(--chart-4)/0.4)]';
-    return 'shadow-[0_0_12px_hsl(var(--destructive)/0.3)]';
+    if (ratio >= 0.7) return '';
+    if (ratio >= 0.4) return '';
+    return '';
   };
 
   const getBgGlow = (score: number): string => {

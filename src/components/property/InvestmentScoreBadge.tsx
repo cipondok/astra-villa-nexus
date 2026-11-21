@@ -12,19 +12,19 @@ interface InvestmentScoreBadgeProps {
 const GRADE_CONFIG: Record<string, { color: string; glow: string }> = {
   'A+': {
     color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40',
-    glow: 'shadow-[0_0_8px_hsl(152_69%_45%/0.3)]',
+    glow: '',
   },
   'A': {
     color: 'bg-green-500/20 text-green-400 border-green-500/40',
-    glow: 'shadow-[0_0_8px_hsl(142_71%_45%/0.3)]',
+    glow: '',
   },
   'B+': {
     color: 'bg-blue-500/20 text-blue-400 border-blue-500/40',
-    glow: 'shadow-[0_0_6px_hsl(217_91%_60%/0.25)]',
+    glow: '',
   },
   'B': {
     color: 'bg-sky-500/20 text-sky-400 border-sky-500/40',
-    glow: 'shadow-[0_0_6px_hsl(199_89%_48%/0.25)]',
+    glow: '',
   },
   'C': {
     color: 'bg-amber-500/20 text-amber-400 border-amber-500/40',

@@ -67,7 +67,7 @@ const DealSyndicationHub = () => {
               <Button variant="outline" className="border-white/10 text-slate-300 hover:bg-white/5 text-xs" onClick={() => toast.success('Deal documents requested')}>
                 <FileText className="w-4 h-4 mr-2" /> Request Documents
               </Button>
-              <Button className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white border-0 text-xs" onClick={() => toast.success('Entering Syndicate Deal Room...')}>
+              <Button className="bg-primary hover:from-amber-500 hover:to-orange-500 text-primary-foreground border-0 text-xs" onClick={() => toast.success('Entering Syndicate Deal Room...')}>
                 <ArrowRight className="w-4 h-4 mr-2" /> Enter Deal Room
               </Button>
             </div>
@@ -127,7 +127,7 @@ const DealSyndicationHub = () => {
                   </div>
                   <div className="w-full h-3 rounded-full bg-white/5 overflow-hidden">
                     <motion.div
-                      className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
+                      className="h-full rounded-full bg-primary"
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(filledPct, 100)}%` }}
                       transition={{ duration: 1.2, ease: 'easeOut' }}
@@ -186,7 +186,7 @@ const DealSyndicationHub = () => {
               </div>
 
               <Button
-                className="w-full mt-5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white border-0"
+                className="w-full mt-5 bg-primary hover:from-amber-500 hover:to-orange-500 text-primary-foreground border-0"
                 onClick={() => toast.success(`Syndicate participation of ${formatIDR(commitAmt)} submitted for review`)}
               >
                 <Users className="w-4 h-4 mr-2" /> Join Syndicate — {formatIDR(commitAmt)}

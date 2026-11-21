@@ -14,19 +14,19 @@ function getTier(score: number): { tier: ConfidenceTier; emoji: string; label: s
 }
 
 const tierStyles: Record<ConfidenceTier, string> = {
-  hot:     "text-chart-1 border-chart-1/40 shadow-[0_0_6px_hsl(var(--chart-1)/0.18)]",
-  strong:  "text-chart-2 border-chart-2/40 shadow-[0_0_6px_hsl(var(--chart-2)/0.18)]",
-  stable:  "text-chart-3 border-chart-3/40 shadow-[0_0_6px_hsl(var(--chart-3)/0.15)]",
-  caution: "text-chart-4 border-chart-4/40 shadow-[0_0_6px_hsl(var(--chart-4)/0.15)]",
-  cold:    "text-destructive border-destructive/40 shadow-[0_0_6px_hsl(var(--destructive)/0.15)]",
+  hot:     "text-chart-1 border-chart-1/40",
+  strong:  "text-chart-2 border-chart-2/40",
+  stable:  "text-chart-3 border-chart-3/40",
+  caution: "text-chart-4 border-chart-4/40",
+  cold:    "text-destructive border-destructive/40",
 };
 
 const tierHoverGlow: Record<ConfidenceTier, string> = {
-  hot:     "hover:shadow-[0_0_10px_hsl(var(--chart-1)/0.3)]",
-  strong:  "hover:shadow-[0_0_10px_hsl(var(--chart-2)/0.3)]",
-  stable:  "hover:shadow-[0_0_10px_hsl(var(--chart-3)/0.25)]",
-  caution: "hover:shadow-[0_0_10px_hsl(var(--chart-4)/0.25)]",
-  cold:    "hover:shadow-[0_0_10px_hsl(var(--destructive)/0.25)]",
+  hot:     "",
+  strong:  "",
+  stable:  "",
+  caution: "",
+  cold:    "",
 };
 
 export interface DealScoreBadgeProps {

@@ -27,7 +27,7 @@ function OpportunityScoreRing() {
             initial={{ strokeDashoffset: 2 * Math.PI * 52 }}
             animate={{ strokeDashoffset: 2 * Math.PI * 52 * (1 - 0.92) }}
             transition={{ duration: 2, ease: 'easeOut' }}
-            className="drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]"
+            className=""
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">

@@ -77,10 +77,10 @@ const ROICalculator = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Inputs */}
         <Card className="lg:col-span-1 bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-          <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+          <div className="h-1 w-full bg-primary" />
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+              <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
                 <Calculator className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
               </div>
               Investment Parameters
@@ -148,7 +148,7 @@ const ROICalculator = () => {
 
           {/* Chart */}
           <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-            <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+            <div className="h-1 w-full bg-primary" />
             <CardHeader className="p-4 pb-2">
               <CardTitle className="text-sm">Investment Projection</CardTitle>
             </CardHeader>
@@ -229,10 +229,10 @@ const RentalYieldAnalyzer = () => {
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-1 bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-          <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+          <div className="h-1 w-full bg-primary" />
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+              <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
                 <BarChart3 className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
               </div>
               Rental Parameters
@@ -278,7 +278,7 @@ const RentalYieldAnalyzer = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-              <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+              <div className="h-1 w-full bg-primary" />
               <CardHeader className="p-4 pb-2"><CardTitle className="text-sm">Monthly Cash Flow</CardTitle></CardHeader>
               <CardContent className="p-4 pt-0">
                 <div className="h-48">
@@ -296,7 +296,7 @@ const RentalYieldAnalyzer = () => {
             </Card>
 
             <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-              <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+              <div className="h-1 w-full bg-primary" />
               <CardHeader className="p-4 pb-2"><CardTitle className="text-sm">Expense Breakdown</CardTitle></CardHeader>
               <CardContent className="p-4 pt-0">
                 <div className="h-48">
@@ -377,10 +377,10 @@ const AppreciationForecast = () => {
     <div className="space-y-4">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-1 bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-          <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+          <div className="h-1 w-full bg-primary" />
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+              <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
                 <MapPin className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
               </div>
               Forecast Settings
@@ -438,7 +438,7 @@ const AppreciationForecast = () => {
           </div>
 
           <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-            <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+            <div className="h-1 w-full bg-primary" />
             <CardHeader className="p-4 pb-2">
               <CardTitle className="text-sm flex items-center justify-between">
                 10-Year Appreciation Forecast
@@ -537,10 +537,10 @@ const AreaGrowthIndex = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Area Selector */}
         <Card className="lg:col-span-1 bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-          <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+          <div className="h-1 w-full bg-primary" />
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+              <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
                 <Globe className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
               </div>
               Area Selection
@@ -599,7 +599,7 @@ const AreaGrowthIndex = () => {
 
           {/* Growth Comparison Chart */}
           <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-            <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+            <div className="h-1 w-full bg-primary" />
             <CardHeader className="p-4 pb-2">
               <CardTitle className="text-sm flex items-center justify-between">
                 10-Year Area Growth Comparison
@@ -643,7 +643,7 @@ const AreaGrowthIndex = () => {
 
           {/* Area Ranking Table */}
           <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-            <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+            <div className="h-1 w-full bg-primary" />
             <CardHeader className="p-4 pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
                 <Activity className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
@@ -662,9 +662,9 @@ const AreaGrowthIndex = () => {
                     }`}
                   >
                     <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black ${
-                      i === 0 ? 'bg-gradient-to-br from-amber-500 to-yellow-400 text-background' :
+                      i === 0 ? 'bg-primary text-background' :
                       i === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-background' :
-                      i === 2 ? 'bg-gradient-to-br from-amber-700 to-amber-800 text-background' :
+                      i === 2 ? 'bg-primary text-background' :
                       'bg-muted text-muted-foreground'
                     }`}>
                       {i + 1}
@@ -707,7 +707,7 @@ const MetricCard = ({ label, value, icon: Icon, positive }: { label: string; val
   <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
     <Card className="bg-card/60 backdrop-blur-xl border-border/30 p-3 hover:border-amber-500/20 transition-all">
       <div className="flex items-start justify-between mb-1">
-        <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+        <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
           <Icon className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
         </div>
         {positive ? <ArrowUpRight className="h-3.5 w-3.5 text-chart-2" /> : <ArrowDownRight className="h-3.5 w-3.5 text-destructive" />}
@@ -733,7 +733,7 @@ export default function InvestmentAnalysisTools() {
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <div className="text-center mb-6">
-          <Badge className="mb-3 bg-gradient-to-r from-amber-500/20 to-yellow-400/20 text-amber-600 dark:text-amber-400 border-amber-500/30">
+          <Badge className="mb-3 bg-primary/20 text-amber-600 dark:text-amber-400 border-amber-500/30">
             <Sparkles className="h-3 w-3 mr-1" /> Professional Analysis
           </Badge>
           <h2 className="text-xl sm:text-2xl font-bold text-foreground">Investment Analysis Tools</h2>

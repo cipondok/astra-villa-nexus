@@ -37,7 +37,7 @@ export default function ScheduleVisitButton({ propertyId, agentId, propertyTitle
       <Button
         variant={variant}
         size={size}
-        className={`${isGold ? 'bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white border-0 shadow-sm shadow-amber-500/20' : 'border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10'} ${className}`}
+        className={`${isGold ? 'bg-primary hover:from-amber-500 hover:to-yellow-400 text-primary-foreground border-0 shadow-sm shadow-amber-500/20' : 'border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10'} ${className}`}
         onClick={handleClick}
       >
         <Calendar className="h-3.5 w-3.5 mr-1" />

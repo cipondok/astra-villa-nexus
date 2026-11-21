@@ -32,30 +32,7 @@ const UpgradeBanner = ({ onDismiss }: UpgradeBannerProps) => {
           exit={{ y: 100, opacity: 0 }}
           className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:max-w-md"
         >
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary via-primary to-primary/80 p-4 shadow-2xl">
-            {/* Animated background sparkles */}
-            <div className="absolute inset-0 overflow-hidden">
-              {[...Array(5)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-1 bg-primary-foreground/30 rounded-full"
-                  style={{
-                    left: `${20 + i * 15}%`,
-                    top: `${30 + (i % 3) * 20}%`,
-                  }}
-                  animate={{
-                    opacity: [0, 1, 0],
-                    scale: [0, 1.5, 0],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.4,
-                  }}
-                />
-              ))}
-            </div>
-
+          <div className="relative overflow-hidden rounded-xl bg-primary p-4 shadow-2xl">
             {/* Close button */}
             <button
               onClick={handleDismiss}

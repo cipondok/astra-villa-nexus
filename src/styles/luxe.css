@@ -43,19 +43,16 @@
   --luxe-blur-mobile:   blur(14px) saturate(135%);
 
   /* Page composition — token-driven, no hardcoded hex */
-  --luxe-page-bg:
-    radial-gradient(1200px 700px at 80% -10%, hsl(var(--primary) / 0.10), transparent 60%),
-    radial-gradient(900px 600px at -10% 30%, hsl(var(--accent) / 0.08), transparent 60%),
-    hsl(var(--background));
+  --luxe-page-bg:     hsl(var(--background));
   --luxe-header-scrolled-bg:  hsl(var(--background) / 0.82);
   --luxe-mega-bg:             hsl(var(--card) / 0.96);
-  --luxe-dock-bg:             linear-gradient(180deg, hsl(var(--card) / 0.88), hsl(var(--background) / 0.72));
+  --luxe-dock-bg:             hsl(var(--card) / 0.94);
   --luxe-mobile-menu-bg:      hsl(var(--background));
   --luxe-boot-bg:             hsl(var(--background));
-  --luxe-cta-bg:              linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%);
+  --luxe-cta-bg:              hsl(var(--card));
   --luxe-hero-vignette:       linear-gradient(180deg, hsl(var(--foreground) / 0.22) 0%, hsl(var(--foreground) / 0.06) 42%, hsl(var(--background) / 0.78) 100%);
   --luxe-hero-floor:          radial-gradient(60% 50% at 50% 90%, hsl(var(--background) / 0.82), transparent 70%);
-  --luxe-hero-depth:          linear-gradient(180deg, hsl(var(--primary) / 0.10) 0%, transparent 30%, transparent 60%, hsl(var(--muted) / 0.72) 100%);
+  --luxe-hero-depth:          linear-gradient(180deg, transparent 0%, transparent 60%, hsl(var(--muted) / 0.72) 100%);
   --luxe-gold-btn-fg:         hsl(var(--primary-foreground));
   --luxe-on-hover-tint:       hsl(var(--foreground) / 0.04);
 
@@ -75,7 +72,7 @@
   /* Shadows — soft, token-driven */
   --luxe-shadow-card:  var(--shadow-soft, 0 1px 2px hsl(var(--foreground) / 0.04), 0 8px 24px -12px hsl(var(--foreground) / 0.12));
   --luxe-shadow-float: var(--shadow-lift, 0 24px 60px -28px hsl(var(--foreground) / 0.28));
-  --luxe-shadow-gold:  0 10px 28px -10px hsl(var(--primary) / 0.35);
+  --luxe-shadow-gold:  none; /* matte finish — no gold glow */
 
   /* Rhythm */
   --luxe-gutter:    16px;
@@ -145,7 +142,7 @@
   box-shadow: var(--luxe-shadow-card);
 }
 :root:not(.dark) .luxe-glass-card {
-  border-color: rgba(200,169,107,0.22);
+  border-color: var(--line-gold);
 }
 .luxe-card {
   background: var(--luxe-glass-strong);
@@ -154,25 +151,25 @@
   box-shadow: var(--luxe-shadow-card);
 }
 :root:not(.dark) .luxe-card {
-  border-color: rgba(200,169,107,0.25);
+  border-color: var(--line-gold);
 }
 
 .luxe-card-glow { position: relative; }
 .luxe-card-glow::after {
   content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
-  background: radial-gradient(120% 80% at 50% 0%, rgba(200,169,107,0.22), transparent 60%);
-  opacity: 0; transition: opacity .6s var(--luxe-ease);
+  /* matte finish: hover only strengthens the hairline border, no glow */
+  border: 1px solid transparent; opacity: 1; transition: border-color .3s var(--luxe-ease);
 }
-.luxe-card-glow:hover::after { opacity: 1; }
+.luxe-card-glow:hover::after { border-color: var(--line-gold-strong); }
 
 /* ---------- Buttons ---------- */
 .luxe-gold-btn {
-  background: linear-gradient(180deg, var(--luxe-gold-soft) 0%, var(--luxe-gold) 100%);
+  background: var(--luxe-gold);
   color: var(--luxe-gold-btn-fg);
-  box-shadow: var(--luxe-shadow-gold), inset 0 1px 0 rgba(255,255,255,0.35);
-  transition: filter var(--luxe-dur-fast) var(--luxe-ease), transform var(--luxe-dur-fast) var(--luxe-ease);
+  box-shadow: none;
+  transition: background-color var(--luxe-dur-fast) var(--luxe-ease), transform var(--luxe-dur-fast) var(--luxe-ease);
 }
-.luxe-gold-btn:hover { filter: brightness(1.05); }
+.luxe-gold-btn:hover { background: hsl(var(--accent)); }
 .luxe-gold-btn:active { transform: scale(0.98); }
 
 .luxe-ghost-btn {
@@ -189,7 +186,7 @@
 /* ---------- Decorative ---------- */
 .luxe-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200,169,107,0.45), transparent);
+  background: linear-gradient(90deg, transparent, var(--line-gold-strong), transparent);
 }
 .luxe-eyebrow {
   font-family: var(--luxe-sans);
@@ -221,15 +218,12 @@
 .luxe-pulse    { animation: luxePulse 2.6s ease-in-out infinite; }
 .luxe-cue      { animation: luxeCue 2.4s ease-in-out infinite; }
 .luxe-shimmer {
-  background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(200,169,107,0.08) 50%, rgba(255,255,255,0.02) 100%);
-  background-size: 200% 100%;
-  animation: luxeShimmer 1.8s ease-in-out infinite;
+  /* matte skeleton — static neutral surface, no light sweep */
+  background: hsl(var(--muted));
 }
 .luxe-gold-shimmer {
-  background: linear-gradient(90deg, var(--luxe-gold) 0%, var(--luxe-gold-soft) 45%, var(--luxe-gold) 60%, var(--luxe-gold-deep) 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: luxeShimmer 7s linear infinite;
+  /* matte finish — solid champagne text, no sweep */
+  color: var(--luxe-gold);
 }
 
 /* ---------- Tap feedback ---------- */
@@ -246,13 +240,13 @@
   border: 1px solid var(--luxe-line);
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
-  box-shadow: 0 24px 60px -20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4);
+  box-shadow: 0 24px 60px -20px rgba(0,0,0,0.25);
 }
 :root.dark .luxe-dock {
-  box-shadow: 0 24px 60px -20px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 24px 60px -20px rgba(0,0,0,0.7);
 }
 .luxe-dock-active {
-  background: radial-gradient(60% 100% at 50% 0%, rgba(200,169,107,0.22), transparent 70%);
+  background: var(--tint-gold);
 }
 
 /* ---------- Performance gates ---------- */
@@ -268,10 +262,9 @@
 .luxe-boot-mark {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
   width: 64px; height: 64px; border-radius: 9999px;
-  background: linear-gradient(135deg,var(--luxe-gold-soft),var(--luxe-gold-deep));
+  background: var(--luxe-gold);
   display: grid; place-items: center;
-  box-shadow: 0 20px 60px -20px rgba(200,169,107,0.6);
-  animation: luxePulse 2.6s ease-in-out infinite;
+  box-shadow: none;
 }
 
 /* ---------- Mobile polish + perf ---------- */

@@ -264,7 +264,7 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
                   className={cn(
                     "h-[40px] w-[40px] object-contain transition-all duration-500 rounded-lg",
                     isButtonActive 
-                      ? "drop-shadow-[0_0_8px_hsla(var(--primary),0.5)]" 
+                      ? "" 
                       : "opacity-70",
                     !isDragging && isButtonActive && "hover:rotate-12"
                   )}

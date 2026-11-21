@@ -12,9 +12,9 @@ const buttonVariants = cva(
       variant: {
         default: "btn-primary",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 border border-destructive",
-        outline: "macos-button-secondary border-input hover:bg-accent hover:text-accent-foreground",
+        outline: "macos-button-secondary border-input hover:bg-primary/10 hover:text-foreground",
         secondary: "btn-secondary",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-primary/10 hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         cta: "btn-cta",
         // Premium Gold-Orange Variants

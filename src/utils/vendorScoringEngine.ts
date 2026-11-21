@@ -291,7 +291,7 @@ export const TIER_LABELS: Record<string, string> = {
 
 export const TIER_COLORS: Record<string, string> = {
   diamond: 'text-cyan-100 bg-gradient-to-r from-cyan-600 to-blue-500',
-  gold: 'text-amber-900 bg-gradient-to-r from-amber-400 to-yellow-300',
+  gold: 'text-amber-900 bg-primary',
   silver: 'text-slate-700 bg-gradient-to-r from-slate-300 to-slate-200',
   starter: 'text-stone-700 bg-gradient-to-r from-stone-300 to-stone-200',
 };

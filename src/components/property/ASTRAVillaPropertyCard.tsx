@@ -98,7 +98,7 @@ const ASTRAVillaPropertyCard = ({
         "group relative overflow-hidden rounded-xl",
         "bg-card will-change-transform",
         property.owner_subscription_type === 'enterprise'
-          ? "border border-[hsl(var(--gold-primary)/0.5)] shadow-[0_0_15px_-3px_hsl(var(--gold-primary)/0.15)]"
+          ? "border border-[hsl(var(--gold-primary)/0.5)]"
           : "border border-border",
         "hover:border-primary/30",
         "shadow-sm hover:shadow-[0_12px_28px_-8px_hsl(var(--primary)/0.12)]",

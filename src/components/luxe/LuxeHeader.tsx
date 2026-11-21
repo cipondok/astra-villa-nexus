@@ -66,8 +66,8 @@ export function LuxeHeader() {
                 aria-hidden
                 className="relative w-9 h-9 rounded-full grid place-items-center overflow-hidden transition-transform duration-500 group-hover:scale-[1.04]"
                 style={{
-                  background: "radial-gradient(120% 120% at 30% 25%, #E7CE96 0%, #C8A96B 45%, #6F5320 100%)",
-                  boxShadow: "0 6px 20px -8px rgba(200,169,107,0.55), inset 0 0 0 1px rgba(255,255,255,0.18)",
+                  background: "#C6A66B",
+                  boxShadow: "inset 0 0 0 1px rgba(9,9,9,0.12)",
                 }}
               >
                 <img src={headerLogo} alt="" className="relative w-7 h-7 object-contain" loading="eager" decoding="async" />
@@ -137,7 +137,7 @@ export function LuxeHeader() {
               {(() => {
                 const baseIcon = "relative w-9 h-9 grid place-items-center rounded-full border transition-colors";
                 const idleIcon = "bg-luxe-glass border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold";
-                const activeIcon = "bg-[color:var(--luxe-gold)]/12 border-[color:var(--luxe-gold)]/55 text-luxe-gold shadow-[0_0_0_1px_rgba(200,169,107,0.25)]";
+                const activeIcon = "bg-[color:var(--luxe-gold)]/12 border-[color:var(--luxe-gold)]/55 text-luxe-gold shadow-[0_0_0_1px_rgba(198,166,107,0.25)]";
                 const ActiveDot = () => (
                   <span aria-hidden className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[color:var(--luxe-gold)]" />
                 );
@@ -175,7 +175,7 @@ export function LuxeHeader() {
                         to="/add-property"
                         aria-label="List a property"
                         title="List a property"
-                        className="hidden sm:inline-flex items-center gap-1.5 rounded-full text-[12px] font-medium luxe-gold-btn transition-all hover:shadow-[0_10px_28px_-12px_rgba(200,169,107,0.7)] h-9 px-2.5 xl:px-3.5"
+                        className="hidden sm:inline-flex items-center gap-1.5 rounded-full text-[12px] font-medium luxe-gold-btn transition-all hover:shadow-[0_10px_28px_-12px_rgba(198,166,107,0.7)] h-9 px-2.5 xl:px-3.5"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span className="hidden xl:inline">List Property</span>
@@ -225,7 +225,7 @@ export function LuxeHeader() {
             <Link to="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
               <span aria-hidden className="w-9 h-9 rounded-full grid place-items-center overflow-hidden"
                 style={{
-                  background: "radial-gradient(120% 120% at 30% 25%, #E7CE96 0%, #C8A96B 45%, #6F5320 100%)",
+                  background: "#C6A66B",
                   boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.18)",
                 }}>
                 <img src={headerLogo} alt="" className="w-7 h-7 object-contain" />
@@ -253,7 +253,7 @@ export function LuxeHeader() {
                     </span>
                     <span className="flex items-center gap-2">
                       {linkActive && (
-                        <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-gold)] shadow-[0_0_10px_rgba(200,169,107,0.7)]" />
+                        <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-gold)]" />
                       )}
                       <ArrowUpRight className={cn("w-5 h-5 transition-colors", linkActive ? "text-luxe-gold" : "text-luxe-mut group-hover:text-luxe-gold")} />
                     </span>

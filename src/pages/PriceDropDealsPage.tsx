@@ -171,7 +171,7 @@ export default function PriceDropDealsPage() {
                   className={cn(
                     'bg-card/80 backdrop-blur border cursor-pointer transition-all hover:scale-[1.02] hover:shadow-lg',
                     tier.bg,
-                    deal.alert_tier === 'elite_deal' && 'shadow-[0_0_16px_hsl(var(--gold-primary)/0.2)]'
+                    deal.alert_tier === 'elite_deal' && ''
                   )}
                 >
                   <CardHeader className="pb-2">

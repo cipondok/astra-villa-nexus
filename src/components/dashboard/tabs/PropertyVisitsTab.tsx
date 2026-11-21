@@ -71,7 +71,7 @@ export default function PropertyVisitsTab() {
           <CardContent className="p-3 space-y-2">
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-500/15 to-yellow-400/10 border border-amber-500/15 flex items-center justify-center flex-shrink-0">
+                <div className="h-9 w-9 rounded-xl bg-primary/15 border border-amber-500/15 flex items-center justify-center flex-shrink-0">
                   <Calendar className="h-4 w-4 text-amber-500" />
                 </div>
                 <div className="min-w-0">
@@ -110,7 +110,7 @@ export default function PropertyVisitsTab() {
       {/* View Toggle */}
       <div className="flex items-center justify-between">
         <h3 className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-          <div className="w-5 h-5 rounded-md bg-gradient-to-br from-amber-500/20 to-yellow-400/10 flex items-center justify-center">
+          <div className="w-5 h-5 rounded-md bg-primary/20 flex items-center justify-center">
             <Calendar className="h-3 w-3 text-amber-500" />
           </div>
           My Visits
@@ -124,7 +124,7 @@ export default function PropertyVisitsTab() {
           <Button
             variant={viewMode === 'calendar' ? 'default' : 'ghost'}
             size="sm"
-            className={`h-6 text-[10px] px-2 gap-1 rounded-md ${viewMode === 'calendar' ? 'bg-gradient-to-r from-amber-600 to-yellow-500 text-white border-0 shadow-sm' : ''}`}
+            className={`h-6 text-[10px] px-2 gap-1 rounded-md ${viewMode === 'calendar' ? 'bg-primary text-primary-foreground border-0 shadow-sm' : ''}`}
             onClick={() => setViewMode('calendar')}
           >
             <CalendarDays className="h-3 w-3" /> Calendar
@@ -132,7 +132,7 @@ export default function PropertyVisitsTab() {
           <Button
             variant={viewMode === 'list' ? 'default' : 'ghost'}
             size="sm"
-            className={`h-6 text-[10px] px-2 gap-1 rounded-md ${viewMode === 'list' ? 'bg-gradient-to-r from-amber-600 to-yellow-500 text-white border-0 shadow-sm' : ''}`}
+            className={`h-6 text-[10px] px-2 gap-1 rounded-md ${viewMode === 'list' ? 'bg-primary text-primary-foreground border-0 shadow-sm' : ''}`}
             onClick={() => setViewMode('list')}
           >
             <List className="h-3 w-3" /> List
@@ -159,7 +159,7 @@ export default function PropertyVisitsTab() {
             {upcoming.length === 0 ? (
               <Card className="bg-card/60 border-border/30 border-dashed">
                 <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-400/5 border border-amber-500/15 flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 border border-amber-500/15 flex items-center justify-center mx-auto mb-3">
                     <Calendar className="h-6 w-6 text-amber-500/40" />
                   </div>
                   <p className="text-xs text-muted-foreground">No upcoming visits scheduled</p>

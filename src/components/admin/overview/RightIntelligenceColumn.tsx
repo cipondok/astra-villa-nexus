@@ -79,7 +79,7 @@ const RightIntelligenceColumn = React.memo(function RightIntelligenceColumn({
                 <button className="w-full p-3 flex items-center justify-between gap-2 hover:bg-muted/40 transition-colors group text-left">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className={`h-2.5 w-2.5 rounded-full shrink-0 ${
-                      systemHealth?.status === 'healthy' ? 'bg-chart-1 shadow-[0_0_6px_hsl(var(--chart-1)/0.5)]' : 'bg-destructive shadow-[0_0_6px_hsl(var(--destructive)/0.5)]'
+                      systemHealth?.status === 'healthy' ? 'bg-chart-1' : 'bg-destructive'
                     }`} />
                     <span className="text-sm font-semibold text-foreground truncate">
                       {systemHealth?.status === 'healthy' ? 'All Systems OK' : 'Issues Detected'}

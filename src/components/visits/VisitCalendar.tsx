@@ -75,7 +75,7 @@ export default function VisitCalendar({ visits, onCancelVisit, onRescheduleVisit
       transition={{ duration: 0.4 }}
     >
       <div className="rounded-xl border border-amber-500/20 overflow-hidden">
-        <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+        <div className="h-1 w-full bg-primary" />
         <Calendar
           mode="single"
           selected={selectedDate}

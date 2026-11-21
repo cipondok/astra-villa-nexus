@@ -17,7 +17,7 @@
     
     <!-- PWA Configuration -->
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#0A1931" />
+    <meta name="theme-color" content="#090909" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -135,7 +135,7 @@
         var key = 'astra-villa-theme';
         var saved = null;
         try { saved = localStorage.getItem(key); } catch(e) {}
-        var theme = saved || 'system';
+        var theme = saved || 'astra-black-gold';
         var isDark = false;
         if (theme === 'astra-black-gold' || theme === 'dark') isDark = true;
         else if (theme === 'system') isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;

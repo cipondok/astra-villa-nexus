@@ -134,7 +134,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
             className="absolute inset-0 rounded-2xl border-2 border-transparent"
             style={{
               borderTopColor: 'rgba(0, 153, 230, 0.6)',
-              borderRightColor: 'rgba(212, 175, 55, 0.4)'
+              borderRightColor: 'rgba(198,166,107, 0.4)'
             }}
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
@@ -152,7 +152,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
             <motion.span 
               className="inline-block"
               style={{
-                background: 'linear-gradient(135deg, #0099e6 0%, #00d4ff 50%, #d4af37 100%)',
+                background: 'linear-gradient(135deg, #0099e6 0%, #00d4ff 50%, #C6A66B 100%)',
                 backgroundSize: '200% 200%',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -184,7 +184,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
               key={i}
               className="w-2 h-2 rounded-full"
               style={{
-                background: i < 2 ? '#0099e6' : i < 4 ? '#00d4ff' : '#d4af37'
+                background: i < 2 ? '#0099e6' : i < 4 ? '#00d4ff' : '#C6A66B'
               }}
               animate={{
                 y: [0, -10, 0],
@@ -216,7 +216,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full"
               style={{
-                background: 'linear-gradient(90deg, #0099e6, #00d4ff, #d4af37)',
+                background: 'linear-gradient(90deg, #0099e6, #00d4ff, #C6A66B)',
                 filter: 'blur(3px)',
               }}
               initial={{ width: '0%' }}
@@ -226,7 +226,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full"
               style={{
-                background: 'linear-gradient(90deg, #0099e6, #00d4ff, #d4af37, #0099e6)',
+                background: 'linear-gradient(90deg, #0099e6, #00d4ff, #C6A66B, #0099e6)',
                 backgroundSize: '300% 100%'
               }}
               initial={{ width: '0%' }}

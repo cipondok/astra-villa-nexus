@@ -17,7 +17,7 @@ export function LuxeFooter() {
           <div className="col-span-2">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full grid place-items-center overflow-hidden"
-                style={{ background: "linear-gradient(135deg,#C8A96B,#8C6B2F)" }}>
+                style={{ background: "linear-gradient(135deg,#C6A66B,#8C6B2F)" }}>
                 <img src={footerLogo} alt="Astra Villa" className="w-6 h-6 object-contain" />
               </div>
               <span className="font-serif-l text-[18px]">Astra<span className="text-luxe-gold"> Villa</span></span>

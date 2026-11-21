@@ -20,6 +20,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
 import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
+import { reosTokens } from "@/components/reos/ReosShell";
 
 
 /* ============================================================
@@ -28,109 +29,8 @@ import { useBrandingLogo } from "@/hooks/useBrandingLogo";
    Black / Gold luxury palette, dashboard-style composition.
    ============================================================ */
 
-const tokens = `
-  .reos {
-    /* Dark (default) — ASTRA Navy + Gold */
-    --bg: #0A1931;
-    --bg-2: #0D2140;
-    --surface: #12264A;
-    --surface-2: #162C52;
-    --line: rgba(212,175,55,0.14);
-    --line-strong: rgba(212,175,55,0.32);
-    --gold: #D4AF37;
-    --gold-2: #E4C56A;
-    --gold-soft: rgba(212,175,55,0.10);
-    --text: #F4F1EA;
-    --text-2: #B8C4D4;
-    --text-3: #6B7A8E;
-    --success: #4ADE80;
-    --danger: #F87171;
-    --gold-fg: #0A1931;
-    --promo-gradient: linear-gradient(180deg, #0D2140, #0A1931);
-    --promo-gradient-diag: linear-gradient(135deg, #0D2140, #0A1931);
-    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(212,175,55,0.06), transparent 70%), #0A1931;
-    --hero-overlay: linear-gradient(110deg, rgba(10,25,49,0.94) 0%, rgba(10,25,49,0.62) 55%, transparent 100%);
-    --hero-text: #F4F1EA;
-    --hero-text-2: #C8D0DC;
-    --shadow-soft: 0 8px 32px rgba(0,0,0,0.35);
-    --shadow-lift: 0 4px 16px rgba(0,0,0,0.25);
-    --shadow-popover: 0 25px 50px -12px rgba(0,0,0,0.5);
-    color: var(--text);
-    background: var(--bg);
-    font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
-    letter-spacing: -0.005em;
-  }
-  /* Light mode overrides — Pearl White + Gold */
-  html:not(.dark) .reos {
-    /* ASTRA Villa REOS — Luxury Light (Bloomberg × Apple × Private Banking) */
-    --bg: #F7F5F0;             /* warm ivory */
-    --bg-2: #FCFCFC;
-    --surface: #FFFFFF;
-    --surface-2: #FCFCFC;
-    --line: #E5E7EB;
-    --line-strong: rgba(212,175,55,0.34);
-    --gold: #D4AF37;           /* primary luxury gold */
-    --gold-2: #B8941F;         /* deeper gold for CTAs/strong text */
-    --gold-soft: rgba(212,175,55,0.10);
-    --text: #0A1931;
-    --text-2: #6B7280;
-    --text-3: #9CA3AF;
-    --success: #22C55E;
-    --danger: #EF4444;
-    --gold-fg: #0A1931;        /* navy text on gold CTA for AA contrast */
-    --promo-gradient: linear-gradient(180deg, #FFFFFF 0%, #FCFCFC 50%, #F7F5F0 100%);
-    --promo-gradient-diag: linear-gradient(135deg, #FFFFFF 0%, #FCFCFC 50%, #F7F5F0 100%);
-    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(212,175,55,0.12), transparent 70%), #FFFFFF;
-    /* Light mode: warm ivory overlay so the image shows through with dark text for contrast */
-    --hero-overlay: linear-gradient(110deg, rgba(247,245,240,0.92) 0%, rgba(247,245,240,0.55) 55%, rgba(247,245,240,0.15) 100%);
-    --hero-text: #0A1931;
-    --hero-text-2: #4B5563;
-    --shadow-soft: 0 8px 30px rgba(0,0,0,0.06);
-    --shadow-lift: 0 4px 14px rgba(0,0,0,0.05);
-    --shadow-popover: 0 20px 40px -12px rgba(0,0,0,0.08);
-  }
-  .reos *::selection { background: var(--gold); color: #fff; }
-  .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
-  .reos-card-2 { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
-  .reos-gold { color: var(--gold-2); }
-  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: var(--gold-fg); font-weight: 600; border: 1px solid var(--line-strong); }
-  .reos-cta:hover { filter: brightness(1.06); }
-  .reos-cta:hover { filter: brightness(1.06); }
-  .reos-outline { border: 1px solid var(--line-strong); }
-  .reos-chip { border: 1px solid var(--line); color: var(--text-2); }
-  .reos-chip:hover { border-color: var(--line-strong); color: var(--text); }
-  .reos-tab-active { color: var(--gold-2); }
-  .reos-tab-active::after { content:''; position:absolute; left:50%; bottom:-10px; transform:translateX(-50%); width: 28px; height: 2px; background: var(--gold); border-radius: 2px; }
-  .reos-divider { background-image: linear-gradient(90deg, transparent, var(--line-strong), transparent); height: 1px; }
-  .reos-shadow { box-shadow: 0 24px 60px -28px rgba(200,169,106,0.25); }
-  .reos-scrollbar::-webkit-scrollbar{width:6px;height:6px}
-  .reos-scrollbar::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:3px}
-
-  /* === Global override while REOS is mounted — restyle floating chat widget === */
-  html[data-reos-theme="on"].dark {
-    --background: 217 66% 12%;
-    --foreground: 42 30% 94%;
-    --card: 217 60% 8%;
-    --card-foreground: 42 30% 94%;
-    --popover: 217 60% 8%;
-    --popover-foreground: 42 30% 94%;
-    --primary: 46 65% 52%;
-    --primary-foreground: 217 66% 12%;
-    --secondary: 217 50% 16%;
-    --secondary-foreground: 42 30% 94%;
-    --muted: 217 50% 16%;
-    --muted-foreground: 42 15% 65%;
-    --accent: 46 70% 62%;
-    --accent-foreground: 217 66% 12%;
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 217 40% 22%;
-    --input: 217 40% 22%;
-    --ring: 46 65% 52%;
-    --chart-1: 46 65% 52%;
-    --chart-5: 46 70% 62%;
-  }
-`;
+/* Home uses the shared REOS palette (single source of truth in ReosShell). */
+const tokens = reosTokens;
 
 /* ---------- Top tabs (under header) ---------- */
 const topTabs = [
@@ -683,7 +583,7 @@ export default function AstraReosHome() {
                           <div className="text-[10px] text-[var(--success)]">▲ {k.delta}</div>
                         </div>
                       </div>
-                      <Spark seed={k.seed} color="#D4AF37" />
+                      <Spark seed={k.seed} color="#C6A66B" />
                     </div>
                   ))}
                 </div>
@@ -870,7 +770,7 @@ export default function AstraReosHome() {
                   <div className="mt-2 text-[18px] font-semibold reos-gold">{s.value}</div>
                   {s.sub && <div className="text-[10px] text-[var(--text-2)] mt-0.5">{s.sub}</div>}
                   {s.delta && <div className="text-[10px] text-[var(--success)] mt-0.5">{s.delta}</div>}
-                  {s.chart && <div className="mt-2"><Spark seed={Math.random() * 10} color="#D4AF37" /></div>}
+                  {s.chart && <div className="mt-2"><Spark seed={Math.random() * 10} color="#C6A66B" /></div>}
                 </motion.div>
               ))}
 

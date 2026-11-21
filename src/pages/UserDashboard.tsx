@@ -153,7 +153,7 @@ const UserDashboard = () => {
             transition={{ duration: 0.5 }}
             className="relative overflow-hidden rounded-2xl"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-amber-500 to-yellow-400" />
+            <div className="absolute inset-0 bg-primary" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
@@ -194,7 +194,7 @@ const UserDashboard = () => {
           {/* Stats Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
             <StatCard icon={Heart} value={stats.savedProperties} label="Saved" color="bg-gradient-to-br from-rose-500/20 to-pink-500/20 text-rose-500" delay={0.1} />
-            <StatCard icon={Calendar} value={stats.messages} label="Bookings" color="bg-gradient-to-br from-amber-500/20 to-yellow-400/20 text-amber-600 dark:text-amber-400" delay={0.15} />
+            <StatCard icon={Calendar} value={stats.messages} label="Bookings" color="bg-primary/20 text-amber-600 dark:text-amber-400" delay={0.15} />
             <StatCard icon={Activity} value={recentActivity.length} label="Activities" color="bg-gradient-to-br from-emerald-500/20 to-green-400/20 text-emerald-500" delay={0.2} />
             <StatCard icon={Bell} value={stats.notifications} label="Alerts" color="bg-gradient-to-br from-violet-500/20 to-purple-400/20 text-violet-500" delay={0.25} />
           </div>
@@ -244,19 +244,19 @@ const UserDashboard = () => {
               <TabsContent value="overview" className="space-y-4">
                 {/* Quick Actions */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
-                  <QuickAction icon={Search} title="Browse Properties" desc="Find your dream home" color="bg-gradient-to-br from-amber-500/20 to-yellow-400/20 text-amber-600 dark:text-amber-400" onClick={() => navigate('/dijual')} delay={0.4} />
+                  <QuickAction icon={Search} title="Browse Properties" desc="Find your dream home" color="bg-primary/20 text-amber-600 dark:text-amber-400" onClick={() => navigate('/dijual')} delay={0.4} />
                   <QuickAction icon={Heart} title={`Saved (${stats.savedProperties})`} desc="View favorites" color="bg-gradient-to-br from-rose-500/20 to-pink-500/20 text-rose-500" onClick={() => {}} delay={0.45} />
                   <QuickAction icon={MessageSquare} title="Messages" desc="Chat with agents" color="bg-gradient-to-br from-blue-500/20 to-cyan-400/20 text-blue-500" onClick={() => {}} delay={0.5} />
                 </div>
 
                 {/* Recent Activity */}
                 <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-                  <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+                  <div className="h-1 w-full bg-primary" />
                   <CardHeader className="p-3 sm:p-4 pb-2">
                     <div className="flex items-center justify-between">
                       <div>
                         <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+                          <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
                             <Activity className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                           </div>
                           Recent Activity
@@ -285,7 +285,7 @@ const UserDashboard = () => {
                             transition={{ delay: 0.5 + idx * 0.05 }}
                             className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border border-border/20 bg-muted/30 hover:border-amber-500/20 hover:bg-amber-500/[0.03] transition-all"
                           >
-                            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500/15 to-yellow-400/15 flex items-center justify-center flex-shrink-0">
+                            <div className="h-8 w-8 rounded-lg bg-primary/15 flex items-center justify-center flex-shrink-0">
                               <Activity className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                             </div>
                             <div className="min-w-0 flex-1">
@@ -304,7 +304,7 @@ const UserDashboard = () => {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-amber-500/10 to-yellow-400/10 flex items-center justify-center mx-auto mb-3">
+                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                           <Sparkles className="h-6 w-6 text-amber-500/40" />
                         </div>
                         <p className="text-xs sm:text-sm text-muted-foreground font-medium">No recent activity</p>
@@ -313,7 +313,7 @@ const UserDashboard = () => {
                         </p>
                         <Button 
                           size="sm" 
-                          className="mt-4 h-8 sm:h-9 text-xs sm:text-sm bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white border-0 shadow-sm shadow-amber-500/20" 
+                          className="mt-4 h-8 sm:h-9 text-xs sm:text-sm bg-primary hover:from-amber-500 hover:to-yellow-400 text-primary-foreground border-0 shadow-sm shadow-amber-500/20" 
                           onClick={() => navigate('/dijual')}
                         >
                           <Search className="h-3.5 w-3.5 mr-1.5" />
@@ -344,10 +344,10 @@ const UserDashboard = () => {
 
               <TabsContent value="settings" className="space-y-4">
                 <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-                  <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+                  <div className="h-1 w-full bg-primary" />
                   <CardHeader className="p-3 sm:p-4 pb-2">
                     <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-                      <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+                      <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
                         <Settings className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                       </div>
                       Account Settings
@@ -377,7 +377,7 @@ const UserDashboard = () => {
                             {field.isBadge ? (
                               <Badge 
                                 variant={field.value === 'verified' ? 'default' : 'secondary'}
-                                className={`text-[10px] sm:text-xs ${field.value === 'verified' ? 'bg-gradient-to-r from-amber-500/20 to-yellow-400/20 text-amber-700 dark:text-amber-400 border-amber-500/30' : ''}`}
+                                className={`text-[10px] sm:text-xs ${field.value === 'verified' ? 'bg-primary/20 text-amber-700 dark:text-amber-400 border-amber-500/30' : ''}`}
                               >
                                 {field.value}
                               </Badge>
@@ -389,7 +389,7 @@ const UserDashboard = () => {
                       </div>
                       <Button 
                         onClick={() => navigate('/profile')} 
-                        className="w-full sm:w-auto h-9 text-xs sm:text-sm bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white border-0 shadow-sm shadow-amber-500/20"
+                        className="w-full sm:w-auto h-9 text-xs sm:text-sm bg-primary hover:from-amber-500 hover:to-yellow-400 text-primary-foreground border-0 shadow-sm shadow-amber-500/20"
                       >
                         <Settings className="h-3.5 w-3.5 mr-1.5" />
                         Edit Profile

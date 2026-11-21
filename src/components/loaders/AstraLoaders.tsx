@@ -47,30 +47,8 @@ function useRotatingMessage(messages: string[], intervalMs = 1800) {
 /* -------------------------------------------------------------------------- */
 /*  Floating gold particles (decorative)                                      */
 /* -------------------------------------------------------------------------- */
-const Particles: React.FC<{ count?: number }> = ({ count = 12 }) => (
-  <div className="pointer-events-none absolute inset-0 overflow-hidden">
-    {Array.from({ length: count }).map((_, i) => (
-      <motion.span
-        key={i}
-        className="absolute h-1 w-1 rounded-full bg-[hsl(var(--gold-primary))]/40"
-        style={{
-          left: `${(i * 83) % 100}%`,
-          top: `${(i * 47) % 100}%`,
-        }}
-        animate={{
-          y: [0, -30, 0],
-          opacity: [0.1, 0.6, 0.1],
-        }}
-        transition={{
-          duration: 4 + (i % 4),
-          repeat: Infinity,
-          delay: i * 0.2,
-          ease: 'easeInOut',
-        }}
-      />
-    ))}
-  </div>
-);
+// Matte finish: decorative floating particles are intentionally disabled (no sparkle/glitter).
+const Particles: React.FC<{ count?: number }> = () => null;
 
 /* -------------------------------------------------------------------------- */
 /*  ASTRA Logo Ring                                                           */
@@ -92,7 +70,7 @@ const AstraLogoRing: React.FC<{ size?: number }> = ({ size = 88 }) => (
       transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
     />
     <div className="absolute inset-0 flex items-center justify-center">
-      <span className="bg-gradient-to-br from-[hsl(var(--gold-primary))] to-[hsl(var(--gold-secondary))] bg-clip-text text-lg font-bold tracking-widest text-transparent">
+      <span className="text-lg font-bold tracking-widest text-primary">
         AV
       </span>
     </div>
@@ -138,11 +116,11 @@ export const AstraPageLoader: React.FC<AstraPageLoaderProps> = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="relative flex flex-col items-center gap-5 rounded-3xl border border-[hsl(var(--gold-primary))]/15 bg-background/60 px-10 py-9 shadow-[0_30px_80px_-30px_hsl(var(--gold-primary)/0.35)] backdrop-blur-2xl"
+        className="relative flex flex-col items-center gap-5 rounded-3xl border border-[hsl(var(--gold-primary))]/15 bg-background/60 px-10 py-9 shadow-[var(--shadow-popover)] backdrop-blur-2xl"
       >
         <AstraLogoRing />
         <div className="text-center">
-          <h2 className="bg-gradient-to-r from-[hsl(var(--gold-primary))] via-[hsl(var(--gold-secondary))] to-[hsl(var(--orange-primary))] bg-clip-text text-xl font-bold tracking-wide text-transparent">
+          <h2 className="text-xl font-bold tracking-wide text-primary">
             ASTRA Villa
           </h2>
           <p className="mt-1 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
@@ -163,7 +141,7 @@ export const AstraPageLoader: React.FC<AstraPageLoaderProps> = ({
         </AnimatePresence>
         <div className="h-1 w-44 overflow-hidden rounded-full bg-muted/40">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-[hsl(var(--gold-primary))] via-[hsl(var(--gold-secondary))] to-[hsl(var(--orange-primary))]"
+            className="h-full rounded-full bg-primary"
             initial={{ width: '0%' }}
             animate={{ width: ['0%', '100%', '0%'] }}
             transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
@@ -382,7 +360,7 @@ export const AILoader: React.FC<{ steps?: string[]; title?: string }> = ({
             className={cn(
               'h-1 flex-1 rounded-full transition-colors duration-500',
               i <= step
-                ? 'bg-gradient-to-r from-[hsl(var(--gold-primary))] to-[hsl(var(--gold-secondary))]'
+                ? 'bg-primary'
                 : 'bg-muted/40',
             )}
           />
@@ -458,7 +436,7 @@ export const Tour3DLoader: React.FC<{ progress?: number; label?: string }> = ({
       <p className="text-sm font-semibold text-foreground">{label}</p>
       <div className="h-1.5 w-64 overflow-hidden rounded-full bg-muted/40">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-[hsl(var(--gold-primary))] via-[hsl(var(--gold-secondary))] to-[hsl(var(--orange-primary))]"
+          className="h-full rounded-full bg-primary"
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         />

@@ -165,7 +165,7 @@ const DailyLoginReward = ({ autoShow = true }: DailyLoginRewardProps) => {
           particleCount: 80,
           spread: 60,
           origin: { y: 0.6 },
-          colors: ['#FFD700', '#FFA500', '#FF6347', '#9370DB'],
+          colors: ['#C6A66B', '#FFA500', '#FF6347', '#9370DB'],
         });
       });
     } catch (error) {

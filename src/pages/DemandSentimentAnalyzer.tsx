@@ -92,7 +92,7 @@ const DemandSentimentAnalyzer = () => {
               <Button variant="outline" className="border-white/10 text-slate-300 hover:bg-white/5 text-xs" onClick={() => toast.success('Sentiment alerts activated')}>
                 <Bell className="w-4 h-4 mr-2" /> Activate Alerts
               </Button>
-              <Button className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white border-0 text-xs" onClick={() => toast.success('Viewing opportunity matches...')}>
+              <Button className="bg-primary hover:from-amber-500 hover:to-orange-500 text-primary-foreground border-0 text-xs" onClick={() => toast.success('Viewing opportunity matches...')}>
                 <Target className="w-4 h-4 mr-2" /> Opportunity Matches
               </Button>
             </div>
@@ -146,7 +146,7 @@ const DemandSentimentAnalyzer = () => {
                 </div>
                 {/* Needle */}
                 <motion.div
-                  className="absolute top-0 w-0.5 h-12 bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)]"
+                  className="absolute top-0 w-0.5 h-12 bg-white"
                   initial={{ left: '0%' }}
                   animate={{ left: `${gaugePercent}%` }}
                   transition={{ duration: 1.5, ease: 'easeOut' }}

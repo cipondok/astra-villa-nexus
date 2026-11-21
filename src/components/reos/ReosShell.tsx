@@ -33,65 +33,82 @@ import { formatDistanceToNow } from "date-fns";
 
 export const reosTokens = `
   .reos {
-    /* ASTRA Villa REOS — Dark Navy + Gold (official brand guide) */
-    --bg: #0A1931;
-    --bg-2: #0D2140;
-    --surface: #12264A;
-    --surface-2: #162C52;
-    --line: rgba(212,175,55,0.14);
-    --line-strong: rgba(212,175,55,0.32);
-    --gold: #D4AF37;
-    --gold-2: #E4C56A;
-    --gold-soft: rgba(212,175,55,0.10);
-    --text: #F4F1EA;
-    --text-2: #B8C4D4;
-    --text-3: #6B7A8E;
+    /* ASTRA Villa REOS — Matte charcoal + satin champagne gold (approved emblem palette) */
+    --bg: #090909;            /* primary background */
+    --bg-2: #101010;          /* secondary surface */
+    --surface: #151515;       /* elevated card */
+    --surface-2: #101010;     /* nested card */
+    --inset: #0C0C0C;         /* deep inset */
+    --line: rgba(255,255,255,0.08);          /* dividers */
+    --line-gold: rgba(198,166,107,0.22);     /* restrained gold border */
+    --line-strong: rgba(198,166,107,0.34);   /* selected / hover border */
+    --gold: #C6A66B;          /* primary champagne */
+    --gold-2: #C6A66B;        /* gold text */
+    --gold-hover: #B99A62;    /* secondary muted gold */
+    --gold-soft: rgba(198,166,107,0.07);
+    --text: #F5F3EE;
+    --text-2: #B8B3A8;
+    --text-3: #858078;
     --success: #4ADE80;
     --danger: #F87171;
-    --gold-fg: #0A1931;
-    --promo-gradient: linear-gradient(180deg, #0D2140, #0A1931);
-    --hero-overlay: linear-gradient(110deg, rgba(10,25,49,0.94) 0%, rgba(10,25,49,0.62) 55%, transparent 100%);
-    --shadow-soft: 0 8px 32px rgba(0,0,0,0.35);
-    --shadow-lift: 0 4px 16px rgba(0,0,0,0.25);
-    --shadow-popover: 0 25px 50px -12px rgba(0,0,0,0.5);
+    --gold-fg: #090909;
+    --promo-gradient: linear-gradient(180deg, #101010, #090909);
+    --promo-gradient-diag: linear-gradient(135deg, #101010, #090909);
+    --hotspot-bg: #0C0C0C;
+    --hero-overlay: linear-gradient(110deg, rgba(9,9,9,0.94) 0%, rgba(9,9,9,0.62) 55%, transparent 100%);
+    --hero-text: #F5F3EE;
+    --hero-text-2: #B8B3A8;
+    --shadow-soft: 0 8px 32px rgba(0,0,0,0.45);
+    --shadow-lift: 0 4px 16px rgba(0,0,0,0.35);
+    --shadow-popover: 0 24px 48px -12px rgba(0,0,0,0.6);
     color: var(--text);
     background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
     letter-spacing: -0.005em;
   }
   html:not(.dark) .reos {
-    /* ASTRA Villa REOS — Luxury Light (Bloomberg × Apple × Private Banking) */
-    --bg: #F7F5F0;
-    --bg-2: #FCFCFC;
-    --surface: #FFFFFF;
-    --surface-2: #FCFCFC;
-    --line: #E5E7EB;
-    --line-strong: rgba(212,175,55,0.34);
-    --gold: #D4AF37;
-    --gold-2: #B8941F;
-    --gold-soft: rgba(212,175,55,0.10);
-    --text: #0A1931;
-    --text-2: #6B7280;
-    --text-3: #9CA3AF;
+    /* ASTRA Villa REOS — Warm pearl + muted champagne gold */
+    --bg: #F5F3EE;
+    --bg-2: #FCFBF8;
+    --surface: #FCFBF8;
+    --surface-2: #F8F6F1;
+    --inset: #EFEBE3;
+    --line: #E0DBD2;
+    --line-gold: rgba(198,166,107,0.32);
+    --line-strong: rgba(160,128,72,0.45);
+    --gold: #C6A66B;
+    --gold-2: #846A3C;        /* deeper champagne for text on pearl (AA) */
+    --gold-hover: #B99A62;
+    --gold-soft: rgba(198,166,107,0.10);
+    --text: #171614;
+    --text-2: #5F5A52;
+    --text-3: #858078;
     --success: #22C55E;
     --danger: #EF4444;
-    --gold-fg: #0A1931;
-    --shadow-soft: 0 8px 30px rgba(0,0,0,0.06);
-    --shadow-lift: 0 4px 14px rgba(0,0,0,0.05);
-    --shadow-popover: 0 20px 40px -12px rgba(0,0,0,0.08);
+    --gold-fg: #090909;
+    --promo-gradient: linear-gradient(180deg, #FCFBF8 0%, #F5F3EE 100%);
+    --promo-gradient-diag: linear-gradient(135deg, #FCFBF8 0%, #F5F3EE 100%);
+    --hotspot-bg: #FCFBF8;
+    --hero-overlay: linear-gradient(110deg, rgba(245,243,238,0.92) 0%, rgba(245,243,238,0.55) 55%, rgba(245,243,238,0.15) 100%);
+    --hero-text: #171614;
+    --hero-text-2: #5F5A52;
+    --shadow-soft: 0 8px 30px rgba(23,22,20,0.06);
+    --shadow-lift: 0 4px 14px rgba(23,22,20,0.05);
+    --shadow-popover: 0 20px 40px -12px rgba(23,22,20,0.12);
   }
-  .reos *::selection { background: var(--gold); color: #fff; }
-  .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
+  .reos *::selection { background: var(--gold); color: var(--gold-fg); }
+  .reos-card { background: var(--surface); border: 1px solid var(--line-gold); border-radius: 16px; }
   .reos-card-2 { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
   .reos-gold { color: var(--gold-2); }
-  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: var(--gold-fg); font-weight: 600; border: 1px solid var(--line-strong); }
-  .reos-cta:hover { filter: brightness(1.06); }
+  .reos-cta { background: var(--gold); color: var(--gold-fg); font-weight: 600; border: 1px solid var(--gold); transition: background-color 180ms ease, border-color 180ms ease; }
+  .reos-cta:hover { background: var(--gold-hover); border-color: var(--gold-hover); }
   .reos-outline { border: 1px solid var(--line-strong); }
   .reos-chip { border: 1px solid var(--line); color: var(--text-2); }
   .reos-chip:hover { border-color: var(--line-strong); color: var(--text); }
   .reos-tab-active { color: var(--gold-2); }
   .reos-tab-active::after { content:''; position:absolute; left:50%; bottom:-10px; transform:translateX(-50%); width: 28px; height: 2px; background: var(--gold); border-radius: 2px; }
-  .reos-divider { background-image: linear-gradient(90deg, transparent, var(--line-strong), transparent); height: 1px; }
+  .reos-divider { background-image: linear-gradient(90deg, transparent, var(--line-gold), transparent); height: 1px; }
+  .reos-shadow { box-shadow: 0 24px 60px -28px rgba(0,0,0,0.45); }
   .reos-scrollbar::-webkit-scrollbar{width:6px;height:6px}
   .reos-scrollbar::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:3px}
 `;
@@ -484,9 +501,9 @@ export function ReosHeader() {
                         type="button" role="menuitem"
                         aria-current={isManagementActive ? "page" : undefined}
                         onClick={() => { setProfileOpen(false); navigate("/my-properties"); }}
-                        className={`w-full text-left px-3 py-2 rounded-md text-[12.5px] inline-flex items-center gap-2 transition outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#D4AF37)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--surface)] ${
+                        className={`w-full text-left px-3 py-2 rounded-md text-[12.5px] inline-flex items-center gap-2 transition outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold,#C6A66B)] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--surface)] ${
                           isManagementActive
-                            ? "bg-[var(--surface-2)] text-[var(--gold,#D4AF37)] font-semibold border-l-2 border-[var(--gold,#D4AF37)] pl-[10px]"
+                            ? "bg-[var(--surface-2)] text-[var(--gold,#C6A66B)] font-semibold border-l-2 border-[var(--gold,#C6A66B)] pl-[10px]"
                             : "text-[var(--text)] hover:bg-[var(--surface-2)]"
                         }`}
                       >

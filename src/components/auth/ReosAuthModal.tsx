@@ -208,8 +208,8 @@ export function ReosAuthModal({
             className="relative w-full h-full md:h-[520px] md:w-[720px] md:rounded-2xl overflow-hidden flex flex-col md:flex-row"
             style={{
               background: "linear-gradient(180deg, rgba(18,18,20,0.94), rgba(11,11,12,0.96))",
-              border: "1px solid rgba(200,169,106,0.28)",
-              boxShadow: "0 40px 120px -20px rgba(200,169,106,0.25), 0 0 0 1px rgba(200,169,106,0.08), inset 0 1px 0 rgba(255,255,255,0.04)",
+              border: "1px solid rgba(198,166,107,0.28)",
+              boxShadow: "0 40px 100px -24px rgba(0,0,0,0.7), 0 0 0 1px rgba(198,166,107,0.22)",
             }}
             role="dialog" aria-modal="true" aria-label="ASTRA Villa authentication"
           >
@@ -233,16 +233,16 @@ export function ReosAuthModal({
               />
               {/* black → gold → dark emerald gradient overlay */}
               <div className="absolute inset-0" style={{
-                background: "linear-gradient(165deg, rgba(0,0,0,0.85) 0%, rgba(20,15,5,0.7) 40%, rgba(200,169,106,0.25) 65%, rgba(6,40,30,0.85) 100%)",
+                background: "linear-gradient(165deg, rgba(0,0,0,0.85) 0%, rgba(20,15,5,0.7) 40%, rgba(198,166,107,0.25) 65%, rgba(6,40,30,0.85) 100%)",
               }} />
               <div className="absolute inset-0" style={{
-                background: "radial-gradient(circle at 30% 80%, rgba(200,169,106,0.25), transparent 55%)",
+                background: "radial-gradient(circle at 30% 80%, rgba(198,166,107,0.25), transparent 55%)",
               }} />
 
               <div className="relative h-full flex flex-col justify-between p-6 text-white">
                 <div>
                   <div className="flex items-center gap-2">
-                    <div className="h-9 w-9 rounded-xl flex items-center justify-center font-bold text-black" style={{ background: "linear-gradient(180deg,#E0C384,#D4AF37)" }}>A</div>
+                    <div className="h-9 w-9 rounded-xl flex items-center justify-center font-bold text-black" style={{ background: "#C6A66B" }}>A</div>
                     <div className="leading-tight">
                       <div className="text-[11px] tracking-[0.28em] font-semibold">ASTRA VILLA</div>
                       <div className="text-[8px] tracking-[0.3em] text-white/60">REAL ESTATE OS</div>
@@ -251,7 +251,7 @@ export function ReosAuthModal({
                 </div>
 
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.25em] mb-2" style={{ color: "#E0C384" }}>Private Investor Platform</div>
+                  <div className="text-[10px] uppercase tracking-[0.25em] mb-2" style={{ color: "#C6A66B" }}>Private Investor Platform</div>
                   <h2 className="text-2xl font-semibold leading-tight">Welcome to ASTRA Villa</h2>
                   <p className="mt-1.5 text-[12px] text-white/70 leading-relaxed">
                     Southeast Asia's AI-Powered<br />Real Estate Operating System
@@ -261,7 +261,7 @@ export function ReosAuthModal({
                       <motion.li key={f}
                         initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 + i * 0.05 }}
                         className="flex items-center gap-2 text-[11.5px] text-white/85">
-                        <Check className="h-3 w-3" style={{ color: "#E0C384" }} /> {f}
+                        <Check className="h-3 w-3" style={{ color: "#C6A66B" }} /> {f}
                       </motion.li>
                     ))}
                   </ul>
@@ -270,7 +270,7 @@ export function ReosAuthModal({
             </div>
 
             {/* ===== RIGHT PANEL ===== */}
-            <div className="relative md:w-[56%] flex-1 flex flex-col bg-transparent text-[#F4F1EA]">
+            <div className="relative md:w-[56%] flex-1 flex flex-col bg-transparent text-[#F5F3EE]">
               <AnimatePresence mode="wait">
                 {/* ----- LOGIN ----- */}
                 {mode === "login" && (
@@ -293,7 +293,7 @@ export function ReosAuthModal({
                           placeholder="••••••••"
                           className={inputCls} />
                         <button type="button" onClick={() => setShowPw(s => !s)} aria-label={showPw ? "Hide password" : "Show password"}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9A958A] hover:text-[#F4F1EA]">
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9A958A] hover:text-[#F5F3EE]">
                           {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                       </Field>
@@ -301,7 +301,7 @@ export function ReosAuthModal({
                       <div className="flex items-center justify-between text-[12px]">
                         <label className="inline-flex items-center gap-2 cursor-pointer text-[#9A958A]">
                           <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)}
-                            className="h-3.5 w-3.5 rounded border-white/20 bg-transparent accent-[#D4AF37]" />
+                            className="h-3.5 w-3.5 rounded border-white/20 bg-transparent accent-[#C6A66B]" />
                           Remember me
                         </label>
                         <button
@@ -315,7 +315,7 @@ export function ReosAuthModal({
                             if (error) toast.error(error.message);
                             else toast.success("Password reset link sent. Check your email.");
                           }}
-                          className="hover:underline" style={{ color: "#E0C384" }}
+                          className="hover:underline" style={{ color: "#C6A66B" }}
                         >
                           Forgot password?
                         </button>
@@ -335,7 +335,7 @@ export function ReosAuthModal({
 
                       <div className="pt-3 text-center text-[12px] text-[#9A958A]">
                         New to ASTRA Villa?{" "}
-                        <button type="button" onClick={() => setMode("register")} className="font-medium hover:underline" style={{ color: "#E0C384" }}>
+                        <button type="button" onClick={() => setMode("register")} className="font-medium hover:underline" style={{ color: "#C6A66B" }}>
                           Create Account
                         </button>
                       </div>
@@ -374,15 +374,15 @@ export function ReosAuthModal({
                               <button key={p.value} type="button"
                                 role="radio" aria-checked={active}
                                 onClick={() => setReg(r => ({ ...r, purpose: p.value }))}
-                                className={`text-left rounded-xl border p-3 min-h-[44px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/70 ${active ? "border-[#D4AF37]" : "bg-white/[0.02] border-white/10 hover:border-[#D4AF37]/40"}`}
-                                style={active ? { borderColor: "#D4AF37", background: "rgba(200,169,106,0.08)" } : {}}
+                                className={`text-left rounded-xl border p-3 min-h-[44px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C6A66B]/70 ${active ? "border-[#C6A66B]" : "bg-white/[0.02] border-white/10 hover:border-[#C6A66B]/40"}`}
+                                style={active ? { borderColor: "#C6A66B", background: "rgba(198,166,107,0.08)" } : {}}
                               >
                                 <div className="flex items-center gap-2">
-                                  <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#D4AF37] text-black" : "bg-white/5"}`}>
+                                  <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#C6A66B] text-black" : "bg-white/5"}`}>
                                     <p.icon className="h-3.5 w-3.5" />
                                   </div>
                                   <div className="text-[12.5px] font-semibold">{p.label}</div>
-                                  {active && <Check className="ml-auto h-3.5 w-3.5" style={{ color: "#E0C384" }} />}
+                                  {active && <Check className="ml-auto h-3.5 w-3.5" style={{ color: "#C6A66B" }} />}
                                 </div>
                                 <div className="mt-1.5 text-[10.5px] text-[#9A958A] leading-snug">{p.description}</div>
                               </button>
@@ -414,7 +414,7 @@ export function ReosAuthModal({
                             onChange={(e) => setReg(r => ({ ...r, password: e.target.value }))}
                             placeholder="At least 8 characters" className={inputCls} />
                           <button type="button" onClick={() => setShowPw(s => !s)} aria-label={showPw ? "Hide password" : "Show password"}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9A958A] hover:text-[#F4F1EA]">
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9A958A] hover:text-[#F5F3EE]">
                             {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                           </button>
                         </Field>
@@ -423,14 +423,14 @@ export function ReosAuthModal({
                             <select id="reg-country" value={reg.country}
                               onChange={(e) => setReg(r => ({ ...r, country: e.target.value }))}
                               className={inputCls + " appearance-none"}>
-                              {countries.map(c => <option key={c} value={c} className="bg-[#0D2140]">{c}</option>)}
+                              {countries.map(c => <option key={c} value={c} className="bg-[#101010]">{c}</option>)}
                             </select>
                           </Field>
                           <Field id="reg-lang" label="Language" icon={Languages} error={regErr.language}>
                             <select id="reg-lang" value={reg.language}
                               onChange={(e) => setReg(r => ({ ...r, language: e.target.value }))}
                               className={inputCls + " appearance-none"}>
-                              {languages.map(l => <option key={l.v} value={l.v} className="bg-[#0D2140]">{l.label}</option>)}
+                              {languages.map(l => <option key={l.v} value={l.v} className="bg-[#101010]">{l.label}</option>)}
                             </select>
                           </Field>
                         </div>
@@ -452,14 +452,14 @@ export function ReosAuthModal({
                             return (
                               <button key={opt.v} type="button"
                                 onClick={() => setReg(r => ({ ...r, interests: active ? r.interests.filter(x => x !== opt.v) : [...r.interests, opt.v] }))}
-                                className={`flex items-center gap-2 rounded-xl border p-3 transition ${active ? "border-[#D4AF37]" : "border-white/8 hover:border-[#D4AF37]/40"}`}
-                                style={active ? { background: "rgba(200,169,106,0.08)" } : {}}
+                                className={`flex items-center gap-2 rounded-xl border p-3 transition ${active ? "border-[#C6A66B]" : "border-white/8 hover:border-[#C6A66B]/40"}`}
+                                style={active ? { background: "rgba(198,166,107,0.08)" } : {}}
                               >
-                                <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#D4AF37] text-black" : "bg-white/5"}`}>
+                                <div className={`h-7 w-7 rounded-md flex items-center justify-center ${active ? "bg-[#C6A66B] text-black" : "bg-white/5"}`}>
                                   <opt.icon className="h-3.5 w-3.5" />
                                 </div>
                                 <span className="text-[12px] font-medium">{opt.label}</span>
-                                {active && <Check className="ml-auto h-3.5 w-3.5" style={{ color: "#E0C384" }} />}
+                                {active && <Check className="ml-auto h-3.5 w-3.5" style={{ color: "#C6A66B" }} />}
                               </button>
                             );
                           })}
@@ -481,10 +481,10 @@ export function ReosAuthModal({
                           initial={{ scale: 0, rotate: -15 }} animate={{ scale: 1, rotate: 0 }}
                           transition={{ type: "spring", stiffness: 200, damping: 14 }}
                           className="h-20 w-20 rounded-full flex items-center justify-center"
-                          style={{ background: "radial-gradient(circle, rgba(200,169,106,0.25), transparent 70%)" }}
+                          style={{ background: "radial-gradient(circle, rgba(198,166,107,0.25), transparent 70%)" }}
                         >
                           <div className="h-14 w-14 rounded-full flex items-center justify-center"
-                            style={{ background: "linear-gradient(180deg,#E0C384,#D4AF37)" }}>
+                            style={{ background: "#C6A66B" }}>
                             <CheckCircle2 className="h-7 w-7 text-black" />
                           </div>
                         </motion.div>
@@ -504,8 +504,8 @@ export function ReosAuthModal({
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                     className="flex-1 flex flex-col items-center justify-center p-6 md:p-8 text-center">
                     <div className="relative h-16 w-16">
-                      <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle, rgba(200,169,106,0.35), transparent 65%)" }} />
-                      <Loader2 className="absolute inset-0 m-auto h-10 w-10 animate-spin" style={{ color: "#E0C384" }} />
+                      <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle, rgba(198,166,107,0.35), transparent 65%)" }} />
+                      <Loader2 className="absolute inset-0 m-auto h-10 w-10 animate-spin" style={{ color: "#C6A66B" }} />
                     </div>
                     <div className="mt-5 text-[14px] font-semibold tracking-wide">Booting Operating System</div>
                     <ul className="mt-5 space-y-2 w-full max-w-xs">
@@ -518,11 +518,11 @@ export function ReosAuthModal({
                             className="flex items-center gap-3 text-[12.5px]">
                             <span className="h-6 w-6 rounded-full flex items-center justify-center border"
                               style={{
-                                borderColor: done ? "#D4AF37" : active ? "#E0C384" : "rgba(255,255,255,0.1)",
-                                background: done ? "rgba(200,169,106,0.18)" : "transparent",
+                                borderColor: done ? "#C6A66B" : active ? "#C6A66B" : "rgba(255,255,255,0.1)",
+                                background: done ? "rgba(198,166,107,0.18)" : "transparent",
                               }}>
-                              {done ? <Check className="h-3 w-3" style={{ color: "#E0C384" }} />
-                                : active ? <Loader2 className="h-3 w-3 animate-spin" style={{ color: "#E0C384" }} />
+                              {done ? <Check className="h-3 w-3" style={{ color: "#C6A66B" }} />
+                                : active ? <Loader2 className="h-3 w-3 animate-spin" style={{ color: "#C6A66B" }} />
                                 : <s.icon className="h-3 w-3 text-white/40" />}
                             </span>
                             <span className={done ? "text-white/90" : active ? "text-white" : "text-white/50"}>{s.label}</span>
@@ -557,13 +557,13 @@ export function ReosAuthModal({
    Sub-components
    ============================================================ */
 const inputCls =
-  "w-full h-10 pl-9 pr-9 rounded-lg bg-white/[0.03] border border-white/8 text-[13px] text-[#F4F1EA] placeholder:text-[#6B6760] outline-none transition focus:border-[#D4AF37] focus:bg-white/[0.05] focus:ring-2 focus:ring-[#D4AF37]/30";
+  "w-full h-10 pl-9 pr-9 rounded-lg bg-white/[0.03] border border-white/8 text-[13px] text-[#F5F3EE] placeholder:text-[#6B6760] outline-none transition focus:border-[#C6A66B] focus:bg-white/[0.05] focus:ring-2 focus:ring-[#C6A66B]/30";
 
 function Header({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div>
       <div className="md:hidden flex items-center gap-2 mb-4">
-        <div className="h-8 w-8 rounded-lg flex items-center justify-center font-bold text-black" style={{ background: "linear-gradient(180deg,#E0C384,#D4AF37)" }}>A</div>
+        <div className="h-8 w-8 rounded-lg flex items-center justify-center font-bold text-black" style={{ background: "#C6A66B" }}>A</div>
         <span className="text-[12px] tracking-[0.25em] font-semibold">ASTRA VILLA</span>
       </div>
       <h1 className="text-[22px] font-semibold tracking-tight">{title}</h1>
@@ -591,7 +591,7 @@ function PrimaryButton({ children, loading, className = "", ...props }: any) {
   return (
     <button {...props}
       className={`relative w-full h-11 rounded-xl text-[13px] font-semibold inline-flex items-center justify-center gap-2 transition disabled:opacity-60 disabled:cursor-not-allowed ${className}`}
-      style={{ background: "linear-gradient(180deg,#E0C384,#D4AF37)", color: "#161208", boxShadow: "0 12px 30px -10px rgba(200,169,106,0.55), inset 0 1px 0 rgba(255,255,255,0.25)" }}
+      style={{ background: "#C6A66B", color: "#090909" }}
     >
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : children}
     </button>
@@ -601,7 +601,7 @@ function PrimaryButton({ children, loading, className = "", ...props }: any) {
 function SecondaryButton({ children, ...props }: any) {
   return (
     <button {...props}
-      className="h-11 px-4 rounded-xl text-[12.5px] inline-flex items-center justify-center gap-2 border border-white/10 bg-white/[0.02] text-[#F4F1EA] hover:bg-white/[0.05] hover:border-[#D4AF37]/40 transition">
+      className="h-11 px-4 rounded-xl text-[12.5px] inline-flex items-center justify-center gap-2 border border-white/10 bg-white/[0.02] text-[#F5F3EE] hover:bg-white/[0.05] hover:border-[#C6A66B]/40 transition">
       {children}
     </button>
   );
@@ -627,7 +627,7 @@ function SocialButton({ provider, children, ...props }: any) {
   }, [provider]);
   return (
     <button {...props}
-      className="h-10 rounded-xl inline-flex items-center justify-center gap-2.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#D4AF37]/40 text-[12.5px] text-[#F4F1EA] transition disabled:opacity-50 disabled:cursor-not-allowed">
+      className="h-10 rounded-xl inline-flex items-center justify-center gap-2.5 border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#C6A66B]/40 text-[12.5px] text-[#F5F3EE] transition disabled:opacity-50 disabled:cursor-not-allowed">
       {Glyph} {children}
     </button>
   );
@@ -659,10 +659,10 @@ function Stepper({ step, total }: { step: number; total: number }) {
         return (
           <div key={n} className="flex-1 flex items-center gap-2">
             <div className="h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold transition"
-              style={{ background: active ? "linear-gradient(180deg,#E0C384,#D4AF37)" : "transparent", color: active ? "#161208" : "#9A958A", border: active ? "none" : "1px solid rgba(255,255,255,0.12)" }}>
+              style={{ background: active ? "#C6A66B" : "transparent", color: active ? "#161208" : "#9A958A", border: active ? "none" : "1px solid rgba(255,255,255,0.12)" }}>
               {n}
             </div>
-            {n < total && <div className="flex-1 h-px" style={{ background: step > n ? "#D4AF37" : "rgba(255,255,255,0.08)" }} />}
+            {n < total && <div className="flex-1 h-px" style={{ background: step > n ? "#C6A66B" : "rgba(255,255,255,0.08)" }} />}
           </div>
         );
       })}

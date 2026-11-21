@@ -307,7 +307,7 @@ export const STYLE_COLORS: Record<InvestmentStyle, string> = {
 
 export const TIER_COLORS: Record<string, string> = {
   platinum: 'text-slate-100 bg-gradient-to-r from-slate-600 to-slate-400',
-  gold: 'text-amber-900 bg-gradient-to-r from-amber-400 to-yellow-300',
+  gold: 'text-amber-900 bg-primary',
   silver: 'text-slate-700 bg-gradient-to-r from-slate-300 to-slate-200',
   bronze: 'text-orange-900 bg-gradient-to-r from-orange-400 to-orange-300',
 };

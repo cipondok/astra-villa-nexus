@@ -93,9 +93,9 @@ function useFounderDashboardData() {
 // ── Micro Components ─────────────────────────────────────────────
 const SignalDot = ({ status }: { status: 'ok' | 'warn' | 'critical' }) => (
   <span className={`inline-block h-2 w-2 rounded-full shrink-0 ${
-    status === 'ok' ? 'bg-chart-1 shadow-[0_0_6px_hsl(var(--chart-1)/0.6)]' :
-    status === 'warn' ? 'bg-chart-3 shadow-[0_0_6px_hsl(var(--chart-3)/0.6)]' :
-    'bg-destructive shadow-[0_0_6px_hsl(var(--destructive)/0.6)] animate-pulse'
+    status === 'ok' ? 'bg-chart-1' :
+    status === 'warn' ? 'bg-chart-3' :
+    'bg-destructive animate-pulse'
   }`} />
 );
 

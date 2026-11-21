@@ -26,7 +26,7 @@ export const ALERT_TIER_CONFIG = {
     emoji: '🔥',
     color: 'text-amber-400',
     bg: 'bg-amber-400/10 border-amber-400/30',
-    glow: 'shadow-[0_0_12px_hsl(var(--gold-primary)/0.25)]',
+    glow: '',
     threshold: 10,
   },
   opportunity: {

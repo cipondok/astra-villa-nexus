@@ -80,11 +80,11 @@ export default function AgentAvailabilityManager() {
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
           {/* Gold accent bar */}
-          <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+          <div className="h-1 w-full bg-primary" />
           <CardHeader className="p-3 pb-2">
             <CardTitle className="text-sm flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+                <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Clock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                 </div>
                 Weekly Availability
@@ -158,7 +158,7 @@ export default function AgentAvailabilityManager() {
             ))}
             <Button
               onClick={handleSave}
-              className="w-full h-9 text-xs mt-3 bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white shadow-md shadow-amber-500/20 border-0"
+              className="w-full h-9 text-xs mt-3 bg-primary hover:from-amber-500 hover:to-yellow-400 text-primary-foreground shadow-md shadow-amber-500/20 border-0"
               disabled={saveAvailability.isPending}
             >
               {saveAvailability.isPending ? (
@@ -175,11 +175,11 @@ export default function AgentAvailabilityManager() {
       {/* Upcoming Visit Requests */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.15 }}>
         <Card className="bg-card/60 backdrop-blur-xl border-border/30 overflow-hidden">
-          <div className="h-1 w-full bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
+          <div className="h-1 w-full bg-primary" />
           <CardHeader className="p-3 pb-2">
             <CardTitle className="text-sm flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/20 flex items-center justify-center">
+                <div className="h-7 w-7 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Calendar className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                 </div>
                 Visit Requests
@@ -199,7 +199,7 @@ export default function AgentAvailabilityManager() {
           <CardContent className="p-3 pt-0 space-y-2">
             {upcomingVisits.length === 0 ? (
               <div className="text-center py-6">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-amber-500/10 to-yellow-400/10 flex items-center justify-center mx-auto mb-2">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
                   <Sparkles className="h-5 w-5 text-amber-500/40" />
                 </div>
                 <p className="text-xs text-muted-foreground">No pending visit requests</p>
@@ -248,7 +248,7 @@ export default function AgentAvailabilityManager() {
                         <div className="flex gap-1.5 pt-0.5">
                           <Button
                             size="sm"
-                            className="h-7 text-[10px] flex-1 bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white border-0 shadow-sm shadow-amber-500/20"
+                            className="h-7 text-[10px] flex-1 bg-primary hover:from-amber-500 hover:to-yellow-400 text-primary-foreground border-0 shadow-sm shadow-amber-500/20"
                             onClick={() => updateStatus.mutate({ visitId: visit.id, status: 'confirmed' })}
                           >
                             <CheckCircle2 className="h-3 w-3 mr-0.5" /> Confirm

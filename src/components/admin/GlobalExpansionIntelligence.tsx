@@ -157,8 +157,8 @@ const ExpansionSimulator = () => {
                     onClick={() => setSelectedCity(selectedCity === c.city ? null : c.city)}
                     whileHover={{ scale: 1.3 }} whileTap={{ scale: 0.95 }}>
                     <div className={`h-4 w-4 rounded-full border-2 ${
-                      c.status === "active" ? "bg-emerald-500 border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]" :
-                      c.status === "planned" ? "bg-primary border-primary shadow-[0_0_6px_hsl(var(--primary)/0.4)]" :
+                      c.status === "active" ? "bg-emerald-500 border-emerald-400" :
+                      c.status === "planned" ? "bg-primary border-primary" :
                       c.status === "research" ? "bg-amber-500 border-amber-400" :
                       "bg-muted-foreground/40 border-muted-foreground/30"
                     }`} />

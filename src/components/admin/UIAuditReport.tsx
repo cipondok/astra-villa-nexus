@@ -144,8 +144,8 @@ const categories: AuditCategory[] = [
       {
         id: 'co1', title: 'Shadow uses rgba instead of HSL tokens', status: 'warning', severity: 'medium',
         location: 'tailwind.config.ts lines 468-470',
-        observation: 'Box shadows use rgba(0,0,0,0.08) and rgba(255,215,0,0.20) — hardcoded values that don\'t adapt to theme changes. The dark mode shadow tokens in index.css correctly use HSL, creating an inconsistency.',
-        codeEvidence: "'macos': '0 4px 20px rgba(0, 0, 0, 0.08)', 'macos-hover': '0 8px 30px rgba(255, 215, 0, 0.20)'",
+        observation: 'Box shadows use rgba(0,0,0,0.08) and rgba(198,166,107,0.20) — hardcoded values that don\'t adapt to theme changes. The dark mode shadow tokens in index.css correctly use HSL, creating an inconsistency.',
+        codeEvidence: "'macos': '0 4px 20px rgba(0, 0, 0, 0.08)', 'macos-hover': '0 8px 30px rgba(198,166,107, 0.20)'",
         fix: 'Convert to HSL: macos: "0 4px 20px hsl(var(--foreground) / 0.08)", macos-hover: "0 8px 30px hsl(var(--gold-primary) / 0.20)". This ensures theme-awareness.',
         effort: 'Quick',
       },

@@ -78,16 +78,16 @@ const getVerificationInfo = (property: FallbackProperty) => {
   
   // VIP Tiers - Check for specific levels first
   if (level.includes('platinum') || level.includes('diamond')) {
-    return { icon: Gem, label: 'Platinum VIP', color: 'text-chart-4', bg: 'bg-gradient-to-r from-chart-4/30 to-chart-4/20', glow: 'shadow-[0_0_8px_hsl(var(--chart-4)/0.5)]' };
+    return { icon: Gem, label: 'Platinum VIP', color: 'text-chart-4', bg: 'bg-gradient-to-r from-chart-4/30 to-chart-4/20', glow: '' };
   }
   if (level.includes('gold')) {
-    return { icon: Crown, label: 'Gold VIP', color: 'text-gold-primary', bg: 'bg-gradient-to-r from-gold-primary/30 to-chart-3/30', glow: 'shadow-[0_0_8px_hsl(var(--gold-primary)/0.5)]' };
+    return { icon: Crown, label: 'Gold VIP', color: 'text-gold-primary', bg: 'bg-gradient-to-r from-gold-primary/30 to-chart-3/30', glow: '' };
   }
   if (level.includes('silver')) {
-    return { icon: Award, label: 'Silver VIP', color: 'text-muted-foreground', bg: 'bg-gradient-to-r from-muted-foreground/30 to-muted/30', glow: 'shadow-[0_0_8px_hsl(var(--muted-foreground)/0.4)]' };
+    return { icon: Award, label: 'Silver VIP', color: 'text-muted-foreground', bg: 'bg-gradient-to-r from-muted-foreground/30 to-muted/30', glow: '' };
   }
   if (level.includes('bronze')) {
-    return { icon: Medal, label: 'Bronze VIP', color: 'text-chart-5', bg: 'bg-gradient-to-r from-chart-5/30 to-chart-3/30', glow: 'shadow-[0_0_6px_hsl(var(--chart-5)/0.4)]' };
+    return { icon: Medal, label: 'Bronze VIP', color: 'text-chart-5', bg: 'bg-gradient-to-r from-chart-5/30 to-chart-3/30', glow: '' };
   }
   if (level.includes('vip') || level.includes('premium')) {
     return { icon: Crown, label: 'VIP Member', color: 'text-gold-primary', bg: 'bg-gold-primary/20', glow: '' };
@@ -288,8 +288,8 @@ export default function FeaturedAdsCarousel() {
                 {/* Left side badges */}
                 <div className="flex flex-col gap-1">
                   {/* Featured Badge - Compact icon with glow, text on hover */}
-                  <span className="group/badge flex items-center gap-0.5 font-bold px-1.5 py-0.5 rounded-full bg-gradient-to-r from-gold-primary via-gold-primary to-chart-5 text-primary-foreground shadow-[0_0_10px_hsl(var(--gold-primary)/0.5)] transition-all duration-300 hover:shadow-[0_0_16px_hsl(var(--gold-primary)/0.7)]">
-                    <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-white stroke-white drop-shadow-[0_0_3px_rgba(255,255,255,0.7)]" />
+                  <span className="group/badge flex items-center gap-0.5 font-bold px-1.5 py-0.5 rounded-full bg-gradient-to-r from-gold-primary via-gold-primary to-chart-5 text-primary-foreground transition-all duration-300">
+                    <Star className="h-3 w-3 md:h-3.5 md:w-3.5 fill-white stroke-white" />
                      <span className="text-[9px] sm:text-[10px] md:text-xs max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[60px] font-semibold">
                        {t('indexPage.featuredLabel')}
                      </span>
@@ -415,8 +415,8 @@ export default function FeaturedAdsCarousel() {
               
               {/* Top Badge - Polished icon with glow, text on hover */}
               <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2 z-10">
-                <span className="group/badge flex items-center gap-1 font-bold px-2 py-1 rounded-full bg-gradient-to-r from-gold-primary via-gold-primary to-chart-5 text-primary-foreground shadow-[0_0_12px_hsl(var(--gold-primary)/0.6)] transition-all duration-300 hover:shadow-[0_0_20px_hsl(var(--gold-primary)/0.8)]">
-                  <Star className="h-3.5 w-3.5 md:h-4 md:w-4 fill-white stroke-white drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" />
+                <span className="group/badge flex items-center gap-1 font-bold px-2 py-1 rounded-full bg-gradient-to-r from-gold-primary via-gold-primary to-chart-5 text-primary-foreground transition-all duration-300">
+                  <Star className="h-3.5 w-3.5 md:h-4 md:w-4 fill-white stroke-white" />
                    <span className="text-[8px] md:text-[10px] max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover/badge:max-w-[70px] font-semibold">
                      {t('indexPage.featuredLabel')}
                    </span>

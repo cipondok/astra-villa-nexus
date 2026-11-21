@@ -50,10 +50,10 @@ const badgeStatusMap: Record<string, StatusKey> = {
 };
 
 const statusAccent: Record<StatusKey, { dot: string; text: string; glow: string }> = {
-  active:  { dot: 'bg-[hsl(var(--panel-success))]', text: 'text-[hsl(var(--panel-success))]', glow: 'shadow-[0_0_4px_hsl(var(--panel-success)/.3)]' },
-  new:     { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]', glow: 'shadow-[0_0_4px_hsl(var(--panel-accent)/.3)]' },
-  hot:     { dot: 'bg-[hsl(var(--panel-danger))]', text: 'text-[hsl(var(--panel-danger))]', glow: 'shadow-[0_0_4px_hsl(var(--panel-danger)/.3)]' },
-  premium: { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]', glow: 'shadow-[0_0_4px_hsl(var(--panel-accent)/.3)]' },
+  active:  { dot: 'bg-[hsl(var(--panel-success))]', text: 'text-[hsl(var(--panel-success))]', glow: '' },
+  new:     { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]', glow: '' },
+  hot:     { dot: 'bg-[hsl(var(--panel-danger))]', text: 'text-[hsl(var(--panel-danger))]', glow: '' },
+  premium: { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]', glow: '' },
 };
 
 type ViewMode = 'list' | 'grid';
@@ -294,7 +294,7 @@ const GridView: React.FC<{
           <div className={cn(
             "p-2 rounded-lg transition-all border",
             isHovered
-              ? "bg-[hsl(var(--panel-accent)/.08)] border-[hsl(var(--panel-accent)/.2)] shadow-[0_0_10px_hsl(var(--panel-accent)/.06)]"
+              ? "bg-[hsl(var(--panel-accent)/.08)] border-[hsl(var(--panel-accent)/.2)]"
               : "bg-[hsl(var(--panel-hover)/.6)] border-[hsl(var(--panel-border-subtle))]"
           )}>
             <Icon className={cn("h-4 w-4 transition-colors", isHovered ? "text-[hsl(var(--panel-accent))]" : "text-[hsl(var(--panel-text-secondary))]")} />

@@ -117,7 +117,7 @@ const fadeUp = {
 
 // ─── Winner Badge ────────────────────────────────────────────────────
 const WinnerBadge = ({ label = 'Best' }: { label?: string }) => (
-  <Badge className="ml-1.5 text-[10px] px-1.5 py-0 bg-gradient-to-r from-amber-500/20 to-yellow-400/20 text-amber-600 dark:text-amber-400 border-amber-500/30 gap-0.5">
+  <Badge className="ml-1.5 text-[10px] px-1.5 py-0 bg-primary/20 text-amber-600 dark:text-amber-400 border-amber-500/30 gap-0.5">
     <Trophy className="h-2.5 w-2.5" />
     {label}
   </Badge>
@@ -139,16 +139,16 @@ const PropertyComparison = () => {
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <motion.div {...fadeUp} className="text-center max-w-md mx-auto">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-400/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 rounded-2xl bg-primary/20 border border-amber-500/20 flex items-center justify-center mx-auto mb-6">
               <Scale className="h-10 w-10 text-amber-500" />
             </div>
-            <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold mb-3 bg-primary bg-clip-text text-transparent">
               No Properties to Compare
             </h1>
             <p className="text-muted-foreground mb-8">
               Add properties to your comparison list to see detailed side-by-side analysis with KPR simulations, neighborhood data, and visual charts.
             </p>
-            <Button onClick={() => navigate('/dijual')} className="bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-700 hover:to-yellow-600 text-white shadow-lg shadow-amber-500/20">
+            <Button onClick={() => navigate('/dijual')} className="bg-primary hover:from-amber-700 hover:to-yellow-600 text-primary-foreground shadow-lg shadow-amber-500/20">
               <Building className="h-4 w-4 mr-2" />
               Browse Properties
             </Button>
@@ -197,7 +197,7 @@ const PropertyComparison = () => {
     {
       label: 'Listing Type',
       render: (p) => (
-        <Badge variant={p.listing_type === 'sale' ? 'default' : 'secondary'} className={p.listing_type === 'sale' ? 'bg-gradient-to-r from-amber-600 to-yellow-500 text-white border-0' : ''}>
+        <Badge variant={p.listing_type === 'sale' ? 'default' : 'secondary'} className={p.listing_type === 'sale' ? 'bg-primary text-primary-foreground border-0' : ''}>
           {p.listing_type === 'sale' ? 'For Sale' : p.listing_type === 'rent' ? 'For Rent' : 'Lease'}
         </Badge>
       ),
@@ -315,10 +315,10 @@ const PropertyComparison = () => {
             </Button>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-yellow-400/10 border border-amber-500/20 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-primary/20 border border-amber-500/20 flex items-center justify-center">
                   <Scale className="h-5 w-5 text-amber-500" />
                 </div>
-                <span className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 bg-clip-text text-transparent">
+                <span className="bg-primary bg-clip-text text-transparent">
                   Property Comparison
                 </span>
               </h1>
@@ -463,7 +463,7 @@ const PropertyComparison = () => {
               <Card className="border-amber-500/20 bg-gradient-to-br from-amber-500/5 via-card to-card backdrop-blur-xl shadow-xl overflow-hidden">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500/20 to-yellow-400/10 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
                       <Banknote className="h-4 w-4 text-amber-500" />
                     </div>
                     KPR Parameters
@@ -526,7 +526,7 @@ const PropertyComparison = () => {
                             <h4 className="text-sm font-semibold line-clamp-1 flex-1">{r.property.title}</h4>
                             {isLowest && <WinnerBadge label="Best" />}
                           </div>
-                          <div className="p-3 rounded-xl bg-gradient-to-r from-amber-500/10 to-yellow-400/5 border border-amber-500/10 text-center">
+                          <div className="p-3 rounded-xl bg-primary/10 border border-amber-500/10 text-center">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">Monthly Payment</p>
                             <p className="text-xl font-bold text-amber-600 dark:text-amber-400"><Price amount={r.kpr.monthlyPayment} /></p>
                           </div>
@@ -771,11 +771,11 @@ const PropertyComparison = () => {
                                   <h4 className="text-sm font-semibold line-clamp-1 flex-1">{d.property.title}</h4>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 text-xs">
-                                  <div className="p-2 rounded-lg bg-gradient-to-r from-amber-500/10 to-yellow-400/5 border border-amber-500/10">
+                                  <div className="p-2 rounded-lg bg-primary/10 border border-amber-500/10">
                                     <p className="text-muted-foreground text-[10px]">Annual Growth</p>
                                     <p className="font-bold text-amber-600 dark:text-amber-400">{d.metrics.appreciation}%{isBestGrowth && <WinnerBadge label="Best" />}</p>
                                   </div>
-                                  <div className="p-2 rounded-lg bg-gradient-to-r from-amber-500/10 to-yellow-400/5 border border-amber-500/10">
+                                  <div className="p-2 rounded-lg bg-primary/10 border border-amber-500/10">
                                     <p className="text-muted-foreground text-[10px]">Rental Yield</p>
                                     <p className="font-bold text-amber-600 dark:text-amber-400">{d.metrics.rentalYield}%{isbestYield && <WinnerBadge label="Best" />}</p>
                                   </div>
@@ -890,7 +890,7 @@ const PropertyComparison = () => {
                         </div>
                       )}
                       {allPricePerSqm.length > 0 && (
-                        <div className="p-4 bg-gradient-to-r from-amber-500/10 to-yellow-400/5 rounded-xl border border-amber-500/20">
+                        <div className="p-4 bg-primary/10 rounded-xl border border-amber-500/20">
                           <h4 className="font-semibold mb-1 text-sm text-amber-700 dark:text-amber-400">Best Value (Price/m²)</h4>
                           <p className="text-sm font-medium">
                             {selectedProperties.find(p => pricePerSqm(p) === minPricePerSqm)?.title?.slice(0, 30)}…
@@ -976,8 +976,8 @@ const ComparisonCharts = ({ selectedProperties }: ComparisonChartsProps) => {
           Visual Comparison
         </CardTitle>
         <div className="flex gap-1">
-          <Button variant={chartType === 'bar' ? 'default' : 'outline'} size="sm" onClick={() => setChartType('bar')} className={chartType === 'bar' ? 'bg-gradient-to-r from-amber-600 to-yellow-500 text-white border-0' : ''}>Bar</Button>
-          <Button variant={chartType === 'radar' ? 'default' : 'outline'} size="sm" onClick={() => setChartType('radar')} className={chartType === 'radar' ? 'bg-gradient-to-r from-amber-600 to-yellow-500 text-white border-0' : ''}>Radar</Button>
+          <Button variant={chartType === 'bar' ? 'default' : 'outline'} size="sm" onClick={() => setChartType('bar')} className={chartType === 'bar' ? 'bg-primary text-primary-foreground border-0' : ''}>Bar</Button>
+          <Button variant={chartType === 'radar' ? 'default' : 'outline'} size="sm" onClick={() => setChartType('radar')} className={chartType === 'radar' ? 'bg-primary text-primary-foreground border-0' : ''}>Radar</Button>
         </div>
       </CardHeader>
       <CardContent>

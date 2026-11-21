@@ -86,7 +86,7 @@ const InitialLoadingScreen = () => {
         <motion.div
           className="absolute inset-0"
           style={{
-            background: 'radial-gradient(ellipse at 30% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%)',
+            background: 'radial-gradient(ellipse at 30% 70%, rgba(198,166,107, 0.1) 0%, transparent 50%)',
           }}
           animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.05, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
@@ -153,7 +153,7 @@ const InitialLoadingScreen = () => {
             {/* Outer dashed ring */}
             <motion.div
               className="absolute -inset-10 rounded-full border-2 border-dashed"
-              style={{ borderColor: 'rgba(212, 175, 55, 0.25)' }}
+              style={{ borderColor: 'rgba(198,166,107, 0.25)' }}
               animate={{ rotate: -360 }}
               transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
             />
@@ -162,7 +162,7 @@ const InitialLoadingScreen = () => {
             <motion.div
               className="absolute -inset-7 rounded-full"
               style={{
-                background: 'conic-gradient(from 0deg, rgba(0, 153, 230, 0.4), transparent 40%, rgba(212, 175, 55, 0.4), transparent 80%)',
+                background: 'conic-gradient(from 0deg, rgba(0, 153, 230, 0.4), transparent 40%, rgba(198,166,107, 0.4), transparent 80%)',
               }}
               animate={{ rotate: 360 }}
               transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
@@ -227,7 +227,7 @@ const InitialLoadingScreen = () => {
               <motion.span
                 className="inline-block"
                 style={{
-                  background: 'linear-gradient(135deg, #0099e6 0%, #00d4ff 30%, #d4af37 60%, #f0d060 100%)',
+                  background: 'linear-gradient(135deg, #0099e6 0%, #00d4ff 30%, #C6A66B 60%, #f0d060 100%)',
                   backgroundSize: '300% 300%',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -252,7 +252,7 @@ const InitialLoadingScreen = () => {
             >
               <motion.div 
                 className="h-px w-10 md:w-16"
-                style={{ background: 'linear-gradient(90deg, transparent, #d4af37)' }}
+                style={{ background: 'linear-gradient(90deg, transparent, #C6A66B)' }}
                 animate={{ opacity: [0.4, 1, 0.4] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -261,7 +261,7 @@ const InitialLoadingScreen = () => {
               </p>
               <motion.div 
                 className="h-px w-10 md:w-16"
-                style={{ background: 'linear-gradient(90deg, #d4af37, transparent)' }}
+                style={{ background: 'linear-gradient(90deg, #C6A66B, transparent)' }}
                 animate={{ opacity: [0.4, 1, 0.4] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -295,7 +295,7 @@ const InitialLoadingScreen = () => {
               <motion.div
                 className="absolute inset-y-0 left-0 rounded-full"
                 style={{
-                  background: 'linear-gradient(90deg, #0099e6, #00d4ff, #d4af37)',
+                  background: 'linear-gradient(90deg, #0099e6, #00d4ff, #C6A66B)',
                   filter: 'blur(4px)',
                 }}
                 initial={{ width: '0%' }}
@@ -306,7 +306,7 @@ const InitialLoadingScreen = () => {
               <motion.div
                 className="absolute inset-y-0 left-0 rounded-full"
                 style={{
-                  background: 'linear-gradient(90deg, #0099e6, #00d4ff, #d4af37, #0099e6)',
+                  background: 'linear-gradient(90deg, #0099e6, #00d4ff, #C6A66B, #0099e6)',
                   backgroundSize: '300% 100%',
                 }}
                 initial={{ width: '0%' }}
@@ -370,7 +370,7 @@ const InitialLoadingScreen = () => {
                 key={i}
                 className="w-2 h-2 rounded-full"
                 style={{
-                  background: i < 2 ? '#0099e6' : i < 4 ? '#00d4ff' : '#d4af37',
+                  background: i < 2 ? '#0099e6' : i < 4 ? '#00d4ff' : '#C6A66B',
                 }}
                 animate={{
                   y: [0, -10, 0],
@@ -392,7 +392,7 @@ const InitialLoadingScreen = () => {
         <motion.div
           className="absolute bottom-0 left-0 right-0 h-1"
           style={{
-            background: 'linear-gradient(90deg, transparent 5%, #0099e6 20%, #00d4ff 40%, #d4af37 60%, #f0d060 80%, transparent 95%)',
+            background: 'linear-gradient(90deg, transparent 5%, #0099e6 20%, #00d4ff 40%, #C6A66B 60%, #f0d060 80%, transparent 95%)',
           }}
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}

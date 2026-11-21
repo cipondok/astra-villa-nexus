@@ -63,15 +63,7 @@ const OpportunityScoreRing = ({ score, size = 40, className = '', showLabel = fa
         className="relative inline-flex items-center justify-center"
         style={{ width: size, height: size }}
       >
-        {/* Elite glow pulse */}
-        {isElite && (
-          <motion.div
-            className="absolute inset-0 rounded-full"
-            style={{ boxShadow: `0 0 12px 2px ${tier.glowColor}` }}
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        )}
+        {/* Matte finish: elite tier is shown by ring colour only — no glow pulse */}
 
         <svg width={size} height={size} className="-rotate-90">
           {/* Background track */}

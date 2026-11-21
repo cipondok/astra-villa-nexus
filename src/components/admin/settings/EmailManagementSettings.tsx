@@ -139,7 +139,7 @@ const defaultBranding: EmailBranding = {
   supportEmail: 'support@astravilla.com',
   primaryColor: '#B8860B',
   secondaryColor: '#0066FF',
-  accentColor: '#D4AF37',
+  accentColor: '#C6A66B',
   socialFacebook: '',
   socialInstagram: '',
   socialTwitter: '',

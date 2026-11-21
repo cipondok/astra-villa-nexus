@@ -312,7 +312,7 @@ const PropertyDetail = () => {
       <LuxeLayout>
         <section className="px-4 md:px-8 pt-24 md:pt-28" aria-busy="true" aria-live="polite">
           <div className="max-w-[1440px] mx-auto">
-            <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-luxe bg-luxe-surface shadow-[0_30px_80px_-30px_rgba(10,25,49,0.35)]">
+            <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-luxe bg-luxe-surface shadow-[0_30px_80px_-30px_rgba(9,9,9,0.35)]">
               {/* Gallery mosaic skeleton */}
               <div className="grid grid-cols-12 gap-1.5 h-[340px] sm:h-[440px] lg:h-[520px]">
                 <div className="col-span-12 md:col-span-8 luxe-shimmer" />
@@ -415,7 +415,7 @@ const PropertyDetail = () => {
       <section className="px-4 md:px-8 pt-24 md:pt-28">
 
         <div className="max-w-[1440px] mx-auto">
-          <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-luxe bg-luxe-surface shadow-[0_30px_80px_-30px_rgba(10,25,49,0.35)]">
+          <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-luxe bg-luxe-surface shadow-[0_30px_80px_-30px_rgba(9,9,9,0.35)]">
 
             {/* --- Gallery grid 8/4 mosaic --- */}
             <div className="relative">
@@ -423,7 +423,7 @@ const PropertyDetail = () => {
               <div className="absolute top-5 left-5 right-5 z-20 flex items-center justify-between">
                 <button
                   onClick={() => navigate(-1)}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#0A1931)] shadow-sm hover:bg-white transition-all text-[11px] font-semibold uppercase tracking-[0.15em]"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#090909)] shadow-sm hover:bg-white transition-all text-[11px] font-semibold uppercase tracking-[0.15em]"
                   aria-label="Go back"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
@@ -432,21 +432,21 @@ const PropertyDetail = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => toggleFavorite(property.id)}
-                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#0A1931)] shadow-sm hover:bg-white transition-all"
+                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#090909)] shadow-sm hover:bg-white transition-all"
                     aria-label="Favorite"
                   >
                     <Heart className={cn("h-4 w-4", isFavorite(property.id) && "fill-[var(--luxe-gold)] text-[var(--luxe-gold)]")} />
                   </button>
                   <button
                     onClick={handleShare}
-                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#0A1931)] shadow-sm hover:bg-white transition-all"
+                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#090909)] shadow-sm hover:bg-white transition-all"
                     aria-label="Share"
                   >
                     <Share2 className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => setFullscreen(true)}
-                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#0A1931)] shadow-sm hover:bg-white transition-all"
+                    className="p-2.5 rounded-full bg-white/90 backdrop-blur-md text-[color:var(--luxe-ink,#090909)] shadow-sm hover:bg-white transition-all"
                     aria-label="Expand"
                   >
                     <Maximize2 className="h-4 w-4" />
@@ -637,7 +637,7 @@ const PropertyDetail = () => {
         aria-hidden={!scrolled}
       >
         <div className="mx-auto max-w-[1440px] px-4 md:px-8 pb-4 md:pb-6" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
-          <div className="rounded-2xl bg-luxe-glass backdrop-blur-2xl border border-luxe shadow-[0_20px_60px_-20px_rgba(10,25,49,0.35)] px-5 py-4 md:px-8 md:py-5 flex items-center justify-between gap-4">
+          <div className="rounded-2xl bg-luxe-glass backdrop-blur-2xl border border-luxe shadow-[0_20px_60px_-20px_rgba(9,9,9,0.35)] px-5 py-4 md:px-8 md:py-5 flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-[10px] font-bold text-[var(--luxe-gold)] uppercase tracking-[0.2em]">
                 {property.listing_type === "rent" ? "From / night" : "List price"}
@@ -668,7 +668,7 @@ const PropertyDetail = () => {
                   trackStickyClick("reserve", "booking_initiated");
                   navigate(`/booking/${property.id}`);
                 }}
-                className="px-6 md:px-10 py-3 bg-[color:var(--luxe-ink,#0A1931)] text-[var(--luxe-gold)] rounded-xl font-bold text-[11px] uppercase tracking-widest shadow-xl shadow-[color:var(--luxe-ink,#0A1931)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
+                className="px-6 md:px-10 py-3 bg-[color:var(--luxe-ink,#090909)] text-[var(--luxe-gold)] rounded-xl font-bold text-[11px] uppercase tracking-widest shadow-xl shadow-[color:var(--luxe-ink,#090909)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
                 tabIndex={scrolled ? 0 : -1}
               >
                 Reserve Now
@@ -904,7 +904,7 @@ const PropertyDetail = () => {
             className="lg:sticky lg:self-start"
             style={{ top: "calc(var(--reos-header-h, 64px) + 60px)" }}
           >
-            <div className="rounded-[20px] p-6 md:p-8 bg-luxe-glass backdrop-blur-2xl border border-[var(--luxe-gold)]/30 shadow-[0_30px_80px_-30px_rgba(10,25,49,0.45)]">
+            <div className="rounded-[20px] p-6 md:p-8 bg-luxe-glass backdrop-blur-2xl border border-[var(--luxe-gold)]/30 shadow-[0_30px_80px_-30px_rgba(9,9,9,0.45)]">
               <button
                 type="button"
                 onClick={() => setInquireOpen((v) => !v)}
@@ -966,7 +966,7 @@ const PropertyDetail = () => {
                 ref={ctaRef("contact", "sidebar")}
                 onClick={handleSendMessage}
                 disabled={sending}
-                className="mt-5 w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#0A1931)] font-bold py-4 rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.35)] transition-all uppercase tracking-[0.2em] text-[11px] inline-flex items-center justify-center gap-2 disabled:opacity-60"
+                className="mt-5 w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#090909)] font-bold py-4 rounded-xl transition-all uppercase tracking-[0.2em] text-[11px] inline-flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 <Send className="h-3.5 w-3.5" />
                 {sending ? "Sending…" : "Send Message"}
@@ -1023,7 +1023,7 @@ const PropertyDetail = () => {
                   </div>
                   <button
                     onClick={handleRequestVisit}
-                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#0A1931)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
+                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#090909)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
                   >
                     Confirm Visit
                   </button>
@@ -1045,7 +1045,7 @@ const PropertyDetail = () => {
                   </label>
                   <button
                     onClick={handlePriceAlert}
-                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#0A1931)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
+                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#090909)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
                   >
                     Activate Alert
                   </button>
@@ -1055,7 +1055,7 @@ const PropertyDetail = () => {
               {/* Agent block */}
               <div className="mt-8 pt-6 border-t border-luxe">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-[color:var(--luxe-ink,#0A1931)] border border-[var(--luxe-gold)]/40 flex items-center justify-center text-[var(--luxe-gold)] font-serif-l text-lg">
+                  <div className="w-12 h-12 rounded-full bg-[color:var(--luxe-ink,#090909)] border border-[var(--luxe-gold)]/40 flex items-center justify-center text-[var(--luxe-gold)] font-serif-l text-lg">
                     A
                   </div>
                   <div className="min-w-0">
