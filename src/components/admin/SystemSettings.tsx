@@ -88,13 +88,13 @@ const SystemSettings = ({ defaultTab }: SystemSettingsProps) => {
     <div className="space-y-4 w-full overflow-x-hidden">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 w-full">
         <div className="space-y-1">
-          <div className="flex items-center gap-1">
-            <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
+          <div className="flex items-start gap-1">
+            <TabsList className="flex flex-wrap h-auto w-full justify-start gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
               <TabsTrigger value="general" className="text-xs h-6 px-3">General</TabsTrigger>
               <TabsTrigger value="seo-hub" className="text-xs h-6 px-3">SEO Hub</TabsTrigger>
               <TabsTrigger value="website-design" className="text-xs h-6 px-3">Color Scheme</TabsTrigger>
               <TabsTrigger value="hero-slider" className="text-xs h-6 px-3">Hero Slider</TabsTrigger>
-              <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding</TabsTrigger>
+              <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding &amp; Logo</TabsTrigger>
               <TabsTrigger value="social-media" className="text-xs h-6 px-3">Social Media</TabsTrigger>
             </TabsList>
             <Button
@@ -108,7 +108,7 @@ const SystemSettings = ({ defaultTab }: SystemSettingsProps) => {
             </Button>
           </div>
           {showMore && (
-            <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
+            <TabsList className="flex flex-wrap h-auto w-full justify-start gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
               <TabsTrigger value="welcome-screen" className="text-xs h-6 px-3">Welcome Screen</TabsTrigger>
               <TabsTrigger value="security" className="text-xs h-6 px-3">Security</TabsTrigger>
               <TabsTrigger value="notifications" className="text-xs h-6 px-3">Notifications</TabsTrigger>
