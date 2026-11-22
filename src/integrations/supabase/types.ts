@@ -68866,6 +68866,10 @@ export type Database = {
         Returns: boolean
       }
       is_current_user_admin: { Args: never; Returns: boolean }
+      is_disposable_email_domain: {
+        Args: { _domain: string }
+        Returns: boolean
+      }
       is_email_suppressed: { Args: { p_email: string }; Returns: boolean }
       is_ip_blocked: { Args: { check_ip: string }; Returns: boolean }
       is_ip_whitelisted: { Args: { check_ip: string }; Returns: boolean }

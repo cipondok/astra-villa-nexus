@@ -149,12 +149,8 @@ export const useLoginSecurity = () => {
     if (DISPOSABLE_DOMAINS_CLIENT.has(domain)) return true;
 
     try {
-      const { data } = await supabase
-        .from('disposable_email_domains' as any)
-        .select('id')
-        .eq('domain', domain)
-        .maybeSingle();
-      return !!data;
+      const { data } = await supabase.rpc('is_disposable_email_domain' as any, { _domain: domain });
+      return data === true;
     } catch {
       return false;
     }
