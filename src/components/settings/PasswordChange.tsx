@@ -8,14 +8,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAccountNotifications } from '@/hooks/useAccountNotifications';
 import { Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { z } from 'zod';
+import { useAuth } from '@/contexts/AuthContext';
+import { getPasswordError } from '@/lib/passwordPolicy';
+import { PasswordStrengthBar } from '@/components/auth/PasswordStrengthBar';
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword: z.string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number'),
+  newPassword: z.string().min(1, 'New password is required'),
   confirmPassword: z.string().min(1, 'Please confirm your password'),
 }).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Passwords don't match",
@@ -25,6 +24,8 @@ const passwordSchema = z.object({
 export const PasswordChange = () => {
   const { toast } = useToast();
   const { sendPasswordChangedNotification } = useAccountNotifications();
+  const { user: authUser, profile } = useAuth();
+  const passwordContext = { email: authUser?.email, name: profile?.full_name };
   const [isChanging, setIsChanging] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -59,6 +60,16 @@ export const PasswordChange = () => {
         }
       });
       setErrors(fieldErrors);
+      return;
+    }
+
+    const policyError = getPasswordError(formData.newPassword, passwordContext);
+    if (policyError) {
+      setErrors({ newPassword: policyError });
+      return;
+    }
+    if (formData.newPassword === formData.currentPassword) {
+      setErrors({ newPassword: 'Choose a password different from your current one.' });
       return;
     }
 
@@ -163,6 +174,7 @@ export const PasswordChange = () => {
               {showNewPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
             </Button>
           </div>
+          <PasswordStrengthBar password={formData.newPassword} showTips={false} email={passwordContext.email} name={passwordContext.name} />
           {errors.newPassword && <p className="text-[10px] text-destructive">{errors.newPassword}</p>}
         </div>
 
@@ -190,7 +202,7 @@ export const PasswordChange = () => {
             <ShieldCheck className="h-2.5 w-2.5 text-primary" />
             <span className="font-medium text-foreground">Requirements:</span>
           </div>
-          <span>8+ chars, uppercase, lowercase, number</span>
+          <span>10+ chars, uppercase, lowercase, number, symbol; no common passwords or your name/email</span>
         </div>
 
         <Button type="submit" disabled={isChanging} className="w-full h-6 text-[10px]">

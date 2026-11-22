@@ -14,6 +14,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import heroImg from "@/assets/reos-hero.jpg";
 import { REGISTRATION_ROLE_OPTIONS, toSignupRole, toProfileType } from "@/lib/registrationRoles";
+import { getPasswordError } from "@/lib/passwordPolicy";
+import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 
 
 /* ============================================================
@@ -140,6 +142,11 @@ export function ReosAuthModal({
       const errs: Record<string, string> = {};
       parsed.error.issues.forEach(i => { errs[i.path[0] as string] = i.message; });
       setRegErr(errs);
+      return false;
+    }
+    const passwordError = getPasswordError(reg.password, { email: reg.email, name: reg.fullName });
+    if (passwordError) {
+      setRegErr({ password: passwordError });
       return false;
     }
     setRegErr({});
@@ -412,12 +419,13 @@ export function ReosAuthModal({
                         <Field id="reg-pw" label="Password" icon={Lock} error={regErr.password}>
                           <input id="reg-pw" type={showPw ? "text" : "password"} autoComplete="new-password" value={reg.password}
                             onChange={(e) => setReg(r => ({ ...r, password: e.target.value }))}
-                            placeholder="At least 8 characters" className={inputCls} />
+                            placeholder="At least 10 characters" className={inputCls} />
                           <button type="button" onClick={() => setShowPw(s => !s)} aria-label={showPw ? "Hide password" : "Show password"}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9A958A] hover:text-[#F5F3EE]">
                             {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                           </button>
                         </Field>
+                        <PasswordStrengthBar password={reg.password} showTips={false} email={reg.email} name={reg.fullName} />
                         <div className="grid grid-cols-2 gap-3">
                           <Field id="reg-country" label="Country" icon={Globe} error={regErr.country}>
                             <select id="reg-country" value={reg.country}

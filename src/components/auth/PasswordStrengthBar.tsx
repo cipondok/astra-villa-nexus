@@ -1,120 +1,75 @@
 import React, { useMemo } from "react";
-import { CheckCircle, XCircle, Shield, ShieldCheck, ShieldAlert } from "lucide-react";
+import { CheckCircle, XCircle, Shield, ShieldCheck, ShieldAlert, AlertTriangle } from "lucide-react";
+import { analyzePassword } from "@/lib/passwordPolicy";
 
 interface PasswordStrengthBarProps {
   password: string;
   showTips?: boolean;
+  /** Used to warn when the password contains the person's email or name. */
+  email?: string;
+  name?: string;
 }
 
-interface Criteria {
-  label: string;
-  met: boolean;
-}
+const strengthStyles = {
+  weak: { text: "Weak", icon: ShieldAlert, color: "text-destructive", bar: "bg-destructive" },
+  fair: { text: "Fair", icon: Shield, color: "text-chart-3", bar: "bg-chart-3" },
+  good: { text: "Good", icon: Shield, color: "text-chart-4", bar: "bg-chart-4" },
+  strong: { text: "Strong", icon: ShieldCheck, color: "text-chart-1", bar: "bg-chart-1" },
+} as const;
 
-export const PasswordStrengthBar = ({ password, showTips = true }: PasswordStrengthBarProps) => {
-  const analysis = useMemo(() => {
-    const criteria: Criteria[] = [
-      { label: "At least 10 characters", met: password.length >= 10 },
-      { label: "Contains uppercase letter", met: /[A-Z]/.test(password) },
-      { label: "Contains lowercase letter", met: /[a-z]/.test(password) },
-      { label: "Contains number", met: /\d/.test(password) },
-      { label: "Contains special character (!@#$%^&*)", met: /[!@#$%^&*(),.?":{}|<>_\-+=\[\]~`]/.test(password) },
-    ];
-
-    const score = criteria.filter(c => c.met).length;
-    
-    let strength: 'weak' | 'fair' | 'good' | 'strong';
-    let color: string;
-    let bgColor: string;
-    
-    if (score <= 2) {
-      strength = 'weak';
-      color = 'bg-destructive';
-      bgColor = 'bg-destructive/10';
-    } else if (score === 3) {
-      strength = 'fair';
-      color = 'bg-chart-3';
-      bgColor = 'bg-chart-3/10';
-    } else if (score === 4) {
-      strength = 'good';
-      color = 'bg-chart-4';
-      bgColor = 'bg-chart-4/10';
-    } else {
-      strength = 'strong';
-      color = 'bg-chart-1';
-      bgColor = 'bg-chart-1/10';
-    }
-
-    // Generate tips based on unmet criteria
-    const tips = criteria.filter(c => !c.met).map(c => c.label);
-
-    return { criteria, score, strength, color, bgColor, tips };
-  }, [password]);
+export const PasswordStrengthBar = ({ password, showTips = true, email, name }: PasswordStrengthBarProps) => {
+  const analysis = useMemo(() => analyzePassword(password, { email, name }), [password, email, name]);
 
   if (!password) return null;
 
-  const strengthLabels = {
-    weak: { text: 'Weak', icon: ShieldAlert, color: 'text-destructive' },
-    fair: { text: 'Fair', icon: Shield, color: 'text-chart-3' },
-    good: { text: 'Good', icon: Shield, color: 'text-chart-4' },
-    strong: { text: 'Strong', icon: ShieldCheck, color: 'text-chart-1' },
-  };
-
-  const StrengthIcon = strengthLabels[analysis.strength].icon;
+  const style = strengthStyles[analysis.strength];
+  const StrengthIcon = style.icon;
+  const warning = analysis.isCommon || analysis.hasPersonalInfo || analysis.isPredictable ? analysis.error : null;
+  const tips = analysis.criteria.filter((c) => !c.met && ["length", "upper", "lower", "number", "special"].includes(c.id));
 
   return (
-    <div className="space-y-3 mt-2">
-      {/* Strength indicator header */}
+    <div className="space-y-2 mt-2" aria-live="polite">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground">Password Strength</span>
+        <span className="text-[10px] font-medium text-muted-foreground">Password strength</span>
         <div className="flex items-center gap-1.5">
-          <StrengthIcon className={`h-4 w-4 ${strengthLabels[analysis.strength].color}`} />
-          <span className={`text-xs font-semibold ${strengthLabels[analysis.strength].color}`}>
-            {strengthLabels[analysis.strength].text}
-          </span>
+          <StrengthIcon className={`h-3.5 w-3.5 ${style.color}`} aria-hidden="true" />
+          <span className={`text-[10px] font-semibold ${style.color}`}>{style.text}</span>
         </div>
       </div>
 
-      {/* Strength bar */}
-      <div className="flex gap-1">
+      <div className="flex gap-1" role="meter" aria-label="Password strength" aria-valuemin={0} aria-valuemax={5} aria-valuenow={analysis.score} aria-valuetext={style.text}>
         {[1, 2, 3, 4, 5].map((segment) => (
           <div
             key={segment}
-            className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-              segment <= analysis.score ? analysis.color : 'bg-muted'
-            }`}
+            className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${segment <= analysis.score ? style.bar : "bg-muted"}`}
           />
         ))}
       </div>
 
-      {/* Criteria checklist */}
-      {showTips && (
-        <div className="space-y-1.5">
-          {analysis.criteria.map((criterion, index) => (
-            <div key={index} className="flex items-center gap-2 text-xs">
-              {criterion.met ? (
-                <CheckCircle className="h-3.5 w-3.5 text-chart-1 flex-shrink-0" />
-              ) : (
-                <XCircle className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0" />
-              )}
-              <span className={criterion.met ? "text-chart-1" : "text-muted-foreground"}>
-                {criterion.label}
-              </span>
-            </div>
-          ))}
+      {warning && (
+        <div className="flex items-start gap-1.5 rounded-md border border-destructive/40 bg-destructive/10 px-2 py-1.5">
+          <AlertTriangle className="h-3.5 w-3.5 text-destructive flex-shrink-0 mt-px" aria-hidden="true" />
+          <p className="text-[10px] leading-snug text-destructive">{warning}</p>
         </div>
       )}
 
-      {/* Improvement tips */}
-      {showTips && analysis.tips.length > 0 && analysis.strength !== 'strong' && (
-        <div className="p-2.5 bg-muted/50 rounded-lg border border-border/50">
-          <p className="text-xs font-medium text-muted-foreground mb-1">💡 Tips to strengthen:</p>
-          <ul className="text-xs text-muted-foreground space-y-0.5">
-            {analysis.tips.slice(0, 2).map((tip, i) => (
-              <li key={i}>• Add {tip.toLowerCase()}</li>
-            ))}
-          </ul>
+      {showTips ? (
+        <div className="space-y-1">
+          {analysis.criteria.map((criterion) => (
+            <div key={criterion.id} className="flex items-center gap-2 text-[10px]">
+              {criterion.met ? (
+                <CheckCircle className="h-3 w-3 text-chart-1 flex-shrink-0" aria-hidden="true" />
+              ) : (
+                <XCircle className="h-3 w-3 text-muted-foreground/60 flex-shrink-0" aria-hidden="true" />
+              )}
+              <span className={criterion.met ? "text-chart-1" : "text-muted-foreground"}>{criterion.label}</span>
+            </div>
+          ))}
         </div>
+      ) : (
+        !warning && tips.length > 0 && (
+          <p className="text-[10px] text-muted-foreground">Add: {tips.map((t) => t.label.replace(/^(At least|Contains) /, "").toLowerCase()).join(", ")}</p>
+        )
       )}
     </div>
   );

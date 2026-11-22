@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PasswordStrengthBar } from '@/components/auth/PasswordStrengthBar';
+import { getPasswordError } from '@/lib/passwordPolicy';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, CheckCircle, AlertTriangle, Loader2 } from 'lucide-react';
 import { SEOHead } from '@/components/SEOHead';
@@ -39,15 +40,6 @@ const ResetPassword = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const validatePassword = (pw: string): boolean => {
-    const hasLength = pw.length >= 10;
-    const hasUpper = /[A-Z]/.test(pw);
-    const hasLower = /[a-z]/.test(pw);
-    const hasNumber = /\d/.test(pw);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]~`]/.test(pw);
-    return hasLength && hasUpper && hasLower && hasNumber && hasSpecial;
-  };
-
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -57,8 +49,9 @@ const ResetPassword = () => {
       return;
     }
 
-    if (!validatePassword(newPassword)) {
-      setError('Password must be at least 10 characters with uppercase, lowercase, number, and symbol.');
+    const passwordError = getPasswordError(newPassword);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 

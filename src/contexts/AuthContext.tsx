@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { getPasswordError } from "@/lib/passwordPolicy";
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { isSessionCheckSuppressed } from '@/hooks/useSessionMonitor';
@@ -467,6 +468,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUp = async (email: string, password: string, fullName: string, role?: string) => {
+    // Every email sign-up path goes through the shared password policy.
+    const passwordError = getPasswordError(password, { email, name: fullName });
+    if (passwordError) {
+      return { error: { message: passwordError }, success: false };
+    }
     try {
       console.log('Attempting sign up for:', email);
       setLoading(true);

@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailValidationIndicator } from "./EmailValidationIndicator";
 import { PasswordStrengthBar } from "./PasswordStrengthBar";
+import { getPasswordError } from "@/lib/passwordPolicy";
 import SignupPromotionBanner from "./SignupPromotionBanner";
 import {
   Dialog,
@@ -190,8 +191,9 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
 
     if (!registerData.password) {
       newErrors.password = currentText.passwordRequired;
-    } else if (registerData.password.length < 6) {
-      newErrors.password = currentText.passwordTooShort;
+    } else {
+      const passwordError = getPasswordError(registerData.password, { email: registerData.email, name: registerData.fullName });
+      if (passwordError) newErrors.password = passwordError;
     }
 
     if (registerData.password !== registerData.confirmPassword) {
@@ -771,7 +773,7 @@ const EnhancedAuthModal = ({ isOpen, onClose, language }: EnhancedAuthModalProps
                       {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                   </div>
-                  <PasswordStrengthBar password={registerData.password} showTips={false} />
+                  <PasswordStrengthBar password={registerData.password} showTips={false} email={registerData.email} name={registerData.fullName} />
                   {errors.password && (
                     <p className="text-[10px] text-destructive">{errors.password}</p>
                   )}

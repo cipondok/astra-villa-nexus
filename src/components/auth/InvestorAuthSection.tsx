@@ -12,6 +12,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion, AnimatePresence } from "framer-motion";
 import { CreateOrderDialog } from "@/components/orders/CreateOrderDialog";
 import { useInvestorProfile, useCreateInvestorProfile } from "@/hooks/useInvestorProfile";
+import { getPasswordError } from "@/lib/passwordPolicy";
+import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 
 interface InvestorAuthSectionProps {
   investorType: 'wni' | 'wna';
@@ -77,6 +79,11 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
           setTimeout(() => setIsModalOpen(false), 1500);
         }
       } else {
+        const passwordError = getPasswordError(password, { email, name: fullName });
+        if (passwordError) {
+          setError(passwordError);
+          return;
+        }
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -412,11 +419,11 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                           <Input
                             id="apply-password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="Create password (min 6 chars)"
+                            placeholder="Create password (min 10 chars)"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            minLength={6}
+                            minLength={10}
                             className="h-7 sm:h-8 text-[10px] sm:text-xs bg-background/50 border-border/50 pr-8"
                           />
                           <Button
@@ -429,6 +436,7 @@ const InvestorAuthSection = ({ investorType, className }: InvestorAuthSectionPro
                             {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                           </Button>
                         </div>
+                        <PasswordStrengthBar password={password} showTips={false} email={email} name={fullName} />
                       </div>
                       <Button 
                         type="submit" 

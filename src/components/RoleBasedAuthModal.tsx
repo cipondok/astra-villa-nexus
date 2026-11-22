@@ -8,6 +8,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Eye, EyeOff, AlertTriangle, LogIn, UserPlus, Sparkles } from "lucide-react";
 import LoadingPage from "./LoadingPage";
+import { getPasswordError } from "@/lib/passwordPolicy";
+import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -78,6 +80,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
           setFullName("");
         }
       } else {
+        const passwordError = getPasswordError(password, { email, name: fullName });
+        if (passwordError) {
+          setError(passwordError);
+          return;
+        }
         setAuthAction('register');
         
         const { data, error } = await supabase.auth.signUp({
@@ -395,11 +402,11 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                               <Input
                                 id="signup-password"
                                 type={showPassword ? "text" : "password"}
-                                placeholder="Create a password (min 6 characters)"
+                                placeholder="Create a password (min 10 characters)"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                minLength={6}
+                                minLength={10}
                                 className="bg-background/50 border-border/50 focus:border-primary focus:ring-primary/20 transition-all duration-200"
                               />
                               <Button
@@ -416,6 +423,7 @@ const RoleBasedAuthModal = ({ isOpen, onClose }: RoleBasedAuthModalProps) => {
                                 )}
                               </Button>
                             </div>
+                            <PasswordStrengthBar password={password} showTips={false} email={email} name={fullName} />
                           </motion.div>
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}

@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailValidationIndicator } from "@/components/auth/EmailValidationIndicator";
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
+import { getPasswordError } from "@/lib/passwordPolicy";
 import SignupPromotionBanner from "@/components/auth/SignupPromotionBanner";
 import { useLoginSecurity } from "@/hooks/useLoginSecurity";
 import { REGISTRATION_ROLE_OPTIONS, toSignupRole, toProfileType } from "@/lib/registrationRoles";
@@ -272,17 +273,12 @@ const Auth = () => {
       return;
     }
 
-    // Strong password policy: 10 chars + all criteria required
-    const hasLength = registerPassword.length >= 10;
-    const hasUpper = /[A-Z]/.test(registerPassword);
-    const hasLower = /[a-z]/.test(registerPassword);
-    const hasNumber = /\d/.test(registerPassword);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]~`]/.test(registerPassword);
-
-    if (!hasLength || !hasUpper || !hasLower || !hasNumber || !hasSpecial) {
+    // Shared policy: length, complexity, weak-password list, no name/email.
+    const passwordError = getPasswordError(registerPassword, { email: registerEmail, name: registerName });
+    if (passwordError) {
       toast({
         title: "Password too weak",
-        description: "Password must be at least 10 characters with uppercase, lowercase, number, and special character.",
+        description: passwordError,
         variant: "destructive",
       });
       return;
@@ -631,7 +627,7 @@ const Auth = () => {
                       {showRegisterPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
-                  <PasswordStrengthBar password={registerPassword} />
+                  <PasswordStrengthBar password={registerPassword} email={registerEmail} name={registerName} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirm-password">{t('authModal.confirmPassword')}</Label>
