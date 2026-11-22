@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { useAlert } from "@/contexts/AlertContext";
 import { UserPlus, Search, Edit, Trash2, Shield, UserCheck, UserX } from "lucide-react";
 import EnhancedAdminUserControls from "./EnhancedAdminUserControls";
+import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
+import { getPasswordError } from "@/lib/passwordPolicy";
 
 type UserRole = "general_user" | "property_owner" | "agent" | "vendor" | "admin" | "customer_service";
 
@@ -165,6 +167,11 @@ const SimpleUserManagement = () => {
       showError("Validation Error", "Email, password, and full name are required.");
       return;
     }
+    const passwordError = getPasswordError(newUser.password, { email: newUser.email, name: newUser.full_name });
+    if (passwordError) {
+      showError("Weak Password", passwordError);
+      return;
+    }
     createUserMutation.mutate(newUser);
   };
 
@@ -257,8 +264,9 @@ const SimpleUserManagement = () => {
                   type="password"
                   value={newUser.password}
                   onChange={(e) => setNewUser(prev => ({ ...prev, password: e.target.value }))}
-                  placeholder="Enter password"
+                  placeholder="Min 10 characters"
                 />
+                <PasswordStrengthBar password={newUser.password} email={newUser.email} name={newUser.full_name} />
               </div>
               <div>
                 <Label>Full Name</Label>
