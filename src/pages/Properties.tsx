@@ -494,30 +494,30 @@ export default function Properties() {
         description="Curated luxury villas across ASEAN — search by location, type and intent, ranked by ASTRA AI."
       />
 
-      <section className="mx-auto max-w-[1600px] px-6 pt-10 md:pt-14 pb-6">
+      <section className="mx-auto max-w-[1600px] px-4 sm:px-6 pt-5 md:pt-8 pb-4">
         <div className="max-w-3xl">
-          <div className="text-[11px] uppercase tracking-[0.28em] reos-gold mb-3">
+          <div className="text-[10px] uppercase tracking-[0.24em] reos-gold mb-1.5">
             Discover · The Collection
           </div>
-          <h1 className="text-[34px] md:text-[44px] leading-[1.05] font-semibold tracking-tight text-[var(--text)]">
+          <h1 className="text-[24px] sm:text-[28px] md:text-[32px] leading-[1.1] font-semibold tracking-tight text-[var(--text)]">
             {titleHead} <em className="reos-gold not-italic">{titleTail}</em>
           </h1>
-          <p className="mt-4 text-[14px] text-[var(--text-2)] leading-relaxed">{subheading}</p>
+          <p className="mt-1.5 text-[13px] text-[var(--text-2)] leading-snug line-clamp-2">{subheading}</p>
         </div>
 
         {/* Search bar */}
-        <form onSubmit={submitSearch} className="mt-8 reos-card p-2 flex flex-col md:flex-row gap-2">
-          <div className="flex-1 relative">
+        <form onSubmit={submitSearch} className="mt-4 reos-card p-1.5 grid grid-cols-[1fr_auto] md:flex md:flex-row gap-1.5">
+          <div className="col-span-2 md:flex-1 relative">
             <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
             <input
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search villas, projects or developers…"
               aria-label="Search properties"
-              className="w-full h-11 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
+              className="w-full h-11 md:h-10 pl-10 pr-3 rounded-lg bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-base md:text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
             />
           </div>
-          <div className="flex-1 relative">
+          <div className="min-w-0 md:flex-1 relative">
             <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
             <input
               value={locationInput}
@@ -526,14 +526,14 @@ export default function Properties() {
               aria-label="Location"
               list="astra-locations"
               autoComplete="off"
-              className="w-full h-11 pl-10 pr-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
+              className="w-full h-11 md:h-10 pl-10 pr-3 rounded-lg bg-[var(--surface-2)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-base md:text-sm placeholder:text-[var(--text-2)] text-[var(--text)]"
             />
           </div>
           <button
             type="submit"
-            className="h-11 px-6 rounded-xl reos-cta text-[13px] inline-flex items-center justify-center gap-1.5 shrink-0"
+            className="h-11 md:h-10 px-4 md:px-5 rounded-lg reos-cta text-[13px] inline-flex items-center justify-center gap-1.5 shrink-0"
           >
-            <SearchIcon className="h-4 w-4" /> Search
+            <SearchIcon className="h-4 w-4" aria-hidden="true" /> Search
           </button>
         </form>
 
@@ -546,12 +546,12 @@ export default function Properties() {
         </datalist>
 
         {/* Active filter chips + controls */}
-        <div className="mt-6 flex flex-wrap items-center gap-2">
+        <div className="mt-3 flex flex-wrap items-center gap-1.5 sm:gap-2">
           {activeChips.map((chip) => (
             <button
               key={chip.key}
               onClick={() => removeParam(chip.key)}
-              className="reos-chip inline-flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full text-[11px] uppercase tracking-[0.16em] transition-colors"
+              className="reos-chip inline-flex items-center gap-1.5 pl-2.5 pr-2 min-h-9 sm:min-h-8 rounded-full text-[10px] uppercase tracking-[0.14em] transition-colors"
             >
               {chip.label}
               <X className="w-3 h-3" />
@@ -560,17 +560,17 @@ export default function Properties() {
           {activeChips.length > 0 && (
             <button
               onClick={clearAll}
-              className="text-[11px] uppercase tracking-[0.2em] text-[var(--text-3)] hover:reos-gold transition-colors"
+              className="min-h-9 sm:min-h-8 px-1 text-[10px] uppercase tracking-[0.18em] text-[var(--text-3)] hover:reos-gold transition-colors"
             >
               Clear all
             </button>
           )}
-          <div className="ml-auto flex items-center gap-2">
+          <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-1.5 sm:gap-2">
             {/* Grid / List view toggle — persisted via ?view= URL param */}
             <div
               role="group"
               aria-label="Toggle results view"
-              className="h-9 inline-flex items-center rounded-lg border border-[var(--line)] bg-[var(--surface)] p-0.5"
+              className="h-11 sm:h-9 inline-flex items-center rounded-lg border border-[var(--line)] bg-[var(--surface)] p-0.5 shrink-0"
             >
               <button
                 type="button"
@@ -578,13 +578,13 @@ export default function Properties() {
                 aria-label="Grid view"
                 onClick={() => { removeParam("view"); trackEvent("marketplace_view_mode_changed", { event_data: { view: "grid" } } as any); }}
                 className={cn(
-                  "h-8 px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
+                  "h-10 sm:h-8 px-3 sm:px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
                   viewMode === "grid"
                     ? "bg-[var(--gold-soft)] reos-gold"
                     : "text-[var(--text-2)] hover:text-[var(--text)]",
                 )}
               >
-                <LayoutGrid className="w-3.5 h-3.5" /> Grid
+                <LayoutGrid className="w-3.5 h-3.5" aria-hidden="true" /> <span className="hidden sm:inline">Grid</span>
               </button>
               <button
                 type="button"
@@ -592,19 +592,20 @@ export default function Properties() {
                 aria-label="List view"
                 onClick={() => { updateParam("view", "list"); trackEvent("marketplace_view_mode_changed", { event_data: { view: "list" } } as any); }}
                 className={cn(
-                  "h-8 px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
+                  "h-10 sm:h-8 px-3 sm:px-2.5 rounded-md inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] transition-colors",
                   viewMode === "list"
                     ? "bg-[var(--gold-soft)] reos-gold"
                     : "text-[var(--text-2)] hover:text-[var(--text)]",
                 )}
               >
-                <ListIcon className="w-3.5 h-3.5" /> List
+                <ListIcon className="w-3.5 h-3.5" aria-hidden="true" /> <span className="hidden sm:inline">List</span>
               </button>
             </div>
             <button
               type="button"
               onClick={() => setFilterOpen((v) => !v)}
-              className="h-9 px-3 rounded-lg reos-chip inline-flex items-center gap-1.5 text-[12px]"
+              aria-expanded={filterOpen}
+              className="h-11 sm:h-9 px-3 rounded-lg reos-chip inline-flex items-center gap-1.5 text-[12px] shrink-0"
             >
               <SlidersHorizontal className="w-3.5 h-3.5" /> Filters
             </button>
@@ -612,7 +613,7 @@ export default function Properties() {
               value={sort}
               onChange={(e) => updateParam("sort", e.target.value)}
               aria-label="Sort properties"
-              className="reos-chip text-[12px] rounded-lg h-9 px-3 bg-[var(--surface)] focus:outline-none"
+              className="reos-chip text-[12px] rounded-lg h-11 sm:h-9 px-3 bg-[var(--surface)] focus:outline-none min-w-0 flex-1 sm:flex-none"
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.id} value={o.id} className="bg-[var(--surface)] text-[var(--text)]">
@@ -624,7 +625,7 @@ export default function Properties() {
         </div>
 
         {filterOpen && (
-          <div className="mt-5 reos-card p-5 sm:p-6 space-y-7">
+          <div className="mt-3 reos-card p-4 sm:p-5 space-y-5">
             {/* Property Type */}
             <div>
               <div className="flex items-center justify-between mb-3">
