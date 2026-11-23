@@ -8,7 +8,7 @@ import {
   ArrowLeftRight, Calendar, FileText, LifeBuoy, Crown, ArrowUpRight,
   MapPin, BedDouble, Bath, Maximize, Shield, BarChart3, Loader2, X,
   Sliders, Plus, Minus, CheckCircle2, Sun, Moon, Menu, LogOut, User,
-  Home, Coins, Layers, Database, ArrowRight,
+  Home, Coins, Layers, Database, ArrowRight, ChevronLeft, Pause, Play,
 } from "lucide-react";
 import {
   LineChart, Line, ResponsiveContainer,
@@ -22,6 +22,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import { reosTokens } from "@/components/reos/ReosShell";
+import { useHeroVillas } from "@/hooks/useHeroVillas";
 
 
 /* ============================================================
@@ -317,6 +318,21 @@ export default function AstraReosHome() {
   const { theme, setTheme } = useTheme();
   const { logoUrl: headerLogo } = useBrandingLogo('headerLogo', '/astra-logo.png');
   const { data: market, loading: marketLoading } = useReosMarket();
+
+  /* Hero slideshow: real villa listings, auto-advancing every 6s; pauses on hover/focus or when the visitor pauses it or prefers reduced motion. */
+  const heroVillas = useHeroVillas();
+  const [slide, setSlide] = useState(0);
+  const [heroPaused, setHeroPaused] = useState(false);
+  const [heroHover, setHeroHover] = useState(false);
+  const reduceMotion = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const slideCount = heroVillas.length;
+  const currentVilla = slideCount ? heroVillas[slide % slideCount] : null;
+  const goSlide = (d: number) => slideCount && setSlide((i) => (i + d + slideCount) % slideCount);
+  useEffect(() => {
+    if (slideCount < 2 || heroPaused || heroHover || reduceMotion) return;
+    const t = window.setInterval(() => setSlide((i) => (i + 1) % slideCount), 6000);
+    return () => window.clearInterval(t);
+  }, [slideCount, heroPaused, heroHover, reduceMotion]);
   const { search, data: aiData, loading: aiLoading, error: aiError, reset: resetAi } = useReosAiSearch();
 
   const langRef = useRef<HTMLDivElement>(null);
@@ -565,10 +581,37 @@ export default function AstraReosHome() {
             {/* ===== HERO + MARKET OVERVIEW ===== */}
             <Section className="grid grid-cols-12 gap-4 sm:gap-5">
               {/* Hero */}
-              <motion.div variants={fadeUp} className="col-span-12 lg:col-span-8 2xl:col-span-9 reos-card reos-m-bleed overflow-hidden relative md:min-h-[480px]">
-                {/* Photo fills the hero; phones darken the left side for the copy and fade into the page at the bottom. */}
+              <motion.div
+                variants={fadeUp}
+                role="region"
+                aria-roledescription="carousel"
+                aria-label="Featured villas for sale"
+                onMouseEnter={() => setHeroHover(true)}
+                onMouseLeave={() => setHeroHover(false)}
+                onFocusCapture={() => setHeroHover(true)}
+                onBlurCapture={() => setHeroHover(false)}
+                className="col-span-12 lg:col-span-8 2xl:col-span-9 reos-card reos-m-bleed overflow-hidden relative md:min-h-[480px]"
+              >
+                {/* Photo fills the hero (real villa listings crossfade over the brand photo); phones darken the left side for the copy and fade into the page at the bottom. */}
                 <div className="absolute inset-0">
-                  <img src={heroImg} alt="Luxury villa overlooking the ocean" width={1600} height={900} {...({ fetchpriority: "high" } as Record<string, string>)} decoding="async" className="absolute inset-0 w-full h-full object-cover object-[72%_center] md:object-center" />
+                  <img src={heroImg} alt="" aria-hidden="true" width={1600} height={900} {...({ fetchpriority: "high" } as Record<string, string>)} decoding="async" className="absolute inset-0 w-full h-full object-cover object-[72%_center] md:object-center" />
+                  <AnimatePresence initial={false}>
+                    {currentVilla && (
+                      <motion.img
+                        key={currentVilla.id}
+                        src={currentVilla.image}
+                        alt={`${currentVilla.title}${currentVilla.city ? `, ${currentVilla.city}` : ""}`}
+                        width={1600}
+                        height={900}
+                        decoding="async"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: reduceMotion ? 0 : 0.8, ease: "easeOut" }}
+                        className="absolute inset-0 w-full h-full object-cover object-[72%_center] md:object-center"
+                      />
+                    )}
+                  </AnimatePresence>
                   <div className="absolute inset-0 hidden md:block" style={{ background: "var(--hero-overlay)" }} />
                   <div className="absolute inset-0 md:hidden" style={{ background: "var(--hero-overlay-mobile)" }} />
                 </div>
@@ -587,12 +630,12 @@ export default function AstraReosHome() {
 
                   {/* Primary actions: gold Explore, then two outline actions side by side on phones */}
                   <div className="mt-5 md:mt-6 grid grid-cols-2 md:flex gap-2.5 max-w-md md:max-w-none">
-                    <Link to="/properties" className="col-span-2 min-[430px]:col-span-1 whitespace-nowrap h-12 md:h-11 pl-3.5 pr-3 md:px-5 rounded-xl md:rounded-full reos-cta text-[13.5px] md:text-[13px] inline-flex items-center justify-between md:justify-center gap-2">
-                      <span className="inline-flex items-center gap-2"><Home className="h-4 w-4" aria-hidden="true" /> Explore Properties</span>
+                    <Link to="/properties?type=villa&listing_type=sale" className="col-span-2 min-[430px]:col-span-1 whitespace-nowrap h-12 md:h-11 pl-3.5 pr-3 md:px-5 rounded-xl md:rounded-full reos-cta text-[13.5px] md:text-[13px] inline-flex items-center justify-between md:justify-center gap-2">
+                      <span className="inline-flex items-center gap-2"><Home className="h-4 w-4" aria-hidden="true" /> Buy a Villa</span>
                       <ChevronRight className="h-4 w-4 md:hidden" aria-hidden="true" />
                     </Link>
                     <Link to="/investment" className="col-start-1 min-h-12 md:h-11 pl-3 pr-2.5 md:px-5 rounded-xl md:rounded-full reos-outline bg-[var(--bg)]/60 text-[12.5px] md:text-[13px] leading-tight font-semibold inline-flex items-center justify-between md:justify-center gap-1.5 hover:bg-[var(--surface)]" style={{ color: "var(--hero-text)" }}>
-                      <span className="inline-flex items-center gap-2"><BarChart3 className="h-4 w-4 shrink-0 reos-gold" aria-hidden="true" /> Start Investing</span>
+                      <span className="inline-flex items-center gap-2"><BarChart3 className="h-4 w-4 shrink-0 reos-gold" aria-hidden="true" /> Invest in Villas</span>
                       <ChevronRight className="h-4 w-4 shrink-0 md:hidden" aria-hidden="true" />
                     </Link>
                     <Link to="/wealth-advisor" className="min-h-12 md:h-11 pl-3 pr-2.5 md:px-5 rounded-xl md:rounded-full reos-outline bg-[var(--bg)]/60 text-[12.5px] md:text-[13px] leading-tight font-semibold inline-flex items-center justify-between md:justify-center gap-1.5 hover:bg-[var(--surface)]" style={{ color: "var(--hero-text)" }}>
@@ -601,8 +644,44 @@ export default function AstraReosHome() {
                     </Link>
                   </div>
 
+                  {/* Current villa on the slide: name, price, link to the listing, plus slide controls */}
+                  {currentVilla && (
+                    <div className="mt-5 md:mt-6 w-full max-w-md md:max-w-2xl flex items-center gap-2">
+                      <Link
+                        to={currentVilla.href}
+                        className="group flex-1 min-w-0 min-h-12 rounded-xl reos-outline bg-[var(--bg)]/70 px-3 py-2 flex items-center gap-3 hover:bg-[var(--surface)]"
+                        style={{ color: "var(--hero-text)" }}
+                      >
+                        <div className="min-w-0 flex-1" aria-live={heroPaused || reduceMotion ? "polite" : "off"}>
+                          <div className="text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.18em] reos-gold whitespace-nowrap truncate">Villa for sale · {slide % slideCount + 1}/{slideCount}</div>
+                          <div className="text-[13px] font-semibold leading-snug truncate">{currentVilla.title}</div>
+                          <div className="text-[11px] truncate" style={{ color: "var(--hero-text-2)" }}>
+                            <span className="font-semibold reos-gold">{formatIDR(currentVilla.price)}</span>
+                            {currentVilla.bedrooms ? <> · {currentVilla.bedrooms} bd</> : null}
+                            {currentVilla.bathrooms ? <> · {currentVilla.bathrooms} ba</> : null}
+                            {currentVilla.roi ? <> · ROI {currentVilla.roi.toFixed(1)}%</> : null}
+                          </div>
+                        </div>
+                        <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold reos-gold shrink-0">View villa <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
+                      </Link>
+                      {slideCount > 1 && (
+                        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                          <button type="button" onClick={() => goSlide(-1)} aria-label="Previous villa" className="h-11 w-11 rounded-full reos-outline bg-[var(--bg)]/70 inline-flex items-center justify-center hover:bg-[var(--surface)]" style={{ color: "var(--hero-text)" }}>
+                            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                          </button>
+                          <button type="button" onClick={() => setHeroPaused((v) => !v)} aria-label={heroPaused ? "Play slideshow" : "Pause slideshow"} aria-pressed={heroPaused} className="inline-flex h-11 w-11 rounded-full reos-outline bg-[var(--bg)]/70 items-center justify-center hover:bg-[var(--surface)]" style={{ color: "var(--hero-text)" }}>
+                            {heroPaused ? <Play className="h-4 w-4" aria-hidden="true" /> : <Pause className="h-4 w-4" aria-hidden="true" />}
+                          </button>
+                          <button type="button" onClick={() => goSlide(1)} aria-label="Next villa" className="h-11 w-11 rounded-full reos-outline bg-[var(--bg)]/70 inline-flex items-center justify-center hover:bg-[var(--surface)]" style={{ color: "var(--hero-text)" }}>
+                            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Search panel: inside the hero from tablet up; on phones it sits below Live Market Overview */}
-                  <div className="hidden md:block mt-8 w-full max-w-2xl">{searchPanel}</div>
+                  <div className="hidden md:block mt-6 w-full max-w-2xl">{searchPanel}</div>
                 </div>
               </motion.div>
 
