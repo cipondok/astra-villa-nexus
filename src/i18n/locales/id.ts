@@ -1357,7 +1357,7 @@ const id: TranslationMap = {
     view3D: 'Tampilan 3D',
   },
   seo: {
-    home: { title: 'Platform Properti Premium Indonesia', description: 'Temukan villa, apartemen, rumah, dan properti mewah di Indonesia. Pencarian AI, tur virtual 3D, dan investasi properti dengan ASTRA Villa Realty.' },
+    home: { title: 'ASTRA Villa — Marketplace Properti Indonesia: Rumah, Villa & Apartemen', description: 'Cari rumah, villa, apartemen, tanah, dan properti komersial dijual atau disewa di seluruh Indonesia. Bandingkan listing, simpan favorit, dan pasang iklan di ASTRA Villa.' },
     properties: { title: 'Semua Properti di Indonesia', description: 'Jelajahi ribuan properti dijual dan disewa di seluruh Indonesia. Filter berdasarkan lokasi, tipe, dan harga untuk menemukan properti ideal Anda.' },
     dijual: { title: 'Properti Dijual di Indonesia', description: 'Temukan rumah, villa, apartemen, dan properti dijual di seluruh Indonesia. Harga terbaik, pilihan terlengkap di ASTRA Villa Realty.' },
     disewa: { title: 'Properti Disewa di Indonesia', description: 'Sewa villa, apartemen, rumah, dan kos-kosan di seluruh Indonesia. Booking online mudah & cepat di ASTRA Villa Realty.' },
@@ -2237,6 +2237,39 @@ const id: TranslationMap = {
     startWith: 'Mulai dari',
     fundWalletAndReserve: 'Isi Dompet & Pesan',
     fundsSecuredNote: 'Dana diamankan melalui partner pembayaran teregulasi dan dilindungi oleh alur escrow.',
+  },
+  marketHome: {
+    nav: {
+      home: 'Beranda', buy: 'Beli', rent: 'Sewa', newProjects: 'Properti Baru', commercial: 'Komersial', insight: 'Insight',
+      postListing: 'Pasang Iklan', login: 'Masuk', register: 'Daftar', marketplace: 'Marketplace', ecosystem: 'Ekosistem ASTRA',
+      mainNav: 'Navigasi utama',
+    },
+    hero: {
+      eyebrow: 'MARKETPLACE PROPERTI INDONESIA',
+      title: 'Temukan Properti Impian Anda',
+      subtitle: 'Jelajahi rumah, villa, apartemen, tanah, dan properti komersial di seluruh Indonesia.',
+      photoAlt: 'Rumah modern dengan kolam renang dan taman tropis saat matahari terbenam',
+    },
+    search: {
+      label: 'Cari properti', tabsLabel: 'Jenis pencarian', tabBuy: 'Beli', tabRent: 'Sewa', tabNew: 'Properti Baru',
+      location: 'Lokasi', locationPlaceholder: 'Kota, provinsi, atau area', suggestions: 'Saran lokasi', clearLocation: 'Hapus lokasi',
+      type: 'Tipe properti', anyType: 'Semua tipe', price: 'Kisaran harga', anyPrice: 'Semua harga',
+      beds: 'Kamar tidur', anyBeds: 'Semua', bedsPlus: '{n}+ kamar', submit: 'Cari Properti',
+    },
+    categories: { title: 'Cari berdasarkan kategori', house: 'Rumah', villa: 'Villa', apartment: 'Apartemen', land: 'Tanah', commercial: 'Komersial', hotel: 'Hotel & Resort' },
+    featured: {
+      title: 'Properti Pilihan', subtitle: 'Listing aktif dengan foto dari katalog ASTRA Villa.', viewAll: 'Lihat semua',
+      demoNotice: 'Listing yang ditandai DEMO adalah contoh untuk demonstrasi platform, bukan properti yang benar-benar tersedia.',
+      demo: 'DEMO', demoTitle: 'Contoh listing untuk demonstrasi', save: 'Simpan ke favorit', unsave: 'Hapus dari favorit', details: 'Lihat detail',
+      priceOnRequest: 'Harga atas permintaan', forSale: 'Dijual', forRent: 'Disewa', bedrooms: 'kamar tidur', bathrooms: 'kamar mandi',
+      building: 'luas bangunan', land: 'luas tanah', empty: 'Belum ada listing dengan foto untuk ditampilkan.', error: 'Listing tidak dapat dimuat.', retry: 'Coba lagi', loading: 'Memuat listing…',
+    },
+    locations: { title: 'Jelajahi Lokasi Populer', subtitle: 'Mulai pencarian dari kota dan destinasi favorit di Indonesia.', explore: 'Lihat properti' },
+    cta: { title: 'Punya properti untuk dijual atau disewakan?', text: 'Pasang iklan di ASTRA Villa dan tampilkan properti Anda kepada pencari properti.', button: 'Pasang Iklan' },
+    footer: {
+      tagline: 'Marketplace properti Indonesia untuk mencari, membandingkan, dan memasang iklan rumah, villa, apartemen, tanah, dan properti komersial.',
+      marketplace: 'Marketplace', ecosystem: 'Ekosistem', company: 'Perusahaan', legal: 'Legal & Bantuan', locations: 'Lokasi', agents: 'Agen', insight: 'Insight',
+    },
   },
 };
 

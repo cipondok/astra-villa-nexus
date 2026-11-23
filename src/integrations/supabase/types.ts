@@ -47785,6 +47785,7 @@ export type Database = {
           images: string[]
           investment_score: number | null
           investor_highlight: boolean | null
+          is_demo: boolean
           is_featured: boolean | null
           land_area_sqm: number | null
           land_sqm: number
@@ -47867,6 +47868,7 @@ export type Database = {
           images?: string[]
           investment_score?: number | null
           investor_highlight?: boolean | null
+          is_demo?: boolean
           is_featured?: boolean | null
           land_area_sqm?: number | null
           land_sqm?: number
@@ -47949,6 +47951,7 @@ export type Database = {
           images?: string[]
           investment_score?: number | null
           investor_highlight?: boolean | null
+          is_demo?: boolean
           is_featured?: boolean | null
           land_area_sqm?: number | null
           land_sqm?: number

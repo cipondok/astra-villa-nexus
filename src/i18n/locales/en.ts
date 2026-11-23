@@ -1354,7 +1354,7 @@ const en: TranslationMap = {
     view3D: '3D View',
   },
   seo: {
-    home: { title: 'Premium Property Platform Indonesia', description: 'Find villas, apartments, houses, and luxury properties in Indonesia. AI search, 3D virtual tours, and property investment with ASTRA Villa Realty.' },
+    home: { title: 'ASTRA Villa — Indonesian Property Marketplace: Houses, Villas & Apartments', description: 'Search houses, villas, apartments, land and commercial property for sale or rent across Indonesia. Compare listings, save favourites and post a listing on ASTRA Villa.' },
     properties: { title: 'All Properties in Indonesia', description: 'Explore thousands of properties for sale and rent across Indonesia. Filter by location, type, and price to find your ideal property.' },
     dijual: { title: 'Properties for Sale in Indonesia', description: 'Find houses, villas, apartments, and properties for sale across Indonesia. Best prices, widest selection at ASTRA Villa Realty.' },
     disewa: { title: 'Properties for Rent in Indonesia', description: 'Rent villas, apartments, houses, and boarding rooms across Indonesia. Easy & fast online booking at ASTRA Villa Realty.' },
@@ -2419,6 +2419,39 @@ const en: TranslationMap = {
     last7Days: 'Last 7 Days',
     last30Days: 'Last 30 Days',
     last90Days: 'Last 90 Days',
+  },
+  marketHome: {
+    nav: {
+      home: 'Home', buy: 'Buy', rent: 'Rent', newProjects: 'New Projects', commercial: 'Commercial', insight: 'Insights',
+      postListing: 'Post a Listing', login: 'Log in', register: 'Sign up', marketplace: 'Marketplace', ecosystem: 'ASTRA Ecosystem',
+      mainNav: 'Main navigation',
+    },
+    hero: {
+      eyebrow: 'INDONESIAN PROPERTY MARKETPLACE',
+      title: 'Find Your Dream Property',
+      subtitle: 'Explore houses, villas, apartments, land and commercial property across Indonesia.',
+      photoAlt: 'Modern house with a pool and tropical garden at sunset',
+    },
+    search: {
+      label: 'Search properties', tabsLabel: 'Search type', tabBuy: 'Buy', tabRent: 'Rent', tabNew: 'New Projects',
+      location: 'Location', locationPlaceholder: 'City, province or area', suggestions: 'Location suggestions', clearLocation: 'Clear location',
+      type: 'Property type', anyType: 'All types', price: 'Price range', anyPrice: 'Any price',
+      beds: 'Bedrooms', anyBeds: 'Any', bedsPlus: '{n}+ beds', submit: 'Search Properties',
+    },
+    categories: { title: 'Browse by category', house: 'Houses', villa: 'Villas', apartment: 'Apartments', land: 'Land', commercial: 'Commercial', hotel: 'Hotels & Resorts' },
+    featured: {
+      title: 'Featured Properties', subtitle: 'Active listings with photos from the ASTRA Villa catalogue.', viewAll: 'View all',
+      demoNotice: 'Listings marked DEMO are samples for demonstrating the platform, not properties that are actually available.',
+      demo: 'DEMO', demoTitle: 'Sample listing for demonstration', save: 'Save to favourites', unsave: 'Remove from favourites', details: 'View details',
+      priceOnRequest: 'Price on request', forSale: 'For sale', forRent: 'For rent', bedrooms: 'bedrooms', bathrooms: 'bathrooms',
+      building: 'building area', land: 'land area', empty: 'No listings with photos to show yet.', error: 'Listings could not be loaded.', retry: 'Try again', loading: 'Loading listings…',
+    },
+    locations: { title: 'Explore Popular Locations', subtitle: 'Start your search from favourite cities and destinations in Indonesia.', explore: 'View properties' },
+    cta: { title: 'Have a property to sell or rent out?', text: 'Post a listing on ASTRA Villa and show your property to people searching.', button: 'Post a Listing' },
+    footer: {
+      tagline: 'Indonesian property marketplace to search, compare and list houses, villas, apartments, land and commercial property.',
+      marketplace: 'Marketplace', ecosystem: 'Ecosystem', company: 'Company', legal: 'Legal & Help', locations: 'Locations', agents: 'Agents', insight: 'Insights',
+    },
   },
 };
 

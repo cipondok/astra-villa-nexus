@@ -395,6 +395,8 @@ const PropertyDetail = () => {
   const seoTitle = buildSeoTitle(property);
   const seoDescription = buildMetaDescription(property);
   const jsonLdGraph = buildPropertyJsonLd(property);
+  // Sample inventory: labelled DEMO, kept out of search engines, and never shown as verified.
+  const isDemo = Boolean((property as { is_demo?: boolean | null }).is_demo);
   const jsonLdErrors = validatePropertyJsonLd(jsonLdGraph);
   const loc = [property.district, property.city, property.province].filter(Boolean).join(", ") || property.location || "Bali, Indonesia";
 
@@ -417,7 +419,8 @@ const PropertyDetail = () => {
         ogType="product"
         ogImage={socialImage}
         canonical={canonicalUrl}
-        jsonLd={jsonLdErrors.length ? undefined : jsonLdGraph}
+        noIndex={isDemo}
+        jsonLd={isDemo || jsonLdErrors.length ? undefined : jsonLdGraph}
       />
 
       {/* ============ EDITORIAL HERO — framed gallery + content block ============ */}
@@ -579,6 +582,11 @@ const PropertyDetail = () => {
               <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 border-b border-[var(--luxe-gold)]/20 pb-8">
                 <div className="space-y-3 min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
+                    {isDemo && (
+                      <span className="px-3 py-1 rounded-full border border-[var(--luxe-gold)]/60 text-[var(--luxe-gold)] text-[10px] font-bold uppercase tracking-widest" title="Contoh listing untuk demonstrasi — bukan properti yang benar-benar tersedia">
+                        Demo · Contoh listing
+                      </span>
+                    )}
                     <span className="px-3 py-1 bg-luxe-glass text-luxe-fg text-[10px] font-bold uppercase tracking-widest rounded-full border border-luxe">
                       {property.property_type || "Signature Collection"}
                     </span>
@@ -621,7 +629,7 @@ const PropertyDetail = () => {
                 <div className="space-y-1.5">
                   <span className="text-luxe-mut text-[9px] uppercase tracking-[0.25em] block font-semibold">Status</span>
                   <div className="text-[15px] md:text-[16px] font-semibold text-[var(--luxe-gold)] inline-flex items-center gap-1.5">
-                    <ShieldCheck className="h-4 w-4" /> Verified
+                    {isDemo ? <>Demo</> : <><ShieldCheck className="h-4 w-4" /> Verified</>}
                     {ai?.investment_score != null && (
                       <span className="ml-1 text-[10px] px-2 py-0.5 rounded-full border border-[var(--luxe-gold)]/40 bg-[var(--luxe-gold)]/10">
                         AI {ai.investment_score.toFixed(0)}
@@ -794,8 +802,8 @@ const PropertyDetail = () => {
                   { label: "Tax Records", ok: true },
                 ].map((v) => (
                   <LuxeCard key={v.label} variant="glass" radius="md" className="p-5">
-                    <ShieldCheck className={cn("h-4 w-4", v.ok ? "text-emerald-400" : "text-luxe-mut")} />
-                    <div className="mt-3 font-serif-l text-[16px]">{v.ok ? "Verified" : "Pending"}</div>
+                    <ShieldCheck className={cn("h-4 w-4", v.ok && !isDemo ? "text-emerald-400" : "text-luxe-mut")} />
+                    <div className="mt-3 font-serif-l text-[16px]">{isDemo ? "Not checked" : v.ok ? "Verified" : "Pending"}</div>
                     <div className="text-[10px] uppercase tracking-[0.2em] text-luxe-mut mt-2">{v.label}</div>
                   </LuxeCard>
                 ))}
@@ -1105,14 +1113,14 @@ const PropertyDetail = () => {
 
               <div className="mt-6 pt-5 border-t border-luxe flex items-center gap-2 text-[11px] text-luxe-mut">
                 <ShieldCheck className="h-3.5 w-3.5 text-[var(--luxe-emerald)]" />
-                Verified listing · Escrow-protected
+                {isDemo ? "Demo listing · not available to buy or rent" : "Verified listing · Escrow-protected"}
               </div>
               </div>
             </div>
 
 
             <p className="mt-4 text-center text-luxe-mut text-[9px] uppercase tracking-[0.3em] font-semibold">
-              Verified by ASTRA Realty Group
+              {isDemo ? "Sample listing for demonstration" : "Verified by ASTRA Realty Group"}
             </p>
           </aside>
         </div>

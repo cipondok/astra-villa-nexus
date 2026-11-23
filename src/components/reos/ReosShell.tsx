@@ -105,6 +105,25 @@ export const reosTokens = `
     --shadow-lift: 0 4px 14px rgba(23,22,20,0.05);
     --shadow-popover: 0 20px 40px -12px rgba(23,22,20,0.12);
   }
+  /* Photo overlays stay deep charcoal in both themes so text on photos keeps its contrast. */
+  .reos {
+    --photo-scrim: linear-gradient(180deg, rgba(36,41,48,0.62) 0%, rgba(36,41,48,0.42) 38%, rgba(36,41,48,0.78) 100%);
+    --photo-scrim-side: linear-gradient(90deg, rgba(36,41,48,0.80) 0%, rgba(36,41,48,0.45) 55%, rgba(36,41,48,0.15) 100%);
+    --tile-scrim: linear-gradient(180deg, rgba(36,41,48,0) 40%, rgba(36,41,48,0.82) 100%);
+    --on-photo: #F5F3EE;
+    --on-photo-2: rgba(245,243,238,0.84);
+    --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  }
+  .reos .mk-display { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; }
+  .reos .mk-label { display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.14em; color: var(--text-2); margin-bottom: 6px; }
+  .reos .mk-field { width:100%; height:48px; border-radius:12px; background: var(--inset); border:1px solid var(--line); color: var(--text); font-size:15px; padding-left:12px; padding-right:12px; outline:none; transition: border-color 160ms ease; }
+  .reos .mk-field.mk-has-icon { padding-left: 38px; padding-right: 44px; }
+  .reos .mk-field::placeholder { color: var(--text-3); }
+  .reos .mk-field:hover { border-color: var(--line-gold); }
+  .reos .mk-field:focus-visible { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .reos .mk-select { appearance:none; padding-right:36px; background-image: linear-gradient(45deg, transparent 50%, var(--text-2) 50%), linear-gradient(135deg, var(--text-2) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+  .reos .mk-select option { background: var(--surface-2); color: var(--text); }
+  .reos .mk-focus:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   .reos *::selection { background: var(--gold); color: var(--gold-fg); }
   .reos-card { background: var(--surface); border: 1px solid var(--line-gold); border-radius: 16px; }
   .reos-card-2 { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
@@ -143,6 +162,16 @@ const topTabs = [
   { icon: MoreHorizontal, tKey: "shell.tabs.more", to: "/search" },
 ];
 
+/** Marketplace navigation (primary row of the header and top of the phone menu). */
+const marketNav = [
+  { key: "home", fallback: "Beranda", to: "/" },
+  { key: "buy", fallback: "Beli", to: "/dijual" },
+  { key: "rent", fallback: "Sewa", to: "/disewa" },
+  { key: "newProjects", fallback: "Properti Baru", to: "/new-projects" },
+  { key: "commercial", fallback: "Komersial", to: "/properties?type=commercial" },
+  { key: "insight", fallback: "Insight", to: "/blog" },
+];
+
 const sideNav = [
   { icon: Eye, tKey: "shell.side.overview", to: "/" },
   { icon: BarChart3, tKey: "shell.side.marketIntelligence", to: "/market-heatmap" },
@@ -155,15 +184,20 @@ const sideNav = [
   { icon: LifeBuoy, tKey: "shell.side.support", to: "/support" },
 ];
 
-const banks = ["BCA", "Mandiri", "CIMB NIAGA", "HSBC", "DBS", "Maybank", "UOB", "OCBC NISP", "BNI", "BRI"];
 
 
 export function ReosHeader() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const { user, profile, signOut } = useAuth();
   const { language, setLanguage } = useLanguage();
   const { t } = useTranslation();
+  const isHome = pathname === "/";
+  const isMarketActive = (to: string) => {
+    const [p, q] = to.split("?");
+    if (p === "/") return isHome;
+    return pathname === p && (!q || search.replace(/^\?/, "") === q);
+  };
   const { theme, setTheme } = useTheme();
   const { logoUrl: headerLogo } = useBrandingLogo("headerLogo", "/astra-logo.png");
   const { data: userRoles = [] } = useUserRoles();
@@ -322,15 +356,25 @@ export function ReosHeader() {
             </div>
           </Link>
 
-          <div className="flex-1 hidden lg:flex items-center justify-center">
-            <Link
-              to="/add-property"
-              className="btn-titanium inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-[11px] font-semibold tracking-wide hover:opacity-90 transition"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              {t("shell.addProperty")}
-            </Link>
-          </div>
+          <nav aria-label={t("marketHome.nav.mainNav", "Navigasi utama")} className="flex-1 hidden lg:flex items-center justify-center min-w-0">
+            <ul className="flex items-center gap-0.5 xl:gap-1">
+              {marketNav.map((item) => {
+                const active = isMarketActive(item.to);
+                return (
+                  <li key={item.key}>
+                    <Link
+                      to={item.to}
+                      aria-current={active ? "page" : undefined}
+                      className={`mk-focus relative inline-flex items-center h-11 px-2 xl:px-3 rounded-lg text-[13.5px] whitespace-nowrap transition-colors ${active ? "text-[var(--text)] font-semibold" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
+                    >
+                      {t(`marketHome.nav.${item.key}`, item.fallback)}
+                      {active && <span aria-hidden="true" className="absolute left-2 right-2 xl:left-3 xl:right-3 bottom-1.5 h-[2px] rounded-full bg-[var(--gold)]" />}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
 
 
           <div className="flex items-center gap-1 min-[360px]:gap-1.5 sm:gap-1 md:gap-2 shrink-0 ml-auto">
@@ -348,11 +392,18 @@ export function ReosHeader() {
                 <Bell className="h-[18px] w-[18px] text-[var(--text)]" aria-hidden="true" />
               </button>
             )}
+            <Link
+              to="/add-property"
+              className="mk-focus hidden md:inline-flex items-center gap-1.5 h-11 lg:h-9 px-3 rounded-lg border border-[var(--line-strong)] text-[12.5px] font-semibold whitespace-nowrap text-[var(--text)] hover:bg-[var(--gold-soft)] transition-colors"
+            >
+              <Plus className="h-3.5 w-3.5 reos-gold" aria-hidden="true" />
+              {t("marketHome.nav.postListing", "Pasang Iklan")}
+            </Link>
             <div className="relative hidden sm:block" ref={langRef}>
               <button
                 type="button"
                 onClick={() => { setLangOpen(o => !o); setNotifOpen(false); setProfileOpen(false); }}
-                className="h-11 lg:h-9 px-3 rounded-lg inline-flex items-center gap-1.5 text-xs hover:bg-[var(--surface)] text-[var(--text-2)]"
+                className="mk-focus h-11 lg:h-9 px-2.5 rounded-lg inline-flex items-center gap-1.5 text-xs hover:bg-[var(--surface)] text-[var(--text-2)]"
                 aria-haspopup="menu"
                 aria-expanded={langOpen}
                 aria-label={t("shell.language")}
@@ -384,7 +435,7 @@ export function ReosHeader() {
               type="button"
               onClick={toggleTheme}
               aria-label={t("shell.toggleTheme")}
-              className="hidden sm:flex h-11 w-11 lg:h-9 lg:w-9 rounded-lg hover:bg-[var(--surface)] items-center justify-center"
+              className="mk-focus hidden sm:flex lg:hidden xl:flex h-11 w-11 lg:h-9 lg:w-9 rounded-lg hover:bg-[var(--surface)] items-center justify-center"
             >
               {theme === "dark" ? <Sun className="h-4 w-4 text-[var(--text-2)]" /> : <Moon className="h-4 w-4 text-[var(--text-2)]" />}
             </button>
@@ -582,16 +633,16 @@ export function ReosHeader() {
               </div>
             ) : (
               <>
-                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="hidden sm:inline-flex items-center h-11 lg:h-9 px-2.5 sm:px-4 rounded-lg text-[12.5px] whitespace-nowrap hover:bg-[var(--surface)] text-[var(--text)] transition">{t("shell.signIn")}</button>
-                <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="hidden sm:inline-flex h-11 lg:h-9 px-3 sm:px-4 rounded-lg reos-cta text-[12.5px] whitespace-nowrap items-center gap-1.5">
-                  {t("shell.getStarted")} <ChevronRight className="hidden sm:block h-3.5 w-3.5" aria-hidden="true" />
+                <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="mk-focus hidden sm:inline-flex items-center h-11 lg:h-9 px-2.5 xl:px-3.5 rounded-lg text-[12.5px] font-medium whitespace-nowrap hover:bg-[var(--surface)] text-[var(--text)] transition">{t("marketHome.nav.login", "Masuk")}</button>
+                <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="mk-focus hidden sm:inline-flex h-11 lg:h-9 px-3 xl:px-4 rounded-lg reos-cta text-[12.5px] whitespace-nowrap items-center gap-1.5">
+                  {t("marketHome.nav.register", "Daftar")}
                 </button>
               </>
             )}
           </div>
         </div>
 
-        <nav aria-label="Main sections" className="hidden md:block border-t border-[var(--line)] bg-[var(--header)]">
+        {!isHome && <nav aria-label="Main sections" className="hidden md:block border-t border-[var(--line)] bg-[var(--header)]">
           <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-6 lg:gap-8 overflow-x-auto overflow-y-hidden reos-no-scrollbar">
             {topTabs.map(tab => {
               const active = isActive(tab.to);
@@ -607,7 +658,7 @@ export function ReosHeader() {
               );
             })}
           </div>
-        </nav>
+        </nav>}
       </header>
 
       <AnimatePresence>
@@ -653,8 +704,8 @@ export function ReosHeader() {
               <div className="flex-1 overflow-y-auto reos-scrollbar px-3 py-3">
                 {!user && (
                   <div className="grid grid-cols-2 gap-2 mb-3">
-                    <button type="button" onClick={() => { setMobileMenuOpen(false); setAuthInitial("login"); setShowAuth(true); }} className="h-11 rounded-lg border border-[var(--line-strong)] text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)]">{t("shell.signIn")}</button>
-                    <button type="button" onClick={() => { setMobileMenuOpen(false); setAuthInitial("register"); setShowAuth(true); }} className="h-11 rounded-lg reos-cta text-[13px]">{t("shell.getStarted")}</button>
+                    <button type="button" onClick={() => { setMobileMenuOpen(false); setAuthInitial("login"); setShowAuth(true); }} className="h-11 rounded-lg border border-[var(--line-strong)] text-[13px] font-medium text-[var(--text)] hover:bg-[var(--surface)]">{t("marketHome.nav.login", "Masuk")}</button>
+                    <button type="button" onClick={() => { setMobileMenuOpen(false); setAuthInitial("register"); setShowAuth(true); }} className="h-11 rounded-lg reos-cta text-[13px]">{t("marketHome.nav.register", "Daftar")}</button>
                   </div>
                 )}
                 {user && (
@@ -672,9 +723,23 @@ export function ReosHeader() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="mb-3 flex items-center justify-center gap-2 h-11 rounded-lg border border-[var(--line-gold)] bg-[var(--surface)] text-[13px] font-semibold text-[var(--text)] hover:border-[var(--line-strong)]"
                 >
-                  <Plus className="h-4 w-4 reos-gold" /> {t("shell.addProperty")}
+                  <Plus className="h-4 w-4 reos-gold" /> {t("marketHome.nav.postListing", "Pasang Iklan")}
                 </Link>
 
+                <div className="px-3 pb-1.5 text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)]">{t("marketHome.nav.marketplace", "Marketplace")}</div>
+                <ul className="space-y-0.5 mb-3">
+                  {marketNav.map((item) => {
+                    const active = isMarketActive(item.to);
+                    return (
+                      <li key={item.key}>
+                        <Link to={item.to} onClick={() => setMobileMenuOpen(false)} aria-current={active ? "page" : undefined} className={`flex items-center px-3 min-h-11 rounded-lg text-[14px] ${active ? "bg-[var(--gold-soft)] reos-gold font-medium" : "text-[var(--text)] hover:bg-[var(--surface)]"}`}>
+                          {t(`marketHome.nav.${item.key}`, item.fallback)}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <div className="px-3 pb-1.5 text-[10px] uppercase tracking-[0.22em] text-[var(--text-3)]">{t("marketHome.nav.ecosystem", "Ekosistem ASTRA")}</div>
                 <ul className="space-y-0.5">
                   {topTabs.map(tab => {
                     const active = isActive(tab.to);
@@ -741,108 +806,87 @@ export function ReosHeader() {
 
 export function ReosFooter() {
   const { t } = useTranslation();
-  const footerLinks: { titleKey: string; links: { labelKey: string; to: string; icon: typeof Home }[] }[] = [
+  const { logoUrl } = useBrandingLogo("headerLogo", "/astra-logo.png");
+  type FooterLink = { label: string; to: string };
+  const columns: { title: string; links: FooterLink[] }[] = [
     {
-      titleKey: "shell.footer.sections.explore",
+      title: t("marketHome.footer.marketplace", "Marketplace"),
       links: [
-        { labelKey: "shell.footer.links.home", to: "/", icon: Home },
-        { labelKey: "shell.footer.links.properties", to: "/properties", icon: Building2 },
-        { labelKey: "shell.footer.links.marketIntelligence", to: "/market-intelligence", icon: BarChart3 },
-        { labelKey: "shell.footer.links.wealthAdvisor", to: "/wealth-advisor", icon: Brain },
-        { labelKey: "shell.footer.links.investmentFund", to: "/investment", icon: PiggyBank },
+        { label: t("marketHome.nav.buy", "Beli"), to: "/dijual" },
+        { label: t("marketHome.nav.rent", "Sewa"), to: "/disewa" },
+        { label: t("marketHome.nav.newProjects", "Properti Baru"), to: "/new-projects" },
+        { label: t("marketHome.nav.commercial", "Komersial"), to: "/properties?type=commercial" },
+        { label: t("marketHome.footer.locations", "Lokasi"), to: "/locations" },
+        { label: t("marketHome.nav.postListing", "Pasang Iklan"), to: "/add-property" },
       ],
     },
     {
-      titleKey: "shell.footer.sections.services",
+      title: t("marketHome.footer.ecosystem", "Ekosistem"),
       links: [
-        { labelKey: "shell.footer.links.buy", to: "/properties?intent=buy", icon: ShoppingCart },
-        { labelKey: "shell.footer.links.rent", to: "/properties?intent=rent", icon: KeyRound },
-        { labelKey: "shell.footer.links.sellWithUs", to: "/sell", icon: Tag },
-        { labelKey: "shell.footer.links.agents", to: "/agents", icon: UsersRound },
-        { labelKey: "shell.footer.links.vendors", to: "/services", icon: Store },
+        { label: t("marketHome.footer.insight", "Insight"), to: "/blog" },
+        { label: t("shell.footer.links.marketIntelligence"), to: "/market-intelligence" },
+        { label: t("shell.footer.links.investmentFund"), to: "/investment" },
+        { label: t("shell.footer.links.wealthAdvisor"), to: "/wealth-advisor" },
+        { label: t("marketHome.footer.agents", "Agen"), to: "/agents" },
+        { label: t("shell.footer.links.vendors"), to: "/services" },
+        { label: t("shell.footer.links.sellWithUs"), to: "/sell" },
       ],
     },
     {
-      titleKey: "shell.footer.sections.company",
+      title: t("marketHome.footer.company", "Perusahaan"),
       links: [
-        { labelKey: "shell.footer.links.about", to: "/about", icon: Briefcase },
-        { labelKey: "shell.footer.links.contact", to: "/contact", icon: Mail },
-        { labelKey: "shell.footer.links.careers", to: "/careers", icon: UsersRound },
-        { labelKey: "shell.footer.links.press", to: "/press", icon: Newspaper },
-        { labelKey: "shell.footer.links.blog", to: "/blog", icon: BookOpen },
+        { label: t("shell.footer.links.about"), to: "/about" },
+        { label: t("shell.footer.links.contact"), to: "/contact" },
+        { label: t("shell.footer.links.careers"), to: "/careers" },
+        { label: t("shell.footer.links.press"), to: "/press" },
       ],
     },
     {
-      titleKey: "shell.footer.sections.legal",
+      title: t("marketHome.footer.legal", "Legal & Bantuan"),
       links: [
-        { labelKey: "shell.footer.links.terms", to: "/terms", icon: ScrollText },
-        { labelKey: "shell.footer.links.privacy", to: "/privacy", icon: Lock },
-        { labelKey: "shell.footer.links.cookies", to: "/cookies", icon: Cookie },
-        { labelKey: "shell.footer.links.cookieSettings", to: "/cookie-preferences", icon: Cookie },
-        { labelKey: "shell.footer.links.compliance", to: "/compliance", icon: Gavel },
-        { labelKey: "shell.footer.links.helpCenter", to: "/help", icon: HelpCircle },
+        { label: t("shell.footer.links.terms"), to: "/terms" },
+        { label: t("shell.footer.links.privacy"), to: "/privacy" },
+        { label: t("shell.footer.links.cookies"), to: "/cookies" },
+        { label: t("shell.footer.links.cookieSettings"), to: "/cookie-preferences" },
+        { label: t("shell.footer.links.compliance"), to: "/compliance" },
+        { label: t("shell.footer.links.helpCenter"), to: "/help" },
       ],
     },
-  ];
-
-  const trust = [
-    { icon: CheckCircle2, labelKey: "shell.trust.verified", subKey: "shell.trust.verifiedSub" },
-    { icon: Shield, labelKey: "shell.trust.secure", subKey: "shell.trust.secureSub" },
-    { icon: LifeBuoy, labelKey: "shell.trust.expert", subKey: "shell.trust.expertSub" },
   ];
 
   return (
-    <footer className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 pb-8 sm:pb-10 pt-4">
-      <div className="reos-card p-4 sm:p-5">
-        <div className="flex items-start lg:items-center flex-col lg:flex-row flex-wrap gap-4 lg:gap-5 justify-between">
-          <div className="text-[12px] text-[var(--text-2)]">{t("shell.trust.trustedBy")}</div>
-          <div className="flex items-center flex-wrap gap-x-5 sm:gap-x-7 gap-y-2">
-            {banks.map(b => (
-              <span key={b} className="text-[12px] font-bold tracking-wider text-[var(--text-2)]/70 hover:text-[var(--text)] transition">{b}</span>
-            ))}
-          </div>
-          <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-3 lg:flex lg:items-center lg:gap-5 w-full lg:w-auto text-[11px]">
-            {trust.map(item => (
-              <div key={item.labelKey} className="flex items-center gap-2 min-w-0">
-                <item.icon className="h-4 w-4 reos-gold shrink-0" />
-                <div className="leading-tight">
-                  <div className="text-[11px] font-medium text-[var(--text)]">{t(item.labelKey)}</div>
-                  <div className="text-[9px] text-[var(--text-2)]">{t(item.subKey)}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+    <footer className="mt-4 border-t border-[var(--line)] bg-[var(--header)]">
+      <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 pt-10 pb-8 grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,3fr)]">
+        <div className="max-w-sm">
+          <Link to="/" aria-label="ASTRA Villa home" className="mk-focus inline-flex items-center gap-2.5 min-h-11 rounded-lg">
+            <img src={logoUrl} alt="" aria-hidden="true" width={36} height={36} loading="lazy" className="h-9 w-9 rounded-full object-contain" />
+            <span className="font-semibold tracking-[0.18em] text-[15px] text-[var(--text)]">ASTRA<span className="reos-gold ml-1">VILLA</span></span>
+          </Link>
+          <p className="mt-3 text-[13px] leading-relaxed text-[var(--text-2)]">
+            {t("marketHome.footer.tagline", "Marketplace properti Indonesia untuk mencari, membandingkan, dan memasang iklan rumah, villa, apartemen, tanah, dan properti komersial.")}
+          </p>
         </div>
-      </div>
-
-      {/* Sitemap weblinks */}
-      <div className="mt-4 reos-card p-4 sm:p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 sm:gap-6">
-          {footerLinks.map((col) => (
-            <div key={col.titleKey}>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] reos-gold mb-3">
-                {t(col.titleKey)}
-              </div>
-              <ul className="space-y-0 md:space-y-2">
+        <nav aria-label="Footer" className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-7">
+          {columns.map((col) => (
+            <div key={col.title}>
+              <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] reos-gold mb-2.5">{col.title}</h2>
+              <ul className="space-y-0 md:space-y-1">
                 {col.links.map((l) => (
-                  <li key={l.labelKey}>
-                    <Link
-                      to={l.to}
-                      className="group flex items-center gap-2 min-h-11 md:min-h-0 py-1 md:py-0 text-[13px] md:text-[12px] text-[var(--text-2)] hover:text-[var(--text)] transition"
-                    >
-                      <l.icon className="h-3.5 w-3.5 text-[var(--gold)] group-hover:text-[var(--gold-2)] transition shrink-0" />
-                      <span>{t(l.labelKey)}</span>
+                  <li key={l.to}>
+                    <Link to={l.to} className="mk-focus inline-flex items-center min-h-11 md:min-h-8 rounded text-[13px] text-[var(--text-2)] hover:text-[var(--text)] transition-colors">
+                      {l.label}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
-        </div>
+        </nav>
       </div>
-
-      <div className="text-center text-[11px] text-[var(--text-3)] py-6">
-        © {new Date().getFullYear()} {t("shell.footer.copyright")}
+      <div className="border-t border-[var(--line)]">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-5 text-[12px] text-[var(--text-3)]">
+          © {new Date().getFullYear()} {t("shell.footer.copyright")}
+        </div>
       </div>
     </footer>
   );

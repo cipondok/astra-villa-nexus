@@ -16,27 +16,13 @@ import ReosShell from "@/components/reos/ReosShell";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { useTrackEvent } from "@/hooks/useTrackEvent";
 import { MarketplaceDevOverlay } from "@/components/dev/MarketplaceDevOverlay";
-import { indonesiaProvinces } from "@/data/indonesiaProvinces";
+import { LOCATION_SUGGESTIONS } from "@/data/locationSuggestions";
+import { findPriceRange, priceRangesFor } from "@/lib/propertySearch";
 import villaFallback1 from "@/assets/luxe-villa-1.jpg";
 import villaFallback2 from "@/assets/luxe-villa-2.jpg";
 import villaFallback3 from "@/assets/luxe-villa-3.jpg";
 
-/** Popular Indonesian cities/areas surfaced in the location dropdown alongside
- *  the 34 provinces from `indonesiaProvinces` (which is our canonical location
- *  source). Users can still type any free-text value — this only powers the
- *  <datalist> suggestions. */
-const POPULAR_CITY_SUGGESTIONS = [
-  "Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Semarang", "Medan",
-  "Denpasar", "Ubud", "Canggu", "Seminyak", "Kuta", "Uluwatu", "Nusa Dua",
-  "Batam", "Makassar", "Balikpapan", "Manado", "Palembang", "Lombok",
-];
-
-const LOCATION_SUGGESTIONS: string[] = Array.from(
-  new Set([
-    ...indonesiaProvinces.map((p) => p.name),
-    ...POPULAR_CITY_SUGGESTIONS,
-  ]),
-).sort((a, b) => a.localeCompare(b));
+/* Location suggestions for the <datalist> come from the shared list used by the homepage search. */
 
 /** Columns per row matching the Tailwind grid breakpoints. */
 function useGridColumns() {
@@ -110,6 +96,7 @@ type Listing = {
   roi_percentage: number | null;
   rental_yield_percentage: number | null;
   is_featured: boolean | null;
+  is_demo?: boolean | null;
   status: string | null;
 };
 
@@ -146,14 +133,7 @@ const LISTING_TYPES = [
   { id: "sale", label: "For Sale" },
   { id: "rent", label: "For Rent" },
 ] as const;
-const PRICE_RANGES: { id: string; label: string; min?: number; max?: number }[] = [
-  { id: "",            label: "Any Price" },
-  { id: "0-1b",        label: "Up to Rp 1B",       min: 0,             max: 1_000_000_000 },
-  { id: "1b-3b",       label: "Rp 1B – 3B",        min: 1_000_000_000, max: 3_000_000_000 },
-  { id: "3b-5b",       label: "Rp 3B – 5B",        min: 3_000_000_000, max: 5_000_000_000 },
-  { id: "5b-10b",      label: "Rp 5B – 10B",       min: 5_000_000_000, max: 10_000_000_000 },
-  { id: "10b-plus",    label: "Rp 10B+",           min: 10_000_000_000 },
-];
+
 const SORT_OPTIONS = [
   { id: "relevant",  label: "Most Relevant" },
   { id: "newest",    label: "Newest" },
@@ -190,7 +170,9 @@ export default function Properties() {
   const when       = params.get("when") || "";
   const listingType = (params.get("listing_type") || preset.listingType || "").toLowerCase();
   const priceRangeId = (params.get("price") || "").toLowerCase();
-  const priceRange = PRICE_RANGES.find((r) => r.id === priceRangeId);
+  const priceRange = findPriceRange(priceRangeId);
+  const priceOptions = [{ id: "", label: "Any Price" }, ...priceRangesFor(listingType)];
+  const minBeds = Math.max(0, Math.floor(Number(params.get("beds")) || 0));
   const viewMode: "grid" | "list" = (params.get("view") === "list" ? "list" : "grid");
 
   const [filterOpen, setFilterOpen] = useState(false);
@@ -211,7 +193,7 @@ export default function Properties() {
   const sentinelTriggerCountRef = useRef(0);
   const duplicatesDetectedRef = useRef(0); // duplicate REQUESTS (same page in flight twice)
   const duplicateRowsRef = useRef(0);      // duplicate ROWS returned across pages
-  const filtersKey = `${q}|${location}|${tag}|${collection}|${intent}|${type}|${sort}|${listingType}|${priceRangeId}|${pageSize}`;
+  const filtersKey = `${q}|${location}|${tag}|${collection}|${intent}|${type}|${sort}|${listingType}|${priceRangeId}|${minBeds}|${pageSize}`;
   const filtersKeyRef = useRef(filtersKey);
   // Reset counters when the query key changes (new search / filter set).
   useEffect(() => {
@@ -242,7 +224,7 @@ export default function Properties() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType, priceRangeId, pageSize }],
+    queryKey: ["reos-properties", { q, location, tag, collection, intent, type, sort, listingType, priceRangeId, minBeds, pageSize }],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }): Promise<Listing[]> => {
       const pageIndex = pageParam as number;
@@ -280,7 +262,7 @@ export default function Properties() {
 
       let query = supabase
         .from("properties")
-        .select("id,title,city,area,location,price,price_idr,property_type,listing_type,bedrooms,bathrooms,area_sqm,images,image_urls,cover_image,investment_score,roi_percentage,rental_yield_percentage,is_featured,status,development_status")
+        .select("id,title,city,area,location,price,price_idr,property_type,listing_type,bedrooms,bathrooms,area_sqm,images,image_urls,cover_image,investment_score,roi_percentage,rental_yield_percentage,is_featured,is_demo,status,development_status")
         .eq("status", "active");
 
       if (q) query = query.ilike("title", `%${q}%`);
@@ -291,6 +273,7 @@ export default function Properties() {
       if (listingType) query = query.eq("listing_type", listingType);
       if (priceRange?.min != null) query = query.gte("price", priceRange.min);
       if (priceRange?.max != null) query = query.lte("price", priceRange.max);
+      if (minBeds > 0) query = query.gte("bedrooms", minBeds);
 
       const COLLECTION_TO_DEV: Record<string, string[]> = {
         "pre-launch":   ["pre_launch", "pre-launch", "prelaunch"],
@@ -395,6 +378,7 @@ export default function Properties() {
   if (type !== "all") activeChips.push({ key: "type", label: type });
   if (listingType)    activeChips.push({ key: "listing_type", label: listingType === "sale" ? "For Sale" : "For Rent" });
   if (priceRange)     activeChips.push({ key: "price", label: priceRange.label });
+  if (minBeds > 0)    activeChips.push({ key: "beds", label: `${minBeds}+ bedrooms` });
 
   const removeParam = (key: string) => {
     const next = new URLSearchParams(params);
@@ -758,7 +742,7 @@ export default function Properties() {
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
-                {PRICE_RANGES.map((r) => (
+                {priceOptions.map((r) => (
                   <button
                     key={r.id || "any"}
                     type="button"
@@ -1039,6 +1023,11 @@ function VillaCard({ listing, index }: { listing: Listing; index: number }) {
 
 
             <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+              {listing.is_demo && (
+                <span title="Sample listing for demonstration" className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.18em] bg-[var(--surface)] text-[var(--text)] border border-[var(--line-strong)]">
+                  Demo
+                </span>
+              )}
               {listing.is_featured && (
                 <span className="px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] bg-black/40 backdrop-blur reos-gold border border-[var(--line-strong)]">
                   Editor's Pick
@@ -1260,6 +1249,11 @@ function VillaCardList({ listing, index }: { listing: Listing; index: number }) 
               )}
             />
             <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+              {listing.is_demo && (
+                <span title="Sample listing for demonstration" className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.18em] bg-[var(--surface)] text-[var(--text)] border border-[var(--line-strong)]">
+                  Demo
+                </span>
+              )}
               {listing.is_featured && (
                 <span className="px-2.5 py-1 rounded-full text-[10px] uppercase tracking-[0.18em] bg-black/40 backdrop-blur reos-gold border border-[var(--line-strong)]">
                   Editor's Pick

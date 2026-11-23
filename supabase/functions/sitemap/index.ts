@@ -61,6 +61,8 @@ Deno.serve(async (req) => {
       .from("properties")
       .select("id, slug, updated_at, city")
       .eq("status", "active")
+      // Demo/sample listings are noindex and never go in the sitemap.
+      .eq("is_demo", false)
       .order("updated_at", { ascending: false })
       .limit(5000);
 
