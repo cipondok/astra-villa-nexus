@@ -15,6 +15,11 @@ export interface PropertyLead {
   notes: string | null;
   last_contacted_at: string | null;
   converted_at: string | null;
+  inquiry_id?: string | null;
+  enquiry_type?: string | null;
+  enquiry_message?: string | null;
+  next_action_at?: string | null;
+  status_changed_at?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -51,7 +56,8 @@ export const usePropertyLeads = () => {
         .from('property_leads')
         .select('*')
         .eq('agent_id', user.id)
-        .order('lead_score', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(500);
       if (error) throw error;
       return (data || []) as PropertyLead[];
     },
@@ -66,7 +72,11 @@ export const usePropertyLeads = () => {
         .eq('id', id);
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['property-leads'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['property-leads'] });
+      queryClient.invalidateQueries({ queryKey: ['lister-counts'] });
+      queryClient.invalidateQueries({ queryKey: ['lead-history'] });
+    },
   });
 
   const addLead = useMutation({
@@ -99,4 +109,35 @@ export const usePropertyLeads = () => {
     updateLead,
     addLead,
   };
+};
+
+export interface LeadHistoryEntry {
+  id: string;
+  activity_type: string;
+  created_at: string;
+  metadata: { from?: string | null; to?: string | null } | null;
+}
+
+/**
+ * Status / follow-up changes for one lead, written by the database trigger
+ * into the existing activity log of the person who made them (RLS: own rows).
+ */
+export const useLeadHistory = (leadId: string | null) => {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ['lead-history', leadId, user?.id],
+    enabled: !!user && !!leadId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('activity_logs')
+        .select('id, activity_type, created_at, metadata')
+        .eq('user_id', user!.id)
+        .in('activity_type', ['lead_status_changed', 'lead_follow_up_set'])
+        .eq('metadata->>lead_id', leadId!)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      return (data || []) as unknown as LeadHistoryEntry[];
+    },
+  });
 };

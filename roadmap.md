@@ -44,3 +44,14 @@
 - [x] Listing enquiry form saves real enquiries (live approved listings only); owners see their leads in My Properties; admins see all
 - [x] Indonesian + English texts, tests, desktop/phone checks
 - [ ] Owner sign-up emails — blocked: email service (Resend SMTP) not connected
+
+# Roadmap — Enquiry & lead management
+
+- [x] Lead inbox in My Properties: own leads only (database-enforced), filters, details, contact buttons, deep link from notifications
+- [x] Statuses new → contacted → viewing scheduled → negotiation → won/lost; no return to "new"; history in the existing activity log
+- [x] Private notes and next follow-up date; buyer details and linked listing locked server-side
+- [x] Leads only from approved, live, non-sample listings; in-app notice to the lister (respects Messages setting)
+- [x] Real lead counts (new, follow-ups due) on the activation card; admin read-only overview in Contacts
+- [x] Indonesian + English texts, loading/empty/error states, tests
+- [ ] Email alerts for new enquiries — blocked: sender domain notify.astravilla.com DNS verification timed out
+- [ ] Signed-in click-through of the inbox — blocked: no signed-in session available here

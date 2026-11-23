@@ -219,7 +219,9 @@ const NotificationsHub: React.FC = () => {
                   )}
                   onClick={() => {
                     if (!n.is_read) markRead.mutate(n.id);
-                    if (n.property_id) navigate(`/property/${n.property_id}`);
+                    const link = (n.metadata as { link?: unknown } | null)?.link;
+                    if (typeof link === 'string' && link.startsWith('/') && !link.startsWith('//')) navigate(link);
+                    else if (n.property_id) navigate(`/property/${n.property_id}`);
                   }}
                 >
                   <CardContent className="p-3 sm:p-4">

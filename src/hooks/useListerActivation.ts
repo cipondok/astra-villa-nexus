@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUserRoles } from '@/hooks/useUserRoles';
 import { getActivationState, type ActivationState, type ApplicationSummary } from '@/lib/listerOnboarding';
 import { getReviewInfo } from '@/lib/listingReview';
+import { summarizeLeads } from '@/lib/leadPipeline';
 
 export interface ListerCounts {
   listings: number;
@@ -11,6 +12,7 @@ export interface ListerCounts {
   inReview: number;
   needsChanges: number;
   newLeads: number;
+  followUpsDue: number;
 }
 
 /**
@@ -76,11 +78,13 @@ export function useListerActivation() {
           .limit(500),
         supabase
           .from('property_leads')
-          .select('id', { count: 'exact', head: true })
+          .select('status, next_action_at')
           .eq('agent_id', uid)
-          .eq('status', 'new'),
+          .limit(1000),
       ]);
       if (props.error) throw props.error;
+      if (leads.error) throw leads.error;
+      const leadSummary = summarizeLeads(leads.data || []);
       const rows = (props.data || []).filter((p) => !p.is_demo);
       const keys = rows.map((p) => getReviewInfo(p as never).key);
       return {
@@ -88,7 +92,8 @@ export function useListerActivation() {
         live: keys.filter((k) => k === 'live').length,
         inReview: keys.filter((k) => k === 'pending').length,
         needsChanges: keys.filter((k) => k === 'revision' || k === 'rejected').length,
-        newLeads: leads.count ?? 0,
+        newLeads: leadSummary.new,
+        followUpsDue: leadSummary.followUpsDue,
       };
     },
   });

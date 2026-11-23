@@ -388,7 +388,11 @@ export default function NotificationCenter() {
                       )}
                       onClick={() => {
                         if (!n.is_read) markReadMutation.mutate(n.id);
-                        if (n.property_id) {
+                        const link = (n.metadata as { link?: unknown } | null)?.link;
+                        if (typeof link === 'string' && link.startsWith('/') && !link.startsWith('//')) {
+                          setIsOpen(false);
+                          window.location.href = link;
+                        } else if (n.property_id) {
                           setIsOpen(false);
                           window.location.href = `/property/${n.property_id}`;
                         }

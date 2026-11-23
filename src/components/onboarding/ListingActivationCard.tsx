@@ -58,6 +58,7 @@ export default function ListingActivationCard({ variant = 'full', className }: P
         ['inReview', counts.inReview],
         ['needsChanges', counts.needsChanges],
         ['newLeads', counts.newLeads],
+        ['followUpsDue', counts.followUpsDue],
       ] as const)
     : [];
 
@@ -84,7 +85,7 @@ export default function ListingActivationCard({ variant = 'full', className }: P
           )}
 
           {state.stage === 'active' && countItems.length > 0 && (
-            <dl className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-5">
+            <dl className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
               {countItems.map(([key, value]) => (
                 <div key={key} className="rounded-lg border border-border bg-background/40 px-2 py-2 text-center">
                   <dt className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{k(`counts.${key}`)}</dt>

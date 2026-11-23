@@ -48979,51 +48979,74 @@ export type Database = {
           agent_id: string
           converted_at: string | null
           created_at: string
+          enquiry_message: string | null
+          enquiry_type: string | null
           id: string
+          inquiry_id: string | null
           last_contacted_at: string | null
           lead_email: string | null
           lead_name: string
           lead_phone: string | null
           lead_score: number
           lead_source: string
+          next_action_at: string | null
           notes: string | null
           property_id: string | null
           status: string
+          status_changed_at: string | null
           updated_at: string
         }
         Insert: {
           agent_id: string
           converted_at?: string | null
           created_at?: string
+          enquiry_message?: string | null
+          enquiry_type?: string | null
           id?: string
+          inquiry_id?: string | null
           last_contacted_at?: string | null
           lead_email?: string | null
           lead_name: string
           lead_phone?: string | null
           lead_score?: number
           lead_source?: string
+          next_action_at?: string | null
           notes?: string | null
           property_id?: string | null
           status?: string
+          status_changed_at?: string | null
           updated_at?: string
         }
         Update: {
           agent_id?: string
           converted_at?: string | null
           created_at?: string
+          enquiry_message?: string | null
+          enquiry_type?: string | null
           id?: string
+          inquiry_id?: string | null
           last_contacted_at?: string | null
           lead_email?: string | null
           lead_name?: string
           lead_phone?: string | null
           lead_score?: number
           lead_source?: string
+          next_action_at?: string | null
           notes?: string | null
           property_id?: string | null
           status?: string
+          status_changed_at?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "property_leads_inquiry_id_fkey"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "inquiries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       property_liquidity_scores: {
         Row: {

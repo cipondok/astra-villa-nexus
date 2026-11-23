@@ -14,6 +14,7 @@ import { Phone, Mail, MessageCircle, Eye, Reply, Clock, User, Building2 } from "
 import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRoles } from "@/hooks/useUserRoles";
+import AdminLeadOversight from "./AdminLeadOversight";
 
 const ContactManagement = () => {
   const [selectedContact, setSelectedContact] = useState(null);
@@ -149,8 +150,11 @@ const ContactManagement = () => {
     );
   }
 
+  const isAdmin = userRoles.some(role => ['admin', 'super_admin'].includes(role));
+
   return (
     <div className="space-y-6">
+      {isAdmin && <AdminLeadOversight />}
       <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
