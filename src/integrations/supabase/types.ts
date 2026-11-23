@@ -50232,6 +50232,51 @@ export type Database = {
         }
         Relationships: []
       }
+      property_view_events: {
+        Row: {
+          created_at: string
+          id: string
+          ip_hash: string | null
+          property_id: string
+          user_id: string | null
+          viewed_on: string
+          viewer_key: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          property_id: string
+          user_id?: string | null
+          viewed_on?: string
+          viewer_key: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          property_id?: string
+          user_id?: string | null
+          viewed_on?: string
+          viewer_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_view_events_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_view_events_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_viewings: {
         Row: {
           agent_id: string
@@ -68350,6 +68395,17 @@ export type Database = {
         Args: { p_property_id: string }
         Returns: number
       }
+      get_property_rankings: {
+        Args: { p_kind?: string; p_limit?: number }
+        Returns: {
+          inquiries: number
+          property_id: string
+          saves: number
+          score: number
+          shares: number
+          unique_views: number
+        }[]
+      }
       get_property_statistics_secure: { Args: never; Returns: Json }
       get_property_survey_bookings_for_owner: {
         Args: { p_property_id: string }
@@ -69006,6 +69062,11 @@ export type Database = {
         }[]
       }
       process_daily_login: { Args: { p_user_id: string }; Returns: Json }
+      property_base_slug: {
+        Args: { p_city: string; p_title: string }
+        Returns: string
+      }
+      property_slugify: { Args: { p_text: string }; Returns: string }
       rank_investment_attractiveness: {
         Args: { p_limit?: number }
         Returns: Json
@@ -69028,6 +69089,10 @@ export type Database = {
       record_profile_change: {
         Args: { changed_fields: string[]; user_id: string }
         Returns: Json
+      }
+      record_property_view: {
+        Args: { p_property_id: string; p_viewer_key: string }
+        Returns: boolean
       }
       recover_stalled_jobs: { Args: never; Returns: number }
       release_batch_lock: { Args: { p_job_type: string }; Returns: undefined }
