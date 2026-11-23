@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface AIValuationResult {
   property_id: string;
@@ -32,8 +33,10 @@ export interface AIValuationResult {
 }
 
 export const useAIPropertyValuation = (propertyId: string | undefined) => {
+  // The AI engine only serves signed-in members; skip the call for visitors.
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ['ai-property-valuation', propertyId],
+    queryKey: ['ai-property-valuation', propertyId, !!user],
     queryFn: async (): Promise<AIValuationResult> => {
       const { data, error } = await supabase.functions.invoke('core-engine', {
         body: { mode: 'property_valuation', property_id: propertyId },
@@ -41,7 +44,8 @@ export const useAIPropertyValuation = (propertyId: string | undefined) => {
       if (error) throw new Error(error.message);
       return data?.data;
     },
-    enabled: !!propertyId,
+    enabled: !!propertyId && !!user,
+    retry: false,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });

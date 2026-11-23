@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface ScoreBreakdownItem {
   score: number;
@@ -29,8 +30,10 @@ export interface InvestmentScoreV2 {
 }
 
 export const useInvestmentScoreV2 = (propertyId: string | undefined) => {
+  // The AI engine only serves signed-in members; skip the call for visitors.
+  const { user } = useAuth();
   return useQuery({
-    queryKey: ['investment-score-v2', propertyId],
+    queryKey: ['investment-score-v2', propertyId, !!user],
     queryFn: async (): Promise<InvestmentScoreV2> => {
       const { data, error } = await supabase.functions.invoke('core-engine', {
         body: { mode: 'investment_score_v2', property_id: propertyId },
@@ -39,7 +42,8 @@ export const useInvestmentScoreV2 = (propertyId: string | undefined) => {
       if (data?.error) throw new Error(data.error);
       return data?.data;
     },
-    enabled: !!propertyId,
+    enabled: !!propertyId && !!user,
+    retry: false,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });

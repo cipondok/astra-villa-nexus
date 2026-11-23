@@ -71,6 +71,8 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     setShowProgressPopup(true);
     
     try {
+      // Personal recommendations need a signed-in member; visitors get the trending fallback.
+      if (!user?.id) throw new Error('Sign in for personal recommendations');
       // Call the smart recommendation engine
       const { data: engineResponse, error } = await supabase.functions.invoke('ai-engine', {
         body: { mode: 'recommendations', payload: {
@@ -113,7 +115,7 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
       }
 
     } catch (error) {
-      console.error('Error generating recommendations:', error);
+      if (user?.id) console.error('Error generating recommendations:', error);
 
       // Fallback to trending properties
       const { data: fallbackProps } = await supabase
