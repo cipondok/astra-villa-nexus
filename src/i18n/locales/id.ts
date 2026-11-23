@@ -2297,7 +2297,7 @@ const id: TranslationMap = {
       label: "Navigasi utama",
       home: "Beranda",
       ecosystem: "Ekosistem",
-      aiCenter: "AI Center",
+      aiCenter: "Pusat AI",
       investment: "Investasi",
       account: "Akun",
     },

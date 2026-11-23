@@ -27,3 +27,17 @@ describe("homepage translations", () => {
     }
   });
 });
+
+describe("phone bottom bar labels", () => {
+  it("uses Indonesian labels in Bahasa Indonesia", () => {
+    expect((id as any).marketHome.bottomNav).toMatchObject({
+      home: "Beranda", ecosystem: "Ekosistem", aiCenter: "Pusat AI", investment: "Investasi", account: "Akun",
+    });
+  });
+
+  it("keeps English labels in English", () => {
+    expect(english.marketHome.bottomNav).toMatchObject({
+      home: "Home", ecosystem: "Ecosystem", aiCenter: "AI Center", investment: "Investment", account: "Account",
+    });
+  });
+});
