@@ -18,7 +18,8 @@ import { useTranslation } from '@/i18n/useTranslation';
 function resolveLocalizedSeoKey(pathname: string): string | null {
   const p = pathname.replace(/\/+$/, '') || '/';
   if (p === '/' || p === '/luxe') return 'home';
-  if (p === '/properties' || p.startsWith('/properties/') || p.startsWith('/property/')) return 'properties';
+  // Single-listing and location-detail pages pass their own unique title/description.
+  if (p === '/properties') return 'properties';
   if (p === '/dijual' || p === '/buy') return 'dijual';
   if (p === '/disewa' || p === '/rent' || p === '/sewa') return 'disewa';
   if (p === '/search') return 'search';
@@ -29,7 +30,7 @@ function resolveLocalizedSeoKey(pathname: string): string | null {
   if (p.startsWith('/investment')) return 'investment';
   if (p.startsWith('/community')) return 'community';
   if (p.startsWith('/agents') || p.startsWith('/agent-directory')) return 'agentDirectory';
-  if (p.startsWith('/location') || p === '/locations') return 'locationMap';
+  if (p === '/location' || p === '/locations' || p === '/location-map') return 'locationMap';
   return null;
 }
 

@@ -19,6 +19,7 @@ import SEOAuditReport from './SEOAuditReport';
 import SeoLandingContentGenerator from './SeoLandingContentGenerator';
 import SeoLocationBlueprintGenerator from '../SeoLocationBlueprintGenerator';
 import SeoContentPipelineDashboard from '../SeoContentPipelineDashboard';
+import ListingSeoHealthTab from '../seo/ListingSeoHealthTab';
 
 interface SEOSettingsHubProps {
   settings: any;
@@ -159,6 +160,7 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
         <div className="overflow-x-auto pb-1">
           <TabsList className="inline-flex h-7 w-auto gap-0.5 bg-muted/40 p-0.5 rounded-lg border border-border/30">
+            <TabsTrigger value="listings" className="text-[10px] h-6 px-2 gap-1"><BarChart3 className="h-2.5 w-2.5" />Listing Health</TabsTrigger>
             <TabsTrigger value="on-page" className="text-[10px] h-6 px-2 gap-1"><Search className="h-2.5 w-2.5" />On-Page</TabsTrigger>
             <TabsTrigger value="social" className="text-[10px] h-6 px-2 gap-1"><Image className="h-2.5 w-2.5" />Social</TabsTrigger>
             <TabsTrigger value="schema" className="text-[10px] h-6 px-2 gap-1"><Code className="h-2.5 w-2.5" />Schema</TabsTrigger>
@@ -647,6 +649,11 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
         {/* SEO LOCATION BLUEPRINT */}
         <TabsContent value="blueprint">
           <SeoLocationBlueprintGenerator />
+        </TabsContent>
+
+        {/* LISTING SEO HEALTH */}
+        <TabsContent value="listings">
+          <ListingSeoHealthTab />
         </TabsContent>
 
         {/* AUTOMATED CONTENT PIPELINE */}

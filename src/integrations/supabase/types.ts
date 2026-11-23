@@ -68396,7 +68396,7 @@ export type Database = {
         Returns: number
       }
       get_property_rankings: {
-        Args: { p_kind?: string; p_limit?: number }
+        Args: { p_kind?: string; p_limit?: number; p_with_photo?: boolean }
         Returns: {
           inquiries: number
           property_id: string

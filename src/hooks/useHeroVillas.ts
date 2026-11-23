@@ -46,7 +46,7 @@ export function pickHeroVillas(rows: any[], limit = HERO_VILLA_LIMIT): HeroVilla
 
   return chosen.slice(0, limit).map(({ r, image }) => ({
     id: r.id,
-    href: `/property/${r.slug ?? r.id}`,
+    href: r.slug ? `/properties/${r.slug}` : `/property/${r.id}`,
     title: cleanPlaceName(r.title) || "Villa",
     city: cleanPlaceName(r.city || r.location),
     price: Number(r.price) || 0,

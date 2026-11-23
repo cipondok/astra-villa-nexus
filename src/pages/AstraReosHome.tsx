@@ -23,6 +23,7 @@ import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import { reosTokens } from "@/components/reos/ReosShell";
 import { useHeroVillas } from "@/hooks/useHeroVillas";
+import { PopularPropertiesSection } from "@/components/home/PopularPropertiesSection";
 
 
 /* ============================================================
@@ -941,6 +942,9 @@ export default function AstraReosHome() {
                 </Section>
               </div>
             </div>
+
+            {/* ===== POPULAR PROPERTIES (real engagement ranking) ===== */}
+            <PopularPropertiesSection />
 
             {/* ===== BOTTOM STATS ===== */}
             <Section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 md:gap-3">

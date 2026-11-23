@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
+import { createClient } from "npm:@supabase/supabase-js@2.49.10";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -59,10 +59,24 @@ Deno.serve(async (req) => {
     // Fetch published properties
     const { data: properties } = await supabase
       .from("properties")
-      .select("id, updated_at, city")
+      .select("id, slug, updated_at, city")
       .eq("status", "active")
       .order("updated_at", { ascending: false })
       .limit(5000);
+
+    // Location pages are only listed when they have enough real inventory
+    // to be useful (avoids thin, near-empty pages).
+    const MIN_LISTINGS_FOR_LOCATION_PAGE = 5;
+    const cityCounts = new Map<string, number>();
+    for (const p of properties || []) {
+      const city = String(p.city || "")
+        .replace(/^\s*(kabupaten|kab\.|kota adm\.|kota)\s+/i, "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      if (city) cityCounts.set(city, (cityCounts.get(city) || 0) + 1);
+    }
 
     // Fetch investment hotspot cities for /invest/:citySlug pages
     const { data: hotspots } = await supabase
@@ -92,12 +106,23 @@ Deno.serve(async (req) => {
           ? new Date(prop.updated_at).toISOString().split("T")[0]
           : null;
         xml += `  <url>
-    <loc>${SITE_URL}/property/${prop.id}</loc>
+    <loc>${SITE_URL}${prop.slug ? `/properties/${prop.slug}` : `/property/${prop.id}`}</loc>
 ${lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : ""}    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 `;
       }
+    }
+
+    // Location landing pages that pass the inventory threshold
+    for (const [city, count] of cityCounts) {
+      if (count < MIN_LISTINGS_FOR_LOCATION_PAGE) continue;
+      xml += `  <url>
+    <loc>${SITE_URL}/location/${city}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+`;
     }
 
     // Dynamic city investment pages

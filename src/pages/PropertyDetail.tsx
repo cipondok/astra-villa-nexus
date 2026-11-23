@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback, useRef, lazy, Suspense } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft, ChevronLeft, ChevronRight, Maximize2, X,
@@ -11,9 +11,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAIPropertyValuation } from "@/hooks/useAIPropertyValuation";
 import { useFavorites } from "@/hooks/useFavorites";
-import { shareProperty } from "@/utils/shareUtils";
 import { useToast } from "@/hooks/use-toast";
-import { SEOHead, seoSchemas } from "@/components/SEOHead";
+import { SEOHead } from "@/components/SEOHead";
 import {
   LuxeLayout, LuxeSection, LuxeSectionHead, LuxeCard, LuxeButton,
 } from "@/components/luxe";
@@ -25,8 +24,14 @@ import AIRecommendedProperties from "@/components/property/AIRecommendedProperti
 import InvestmentIntelligenceBadge from "@/components/property/InvestmentIntelligenceBadge";
 import { usePropertyCtaTracking, type CtaPlacement, type CtaKind } from "@/hooks/usePropertyCtaTracking";
 import { useTrackEvent } from "@/hooks/useTrackEvent";
-import { propertyCanonicalUrl, socialImageUrl } from "@/lib/canonicalUrl";
-import { LegacyUrlMigrationBanner } from "@/components/property/LegacyUrlMigrationBanner";
+import { socialImageUrl } from "@/lib/canonicalUrl";
+import {
+  buildSeoTitle, buildMetaDescription, buildImageAlt, buildPropertyJsonLd, validatePropertyJsonLd,
+  isUuid, placeLabel, propertyPath, propertyUrl, formatIdrShort,
+} from "@/lib/propertySeo";
+import { PropertyShareSheet } from "@/components/property/PropertyShareSheet";
+import { RelatedPropertyLinks } from "@/components/property/RelatedPropertyLinks";
+import { usePropertyViewTracking } from "@/hooks/usePropertyViewTracking";
 
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
@@ -36,13 +41,17 @@ const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer")
 /* ------------------------------------------------------------------ */
 interface PropertyRow {
   id: string;
+  slug: string | null;
+  land_area_sqm: number | null;
   title: string;
   description: string | null;
   price: number | null;
   location: string | null;
   city: string | null;
   district: string | null;
+  area: string | null;
   province: string | null;
+  state: string | null;
   address: string | null;
   property_type: string | null;
   listing_type: string | null;
@@ -63,11 +72,12 @@ interface PropertyRow {
   created_at: string | null;
 }
 
-async function fetchProperty(id: string): Promise<PropertyRow> {
+/** Accepts either the listing id or its readable slug. */
+async function fetchProperty(idOrSlug: string): Promise<PropertyRow> {
   const { data, error } = await supabase
     .from("properties")
     .select("*")
-    .eq("id", id)
+    .eq(isUuid(idOrSlug) ? "id" : "slug", idOrSlug)
     .single();
   if (error) throw error;
   return data as unknown as PropertyRow;
@@ -84,16 +94,30 @@ const fmtIDR = (n: number | null | undefined) => {
 /*  Page                                                              */
 /* ------------------------------------------------------------------ */
 const PropertyDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id: idOrSlug } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const routerLocation = useLocation();
   const { toast } = useToast();
 
   const { data: property, isLoading, error } = useQuery({
-    queryKey: ["luxe-property", id],
-    queryFn: () => fetchProperty(id!),
-    enabled: !!id,
+    queryKey: ["luxe-property", idOrSlug],
+    queryFn: () => fetchProperty(idOrSlug!),
+    enabled: !!idOrSlug,
     staleTime: 5 * 60_000,
   });
+  const id = property?.id;
+
+  // Old /property/<id> links move to the permanent readable address.
+  useEffect(() => {
+    if (!property?.slug) return;
+    const target = propertyPath(property);
+    if (routerLocation.pathname !== target) {
+      navigate(`${target}${routerLocation.search}${routerLocation.hash}`, { replace: true });
+    }
+  }, [property, routerLocation.pathname, routerLocation.search, routerLocation.hash, navigate]);
+
+  usePropertyViewTracking(property?.id);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const { data: ai } = useAIPropertyValuation(id);
 
@@ -211,15 +235,8 @@ const PropertyDetail = () => {
     images: property?.images || undefined,
   });
 
-  const handleShare = async () => {
-    if (!property) return;
-    await shareProperty({
-      id: property.id,
-      title: property.title,
-      price: property.price || 0,
-      location: property.location || property.city || "",
-      images: images.slice(0, 1),
-    });
+  const handleShare = () => {
+    if (property) setShareOpen(true);
   };
 
   const whatsappLink = useMemo(() => {
@@ -373,14 +390,19 @@ const PropertyDetail = () => {
   }
 
   const hero = images[idx] || "/placeholder.svg";
-  // Always the singular /property/:id route, even when reached via legacy plural URLs.
-  const canonicalUrl = propertyCanonicalUrl(property.id);
+  // Permanent readable address (/properties/<slug>), id route only as a fallback.
+  const canonicalUrl = propertyUrl(property);
+  const seoTitle = buildSeoTitle(property);
+  const seoDescription = buildMetaDescription(property);
+  const jsonLdGraph = buildPropertyJsonLd(property);
+  const jsonLdErrors = validatePropertyJsonLd(jsonLdGraph);
   const loc = [property.district, property.city, property.province].filter(Boolean).join(", ") || property.location || "Bali, Indonesia";
 
 
+  // Only amenities the lister actually entered — never a made-up default list.
   const amenities: string[] = Array.isArray(property.property_features?.amenities)
-    ? property.property_features!.amenities
-    : ["Infinity pool", "Private chef", "Ocean view", "Concierge 24/7", "Smart home", "Yoga deck", "Sunset terrace", "Wine cellar"];
+    ? (property.property_features!.amenities as unknown[]).filter((a): a is string => typeof a === "string" && a.trim() !== "")
+    : [];
 
   /* ------------------------------------------------------------- */
   /*  Render                                                       */
@@ -388,28 +410,15 @@ const PropertyDetail = () => {
   return (
     <LuxeLayout>
       <SEOHead
-        fullTitle={`${property.title} — ASTRA Villa`}
-        description={property.description?.slice(0, 160) || `Cinematic luxury villa in ${loc}`}
-        ogTitle={`${property.title} — ASTRA Villa`}
-        ogDescription={property.description?.slice(0, 160) || `Cinematic luxury villa in ${loc}`}
+        fullTitle={seoTitle}
+        description={seoDescription}
+        ogTitle={seoTitle}
+        ogDescription={seoDescription}
         ogType="product"
         ogImage={socialImage}
         canonical={canonicalUrl}
-        jsonLd={seoSchemas.property({
-          title: property.title,
-          description: property.description?.slice(0, 300) || `Luxury villa in ${loc}`,
-          price: property.price || 0,
-          city: property.city || property.location || "Bali",
-          state: property.province || "Bali",
-          images,
-          bedrooms: property.bedrooms ?? undefined,
-          bathrooms: property.bathrooms ?? undefined,
-          areaSqm: property.area_sqm ?? undefined,
-          url: canonicalUrl,
-        })}
+        jsonLd={jsonLdErrors.length ? undefined : jsonLdGraph}
       />
-
-      <LegacyUrlMigrationBanner canonicalPath={`/property/${property.id}`} />
 
       {/* ============ EDITORIAL HERO — framed gallery + content block ============ */}
       <section className="px-4 md:px-8 pt-24 md:pt-28">
@@ -463,7 +472,7 @@ const PropertyDetail = () => {
                 >
                   <GalleryImg
                     src={images[0] || "/placeholder.svg"}
-                    alt={`${property.title} — main view`}
+                    alt={buildImageAlt(property, 0)}
                     eager
                     className="group-hover:scale-[1.05] duration-1000"
                   />
@@ -487,7 +496,7 @@ const PropertyDetail = () => {
                     >
                       <GalleryImg
                         src={images[i] || images[0] || "/placeholder.svg"}
-                        alt=""
+                        alt={buildImageAlt(property, images[i] ? i : 0)}
                         className="group-hover:scale-110 duration-500"
                       />
                       <span className="absolute inset-0 flex items-end p-2.5 bg-gradient-to-t from-black/60 to-transparent text-[9px] uppercase tracking-[0.2em] font-semibold text-white">
@@ -798,6 +807,7 @@ const PropertyDetail = () => {
 
 
             {/* amenities */}
+            {amenities.length > 0 && (
             <div>
               <LuxeSectionHead eyebrow="Amenities" title="What's inside" />
               <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4">
@@ -809,6 +819,7 @@ const PropertyDetail = () => {
                 ))}
               </div>
             </div>
+            )}
 
             {/* immersive */}
             {(property.glb_model_url || property.virtual_tour_url || property.panorama_360_urls?.length) && (
@@ -886,6 +897,9 @@ const PropertyDetail = () => {
               <NearbyInvestments propertyId={property.id} />
             </div>
 
+            {/* Internal links: breadcrumbs, same-area listings, location guide */}
+            <RelatedPropertyLinks property={property} />
+
             {/* AI Smart recommendations */}
             <div>
               <LuxeSectionHead
@@ -894,7 +908,7 @@ const PropertyDetail = () => {
                 description="Personalized matches based on this property, your saved preferences and market intelligence."
               />
               <div className="mt-10">
-                <AIRecommendedProperties onPropertyClick={(p) => navigate(`/property/${p.id}`)} />
+                <AIRecommendedProperties onPropertyClick={(p: { id: string; slug?: string | null }) => navigate(propertyPath(p))} />
               </div>
             </div>
           </div>
@@ -1127,6 +1141,19 @@ const PropertyDetail = () => {
           )}
         </div>
       )}
+
+      <PropertyShareSheet
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        propertyId={property.id}
+        image={images[0] || null}
+        target={{
+          url: canonicalUrl,
+          title: property.title,
+          price: formatIdrShort(property.price),
+          place: placeLabel(property),
+        }}
+      />
 
       {/* mobile booking bar is now unified with the glass sticky action bar above */}
     </LuxeLayout>
