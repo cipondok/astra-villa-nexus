@@ -457,13 +457,15 @@ const AppContent = () => {
 
   return (
     <SidebarProviderConditional enabled={isAppRoute}>
-      {useReosChrome && <style>{reosTokens}</style>}
+      {(useReosChrome || isAppRoute) && <style>{reosTokens}</style>}
       {isAppRoute && <Suspense fallback={null}><AppSidebar /></Suspense>}
       <div className={`min-h-screen bg-background text-foreground flex-1 flex flex-col w-full ${useReosChrome ? 'reos' : ''}`}>
       {shellInner}
+      {/* App routes hide their sidebar on phones, so phones get the same REOS header (logo + menu drawer) as the rest of the site. */}
+      {isAppRoute && <div className="reos contents md:hidden"><ReosHeader /></div>}
       
       
-      <main className={useReosChrome ? 'flex-1' : (hideAppShell ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0')}>
+      <main className={useReosChrome ? 'flex-1' : (hideAppShell ? '' : 'pt-0 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0')}>
 
 
         <AnimatePresence mode="popLayout" initial={false}>
@@ -921,6 +923,7 @@ const AppContent = () => {
       {!hideAppShell && !isAppRoute && !useReosChrome && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
       {/* REOS unified mobile bottom nav (Home / Properties / Invest / AI / Profile) */}
       {useReosChrome && <Suspense fallback={null}><ReosMobileBottomNav /></Suspense>}
+      {isAppRoute && <div className="reos contents"><Suspense fallback={null}><ReosMobileBottomNav /></Suspense></div>}
 
       {!isAdminRoute && (
         useReosChrome ? (
