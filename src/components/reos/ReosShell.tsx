@@ -105,11 +105,12 @@ export const reosTokens = `
     --shadow-lift: 0 4px 14px rgba(23,22,20,0.05);
     --shadow-popover: 0 20px 40px -12px rgba(23,22,20,0.12);
   }
-  /* Photo overlays stay deep charcoal in both themes so text on photos keeps its contrast. */
+  /* Photo overlays use a deep architectural navy in both themes so text on photos keeps its contrast. */
   .reos {
-    --photo-scrim: linear-gradient(180deg, rgba(36,41,48,0.62) 0%, rgba(36,41,48,0.42) 38%, rgba(36,41,48,0.78) 100%);
-    --photo-scrim-side: linear-gradient(90deg, rgba(36,41,48,0.80) 0%, rgba(36,41,48,0.45) 55%, rgba(36,41,48,0.15) 100%);
-    --tile-scrim: linear-gradient(180deg, rgba(36,41,48,0) 40%, rgba(36,41,48,0.82) 100%);
+    --photo-navy: 18,28,46;   /* #121C2E deep navy (overlay only, never a page background) */
+    --photo-scrim: linear-gradient(180deg, rgba(var(--photo-navy),0.66) 0%, rgba(var(--photo-navy),0.44) 38%, rgba(var(--photo-navy),0.82) 100%);
+    --photo-scrim-side: linear-gradient(90deg, rgba(var(--photo-navy),0.82) 0%, rgba(var(--photo-navy),0.46) 55%, rgba(var(--photo-navy),0.12) 100%);
+    --tile-scrim: linear-gradient(180deg, rgba(var(--photo-navy),0) 40%, rgba(var(--photo-navy),0.84) 100%);
     --on-photo: #F5F3EE;
     --on-photo-2: rgba(245,243,238,0.84);
     --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
