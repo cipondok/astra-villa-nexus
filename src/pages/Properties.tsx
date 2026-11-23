@@ -494,19 +494,19 @@ export default function Properties() {
         description="Curated luxury villas across ASEAN — search by location, type and intent, ranked by ASTRA AI."
       />
 
-      <section className="mx-auto max-w-[1600px] px-4 sm:px-6 pt-5 md:pt-8 pb-4">
+      <section className="mx-auto max-w-[1600px] px-4 sm:px-6 pt-3 md:pt-5 pb-4">
         <div className="max-w-3xl">
-          <div className="text-[10px] uppercase tracking-[0.24em] reos-gold mb-1.5">
+          <div className="hidden sm:block text-[10px] uppercase tracking-[0.24em] reos-gold mb-1">
             Discover · The Collection
           </div>
-          <h1 className="text-[24px] sm:text-[28px] md:text-[32px] leading-[1.1] font-semibold tracking-tight text-[var(--text)]">
+          <h1 className="text-[20px] sm:text-[22px] md:text-[26px] leading-tight font-semibold tracking-tight text-[var(--text)]">
             {titleHead} <em className="reos-gold not-italic">{titleTail}</em>
           </h1>
-          <p className="mt-1.5 text-[13px] text-[var(--text-2)] leading-snug line-clamp-2">{subheading}</p>
+          <p className="mt-0.5 text-[12px] text-[var(--text-2)] leading-snug truncate">{subheading}</p>
         </div>
 
         {/* Search bar */}
-        <form onSubmit={submitSearch} className="mt-4 reos-card p-1.5 grid grid-cols-[1fr_auto] md:flex md:flex-row gap-1.5">
+        <form onSubmit={submitSearch} className="mt-3 reos-card p-1.5 grid grid-cols-[1fr_auto] md:flex md:flex-row gap-1.5">
           <div className="col-span-2 md:flex-1 relative">
             <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
             <input
