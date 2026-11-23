@@ -263,7 +263,8 @@ export default function Properties() {
       let query = supabase
         .from("properties")
         .select("id,title,city,area,location,price,price_idr,property_type,listing_type,bedrooms,bathrooms,area_sqm,images,image_urls,cover_image,investment_score,roi_percentage,rental_yield_percentage,is_featured,is_demo,status,development_status")
-        .eq("status", "active");
+        .eq("status", "active")
+        .eq("approval_status", "approved");
 
       if (q) query = query.ilike("title", `%${q}%`);
       if (location) {

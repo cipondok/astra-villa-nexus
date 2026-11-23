@@ -125,7 +125,6 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
               options={[
                 { value: 'sale', label: t.forSale },
                 { value: 'rent', label: t.forRent },
-                { value: 'lease', label: t.forLease },
               ]}
             />
           </div>

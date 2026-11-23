@@ -112,7 +112,7 @@ Respond ONLY with a JSON object, no markdown:
     let query = supabase
       .from("properties")
       .select("id, title, price, city, state, property_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, thumbnail_url, features, listing_type, description")
-      .eq("status", "active")
+      .eq("status", "active").eq("approval_status", "approved").eq("is_demo", false)
       .limit(200);
 
     // Apply hard filter on property_type if detected
@@ -126,7 +126,7 @@ Respond ONLY with a JSON object, no markdown:
         const { data: broadMatch } = await supabase
           .from("properties")
           .select("id, title, price, city, state, property_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, thumbnail_url, features, listing_type, description")
-          .eq("status", "active")
+          .eq("status", "active").eq("approval_status", "approved").eq("is_demo", false)
           .limit(200);
         candidates = broadMatch || [];
       }
@@ -236,7 +236,7 @@ Respond ONLY with a JSON object, no markdown:
     const { data: fallback } = await supabase
       .from("properties")
       .select("id, title, price, city, state, property_type, bedrooms, bathrooms, thumbnail_url, listing_type")
-      .eq("status", "active")
+      .eq("status", "active").eq("approval_status", "approved").eq("is_demo", false)
       .order("created_at", { ascending: false })
       .limit(Number(limit));
 

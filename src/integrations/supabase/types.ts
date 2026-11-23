@@ -68163,6 +68163,7 @@ export type Database = {
       }
       get_lead_intelligence_summary: { Args: never; Returns: Json }
       get_learning_stats: { Args: never; Returns: Json }
+      get_listing_moderation_counts: { Args: never; Returns: Json }
       get_listing_optimization_alerts: { Args: never; Returns: Json }
       get_location_stats: { Args: never; Returns: Json }
       get_market_heat_zones: {

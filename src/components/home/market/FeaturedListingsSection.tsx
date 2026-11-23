@@ -151,7 +151,13 @@ export function FeaturedListingsSection() {
         </div>
       ) : data.length === 0 ? (
         <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-6 text-center text-[14px] text-[var(--text-2)]">
-          {t("marketHome.featured.empty", "Belum ada listing dengan foto untuk ditampilkan.")}
+          <p>{t("marketHome.featured.empty", "Belum ada listing dengan foto untuk ditampilkan.")}</p>
+          <Link
+            to="/post-property"
+            className="mt-3 inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-[var(--line)] px-4 text-[13px] font-semibold text-[var(--text)] hover:bg-[var(--surface-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]"
+          >
+            {t("marketHome.nav.postListing", "Pasang Iklan")} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
       ) : (
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

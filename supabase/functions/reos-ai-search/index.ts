@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
     const { data: candidates, error } = await supabase
       .from("properties")
       .select("id, title, city, state, location, property_type, listing_type, price, bedrooms, bathrooms, area_sqm, rental_yield_percentage, roi_percentage, investment_score, demand_score, liquidity_score, cover_image, images, slug")
-      .eq("status", "active")
+      .eq("status", "active").eq("approval_status", "approved").eq("is_demo", false)
       .order("investment_score", { ascending: false, nullsFirst: false })
       .limit(60);
 

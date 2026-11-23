@@ -22,6 +22,13 @@ import ReviewStep from "./steps/ReviewStep";
 import TierLockedFeature from "./TierLockedFeature";
 import TierFeatureBanner from "./TierFeatureBanner";
 import { usePropertyFormTiers } from "@/hooks/usePropertyFormTiers";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  LISTING_LIMITS, SUBMITTER_RELATIONSHIPS, buildListingInsert, normalizeIndonesianPhone,
+  validateListingSubmission, type SubmitterRelationship,
+} from "@/lib/listingSubmission";
 import { MEMBERSHIP_LEVELS } from "@/types/membership";
 
 // Auto-save configuration
@@ -73,6 +80,14 @@ const MultiStepPropertyForm = () => {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(null);
   const [hasDraft, setHasDraft] = useState(false);
+  const [contactPhone, setContactPhone] = useState<string>((profile as { phone?: string | null } | null)?.phone ?? "");
+  const [relationship, setRelationship] = useState<SubmitterRelationship | "">("");
+  const [declaration, setDeclaration] = useState(false);
+  const [issues, setIssues] = useState<ReturnType<typeof validateListingSubmission>>([]);
+  const profilePhone = (profile as { phone?: string | null } | null)?.phone ?? "";
+  useEffect(() => {
+    if (profilePhone) setContactPhone((prev) => prev || profilePhone);
+  }, [profilePhone]);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -91,7 +106,7 @@ const MultiStepPropertyForm = () => {
     subdistrict: "",
     development_status: "completed",
     owner_type: "individual",
-    status: isAdmin ? "active" : "pending_approval",
+    status: "pending",
     rental_periods: ["monthly"],
     minimum_rental_days: "30",
     images: [],
@@ -274,7 +289,7 @@ const MultiStepPropertyForm = () => {
       subdistrict: "",
       development_status: "completed",
       owner_type: "individual",
-      status: isAdmin ? "active" : "pending_approval",
+      status: "pending",
       rental_periods: ["monthly"],
       minimum_rental_days: "30",
       images: [],
@@ -298,41 +313,23 @@ const MultiStepPropertyForm = () => {
     mutationFn: async () => {
       if (!user) throw new Error('User not authenticated');
 
-      const propertyData = {
-        title: formData.title,
-        description: formData.description,
-        property_type: formData.property_type,
-        listing_type: formData.listing_type,
-        price: formData.price ? parseFloat(formData.price) : null,
-        bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
-        bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
-        area_sqm: formData.area_sqm ? parseInt(formData.area_sqm) : null,
-        location: formData.location,
-        city: formData.city,
-        state: formData.state,
-        area: formData.area,
-        development_status: formData.development_status,
-        owner_type: formData.owner_type,
-        status: formData.status,
-        approval_status: isAdmin ? 'approved' : 'pending',
-        owner_id: user.id,
-        agent_id: isAgent ? user.id : null,
-        images: formData.images,
-        image_urls: formData.images,
-        seo_title: formData.title,
-        seo_description: formData.description,
-        property_features: { ...features },
-        virtual_tour_url: formData.virtual_tour_url || null,
-        three_d_model_url: formData.three_d_model_url || null,
-        ...(formData.listing_type === 'rent' && {
-          rental_periods: formData.rental_periods,
-          minimum_rental_days: parseInt(formData.minimum_rental_days) || 30,
-        }),
-      };
+      const propertyData = buildListingInsert(formData, {
+        userId: user.id,
+        isAgent,
+        relationship: relationship as SubmitterRelationship,
+        features,
+      });
+
+      // Contact number stays private on the submitter's own profile (never on the public listing).
+      const phone = normalizeIndonesianPhone(contactPhone);
+      if (phone && phone !== (profile as { phone?: string | null } | null)?.phone) {
+        const { error: phoneError } = await supabase.from('profiles').update({ phone }).eq('id', user.id);
+        if (phoneError) throw phoneError;
+      }
 
       const { data, error } = await supabase
         .from('properties')
-        .insert(propertyData)
+        .insert(propertyData as never)
         .select()
         .single();
 
@@ -340,11 +337,12 @@ const MultiStepPropertyForm = () => {
       return data;
     },
     onSuccess: (data) => {
-      const statusMessage = isAdmin 
-        ? "Property has been created and is now active."
-        : "Property has been submitted for approval.";
-      
-      showSuccess("Property Created", `Property "${data.title}" ${statusMessage}`);
+      showSuccess(
+        language === 'id' ? "Listing terkirim untuk ditinjau" : "Listing sent for review",
+        language === 'id'
+          ? `"${data.title}" akan tampil di situs setelah disetujui admin.`
+          : `"${data.title}" will appear on the site after an admin approves it.`,
+      );
       
       // Clear draft and reset form
       if (user) {
@@ -356,7 +354,7 @@ const MultiStepPropertyForm = () => {
       setLastSaved(null);
       
       queryClient.invalidateQueries({ queryKey: ['properties'] });
-      navigate('/dijual');
+      navigate('/my-properties');
     },
     onError: (error: any) => {
       showError("Creation Failed", error.message || 'Failed to create property');
@@ -365,16 +363,20 @@ const MultiStepPropertyForm = () => {
   });
 
   const handleSubmit = () => {
-    // Validation
-    if (!formData.title || !formData.property_type || !formData.listing_type) {
-      showError("Validation Error", "Please fill in all required fields");
-      setCurrentTab('basic');
-      return;
-    }
-
-    if (!formData.location || !formData.state) {
-      showError("Validation Error", "Please select a location");
-      setCurrentTab('location');
+    const found = validateListingSubmission({
+      ...formData,
+      contact_phone: contactPhone,
+      relationship,
+      declaration,
+    });
+    setIssues(found);
+    if (found.length > 0) {
+      const first = found[0];
+      showError(
+        language === 'id' ? "Lengkapi listing Anda" : "Complete your listing",
+        language === 'id' ? first.message.id : first.message.en,
+      );
+      setCurrentTab(steps.some((st) => st.id === first.step) ? first.step : 'review');
       return;
     }
 
@@ -397,7 +399,7 @@ const MultiStepPropertyForm = () => {
       case 'features':
         return true; // Optional
       case 'images':
-        return formData.images && formData.images.length > 0;
+        return formData.images && formData.images.length >= LISTING_LIMITS.minImages;
       case 'review':
         return true;
       default:
@@ -509,6 +511,71 @@ const MultiStepPropertyForm = () => {
             </TabsContent>
             <TabsContent value="review" className="mt-0">
               <ReviewStep formData={formData} features={features} />
+              <section aria-labelledby="submitter-heading" className="mt-4 space-y-3 rounded-lg border border-border/60 bg-muted/30 p-3">
+                <h3 id="submitter-heading" className="text-sm font-semibold text-foreground">
+                  {language === 'id' ? 'Kontak & kepemilikan' : 'Contact & ownership'}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {language === 'id'
+                    ? 'Nomor Anda hanya terlihat oleh tim peninjau ASTRA Villa dan disimpan di profil Anda, tidak ditampilkan di listing.'
+                    : 'Your number is only visible to the ASTRA Villa review team and is saved on your profile, not shown on the listing.'}
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor="submitter-phone" className="text-xs">{language === 'id' ? 'Nomor telepon / WhatsApp *' : 'Phone / WhatsApp number *'}</Label>
+                    <Input
+                      id="submitter-phone"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      maxLength={20}
+                      placeholder="0812 3456 7890"
+                      value={contactPhone}
+                      onChange={(e) => setContactPhone(e.target.value)}
+                      aria-invalid={issues.some((i) => i.field === 'contact_phone')}
+                      className="mt-1 h-11"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="submitter-relationship" className="text-xs">{language === 'id' ? 'Hubungan Anda dengan properti *' : 'Your relationship to the property *'}</Label>
+                    <select
+                      id="submitter-relationship"
+                      value={relationship}
+                      onChange={(e) => setRelationship(e.target.value as SubmitterRelationship)}
+                      aria-invalid={issues.some((i) => i.field === 'relationship')}
+                      className="mt-1 h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
+                    >
+                      <option value="">{language === 'id' ? 'Pilih…' : 'Choose…'}</option>
+                      {SUBMITTER_RELATIONSHIPS.map((r) => (
+                        <option key={r} value={r}>
+                          {r === 'owner' ? (language === 'id' ? 'Pemilik' : 'Owner')
+                            : r === 'authorized_agent' ? (language === 'id' ? 'Agen yang diberi kuasa' : 'Authorized agent')
+                            : (language === 'id' ? 'Pengembang' : 'Developer')}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <label htmlFor="submitter-declaration" className="flex items-start gap-2 text-xs text-foreground cursor-pointer">
+                  <Checkbox
+                    id="submitter-declaration"
+                    checked={declaration}
+                    onCheckedChange={(v) => setDeclaration(v === true)}
+                    aria-invalid={issues.some((i) => i.field === 'declaration')}
+                    className="mt-0.5"
+                  />
+                  <span>
+                    {language === 'id'
+                      ? 'Saya menyatakan bahwa saya pemilik properti ini atau berwenang memasarkannya, dan informasi serta foto yang saya kirim benar. Listing akan ditinjau admin sebelum tampil.'
+                      : 'I confirm I own this property or am authorized to market it, and the information and photos I submit are accurate. An admin reviews the listing before it appears.'}
+                  </span>
+                </label>
+                {issues.length > 0 && (
+                  <ul role="alert" className="list-disc pl-5 text-xs text-destructive space-y-0.5">
+                    {issues.map((i) => <li key={i.field}>{language === 'id' ? i.message.id : i.message.en}</li>)}
+                  </ul>
+                )}
+              </section>
             </TabsContent>
           </div>
         </div>

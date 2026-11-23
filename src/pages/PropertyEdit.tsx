@@ -24,6 +24,8 @@ import SimpleImageUpload from "@/components/property/SimpleImageUpload";
 import OpportunityScoreRing from "@/components/property/OpportunityScoreRing";
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
+import { validateListingSubmission } from "@/lib/listingSubmission";
+import { getReviewInfo } from "@/lib/listingReview";
 
 const PropertyEdit = () => {
   const { isAuthenticated, profile, user } = useAuth();
@@ -93,22 +95,31 @@ const PropertyEdit = () => {
   const updateMutation = useMutation({
     mutationFn: async () => {
       if (!id || !user) throw new Error('Missing data');
+      const issues = validateListingSubmission(formData).filter((i) => i.step !== 'review');
+      if (issues.length > 0) throw new Error(issues[0].message.id);
+      const price = Math.round(Number(String(formData.price).replace(/[^\d.]/g, '')));
+      const toInt = (v: string) => (v ? Math.max(0, parseInt(v, 10) || 0) : 0);
+      const review = getReviewInfo(property);
       const updateData: any = {
-        title: formData.title,
-        description: formData.description,
-        price: formData.price ? parseFloat(formData.price) : null,
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        price,
+        price_idr: price,
         property_type: formData.property_type,
         listing_type: formData.listing_type,
         location: formData.location,
         city: formData.city,
         state: formData.state,
-        bedrooms: formData.bedrooms ? parseInt(formData.bedrooms) : null,
-        bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
-        area_sqm: formData.area_sqm ? parseInt(formData.area_sqm) : null,
+        bedrooms: toInt(formData.bedrooms),
+        bathrooms: toInt(formData.bathrooms),
+        area_sqm: toInt(formData.area_sqm),
         status: formData.status,
         images: formData.images,
         image_urls: formData.images,
-        updated_at: new Date().toISOString(),
+        cover_image: formData.images[0] ?? null,
+        thumbnail_url: formData.images[0] ?? null,
+        // A correction request or rejection is answered by resubmitting for review.
+        ...(review.needsResubmit && { approval_status: 'pending' }),
       };
 
       let query = supabase.from('properties').update(updateData).eq('id', id);
@@ -116,13 +127,19 @@ const PropertyEdit = () => {
       if (profile?.role !== 'admin') {
         query = query.or(`agent_id.eq.${user.id},owner_id.eq.${user.id}`);
       }
-      const { error } = await query;
+      const { data: saved, error } = await query.select('id, approval_status, status');
       if (error) throw error;
+      if (!saved || saved.length === 0) throw new Error('Anda tidak punya akses untuk mengubah listing ini.');
+      return saved[0];
     },
-    onSuccess: () => {
+    onSuccess: (_saved) => {
       queryClient.invalidateQueries({ queryKey: ['my-properties'] });
       queryClient.invalidateQueries({ queryKey: ['property-edit', id] });
-      toast.success('Properti berhasil diperbarui!');
+      toast.success(
+        _saved?.approval_status === 'approved'
+          ? 'Properti berhasil diperbarui!'
+          : 'Perubahan disimpan. Listing menunggu tinjauan admin sebelum tampil.',
+      );
       navigate(-1);
     },
     onError: (error: any) => {
@@ -219,7 +236,23 @@ const PropertyEdit = () => {
 
       <div className="container mx-auto px-4 py-5 max-w-3xl">
         <form onSubmit={handleSubmit} className="space-y-5">
-          <Tabs defaultValue="basic" className="w-full">
+          {(() => {
+          const review = getReviewInfo(property);
+          return (
+            <div>
+              <div role="status" className={`rounded-xl border px-3 py-2.5 text-xs ${review.tone === 'warning' ? 'border-destructive/40 bg-destructive/5' : 'border-border bg-muted/40'}`}>
+                <p className="font-semibold text-foreground">{review.label.id}</p>
+                {review.note && <p className="mt-1 text-foreground"><span className="font-medium">Catatan peninjau:</span> {review.note}</p>}
+                <p className="mt-1 text-muted-foreground">
+                  {review.needsResubmit
+                    ? 'Perbaiki listing lalu simpan — listing otomatis dikirim ulang untuk ditinjau.'
+                    : 'Mengubah judul, deskripsi, harga, foto, lokasi, tipe, kamar atau luas akan mengirim listing kembali ke tinjauan admin sebelum tampil lagi.'}
+                </p>
+              </div>
+            </div>
+          );
+        })()}
+        <Tabs defaultValue="basic" className="w-full">
             <TabsList className="grid w-full grid-cols-4 h-11 p-1 bg-muted/50 border border-border/40 rounded-xl">
               <TabsTrigger value="basic" className="text-xs sm:text-sm gap-1.5 rounded-lg data-[state=active]:bg-card data-[state=active]:shadow-sm">
                 <Home className="h-3.5 w-3.5" /> Info
@@ -288,7 +321,7 @@ const PropertyEdit = () => {
                       <SelectContent>
                         <SelectItem value="draft">Draft</SelectItem>
                         <SelectItem value="active">Aktif</SelectItem>
-                        <SelectItem value="reserved">Reserved</SelectItem>
+                        <SelectItem value="rented">Tersewa</SelectItem>
                         <SelectItem value="sold">Terjual</SelectItem>
                         <SelectItem value="inactive">Nonaktif</SelectItem>
                       </SelectContent>

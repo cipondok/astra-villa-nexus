@@ -109,6 +109,7 @@ export function useFeaturedListings(limit = FEATURED_LIMIT) {
           "id, slug, title, city, area, location, price, price_idr, listing_type, property_type, status, bedrooms, bathrooms, area_sqm, building_area_sqm, land_area_sqm, cover_image, images, image_urls, thumbnail_url, is_featured, is_demo, created_at",
         )
         .eq("status", "active")
+        .eq("approval_status", "approved")
         .order("is_featured", { ascending: false, nullsFirst: false })
         .order("created_at", { ascending: false })
         .limit(120);

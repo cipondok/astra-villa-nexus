@@ -13,6 +13,7 @@ import { useAIPropertyValuation } from "@/hooks/useAIPropertyValuation";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useToast } from "@/hooks/use-toast";
 import { SEOHead } from "@/components/SEOHead";
+import { getReviewInfo, isPubliclyVisible } from "@/lib/listingReview";
 import {
   LuxeLayout, LuxeSection, LuxeSectionHead, LuxeCard, LuxeButton,
 } from "@/components/luxe";
@@ -398,6 +399,10 @@ const PropertyDetail = () => {
   // Sample inventory: labelled DEMO, kept out of search engines, and never shown as verified.
   const isDemo = Boolean((property as { is_demo?: boolean | null }).is_demo);
   const jsonLdErrors = validatePropertyJsonLd(jsonLdGraph);
+  // Pending, rejected, offline or draft listings are only reachable by their owner/admin: never indexable.
+  const isLive = isPubliclyVisible(property as Parameters<typeof isPubliclyVisible>[0], true);
+  const indexable = isLive && !isDemo;
+  const reviewInfo = getReviewInfo(property as Parameters<typeof getReviewInfo>[0]);
   const loc = [property.district, property.city, property.province].filter(Boolean).join(", ") || property.location || "Bali, Indonesia";
 
 
@@ -419,8 +424,8 @@ const PropertyDetail = () => {
         ogType="product"
         ogImage={socialImage}
         canonical={canonicalUrl}
-        noIndex={isDemo}
-        jsonLd={isDemo || jsonLdErrors.length ? undefined : jsonLdGraph}
+        noIndex={!indexable}
+        jsonLd={!indexable || jsonLdErrors.length ? undefined : jsonLdGraph}
       />
 
       {/* ============ EDITORIAL HERO — framed gallery + content block ============ */}
@@ -582,6 +587,11 @@ const PropertyDetail = () => {
               <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 border-b border-[var(--luxe-gold)]/20 pb-8">
                 <div className="space-y-3 min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
+                    {!isLive && !isDemo && (
+                      <span role="status" className="px-3 py-1 rounded-full border border-border text-luxe-fg text-[10px] font-bold uppercase tracking-widest" title="Only you and the review team can see this page">
+                        Tidak tayang · {reviewInfo.label.id}
+                      </span>
+                    )}
                     {isDemo && (
                       <span className="px-3 py-1 rounded-full border border-[var(--luxe-gold)]/60 text-[var(--luxe-gold)] text-[10px] font-bold uppercase tracking-widest" title="Contoh listing untuk demonstrasi — bukan properti yang benar-benar tersedia">
                         Demo · Contoh listing

@@ -60,7 +60,9 @@ Deno.serve(async (req) => {
     const { data: properties } = await supabase
       .from("properties")
       .select("id, slug, updated_at, city")
-      .eq("status", "active")
+      .in("status", ["active", "published"])
+      // Only listings an admin approved; pending/rejected/offline never go in.
+      .eq("approval_status", "approved")
       // Demo/sample listings are noindex and never go in the sitemap.
       .eq("is_demo", false)
       .order("updated_at", { ascending: false })

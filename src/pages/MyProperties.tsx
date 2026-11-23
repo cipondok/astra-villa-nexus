@@ -26,12 +26,14 @@ import OpportunityScoreRing from "@/components/property/OpportunityScoreRing";
 import { formatCurrency } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { getReviewInfo } from "@/lib/listingReview";
+import { propertyPath } from "@/lib/propertySeo";
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'Semua', icon: Building2 },
   { value: 'active', label: 'Aktif', icon: CheckCircle },
   { value: 'draft', label: 'Draft', icon: Edit },
-  { value: 'reserved', label: 'Reserved', icon: Archive },
+  { value: 'pending', label: 'Menunggu tinjauan', icon: Edit },
   { value: 'sold', label: 'Terjual', icon: TrendingUp },
   { value: 'inactive', label: 'Nonaktif', icon: Archive },
 ];
@@ -67,7 +69,7 @@ const MyProperties = () => {
       if (!user) return [];
       const { data, error } = await supabase
         .from('properties')
-        .select('id, title, price, property_type, listing_type, status, approval_status, city, state, location, images, image_urls, created_at, bedrooms, bathrooms, area_sqm, opportunity_score, demand_heat_score')
+        .select('id, slug, meta, is_demo, title, price, property_type, listing_type, status, approval_status, city, state, location, images, image_urls, created_at, bedrooms, bathrooms, area_sqm, opportunity_score, demand_heat_score')
         .or(`agent_id.eq.${user.id},owner_id.eq.${user.id}`)
         .order('created_at', { ascending: false });
       if (error) throw error;
@@ -112,15 +114,18 @@ const MyProperties = () => {
   // Status update mutation
   const statusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('properties')
         .update({ status, updated_at: new Date().toISOString() })
-        .eq('id', id);
+        .eq('id', id)
+        .select('status');
       if (error) throw error;
+      return data?.[0]?.status as string | undefined;
     },
-    onSuccess: () => {
+    onSuccess: (saved, vars) => {
       queryClient.invalidateQueries({ queryKey: ['my-properties'] });
-      toast.success('Status diperbarui');
+      if (vars.status === 'active' && saved !== 'active') toast.info('Listing menunggu persetujuan admin sebelum tayang.');
+      else toast.success('Status diperbarui');
     },
     onError: () => toast.error('Gagal memperbarui status'),
   });
@@ -139,7 +144,7 @@ const MyProperties = () => {
   const stats = {
     total: properties.length,
     active: properties.filter(p => p.status === 'active').length,
-    draft: properties.filter(p => p.status === 'draft' || p.status === 'pending_approval').length,
+    draft: properties.filter(p => p.status === 'draft' || p.status === 'pending').length,
     sold: properties.filter(p => p.status === 'sold').length,
   };
 
@@ -283,29 +288,29 @@ const MyProperties = () => {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-44">
-                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/property/${property.id}`); }}>
+                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(propertyPath(property)); }}>
                                   <Eye className="h-3.5 w-3.5 mr-2" /> Lihat
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/property/${property.id}/edit`); }}>
+                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/my-properties/${property.id}/edit`); }}>
                                   <Edit className="h-3.5 w-3.5 mr-2" /> Edit
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                {property.status !== 'active' && (
+                                {property.approval_status === 'approved' && property.status !== 'active' && (
                                   <DropdownMenuItem onClick={(e) => { e.stopPropagation(); statusMutation.mutate({ id: property.id, status: 'active' }); }}>
                                     <CheckCircle className="h-3.5 w-3.5 mr-2" /> Aktifkan
                                   </DropdownMenuItem>
                                 )}
-                                {property.status !== 'draft' && (
+                                {property.status !== 'draft' && property.approval_status !== 'approved' && (
                                   <DropdownMenuItem onClick={(e) => { e.stopPropagation(); statusMutation.mutate({ id: property.id, status: 'draft' }); }}>
                                     <Edit className="h-3.5 w-3.5 mr-2" /> Jadikan Draft
                                   </DropdownMenuItem>
                                 )}
-                                {property.status !== 'reserved' && (
-                                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); statusMutation.mutate({ id: property.id, status: 'reserved' }); }}>
-                                    <Archive className="h-3.5 w-3.5 mr-2" /> Reserved
+                                {property.status === 'active' && (
+                                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); statusMutation.mutate({ id: property.id, status: 'inactive' }); }}>
+                                    <Archive className="h-3.5 w-3.5 mr-2" /> Nonaktifkan
                                   </DropdownMenuItem>
                                 )}
-                                {property.status !== 'sold' && (
+                                {property.approval_status === 'approved' && property.status !== 'sold' && (
                                   <DropdownMenuItem onClick={(e) => { e.stopPropagation(); statusMutation.mutate({ id: property.id, status: 'sold' }); }}>
                                     <TrendingUp className="h-3.5 w-3.5 mr-2" /> Tandai Terjual
                                   </DropdownMenuItem>
@@ -325,6 +330,14 @@ const MyProperties = () => {
                             <MapPin className="h-3 w-3 flex-shrink-0 text-primary/60" />
                             <span className="text-[11px] line-clamp-1">{property.location || property.city || 'No location'}</span>
                           </div>
+                          {(() => {
+                            const review = getReviewInfo(property);
+                            return review.needsResubmit && review.note ? (
+                              <p className="text-[11px] text-destructive line-clamp-2 mb-1.5">
+                                <span className="font-semibold">Catatan admin:</span> {review.note}
+                              </p>
+                            ) : null;
+                          })()}
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -332,9 +345,14 @@ const MyProperties = () => {
                             <span className="text-sm font-bold text-primary">
                               {property.price ? formatCurrency(property.price) : 'TBD'}
                             </span>
-                            <Badge variant="outline" className={`text-[9px] px-1.5 py-0 border ${getStatusStyle(property.status)}`}>
-                              {property.status === 'pending_approval' ? 'Pending' : property.status}
-                            </Badge>
+                            {(() => {
+                              const review = getReviewInfo(property);
+                              return (
+                                <Badge variant="outline" className={`text-[10px] px-1.5 py-0 border ${review.tone === 'warning' ? 'bg-destructive/10 text-destructive border-destructive/20' : getStatusStyle(property.status)}`}>
+                                  {review.key === 'live' || review.key === 'offline' ? (property.status === 'sold' ? 'Terjual' : property.status === 'rented' ? 'Tersewa' : review.label.id) : review.label.id}
+                                </Badge>
+                              );
+                            })()}
                           </div>
 
                           {/* Mini performance stats */}

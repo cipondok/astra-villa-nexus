@@ -103,6 +103,8 @@ function generateProperty(
     legal_status: pick(LEGAL),
     status: "active",
     approval_status: "approved",
+    // Generated sample data: always labelled DEMO, noindex, out of the sitemap and public search.
+    is_demo: true,
     wna_eligible: Math.random() > 0.7,
     is_featured: Math.random() > 0.9,
     investment_score: rand(30, 95),

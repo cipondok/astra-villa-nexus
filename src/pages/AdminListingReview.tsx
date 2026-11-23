@@ -8,6 +8,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { SEOHead } from '@/components/SEOHead';
+import { Switch } from '@/components/ui/switch';
+import { propertyPath } from '@/lib/propertySeo';
+import { getReviewInfo, readReviewMeta, reviewUpdate, type ReviewDecision } from '@/lib/listingReview';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,13 +21,13 @@ import {
   Shield, Search, CheckCircle2, XCircle, AlertTriangle, Clock,
   Image as ImageIcon, DollarSign, MapPin, Eye, ArrowLeft,
   TrendingUp, TrendingDown, BarChart3, Filter, SortAsc,
-  ChevronDown, FileText, Sparkles, RefreshCw,
+  ChevronDown, FileText, Sparkles, RefreshCw, EyeOff, Globe, FlaskConical, Phone, Mail, User,
 } from 'lucide-react';
 
 /* ─── Types ─── */
 type ApprovalStatus = 'pending' | 'approved' | 'rejected' | 'revision_requested';
 type SortField = 'created_at' | 'price' | 'opportunity_score' | 'views_count';
-type ActionType = 'approve' | 'reject' | 'revision';
+type ActionType = ReviewDecision;
 
 interface ListingRow {
   id: string;
@@ -49,6 +52,10 @@ interface ListingRow {
   area_sqm: number | null;
   description: string | null;
   owner_type: string | null;
+  owner_id: string | null;
+  is_demo: boolean | null;
+  slug: string | null;
+  meta: unknown;
 }
 
 /* ─── Helpers ─── */
@@ -106,63 +113,105 @@ export default function AdminListingReview() {
   const [actionDialog, setActionDialog] = useState<{ type: ActionType; listing: ListingRow } | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
 
-  /* ── Fetch listings ── */
+  const [showDemoInQueue, setShowDemoInQueue] = useState(false);
+
+  /* ── Fetch listings (filtered on the server; samples hidden unless asked) ── */
   const { data: listings = [], isLoading } = useQuery({
-    queryKey: ['admin-listings-review'],
+    queryKey: ['admin-listings-review', filterStatus, showDemoInQueue],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let q = supabase
         .from('properties')
-        .select('id, title, price, location, city, state, property_type, listing_type, images, image_urls, thumbnail_url, approval_status, status, created_at, opportunity_score, ai_estimated_price, views_count, bedrooms, bathrooms, area_sqm, description, owner_type')
+        .select('id, title, slug, price, location, city, state, property_type, listing_type, images, image_urls, thumbnail_url, approval_status, status, created_at, opportunity_score, ai_estimated_price, views_count, bedrooms, bathrooms, area_sqm, description, owner_type, owner_id, is_demo, meta')
         .order('created_at', { ascending: false })
-        .limit(500);
+        .limit(300);
+      if (!showDemoInQueue) q = q.eq('is_demo', false);
+      if (filterStatus === 'pending') q = q.or('approval_status.is.null,approval_status.eq.pending').neq('status', 'draft');
+      else if (filterStatus !== 'all') q = q.eq('approval_status', filterStatus);
+      const { data, error } = await q;
       if (error) throw error;
-      return (data || []) as ListingRow[];
+      return (data || []) as unknown as ListingRow[];
     },
     enabled: !!user && isAdmin,
     staleTime: 15000,
   });
 
+  /* ── Inventory KPIs (counted in the database, not limited by the list) ── */
+  const { data: counts } = useQuery({
+    queryKey: ['admin-listing-moderation-counts'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_listing_moderation_counts' as never);
+      if (error) throw error;
+      return data as unknown as Record<'pending' | 'revision' | 'published' | 'approved_offline' | 'rejected' | 'drafts' | 'demo', number>;
+    },
+    enabled: !!user && isAdmin,
+    staleTime: 15000,
+  });
+
+  /* ── Sample-listing visibility switch (system_settings.show_demo_listings) ── */
+  const { data: showDemoPublic = false } = useQuery({
+    queryKey: ['marketplace-show-demo-listings'],
+    queryFn: async () => {
+      const { data } = await supabase.from('system_settings').select('value').eq('key', 'show_demo_listings').maybeSingle();
+      return data?.value === true;
+    },
+    enabled: !!user && isAdmin,
+  });
+  const demoSwitch = useMutation({
+    mutationFn: async (next: boolean) => {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .update({ value: next as never, updated_at: new Date().toISOString() })
+        .eq('key', 'show_demo_listings')
+        .select('key');
+      if (error) throw error;
+      if (!data?.length) throw new Error('Setting not saved — your account cannot change marketplace settings.');
+    },
+    onSuccess: (_d, next) => {
+      queryClient.invalidateQueries({ queryKey: ['marketplace-show-demo-listings'] });
+      toast({ title: next ? 'Sample listings visible to visitors' : 'Sample listings hidden from visitors' });
+    },
+    onError: (e: Error) => toast({ title: 'Error', description: e.message, variant: 'destructive' }),
+  });
+
+  /* ── Submitter contact (admins can read profiles; never shown publicly) ── */
+  const { data: submitter } = useQuery({
+    queryKey: ['admin-listing-submitter', selectedListing?.owner_id],
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles').select('full_name, email, phone').eq('id', selectedListing!.owner_id!).maybeSingle();
+      return data;
+    },
+    enabled: !!selectedListing?.owner_id && isAdmin,
+  });
+
   /* ── Mutation ── */
   const updateMutation = useMutation({
-    mutationFn: async ({ id, approval_status, status }: { id: string; approval_status: string; status?: string }) => {
-      const update: Record<string, string> = { approval_status };
-      if (status) update.status = status;
-      const { error } = await supabase.from('properties').update(update).eq('id', id);
+    mutationFn: async ({ listing, decision, note }: { listing: ListingRow; decision: ReviewDecision; note: string }) => {
+      const update = reviewUpdate(decision, { note, reviewerId: user!.id, currentMeta: listing.meta });
+      const { data, error } = await supabase.from('properties').update(update as never).eq('id', listing.id).select('id, approval_status, status');
       if (error) throw error;
+      if (!data?.length) throw new Error('Nothing was updated — your account may not have listing admin rights.');
+      return data[0];
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-listings-review'] });
-      toast({ title: 'Listing updated', description: 'The listing status has been updated successfully.' });
+      queryClient.invalidateQueries({ queryKey: ['admin-listing-moderation-counts'] });
+      toast({ title: 'Listing updated', description: 'The listing status has been updated.' });
       setActionDialog(null);
       setAdminNotes('');
     },
-    onError: () => {
-      toast({ title: 'Error', description: 'Failed to update listing.', variant: 'destructive' });
+    onError: (e: Error) => {
+      toast({ title: 'Error', description: e.message || 'Failed to update listing.', variant: 'destructive' });
     },
   });
 
   const handleAction = (type: ActionType) => {
     if (!actionDialog) return;
-    const { listing } = actionDialog;
-    switch (type) {
-      case 'approve':
-        updateMutation.mutate({ id: listing.id, approval_status: 'approved', status: 'active' });
-        break;
-      case 'reject':
-        updateMutation.mutate({ id: listing.id, approval_status: 'rejected', status: 'inactive' });
-        break;
-      case 'revision':
-        updateMutation.mutate({ id: listing.id, approval_status: 'revision_requested' });
-        break;
-    }
+    updateMutation.mutate({ listing: actionDialog.listing, decision: type, note: adminNotes });
   };
 
   /* ── Filtered & sorted ── */
   const filtered = useMemo(() => {
     let result = [...listings];
-    if (filterStatus !== 'all') {
-      result = result.filter(l => (l.approval_status || 'pending') === filterStatus);
-    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter(l =>
@@ -179,18 +228,6 @@ export default function AdminListingReview() {
     });
     return result;
   }, [listings, filterStatus, searchQuery, sortField, sortAsc]);
-
-  /* ── Insight metrics ── */
-  const metrics = useMemo(() => {
-    const total = listings.length;
-    const pending = listings.filter(l => (l.approval_status || 'pending') === 'pending').length;
-    const approved = listings.filter(l => l.approval_status === 'approved').length;
-    const rejected = listings.filter(l => l.approval_status === 'rejected').length;
-    const revision = listings.filter(l => l.approval_status === 'revision_requested').length;
-    const approvalRate = total > 0 ? Math.round((approved / total) * 100) : 0;
-    const avgScore = listings.reduce((s, l) => s + (l.opportunity_score ?? 0), 0) / (total || 1);
-    return { total, pending, approved, rejected, revision, approvalRate, avgScore: Math.round(avgScore) };
-  }, [listings]);
 
   if (adminLoading) return <div className="min-h-screen flex items-center justify-center"><RefreshCw className="h-6 w-6 animate-spin text-primary" /></div>;
   if (!isAdmin) return <Navigate to="/" replace />;
@@ -222,15 +259,15 @@ export default function AdminListingReview() {
         </motion.div>
 
         {/* ── Insight Metrics Strip ── */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mb-4">
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mb-3" aria-label="Inventory counts">
           {[
-            { label: 'Total Listings', value: metrics.total, icon: FileText, color: 'text-foreground' },
-            { label: 'Pending Review', value: metrics.pending, icon: Clock, color: 'text-chart-4' },
-            { label: 'Approved', value: metrics.approved, icon: CheckCircle2, color: 'text-chart-2' },
-            { label: 'Rejected', value: metrics.rejected, icon: XCircle, color: 'text-destructive' },
-            { label: 'Needs Revision', value: metrics.revision, icon: AlertTriangle, color: 'text-primary' },
-            { label: 'Approval Rate', value: `${metrics.approvalRate}%`, icon: TrendingUp, color: 'text-chart-2' },
-            { label: 'Avg AI Score', value: metrics.avgScore, icon: Sparkles, color: 'text-primary' },
+            { label: 'Pending Review', value: counts?.pending ?? '–', icon: Clock, color: 'text-chart-4' },
+            { label: 'Needs Corrections', value: counts?.revision ?? '–', icon: AlertTriangle, color: 'text-primary' },
+            { label: 'Published (live)', value: counts?.published ?? '–', icon: Globe, color: 'text-chart-2' },
+            { label: 'Approved, offline', value: counts?.approved_offline ?? '–', icon: EyeOff, color: 'text-muted-foreground' },
+            { label: 'Rejected', value: counts?.rejected ?? '–', icon: XCircle, color: 'text-destructive' },
+            { label: 'Drafts', value: counts?.drafts ?? '–', icon: FileText, color: 'text-foreground' },
+            { label: 'Sample (DEMO)', value: counts?.demo ?? '–', icon: FlaskConical, color: 'text-muted-foreground' },
           ].map((m) => (
             <Card key={m.label} className="bg-card/80 border-border/60">
               <CardContent className="p-2.5 flex items-center gap-2">
@@ -245,6 +282,28 @@ export default function AdminListingReview() {
             </Card>
           ))}
         </motion.div>
+
+        {/* ── Sample listing controls ── */}
+        <Card className="bg-card/80 border-border/60 mb-4">
+          <CardContent className="p-3 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+            <label className="flex items-center gap-2 text-xs text-foreground">
+              <Switch
+                checked={showDemoPublic}
+                disabled={demoSwitch.isPending}
+                onCheckedChange={(v) => demoSwitch.mutate(v)}
+                aria-label="Show sample listings to visitors"
+              />
+              <span>
+                <span className="font-semibold">Show sample listings to visitors</span>
+                <span className="block text-[10px] text-muted-foreground">Off = only approved real listings appear in search. Samples are always labelled DEMO, noindex and kept out of the sitemap.</span>
+              </span>
+            </label>
+            <label className="flex items-center gap-2 text-xs text-foreground sm:ml-auto">
+              <Switch checked={showDemoInQueue} onCheckedChange={setShowDemoInQueue} aria-label="Include sample listings in this list" />
+              <span>Include samples in this list</span>
+            </label>
+          </CardContent>
+        </Card>
 
         {/* ── Filter + Search Bar ── */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-3">
@@ -347,8 +406,8 @@ export default function AdminListingReview() {
                           {/* Thumbnail */}
                           <div className="relative w-16 h-16 sm:w-20 sm:h-16 rounded-lg overflow-hidden flex-shrink-0">
                             <img src={getThumb(listing)} alt="" className="w-full h-full object-cover" />
-                            <div className="absolute bottom-0.5 right-0.5 bg-black/60 text-white text-[8px] px-1 rounded font-mono">
-                              {imgCount} img
+                            <div className="absolute bottom-0.5 right-0.5 bg-background/85 text-foreground text-[10px] px-1 rounded font-mono">
+                              {imgCount}
                             </div>
                           </div>
 
@@ -357,6 +416,10 @@ export default function AdminListingReview() {
                             <div className="flex items-center gap-2 mb-0.5">
                               <h3 className="text-xs sm:text-sm font-semibold text-foreground truncate">{listing.title}</h3>
                               {statusBadge(listing.approval_status)}
+                              {listing.is_demo && <Badge variant="outline" className="text-[9px] px-1.5 py-0">DEMO</Badge>}
+                              {listing.approval_status === 'approved' && (
+                                <Badge variant="outline" className="text-[9px] px-1.5 py-0">{getReviewInfo(listing).label.en}</Badge>
+                              )}
                             </div>
                             <p className="text-[10px] text-muted-foreground flex items-center gap-1 truncate">
                               <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
@@ -412,30 +475,29 @@ export default function AdminListingReview() {
 
                           {/* Quick actions */}
                           <div className="flex flex-col gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                            <Button
-                              size="sm"
-                              className="h-6 text-[9px] px-2 bg-chart-2/15 text-chart-2 hover:bg-chart-2/25 border-0"
-                              variant="outline"
-                              onClick={() => { setActionDialog({ type: 'approve', listing }); setAdminNotes(''); }}
-                            >
-                              <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" /> Approve
+                            {listing.approval_status === 'approved' ? (
+                              listing.status === 'active' || listing.status === 'published' ? (
+                                <Button size="sm" variant="outline" className="h-8 text-[10px] px-2" onClick={() => { setActionDialog({ type: 'unpublish', listing }); setAdminNotes(''); }}>
+                                  <EyeOff className="h-3 w-3 mr-1" /> Unpublish
+                                </Button>
+                              ) : (
+                                <Button size="sm" variant="outline" className="h-8 text-[10px] px-2 text-chart-2" onClick={() => { setActionDialog({ type: 'publish', listing }); setAdminNotes(''); }}>
+                                  <Globe className="h-3 w-3 mr-1" /> Publish
+                                </Button>
+                              )
+                            ) : (
+                              <Button size="sm" variant="outline" className="h-8 text-[10px] px-2 bg-chart-2/15 text-chart-2 hover:bg-chart-2/25 border-0" onClick={() => { setActionDialog({ type: 'approve', listing }); setAdminNotes(''); }}>
+                                <CheckCircle2 className="h-3 w-3 mr-1" /> Approve
+                              </Button>
+                            )}
+                            <Button size="sm" variant="outline" className="h-8 text-[10px] px-2 bg-primary/10 text-primary hover:bg-primary/20 border-0" onClick={() => { setActionDialog({ type: 'revision', listing }); setAdminNotes(''); }}>
+                              <AlertTriangle className="h-3 w-3 mr-1" /> Corrections
                             </Button>
-                            <Button
-                              size="sm"
-                              className="h-6 text-[9px] px-2 bg-primary/10 text-primary hover:bg-primary/20 border-0"
-                              variant="outline"
-                              onClick={() => { setActionDialog({ type: 'revision', listing }); setAdminNotes(''); }}
-                            >
-                              <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> Revise
-                            </Button>
-                            <Button
-                              size="sm"
-                              className="h-6 text-[9px] px-2 bg-destructive/10 text-destructive hover:bg-destructive/20 border-0"
-                              variant="outline"
-                              onClick={() => { setActionDialog({ type: 'reject', listing }); setAdminNotes(''); }}
-                            >
-                              <XCircle className="h-2.5 w-2.5 mr-0.5" /> Reject
-                            </Button>
+                            {listing.approval_status !== 'rejected' && (
+                              <Button size="sm" variant="outline" className="h-8 text-[10px] px-2 bg-destructive/10 text-destructive hover:bg-destructive/20 border-0" onClick={() => { setActionDialog({ type: 'reject', listing }); setAdminNotes(''); }}>
+                                <XCircle className="h-3 w-3 mr-1" /> Reject
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </CardContent>
@@ -516,6 +578,31 @@ export default function AdminListingReview() {
                     </div>
                   )}
 
+                  {/* Submitter (private — admin only) */}
+                  <div className="rounded-lg border border-border/40 bg-muted/30 p-3 space-y-1">
+                    <p className="text-[10px] font-medium text-muted-foreground">Submitted by (private)</p>
+                    <p className="text-xs text-foreground flex items-center gap-1.5"><User className="h-3 w-3" /> {submitter?.full_name || '—'}
+                      {(() => { const rel = (p.meta as { submission?: { relationship?: string } } | null)?.submission?.relationship; return rel ? <Badge variant="outline" className="text-[9px] px-1.5 py-0 ml-1">{rel.replace('_', ' ')}</Badge> : null; })()}
+                    </p>
+                    {submitter?.phone && <a href={`tel:${submitter.phone}`} className="text-xs text-primary flex items-center gap-1.5 underline-offset-2 hover:underline"><Phone className="h-3 w-3" /> {submitter.phone}</a>}
+                    {submitter?.email && <a href={`mailto:${submitter.email}`} className="text-xs text-primary flex items-center gap-1.5 underline-offset-2 hover:underline"><Mail className="h-3 w-3" /> {submitter.email}</a>}
+                    {!(p.meta as { submission?: unknown } | null)?.submission && !p.is_demo && (
+                      <p className="text-[10px] text-muted-foreground">No owner declaration on file (submitted before the declaration step existed).</p>
+                    )}
+                    {p.is_demo && <p className="text-[10px] text-muted-foreground">Sample listing (DEMO) — not a real submission.</p>}
+                  </div>
+
+                  {readReviewMeta(p.meta)?.note && (
+                    <div className="text-xs">
+                      <p className="text-[10px] font-medium text-muted-foreground mb-0.5">Last review note</p>
+                      <p className="text-foreground/90">{readReviewMeta(p.meta)?.note}</p>
+                    </div>
+                  )}
+
+                  <a href={propertyPath(p)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
+                    <Eye className="h-3 w-3" /> Open listing page
+                  </a>
+
                   {/* Admin actions */}
                   <div className="flex gap-2 pt-2 border-t border-border/40">
                     <Button
@@ -530,7 +617,7 @@ export default function AdminListingReview() {
                       variant="outline"
                       onClick={() => { setSelectedListing(null); setActionDialog({ type: 'revision', listing: p }); setAdminNotes(''); }}
                     >
-                      <AlertTriangle className="h-3.5 w-3.5" /> Revise
+                      <AlertTriangle className="h-3.5 w-3.5" /> Corrections
                     </Button>
                     <Button
                       className="flex-1 h-9 text-xs gap-1.5 bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/25"
@@ -553,23 +640,37 @@ export default function AdminListingReview() {
           {actionDialog && (() => {
             const { type, listing } = actionDialog;
             const config: Record<ActionType, { title: string; desc: string; btnLabel: string; btnClass: string; icon: typeof CheckCircle2 }> = {
+              publish: {
+                title: 'Publish Listing',
+                desc: `"${listing.title}" will be visible to visitors again.`,
+                btnLabel: 'Publish',
+                btnClass: 'bg-chart-2 text-primary-foreground hover:bg-chart-2/90',
+                icon: Globe,
+              },
+              unpublish: {
+                title: 'Unpublish Listing',
+                desc: `"${listing.title}" stays approved but is hidden from visitors, search and the sitemap.`,
+                btnLabel: 'Unpublish',
+                btnClass: 'bg-secondary text-secondary-foreground hover:bg-secondary/90',
+                icon: EyeOff,
+              },
               approve: {
                 title: 'Approve Listing',
                 desc: `"${listing.title}" will be published to the marketplace.`,
                 btnLabel: 'Approve & Publish',
-                btnClass: 'bg-chart-2 text-white hover:bg-chart-2/90',
+                btnClass: 'bg-chart-2 text-primary-foreground hover:bg-chart-2/90',
                 icon: CheckCircle2,
               },
               revision: {
-                title: 'Request Revision',
-                desc: `The listing owner will be notified to update "${listing.title}".`,
-                btnLabel: 'Send Revision Request',
+                title: 'Request Corrections',
+                desc: `"${listing.title}" stays hidden. The owner sees your note on their My Properties page and can resubmit.`,
+                btnLabel: 'Send Correction Request',
                 btnClass: 'bg-primary text-primary-foreground hover:bg-primary/90',
                 icon: AlertTriangle,
               },
               reject: {
                 title: 'Reject Listing',
-                desc: `"${listing.title}" will be removed from the pending queue.`,
+                desc: `"${listing.title}" will be hidden from visitors. The owner sees your reason.`,
                 btnLabel: 'Confirm Rejection',
                 btnClass: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
                 icon: XCircle,
@@ -586,8 +687,9 @@ export default function AdminListingReview() {
                 </DialogHeader>
                 <p className="text-xs text-muted-foreground">{cfg.desc}</p>
                 <div>
-                  <label className="text-xs font-medium text-foreground">Admin Notes {type !== 'approve' ? '*' : '(optional)'}</label>
+                  <label htmlFor="review-note" className="text-xs font-medium text-foreground">{type === 'reject' || type === 'revision' ? 'Note to owner *' : 'Note (optional)'}</label>
                   <Textarea
+                    id="review-note"
                     rows={3}
                     placeholder={type === 'revision' ? 'Describe what needs to be improved...' : type === 'reject' ? 'Reason for rejection...' : 'Optional notes...'}
                     value={adminNotes}
@@ -601,7 +703,7 @@ export default function AdminListingReview() {
                   <Button variant="outline" onClick={() => setActionDialog(null)}>Cancel</Button>
                   <Button
                     className={cfg.btnClass}
-                    disabled={updateMutation.isPending || (type !== 'approve' && !adminNotes.trim())}
+                    disabled={updateMutation.isPending || ((type === 'reject' || type === 'revision') && !adminNotes.trim())}
                     onClick={() => handleAction(type)}
                   >
                     {updateMutation.isPending ? 'Processing…' : cfg.btnLabel}

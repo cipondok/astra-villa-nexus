@@ -21,3 +21,15 @@
 - [x] Demo inventory flag: DEMO label, noindex, no listing JSON-LD, excluded from sitemap
 - [x] Indonesian homepage title/description
 - [ ] Real (non-demo) listings — blocked: needs real inventory from owners/agents
+
+# Roadmap — Genuine inventory & organic launch
+
+- [x] Listing form saves correctly (removed missing fields, sale/rent only), full validation, ≥3 photos, private contact number, owner declaration
+- [x] Server-side moderation: submissions always pending; owners can't self-approve, feature or un-demo; content edits on live listings return to review
+- [x] Visitors only see approved + live listings; samples hidden unless the admin switch is on
+- [x] Admin review: approve, request corrections, reject (notes saved), publish/unpublish, submitter contact, inventory counts, sample switch
+- [x] Owner My Properties: review status + admin note, working edit page that resubmits corrections
+- [x] SEO: unpublished/demo pages noindex without JSON-LD; sitemap, AI search and photo search only use approved real listings
+- [ ] Owner sign-up emails — blocked: email service (Resend SMTP) not connected
+- [ ] First real listing — blocked: needs a real owner/agent account with an approved listing role
+- [ ] Confirm photo upload while signed in — blocked: no signed-in session available to test here
