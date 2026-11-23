@@ -68,7 +68,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   const hiddenCount = filteredSections.length - COLLAPSED_VISIBLE;
 
   return (
-    <div className="mb-3 sticky top-14 z-30">
+    <div className="mb-3">
       <div className="rounded-lg border border-border/40 bg-card overflow-hidden">
         {/* Header */}
         <div className="px-3 py-1.5 flex items-center gap-3 border-b border-border/30">
