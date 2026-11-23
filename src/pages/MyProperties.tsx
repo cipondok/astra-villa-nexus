@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { getReviewInfo } from "@/lib/listingReview";
 import { propertyPath } from "@/lib/propertySeo";
+import OwnerLeadsPanel from "@/components/onboarding/OwnerLeadsPanel";
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'Semua', icon: Building2 },
@@ -188,6 +189,9 @@ const MyProperties = () => {
             </div>
           ))}
         </div>
+
+        {/* Buyer enquiries on this user's listings */}
+        <OwnerLeadsPanel />
 
         {/* Search + Filter */}
         <div className="flex gap-2">

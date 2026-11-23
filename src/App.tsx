@@ -88,6 +88,7 @@ const AstraReosHome = lazy(() => import('@/pages/AstraReosHome'));
 
 const CityInvestmentPage = lazy(() => import('@/pages/CityInvestmentPage'));
 const InvestorOnboarding = lazy(() => import('@/pages/InvestorOnboarding'));
+const ListerOnboarding = lazy(() => import('@/pages/ListerOnboarding'));
 const AIListingGenerator = lazy(() => import('@/pages/AIListingGenerator'));
 const Search = lazy(() => import('@/pages/Properties'));
 const ErrorPage = lazy(() => import('@/pages/ErrorPage'));
@@ -280,7 +281,6 @@ const VRTourShowcase = lazy(() => import('@/pages/VRTourShowcase'));
 const BlockchainVerification = lazy(() => import('@/pages/BlockchainVerification'));
 const MediaHub = lazy(() => import('@/pages/MediaHub'));
 const AgentDirectory = lazy(() => import('@/pages/AgentDirectory'));
-const AgentRegistration = lazy(() => import('@/pages/AgentRegistration'));
 const PropertyComparison = lazy(() => import('@/pages/PropertyComparison'));
 const PreQualificationPage = lazy(() => import('@/pages/PreQualificationPage'));
 const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
@@ -479,6 +479,7 @@ const AppContent = () => {
                 <Route path="/classic" element={<Index />} />
                 <Route path="/investor-landing" element={<InvestorLandingPage />} />
                 <Route path="/onboarding/investor" element={<InvestorOnboarding />} />
+                <Route path="/onboarding/listing" element={<ListerOnboarding />} />
                 <Route path="/onboarding/investor-wizard" element={<InvestorOnboardingWizard />} />
                 <Route path="/referral-engine" element={<InvestorReferralEngine />} />
                 <Route path="/market-heatmap" element={<MarketIntelligenceHeatmap />} />
@@ -786,8 +787,8 @@ const AppContent = () => {
                 <Route path="/infrastructure" element={<PlatformHub />} />
                 <Route path="/agents" element={<AgentDirectory />} />
                 <Route path="/cari-agen" element={<AgentDirectory />} />
-                <Route path="/agent-registration" element={<AgentRegistration />} />
-                <Route path="/daftar-agen" element={<AgentRegistration />} />
+                <Route path="/agent-registration" element={<Navigate to="/onboarding/listing?role=agent" replace />} />
+                <Route path="/daftar-agen" element={<Navigate to="/onboarding/listing?role=agent" replace />} />
                 <Route path="/property-comparison" element={<PropertyComparison />} />
                 <Route path="/pre-qualification" element={<PreQualificationPage />} />
                 <Route path="/mortgage-prequalification" element={<PreQualificationPage />} />

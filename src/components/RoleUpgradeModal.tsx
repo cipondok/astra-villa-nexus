@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,8 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { Building2, UserPlus, Home, AlertCircle, Key, Clock, Lock } from "lucide-react";
 import VendorRegistrationForm from "./vendor/VendorRegistrationForm";
-import AgentRegistrationModal from "./agent/AgentRegistrationModal";
-import PropertyOwnerRegistrationForm from "./propertyowner/PropertyOwnerRegistrationForm";
 import { useUpgradeRestrictions } from "@/hooks/usePendingApplications";
 
 interface RoleUpgradeModalProps {
@@ -40,6 +39,17 @@ const RoleUpgradeModal = ({ isOpen, onClose }: RoleUpgradeModalProps) => {
     onClose();
   };
 
+  // Owner / agent applications use the single onboarding page.
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!showAgentForm && !showPropertyOwnerForm) return;
+    const role = showAgentForm ? 'agent' : 'property_owner';
+    resetState();
+    onClose();
+    navigate(`/onboarding/listing?role=${role}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showAgentForm, showPropertyOwnerForm]);
+
   if (showVendorForm) {
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -50,19 +60,6 @@ const RoleUpgradeModal = ({ isOpen, onClose }: RoleUpgradeModalProps) => {
     );
   }
 
-  if (showAgentForm) {
-    return <AgentRegistrationModal isOpen={isOpen} onClose={handleClose} />;
-  }
-
-  if (showPropertyOwnerForm) {
-    return (
-      <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 sm:p-6">
-          <PropertyOwnerRegistrationForm onSuccess={handleClose} />
-        </DialogContent>
-      </Dialog>
-    );
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

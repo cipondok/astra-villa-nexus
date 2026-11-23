@@ -33,6 +33,10 @@ import {
 import { PropertyShareSheet } from "@/components/property/PropertyShareSheet";
 import { RelatedPropertyLinks } from "@/components/property/RelatedPropertyLinks";
 import { usePropertyViewTracking } from "@/hooks/usePropertyViewTracking";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "@/i18n/useTranslation";
+import { useSocialMediaSettings } from "@/hooks/useSocialMediaSettings";
+import { buildInquiryRow, validateInquiryContact } from "@/lib/propertyInquiry";
 
 
 const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
@@ -169,6 +173,23 @@ const PropertyDetail = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertEmail, setAlertEmail] = useState("");
   const [inquireOpen, setInquireOpen] = useState(false); // mobile-only collapse
+  const { user, profile } = useAuth();
+  const { t } = useTranslation();
+  const { settings: socialSettings } = useSocialMediaSettings();
+  const [inqName, setInqName] = useState("");
+  const [inqEmail, setInqEmail] = useState("");
+  const [inqPhone, setInqPhone] = useState("");
+  useEffect(() => {
+    if (!user) return;
+    setInqName((v) => v || profile?.full_name || "");
+    setInqEmail((v) => v || profile?.email || user.email || "");
+    setInqPhone((v) => v || profile?.phone || "");
+  }, [user, profile]);
+  // Enquiries are only accepted for live, approved, non-sample listings (also enforced by RLS).
+  const enquiryOpen = property ? isPubliclyVisible(property as Parameters<typeof isPubliclyVisible>[0], false) : false;
+  const enquiryClosedReason = property && (property as { is_demo?: boolean | null }).is_demo
+    ? t("propertyEnquiry.sampleListing")
+    : t("propertyEnquiry.notLive");
 
   /* ----- CTA analytics tracking ----- */
   const { registerImpression, trackClick } = usePropertyCtaTracking({
@@ -240,11 +261,43 @@ const PropertyDetail = () => {
     if (property) setShareOpen(true);
   };
 
+  // Company WhatsApp from admin settings; hidden when none is configured (no placeholder number).
   const whatsappLink = useMemo(() => {
-    if (!property) return "#";
-    const msg = `Hi, saya tertarik dengan villa "${property.title}" (${window.location.href}). Bisa minta info ketersediaan?`;
-    return `https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`;
-  }, [property]);
+    const number = (socialSettings.whatsappNumber || "").replace(/\D/g, "");
+    if (!property || number.length < 8) return null;
+    const msg = `Hi, saya tertarik dengan properti "${property.title}" (${window.location.href}). Bisa minta info ketersediaan?`;
+    return `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+  }, [property, socialSettings.whatsappNumber]);
+
+  /** Saves a real enquiry; the database turns it into a lead for the listing owner. */
+  const submitInquiry = useCallback(async (kind: "message" | "visit", message: string): Promise<boolean> => {
+    if (!property) return false;
+    if (!enquiryOpen) {
+      toast({ title: enquiryClosedReason });
+      return false;
+    }
+    const problem = validateInquiryContact({ name: inqName, email: inqEmail, phone: inqPhone, message });
+    if (problem) {
+      toast({ title: t(`propertyEnquiry.${problem}`), variant: "destructive" });
+      return false;
+    }
+    const row = buildInquiryRow({
+      kind,
+      propertyId: property.id,
+      propertyTitle: property.title,
+      userId: user?.id ?? null,
+      name: inqName,
+      email: inqEmail,
+      phone: inqPhone,
+      message,
+    });
+    const { error } = await supabase.from("inquiries").insert(row);
+    if (error) {
+      toast({ title: t("propertyEnquiry.failed"), variant: "destructive" });
+      return false;
+    }
+    return true;
+  }, [property, enquiryOpen, enquiryClosedReason, inqName, inqEmail, inqPhone, user?.id, toast, t]);
 
   /* ----- Contact handlers ----- */
   const handleSendMessage = useCallback(async () => {
@@ -255,6 +308,8 @@ const PropertyDetail = () => {
     }
     setSending(true);
     try {
+      const ok = await submitInquiry("message", `${inquiryReason}\n\n${inquiryMessage.trim()}`);
+      if (!ok) return;
       trackClick({
         cta: "contact",
         placement: "sidebar",
@@ -267,21 +322,24 @@ const PropertyDetail = () => {
         metadata: { reason: inquiryReason, price: property.price ?? null },
       });
       toast({
-        title: "Inquiry sent",
-        description: "Our concierge will reply within 24 hours.",
+        title: t("propertyEnquiry.sentTitle"),
+        description: t("propertyEnquiry.sentBody"),
       });
       setInquiryMessage("");
     } finally {
       setSending(false);
     }
-  }, [property, inquiryReason, inquiryMessage, trackClick, trackEvent, toast]);
+  }, [property, inquiryReason, inquiryMessage, trackClick, trackEvent, toast, submitInquiry, t]);
 
-  const handleRequestVisit = useCallback(() => {
+  const handleRequestVisit = useCallback(async () => {
     if (!property) return;
     if (!visitDate) {
       toast({ title: "Pick a date", description: "Please choose your preferred visit date." });
       return;
     }
+    setSending(true);
+    const ok = await submitInquiry("visit", `Viewing request: ${visitDate} ${visitTime}`).finally(() => setSending(false));
+    if (!ok) return;
     trackClick({
       cta: "contact",
       placement: "sidebar",
@@ -294,11 +352,11 @@ const PropertyDetail = () => {
       metadata: { visit_date: visitDate, visit_time: visitTime },
     });
     toast({
-      title: "Visit requested",
-      description: `We will confirm your viewing on ${visitDate} at ${visitTime}.`,
+      title: t("propertyEnquiry.visitTitle"),
+      description: t("propertyEnquiry.visitBody"),
     });
     setVisitOpen(false);
-  }, [property, visitDate, visitTime, trackClick, trackEvent, toast]);
+  }, [property, visitDate, visitTime, trackClick, trackEvent, toast, submitInquiry, t]);
 
   const handlePriceAlert = useCallback(() => {
     if (!property) return;
@@ -678,7 +736,7 @@ const PropertyDetail = () => {
             </div>
 
             <div className="flex items-center gap-2 md:gap-3 shrink-0">
-              <a
+              {whatsappLink && <a
                 ref={scrolled ? ctaRef("contact", "mini_bar") : undefined}
                 href={whatsappLink}
                 target="_blank"
@@ -688,7 +746,7 @@ const PropertyDetail = () => {
                 tabIndex={scrolled ? 0 : -1}
               >
                 <MessageCircle className="h-3.5 w-3.5" /> Concierge
-              </a>
+              </a>}
               <button
                 ref={scrolled ? ctaRef("reserve", "mini_bar") : undefined}
                 onClick={() => {
@@ -959,6 +1017,34 @@ const PropertyDetail = () => {
               </button>
 
               <div id="inquire-panel" className={cn("lg:block", inquireOpen ? "block" : "hidden")}>
+              {!enquiryOpen && (
+                <p role="note" className="mb-5 rounded-xl border border-luxe bg-luxe-glass px-4 py-3 text-[12px] text-luxe-mut">
+                  {enquiryClosedReason}
+                </p>
+              )}
+              {enquiryOpen && (
+                <div className="mb-5 space-y-3">
+                  {([
+                    ["inq-name", t("propertyEnquiry.name"), "text", "name", inqName, setInqName, 200],
+                    ["inq-email", t("propertyEnquiry.email"), "email", "email", inqEmail, setInqEmail, 254],
+                    ["inq-phone", t("propertyEnquiry.phone"), "tel", "tel", inqPhone, setInqPhone, 20],
+                  ] as const).map(([id, label, type, autoComplete, value, setter, max]) => (
+                    <div key={id} className="space-y-1.5">
+                      <label htmlFor={id} className="text-[10px] uppercase tracking-[0.2em] text-luxe-mut font-semibold">{label}</label>
+                      <input
+                        id={id}
+                        type={type}
+                        autoComplete={autoComplete}
+                        maxLength={max}
+                        value={value}
+                        onChange={(e) => setter(e.target.value)}
+                        className="w-full min-h-[44px] bg-luxe-glass border border-luxe rounded-xl px-4 py-2.5 text-[13px] text-luxe-fg focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--luxe-gold)]/60 focus:border-[var(--luxe-gold)] transition-all"
+                      />
+                    </div>
+                  ))}
+                  <p className="text-[11px] leading-snug text-luxe-mut">{t("propertyEnquiry.privacy")}</p>
+                </div>
+              )}
 
 
               {/* Inquiry Reason */}
@@ -997,7 +1083,7 @@ const PropertyDetail = () => {
               <button
                 ref={ctaRef("contact", "sidebar")}
                 onClick={handleSendMessage}
-                disabled={sending}
+                disabled={sending || !enquiryOpen}
                 className="mt-5 w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#2B3036)] font-bold py-4 rounded-xl transition-all uppercase tracking-[0.2em] text-[11px] inline-flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 <Send className="h-3.5 w-3.5" />
@@ -1055,7 +1141,8 @@ const PropertyDetail = () => {
                   </div>
                   <button
                     onClick={handleRequestVisit}
-                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#2B3036)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em]"
+                    disabled={sending || !enquiryOpen}
+                    className="w-full bg-[var(--luxe-gold)] text-[color:var(--luxe-ink,#2B3036)] font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-[0.2em] disabled:opacity-60"
                   >
                     Confirm Visit
                   </button>
@@ -1099,7 +1186,7 @@ const PropertyDetail = () => {
                 </div>
 
                 <div className="mt-5 flex flex-col gap-2.5">
-                  <a
+                  {whatsappLink && <a
                     href={whatsappLink}
                     target="_blank"
                     rel="noreferrer"
@@ -1107,7 +1194,7 @@ const PropertyDetail = () => {
                     className="w-full bg-luxe-glass border border-luxe py-3 rounded-xl text-[10px] uppercase tracking-[0.22em] font-bold text-[var(--luxe-gold)] hover:bg-[var(--luxe-gold)]/10 transition-all inline-flex items-center justify-center gap-2"
                   >
                     <MessageCircle className="h-3.5 w-3.5" /> Concierge (WhatsApp)
-                  </a>
+                  </a>}
                   <button
                     ref={ctaRef("reserve", "sidebar")}
                     onClick={() => {

@@ -14,6 +14,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import heroImg from "@/assets/reos-hero.jpg";
 import { REGISTRATION_ROLE_OPTIONS, toSignupRole, toProfileType } from "@/lib/registrationRoles";
+import { LISTER_ROLES } from "@/lib/listerOnboarding";
+import { useTranslation } from "@/i18n/useTranslation";
 import { getPasswordError } from "@/lib/passwordPolicy";
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 
@@ -81,6 +83,7 @@ export function ReosAuthModal({
   initialMode?: Mode;
 }) {
   const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { t } = useTranslation();
   const [mode, setMode] = useState<Mode>(initialMode);
   const [submitting, setSubmitting] = useState(false);
 
@@ -396,6 +399,11 @@ export function ReosAuthModal({
                             );
                           })}
                         </div>
+                        {(LISTER_ROLES as readonly string[]).includes(reg.purpose) && (
+                          <p role="note" className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-2.5 text-[11px] leading-snug text-muted-foreground">
+                            {t("listerOnboarding.signupHint")}
+                          </p>
+                        )}
                         <div className="pt-3 flex gap-2">
                           <SecondaryButton onClick={() => setMode("login")}><ArrowLeft className="h-4 w-4" /> Back to login</SecondaryButton>
                           <PrimaryButton disabled={!reg.purpose} onClick={() => setStep(2)}>Continue <ArrowRight className="h-4 w-4" /></PrimaryButton>

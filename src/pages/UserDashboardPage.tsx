@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import CustomerServiceDashboard from '@/components/dashboard/CustomerServiceDashboard';
 import ProfileUpgradeCard from '@/components/ProfileUpgradeCard';
+import ListingActivationCard from '@/components/onboarding/ListingActivationCard';
 import ApplicationStatusBar from '@/components/dashboard/ApplicationStatusBar';
 import RoleDashboardWidgets from '@/components/dashboard/RoleDashboardWidgets';
 import AstraWalletCard from '@/components/dashboard/AstraWalletCard';
@@ -337,6 +338,9 @@ const UserDashboardPage = () => {
 
         {/* Role-based Widgets */}
         <RoleDashboardWidgets roles={userRoles} />
+
+        {/* Owner / agent listing access */}
+        <ListingActivationCard variant="compact" />
 
         {/* Application Status */}
         <ApplicationStatusBar />

@@ -19,6 +19,7 @@ import { getPasswordError } from "@/lib/passwordPolicy";
 import SignupPromotionBanner from "@/components/auth/SignupPromotionBanner";
 import { useLoginSecurity } from "@/hooks/useLoginSecurity";
 import { REGISTRATION_ROLE_OPTIONS, toSignupRole, toProfileType } from "@/lib/registrationRoles";
+import { LISTER_ROLES } from "@/lib/listerOnboarding";
 import { Check } from "lucide-react";
 
 import {
@@ -538,6 +539,11 @@ const Auth = () => {
                     );
                   })}
                 </div>
+                {(LISTER_ROLES as readonly string[]).includes(registerPurpose) && (
+                  <p role="note" className="mt-2 rounded-lg border border-gold-primary/30 bg-gold-primary/5 p-2.5 text-[11px] leading-snug text-muted-foreground">
+                    {t('listerOnboarding.signupHint')}
+                  </p>
+                )}
               </div>
 
               {/* Social Registration Buttons */}

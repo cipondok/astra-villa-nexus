@@ -102,7 +102,7 @@ const ApplicationStatusBar = () => {
         return {
           icon: Home,
           label: 'Property Owner',
-          route: isApproved ? '/dashboard/property-owner' : '/vendor-registration',
+          route: isApproved ? '/my-properties' : '/onboarding/listing',
         };
       case 'vendor':
         return {
@@ -114,7 +114,7 @@ const ApplicationStatusBar = () => {
         return {
           icon: Users,
           label: 'Agent',
-          route: isApproved ? '/dashboard/agent' : '/vendor-registration',
+          route: isApproved ? '/my-properties' : '/onboarding/listing',
         };
     }
   };

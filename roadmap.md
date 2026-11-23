@@ -33,3 +33,14 @@
 - [ ] Owner sign-up emails — blocked: email service (Resend SMTP) not connected
 - [ ] First real listing — blocked: needs a real owner/agent account with an approved listing role
 - [ ] Confirm photo upload while signed in — blocked: no signed-in session available to test here
+
+# Roadmap — Owner & agent onboarding
+
+- [x] Safe role pipeline: sign-up never grants listing roles; applicants can't self-approve; approval grants owner/agent/developer role server-side; rejection revokes
+- [x] Fix broken backend steps: new-account profile creation, profile edits, admin approval, admin view of agent applications
+- [x] Onboarding page (role, contact, service area, bio; public vs private labels) wired to existing applications
+- [x] Activation status card on Profile → Roles and on the dashboard; next steps to /post-property and My Properties with real counts
+- [x] Admin applications screen: server-side approval only, required rejection note, full applicant details
+- [x] Listing enquiry form saves real enquiries (live approved listings only); owners see their leads in My Properties; admins see all
+- [x] Indonesian + English texts, tests, desktop/phone checks
+- [ ] Owner sign-up emails — blocked: email service (Resend SMTP) not connected

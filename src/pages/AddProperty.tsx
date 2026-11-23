@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ListingActivationCard from '@/components/onboarding/ListingActivationCard';
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate, Link } from "react-router-dom";
@@ -179,27 +180,28 @@ const AddProperty = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-5 pt-0 space-y-3">
+            <ListingActivationCard variant="compact" />
             {/* Role Options */}
             <div className="space-y-2">
               <RoleOptionButton 
                 icon={<Building className="h-5 w-5" />}
                 title={language === 'en' ? 'Property Owner' : 'Pemilik Properti'}
                 description={language === 'en' ? 'List your own properties' : 'Daftarkan properti Anda'}
-                onClick={() => navigate('/profile?tab=roles')}
+                onClick={() => navigate('/onboarding/listing?role=property_owner')}
                 color="text-primary bg-primary/10"
               />
               <RoleOptionButton 
                 icon={<Crown className="h-5 w-5" />}
-                title={language === 'en' ? 'Real Estate Agent' : 'Agen Properti'}
-                description={language === 'en' ? 'Become a verified agent' : 'Jadi agen terverifikasi'}
-                onClick={() => navigate('/agent-registration')}
+                title={language === 'en' ? 'Agent / Developer' : 'Agen / Developer'}
+                description={language === 'en' ? 'Apply to list for clients or projects' : 'Ajukan untuk memasang listing klien atau proyek'}
+                onClick={() => navigate('/onboarding/listing?role=agent')}
                 color="text-chart-5 bg-chart-5/10"
               />
               <RoleOptionButton 
                 icon={<Building className="h-5 w-5" />}
                 title={language === 'en' ? 'Service Vendor' : 'Vendor Layanan'}
                 description={language === 'en' ? 'Offer property services' : 'Tawarkan layanan properti'}
-                onClick={() => navigate('/profile?tab=roles')}
+                onClick={() => navigate('/vendor-registration')}
                 color="text-chart-1 bg-chart-1/10"
               />
             </div>

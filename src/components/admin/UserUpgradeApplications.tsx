@@ -46,7 +46,25 @@ interface Application {
   company_name?: string;
   license_number?: string;
   email?: string;
+  service_area?: string;
+  area?: string;
+  property_count?: string;
+  additional_notes?: string;
 }
+
+const AGENT_KIND_LABEL: Record<string, string> = {
+  individual_agent: 'Independent agent',
+  agency: 'Agency',
+  developer: 'Developer',
+};
+
+/** Role granted by the database trigger when this application is approved. */
+const grantedRole = (app: Application) =>
+  app.type === 'property_owner' ? 'property_owner'
+  : app.type === 'vendor' ? 'vendor'
+  : app.business_type === 'developer' ? 'developer' : 'agent';
+
+const MIN_REJECT_NOTE = 5;
 
 const UserUpgradeApplications = () => {
   const { toast } = useToast();
@@ -57,8 +75,8 @@ const UserUpgradeApplications = () => {
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
 
   // Fetch all applications from all three tables
-  const { data: applications, isLoading, refetch } = useQuery({
-    queryKey: ['upgrade-applications', activeTab],
+  const { data: allApplications, isLoading, refetch } = useQuery({
+    queryKey: ['upgrade-applications'],
     queryFn: async () => {
       const allApplications: Application[] = [];
 
@@ -121,7 +139,8 @@ const UserUpgradeApplications = () => {
             phone: item.phone || undefined,
             company_name: item.company_name || undefined,
             license_number: item.license_number || undefined,
-            business_type: item.business_type
+            business_type: item.business_type,
+            service_area: (item as { service_area?: string | null }).service_area || undefined
           });
         });
       }
@@ -131,25 +150,24 @@ const UserUpgradeApplications = () => {
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
 
-      // Filter based on active tab
-      if (activeTab === 'pending') {
-        return allApplications.filter(app => app.status === 'pending' || app.status === 'under_review');
-      } else if (activeTab === 'approved') {
-        return allApplications.filter(app => app.status === 'approved');
-      } else if (activeTab === 'rejected') {
-        return allApplications.filter(app => app.status === 'rejected');
-      }
-      
       return allApplications;
     }
   });
 
-  // Stats calculation
+  const isOpen = (a: Application) => a.status === 'pending' || a.status === 'under_review';
+  const applications = (allApplications || []).filter(app =>
+    activeTab === 'pending' ? isOpen(app)
+    : activeTab === 'approved' ? app.status === 'approved'
+    : activeTab === 'rejected' ? app.status === 'rejected'
+    : true
+  );
+
+  // Stats over every application, independent of the selected tab
   const stats = {
-    total: applications?.length || 0,
-    pending: applications?.filter(a => a.status === 'pending' || a.status === 'under_review').length || 0,
-    approved: applications?.filter(a => a.status === 'approved').length || 0,
-    rejected: applications?.filter(a => a.status === 'rejected').length || 0
+    total: allApplications?.length || 0,
+    pending: allApplications?.filter(isOpen).length || 0,
+    approved: allApplications?.filter(a => a.status === 'approved').length || 0,
+    rejected: allApplications?.filter(a => a.status === 'rejected').length || 0
   };
 
   // Approve mutation
@@ -161,37 +179,19 @@ const UserUpgradeApplications = () => {
           ? 'vendor_requests' 
           : 'agent_registration_requests';
 
-      const roleName = app.type === 'property_owner' 
-        ? 'property_owner' 
-        : app.type === 'vendor' 
-          ? 'vendor' 
-          : 'agent';
+      const roleName = grantedRole(app);
 
-      // Update application status
+      // Approving the application is the only step: the database trigger
+      // (grant_role_on_approval) grants the role and records the reviewer.
       const { error: updateError } = await supabase
         .from(tableName)
         .update({
           status: 'approved',
-          review_notes: notes,
-          reviewed_at: new Date().toISOString()
+          review_notes: notes.trim() || null
         })
         .eq('id', app.id);
 
       if (updateError) throw updateError;
-
-      // Assign role to user
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .upsert({
-          user_id: app.user_id,
-          role: roleName,
-          is_active: true,
-          assigned_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,role'
-        });
-
-      if (roleError) throw roleError;
 
       // Log activity
       await supabase.from('activity_logs').insert({
@@ -204,7 +204,7 @@ const UserUpgradeApplications = () => {
       return { success: true };
     },
     onSuccess: () => {
-      toast({ title: "Application Approved", description: "User role has been upgraded successfully." });
+      toast({ title: "Application Approved", description: "The applicant now has listing access." });
       setIsReviewDialogOpen(false);
       setSelectedApp(null);
       setReviewNotes("");
@@ -225,12 +225,16 @@ const UserUpgradeApplications = () => {
           ? 'vendor_requests' 
           : 'agent_registration_requests';
 
+      if (notes.trim().length < MIN_REJECT_NOTE) {
+        throw new Error('Add a short note for the applicant explaining what to fix.');
+      }
+      // Rejecting (or revoking an approved application) also deactivates the
+      // granted role server-side.
       const { error } = await supabase
         .from(tableName)
         .update({
           status: 'rejected',
-          review_notes: notes,
-          reviewed_at: new Date().toISOString()
+          review_notes: notes.trim()
         })
         .eq('id', app.id);
 
@@ -241,7 +245,7 @@ const UserUpgradeApplications = () => {
         user_id: app.user_id,
         activity_type: 'role_upgrade_rejected',
         activity_description: `User upgrade application rejected`,
-        metadata: { application_id: app.id, reason: notes }
+        metadata: { application_id: app.id, reason: notes.trim(), revoked: app.status === 'approved' }
       });
 
       return { success: true };
@@ -275,7 +279,7 @@ const UserUpgradeApplications = () => {
       case 'vendor': 
         return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-primary/10 text-primary border-primary/30">Vendor</Badge>;
       case 'agent': 
-        return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-chart-2/10 text-chart-2 border-chart-2/30">Agent</Badge>;
+        return <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-chart-2/10 text-chart-2 border-chart-2/30">Agent / Developer</Badge>;
       default: 
         return <Badge variant="outline" className="text-[8px] px-1 py-0 h-4">Unknown</Badge>;
     }
@@ -404,7 +408,7 @@ const UserUpgradeApplications = () => {
                               <span>{app.business_type}</span>
                             )}
                             {app.type === 'agent' && (
-                              <span>{app.business_type}</span>
+                              <span>{AGENT_KIND_LABEL[app.business_type || ''] || app.business_type}</span>
                             )}
                           </TableCell>
                           <TableCell className="py-1.5 px-2">{getStatusBadge(app.status)}</TableCell>
@@ -475,13 +479,33 @@ const UserUpgradeApplications = () => {
                       <p>{selectedApp.owner_type || 'N/A'}</p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground">Location</Label>
-                      <p>{selectedApp.province}, {selectedApp.city}</p>
+                      <Label className="text-xs text-muted-foreground">Phone</Label>
+                      <p>{selectedApp.phone || 'N/A'}</p>
                     </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Location</Label>
+                      <p>{[selectedApp.area, selectedApp.city, selectedApp.province].filter(Boolean).join(', ')}</p>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Property Count</Label>
+                      <p>{selectedApp.property_count || 'N/A'}</p>
+                    </div>
+                    {selectedApp.business_name && (
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Business</Label>
+                        <p>{selectedApp.business_name}</p>
+                      </div>
+                    )}
                     <div className="col-span-2">
                       <Label className="text-xs text-muted-foreground">Property Types</Label>
                       <p>{selectedApp.property_types?.join(', ') || 'N/A'}</p>
                     </div>
+                    {selectedApp.additional_notes && (
+                      <div className="col-span-2">
+                        <Label className="text-xs text-muted-foreground">Applicant Notes</Label>
+                        <p className="whitespace-pre-line text-sm">{selectedApp.additional_notes}</p>
+                      </div>
+                    )}
                   </>
                 )}
                 
@@ -513,8 +537,16 @@ const UserUpgradeApplications = () => {
                       <p>{selectedApp.company_name || 'N/A'}</p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground">License</Label>
+                      <Label className="text-xs text-muted-foreground">License (self-reported)</Label>
                       <p>{selectedApp.license_number || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Applying as</Label>
+                      <p>{AGENT_KIND_LABEL[selectedApp.business_type || ''] || selectedApp.business_type || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Service Area</Label>
+                      <p>{selectedApp.service_area || 'N/A'}</p>
                     </div>
                   </>
                 )}
@@ -522,14 +554,18 @@ const UserUpgradeApplications = () => {
 
               {/* Review Notes */}
               <div>
-                <Label htmlFor="review-notes">Review Notes</Label>
+                <Label htmlFor="review-notes">Note to applicant</Label>
                 <Textarea
                   id="review-notes"
                   value={reviewNotes}
                   onChange={(e) => setReviewNotes(e.target.value)}
-                  placeholder="Add notes about this application..."
+                  placeholder="Required when rejecting: explain what the applicant should fix."
                   rows={3}
+                  aria-describedby="review-notes-hint"
                 />
+                <p id="review-notes-hint" className="mt-1 text-[11px] text-muted-foreground">
+                  The applicant sees this note. Approving grants the {selectedApp ? grantedRole(selectedApp).replace('_', ' ') : ''} role; rejecting or revoking removes it.
+                </p>
               </div>
 
               {/* Previous Review Notes */}
@@ -549,12 +585,22 @@ const UserUpgradeApplications = () => {
             <Button variant="outline" onClick={() => setIsReviewDialogOpen(false)}>
               Cancel
             </Button>
+            {selectedApp && selectedApp.status === 'approved' && (
+              <Button
+                variant="destructive"
+                onClick={() => rejectMutation.mutate({ app: selectedApp, notes: reviewNotes })}
+                disabled={rejectMutation.isPending || reviewNotes.trim().length < MIN_REJECT_NOTE}
+              >
+                <XCircle className="h-4 w-4 mr-1" />
+                Revoke access
+              </Button>
+            )}
             {selectedApp && (selectedApp.status === 'pending' || selectedApp.status === 'under_review') && (
               <>
                 <Button 
                   variant="destructive"
                   onClick={() => rejectMutation.mutate({ app: selectedApp, notes: reviewNotes })}
-                  disabled={rejectMutation.isPending}
+                  disabled={rejectMutation.isPending || reviewNotes.trim().length < MIN_REJECT_NOTE}
                 >
                   <XCircle className="h-4 w-4 mr-1" />
                   Reject

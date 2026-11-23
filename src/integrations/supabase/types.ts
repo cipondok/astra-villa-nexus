@@ -2880,6 +2880,7 @@ export type Database = {
           review_notes: string | null
           reviewed_at: string | null
           reviewed_by: string | null
+          service_area: string | null
           status: string | null
           submitted_at: string | null
           updated_at: string | null
@@ -2898,6 +2899,7 @@ export type Database = {
           review_notes?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          service_area?: string | null
           status?: string | null
           submitted_at?: string | null
           updated_at?: string | null
@@ -2916,6 +2918,7 @@ export type Database = {
           review_notes?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          service_area?: string | null
           status?: string | null
           submitted_at?: string | null
           updated_at?: string | null
