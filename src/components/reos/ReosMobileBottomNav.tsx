@@ -1,17 +1,18 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { Home, LayoutGrid, Sparkles, BarChart3, User } from "lucide-react";
 import { REOS_OPEN_MENU_EVENT } from "@/components/reos/ReosShell";
+import { useTranslation } from "@/i18n/useTranslation";
 
 type Tab =
-  | { kind: "link"; to: string; icon: typeof Home; label: string; exact?: boolean; center?: boolean }
-  | { kind: "menu"; icon: typeof Home; label: string };
+  | { kind: "link"; to: string; icon: typeof Home; key: string; label: string; exact?: boolean; center?: boolean }
+  | { kind: "menu"; icon: typeof Home; key: string; label: string };
 
 const tabs: Tab[] = [
-  { kind: "link", to: "/", icon: Home, label: "Home", exact: true },
-  { kind: "menu", icon: LayoutGrid, label: "Ecosystem" },
-  { kind: "link", to: "/ai-center", icon: Sparkles, label: "AI Center", center: true },
-  { kind: "link", to: "/investment", icon: BarChart3, label: "Investment" },
-  { kind: "link", to: "/profile", icon: User, label: "Account" },
+  { kind: "link", to: "/", icon: Home, key: "home", label: "Home", exact: true },
+  { kind: "menu", icon: LayoutGrid, key: "ecosystem", label: "Ecosystem" },
+  { kind: "link", to: "/ai-center", icon: Sparkles, key: "aiCenter", label: "AI Center", center: true },
+  { kind: "link", to: "/investment", icon: BarChart3, key: "investment", label: "Investment" },
+  { kind: "link", to: "/profile", icon: User, key: "account", label: "Account" },
 ];
 
 /**
@@ -22,6 +23,8 @@ const tabs: Tab[] = [
  */
 export default function ReosMobileBottomNav() {
   const { pathname } = useLocation();
+  const { t: tr } = useTranslation();
+  const labelOf = (tab: Tab) => tr(`marketHome.bottomNav.${tab.key}`, tab.label);
 
   const isActive = (to: string, exact?: boolean) =>
     exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
@@ -42,7 +45,7 @@ export default function ReosMobileBottomNav() {
 
   return (
     <nav
-      aria-label="Primary"
+      aria-label={tr("marketHome.bottomNav.label", "Primary")}
       className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[var(--line,hsl(var(--border)))] bg-[var(--header,hsl(var(--card)))]/95 backdrop-blur-xl"
       style={{
         height: `calc(var(--reos-bottomnav-h, 56px) + env(safe-area-inset-bottom, 0px))`,
@@ -64,7 +67,7 @@ export default function ReosMobileBottomNav() {
                   style={color(false)}
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden />
-                  <span>{t.label}</span>
+                  <span>{labelOf(t)}</span>
                 </button>
               </li>
             );
@@ -90,7 +93,7 @@ export default function ReosMobileBottomNav() {
                   >
                     <Icon className="h-6 w-6" strokeWidth={2.2} />
                   </span>
-                  <span>{t.label}</span>
+                  <span>{labelOf(t)}</span>
                 </NavLink>
               </li>
             );
@@ -104,7 +107,7 @@ export default function ReosMobileBottomNav() {
                 style={color(active)}
               >
                 <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 1.8} aria-hidden />
-                <span>{t.label}</span>
+                <span>{labelOf(t)}</span>
                 {active && <Indicator />}
               </NavLink>
             </li>

@@ -94,7 +94,7 @@ export function HomeSearchPanel() {
           <label htmlFor="home-search-type" className="mk-label">{t("marketHome.search.type", "Tipe properti")}</label>
           <select id="home-search-type" value={type} onChange={(e) => setType(e.target.value)} className="mk-field mk-select">
             <option value="">{t("marketHome.search.anyType", "Semua tipe")}</option>
-            {PROPERTY_TYPES.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+            {PROPERTY_TYPES.map((p) => <option key={p.id} value={p.id}>{t(`marketHome.types.${p.id}`, p.label)}</option>)}
           </select>
         </div>
 
@@ -102,7 +102,7 @@ export function HomeSearchPanel() {
           <label htmlFor="home-search-price" className="mk-label">{t("marketHome.search.price", "Kisaran harga")}</label>
           <select id="home-search-price" value={price} onChange={(e) => setPrice(e.target.value)} className="mk-field mk-select">
             <option value="">{t("marketHome.search.anyPrice", "Semua harga")}</option>
-            {priceOptions.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+            {priceOptions.map((r) => <option key={r.id} value={r.id}>{t(`marketHome.prices.${r.id}`, r.label)}</option>)}
           </select>
         </div>
 

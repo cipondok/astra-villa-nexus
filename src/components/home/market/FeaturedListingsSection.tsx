@@ -8,7 +8,11 @@ import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 import { formatRupiahShort, useFeaturedListings, type FeaturedListing } from "@/hooks/useFeaturedListings";
 import { PROPERTY_TYPES } from "@/lib/propertySearch";
 
-const typeName = (id: string | null) => PROPERTY_TYPES.find((p) => p.id === (id || "").toLowerCase())?.label ?? (id ? id[0].toUpperCase() + id.slice(1) : "");
+const typeName = (id: string | null, t: (key: string, fallback?: string) => string) => {
+  const match = PROPERTY_TYPES.find((p) => p.id === (id || "").toLowerCase());
+  if (match) return t(`marketHome.types.${match.id}`, match.label);
+  return id ? id[0].toUpperCase() + id.slice(1) : "";
+};
 
 function ListingCard({
   l, saved, onToggleSave, busy,
@@ -21,7 +25,7 @@ function ListingCard({
       <div className="relative aspect-[4/3] overflow-hidden bg-[var(--inset)]">
         <img
           src={l.image}
-          alt={`${typeName(l.propertyType)} ${l.title}${l.place ? `, ${l.place}` : ""}`}
+          alt={`${typeName(l.propertyType, t)} ${l.title}${l.place ? `, ${l.place}` : ""}`}
           width={480}
           height={360}
           loading="lazy"
@@ -73,7 +77,7 @@ function ListingCard({
             <li className="inline-flex items-center gap-1.5"><Maximize className="h-3.5 w-3.5" aria-hidden="true" />{l.buildingArea} m²<span className="sr-only"> {t("marketHome.featured.building", "luas bangunan")}</span></li>
           )}
           {l.landArea != null && (
-            <li className="inline-flex items-center gap-1.5">LT {l.landArea} m²<span className="sr-only"> {t("marketHome.featured.land", "luas tanah")}</span></li>
+            <li className="inline-flex items-center gap-1.5">{t("marketHome.featured.landShort", "LT")} {l.landArea} m²<span className="sr-only"> {t("marketHome.featured.land", "luas tanah")}</span></li>
           )}
         </ul>
         <Link
