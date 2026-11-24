@@ -56,3 +56,4 @@
 - [ ] Email alerts for new enquiries — blocked: sender domain notify.astravilla.com DNS verification timed out
 - [ ] Signed-in click-through of the inbox — blocked: no signed-in session available here
 - [ ] Email new enquiries to cs@astravilla.com — blocked: notify.astravilla.com sender DNS not verified
+- [ ] Real owner end-to-end: sign up, admin approve, post listing, confirm live — blocked: confirmation email DNS + real listing details from owner
