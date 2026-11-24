@@ -51,7 +51,7 @@ export default function Compliance() {
           <Mail className="h-4 w-4 mt-0.5 text-[var(--gold)]" />
           <div className="text-sm">
             <div className="font-medium">Compliance contact</div>
-            <a href="mailto:compliance@astravilla.com" className="text-[var(--gold)] hover:underline">compliance@astravilla.com</a>
+            <a href="mailto:cs@astravilla.com" className="text-[var(--gold)] hover:underline">cs@astravilla.com</a>
           </div>
         </div>
       </section>

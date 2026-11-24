@@ -237,10 +237,10 @@ const Help = () => {
                       <MessageCircle className="h-8 w-8 text-gold-primary" />
                     </div>
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">Live Chat</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Chat with our support team</p>
-                  <Button variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
-                    Start Chat
+                  <h3 className="font-semibold text-foreground mb-2">WhatsApp</h3>
+                  <p className="text-sm text-muted-foreground mb-4">+62 857 1600 8080</p>
+                  <Button asChild variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
+                    <a href="https://wa.me/6285716008080" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
                   </Button>
                 </div>
                 
@@ -251,9 +251,9 @@ const Help = () => {
                     </div>
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Email Support</h3>
-                  <p className="text-sm text-muted-foreground mb-4">support@astravilla.com</p>
-                  <Button variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
-                    Send Email
+                  <p className="text-sm text-muted-foreground mb-4">cs@astravilla.com</p>
+                  <Button asChild variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
+                    <a href="mailto:cs@astravilla.com">Send Email</a>
                   </Button>
                 </div>
                 
@@ -263,8 +263,8 @@ const Help = () => {
                       <Phone className="h-8 w-8 text-gold-primary" />
                     </div>
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">Contact Form</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Phone support is not available yet.</p>
+                  <h3 className="font-semibold text-foreground mb-2">Phone</h3>
+                  <p className="text-sm text-muted-foreground mb-4"><a href="tel:+6285716008080" className="hover:underline">+62 857 1600 8080</a></p>
                   <Button asChild variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
                     <a href="/contact">Open Contact Page</a>
                   </Button>

@@ -55,3 +55,4 @@
 - [x] Indonesian + English texts, loading/empty/error states, tests
 - [ ] Email alerts for new enquiries — blocked: sender domain notify.astravilla.com DNS verification timed out
 - [ ] Signed-in click-through of the inbox — blocked: no signed-in session available here
+- [ ] Email new enquiries to cs@astravilla.com — blocked: notify.astravilla.com sender DNS not verified
