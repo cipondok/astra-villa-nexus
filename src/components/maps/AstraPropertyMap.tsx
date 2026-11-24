@@ -58,7 +58,7 @@ export default function AstraPropertyMap({
   useEffect(() => {
     if (!getGoogleMapsBrowserKey()) {
       setStatus("error");
-      setError("Google Maps Platform is not connected.");
+      setError("The interactive map is coming soon. Browse listings by location in the meantime.");
       return;
     }
     let cancelled = false;
@@ -159,7 +159,7 @@ export default function AstraPropertyMap({
         {fallback ?? (
           <div className="max-w-sm">
             <AlertCircle className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm font-medium text-foreground">Map unavailable</p>
+            <p className="text-sm font-medium text-foreground">Map coming soon</p>
             <p className="text-xs text-muted-foreground mt-1">{error}</p>
           </div>
         )}

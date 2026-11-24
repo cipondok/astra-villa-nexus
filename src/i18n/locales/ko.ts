@@ -560,7 +560,7 @@ const ko: TranslationMap = {
     values: '우리의 가치',
     stats: '회사 통계',
     team: '우리 팀',
-    teamText: '헌신적인 부동산 전문 팀이 수년간의 경험과 현지 시장 지식으로 현명한 결정을 도와드립니다.',
+    teamText: "Our team is building ASTRA Villa in Indonesia. Contact us at cs@astravilla.com or WhatsApp +62 857 1600 8080.",
     customerFirst: '고객 우선',
     customerFirstDesc: '고객의 니즈와 만족을 최우선으로 합니다.',
     trustTransparency: '신뢰 & 투명성',

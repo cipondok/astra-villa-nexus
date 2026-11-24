@@ -560,7 +560,7 @@ const ja: TranslationMap = {
     values: '私たちの価値観',
     stats: '会社統計',
     team: '私たちのチーム',
-    teamText: '私たちの専門チームは長年の経験と地域市場の知識を持ち、お客様の意思決定をサポートします。',
+    teamText: "Our team is building ASTRA Villa in Indonesia. Contact us at cs@astravilla.com or WhatsApp +62 857 1600 8080.",
     customerFirst: '顧客第一',
     customerFirstDesc: 'お客様のニーズと満足を何よりも優先します。',
     trustTransparency: '信頼と透明性',

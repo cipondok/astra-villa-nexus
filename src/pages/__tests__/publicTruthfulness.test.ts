@@ -35,3 +35,19 @@ describe("public pages make no unbacked claims", () => {
     expect(s).toContain("not active on the Platform yet");
   });
 });
+
+describe("About/Locations/Projects honesty", () => {
+  const read = (p: string) => require("fs").readFileSync(require("path").resolve(__dirname, p), "utf8");
+  it("About copy makes no escrow, verified-listing or on-chain claims", () => {
+    for (const f of ["../../i18n/locales/en.ts", "../../i18n/locales/id.ts"]) {
+      const s = read(f);
+      expect(s).not.toMatch(/9-state lifecycle|Verified property listings|Verified vendor profiles|recorded transparently on-chain|siklus 9 tahap/);
+    }
+  });
+  it("Locations no longer claims AI-orchestrated or invitation-only inventory", () => {
+    expect(read("../Locations.tsx")).not.toMatch(/orchestrated by our AI|by invitation/);
+  });
+  it("Projects shows a coming-soon state when nothing is listed", () => {
+    expect(read("../NewProjects.tsx")).toContain("New projects coming soon");
+  });
+});

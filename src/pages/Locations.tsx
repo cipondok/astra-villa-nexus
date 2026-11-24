@@ -64,7 +64,7 @@ const REGIONS: Region[] = [
     key: "international",
     name: "International",
     tagline: "Borderless Portfolio",
-    blurb: "Curated luxury properties across Southeast Asia, Europe and beyond — by invitation.",
+    blurb: "Coming soon. We currently list properties in Indonesia only.",
     image: internationalImg,
     stats: [],
     hotspots: ["Singapore", "Phuket", "Dubai", "Lisbon", "Tokyo", "London"],
@@ -111,7 +111,7 @@ export default function Locations() {
             </h1>
             <p className="mt-6 text-[15px] md:text-[16px] text-luxe-mut max-w-xl leading-relaxed">
               From Bali's jungle cliffs to Jakarta's skyline penthouses, every ASTRA Villa
-              destination is curated, scored and orchestrated by our AI Property OS.
+              destination shows only listings our team has reviewed and approved.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">

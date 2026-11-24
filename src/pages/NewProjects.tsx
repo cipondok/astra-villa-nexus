@@ -36,6 +36,7 @@ const NewProjects = () => {
     developer: '',
     marketedBy: 'all'
   });
+  const hasActiveFilters = Object.entries(filters).some(([, v]) => v !== '' && v !== 'all' && v != null);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const { data: cities } = useQuery({
@@ -273,8 +274,8 @@ const NewProjects = () => {
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
                 <Building2 className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">No Projects Found</h3>
-              <p className="text-sm text-muted-foreground mb-4">Try adjusting your filters</p>
+              <h3 className="text-lg font-semibold text-foreground mb-2">{hasActiveFilters ? "No Projects Found" : "New projects coming soon"}</h3>
+              <p className="text-sm text-muted-foreground mb-4">{hasActiveFilters ? "Try adjusting your filters" : "No developer projects have been approved for listing yet. Check back soon."}</p>
               <Button 
                 variant="outline" 
                 className="h-10 px-6"

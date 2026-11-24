@@ -560,7 +560,7 @@ const zh: TranslationMap = {
     values: '我们的价值观',
     stats: '公司统计',
     team: '我们的团队',
-    teamText: '我们敬业的房地产专业团队拥有多年经验和本地市场知识，帮助您做出明智的决策。',
+    teamText: "Our team is building ASTRA Villa in Indonesia. Contact us at cs@astravilla.com or WhatsApp +62 857 1600 8080.",
     customerFirst: '客户至上',
     customerFirstDesc: '我们将客户的需求和满意度放在首位。',
     trustTransparency: '信任与透明',
