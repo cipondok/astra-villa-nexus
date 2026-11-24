@@ -29,7 +29,7 @@ const Help = () => {
       accountQuestions: "Account Questions",
       contactSupport: "Contact Support",
       stillNeedHelp: "Still need help?",
-      contactDescription: "Our support team is here to help you 24/7",
+      contactDescription: "Send us a message and our team will reply by email",
       faq: [
         {
           category: "General Questions",
@@ -93,7 +93,7 @@ const Help = () => {
       accountQuestions: "Pertanyaan Akun",
       contactSupport: "Hubungi Dukungan",
       stillNeedHelp: "Masih butuh bantuan?",
-      contactDescription: "Tim dukungan kami siap membantu Anda 24/7",
+      contactDescription: "Kirim pesan dan tim kami akan membalas melalui email",
       faq: [
         {
           category: "Pertanyaan Umum",
@@ -263,10 +263,10 @@ const Help = () => {
                       <Phone className="h-8 w-8 text-gold-primary" />
                     </div>
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">Phone Support</h3>
-                  <p className="text-sm text-muted-foreground mb-4">+1 (555) 123-4567</p>
-                  <Button variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
-                    Call Now
+                  <h3 className="font-semibold text-foreground mb-2">Contact Form</h3>
+                  <p className="text-sm text-muted-foreground mb-4">Phone support is not available yet.</p>
+                  <Button asChild variant="outline" className="w-full border-gold-primary/20 hover:bg-gold-primary/5 hover:text-gold-primary">
+                    <a href="/contact">Open Contact Page</a>
                   </Button>
                 </div>
               </div>

@@ -143,12 +143,7 @@ const About = () => {
     { icon: Globe, title: t('about.innovation'), description: t('about.innovationDesc') },
   ];
 
-  const statsItems = [
-    { number: "10,000+", label: t('about.statsPropertiesListed') },
-    { number: "5,000+", label: t('about.statsHappyCustomers') },
-    { number: "50+", label: t('about.statsExpertAgents') },
-    { number: "15+", label: t('about.statsCitiesCovered') },
-  ];
+  const statsItems: { number: string; label: string }[] = []; // no unverified marketing numbers
 
   const faqItems = [
     { q: t('about.faq1Q'), a: t('about.faq1A') },
@@ -362,8 +357,8 @@ const About = () => {
             </div>
           </div>
 
-          {/* Statistics */}
-          <div className="mb-8 sm:mb-12 md:mb-16">
+          {/* Statistics — shown only when backed by real data */}
+          {statsItems.length > 0 && (<div className="mb-8 sm:mb-12 md:mb-16">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 sm:mb-6 md:mb-8 text-center">
               {t('about.stats')}
             </h2>
@@ -381,7 +376,7 @@ const About = () => {
                 </Card>
               ))}
             </div>
-          </div>
+          </div>)}
 
           {/* Values */}
           <div className="mb-8 sm:mb-12 md:mb-16">

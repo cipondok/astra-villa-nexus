@@ -50,105 +50,6 @@ const NewProjects = () => {
     }
   });
 
-  // Demo projects for display
-  const demoProjects = [
-    {
-      id: 'demo-1',
-      title: 'ASTRA Grand Residence',
-      price: 2500000000,
-      location: 'Sudirman, Jakarta Selatan',
-      city: 'Jakarta',
-      province: 'DKI Jakarta',
-      property_type: 'apartment',
-      listing_type: 'sale',
-      bedrooms: 3,
-      bathrooms: 2,
-      area_sqm: 120,
-      images: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800'],
-      development_status: 'new_project',
-      status: 'active'
-    },
-    {
-      id: 'demo-2',
-      title: 'Villa Bali Paradise',
-      price: 4800000000,
-      location: 'Seminyak, Denpasar',
-      city: 'Denpasar',
-      province: 'Bali',
-      property_type: 'villa',
-      listing_type: 'sale',
-      bedrooms: 4,
-      bathrooms: 3,
-      area_sqm: 350,
-      images: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'],
-      development_status: 'new_project',
-      status: 'active'
-    },
-    {
-      id: 'demo-3',
-      title: 'Skyline Tower Surabaya',
-      price: 1800000000,
-      location: 'HR Muhammad, Surabaya',
-      city: 'Surabaya',
-      province: 'Jawa Timur',
-      property_type: 'apartment',
-      listing_type: 'sale',
-      bedrooms: 2,
-      bathrooms: 1,
-      area_sqm: 85,
-      images: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800'],
-      development_status: 'new_project',
-      status: 'active'
-    },
-    {
-      id: 'demo-4',
-      title: 'Green Valley Residence',
-      price: 3200000000,
-      location: 'Dago, Bandung',
-      city: 'Bandung',
-      province: 'Jawa Barat',
-      property_type: 'house',
-      listing_type: 'sale',
-      bedrooms: 5,
-      bathrooms: 4,
-      area_sqm: 280,
-      images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800'],
-      development_status: 'new_project',
-      status: 'active'
-    },
-    {
-      id: 'demo-5',
-      title: 'Marina Bay Penthouse',
-      price: 8500000000,
-      location: 'SCBD, Jakarta Selatan',
-      city: 'Jakarta',
-      province: 'DKI Jakarta',
-      property_type: 'penthouse',
-      listing_type: 'sale',
-      bedrooms: 4,
-      bathrooms: 4,
-      area_sqm: 450,
-      images: ['https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800'],
-      development_status: 'new_project',
-      status: 'active'
-    },
-    {
-      id: 'demo-6',
-      title: 'Commercial Hub Medan',
-      location: 'Medan Kota, Medan',
-      price: 5600000000,
-      city: 'Medan',
-      province: 'Sumatera Utara',
-      property_type: 'commercial',
-      listing_type: 'sale',
-      bedrooms: 0,
-      bathrooms: 2,
-      area_sqm: 500,
-      images: ['https://images.unsplash.com/photo-1497366216548-37526070297c?w=800'],
-      development_status: 'new_project',
-      status: 'active'
-    }
-  ];
 
   const { data: properties, isLoading } = useQuery({
     queryKey: ['new-projects', filters],
@@ -173,7 +74,7 @@ const NewProjects = () => {
       if (error) throw error;
       
       // Return demo projects if no real data
-      return data && data.length > 0 ? data : demoProjects;
+      return data ?? [];
     }
   });
 

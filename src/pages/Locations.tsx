@@ -33,11 +33,7 @@ const REGIONS: Region[] = [
     tagline: "Island of the Gods",
     blurb: "Cliffside villas, jungle sanctuaries and beachfront estates — the heart of ASTRA Villa.",
     image: baliImg,
-    stats: [
-      { label: "Active Villas", value: "240+" },
-      { label: "Avg. ROI",      value: "11.4%" },
-      { label: "Occupancy",     value: "78%" },
-    ],
+    stats: [],
     hotspots: ["Uluwatu", "Canggu", "Ubud", "Seminyak", "Sanur", "Tabanan"],
     to: "/properties?location=Bali",
     accent: "ocean",
@@ -48,11 +44,7 @@ const REGIONS: Region[] = [
     tagline: "The Capital Skyline",
     blurb: "Penthouses, executive residences and prime CBD properties in Indonesia's financial heart.",
     image: jakartaImg,
-    stats: [
-      { label: "Active Listings", value: "180+" },
-      { label: "Avg. Yield",      value: "8.2%" },
-      { label: "Districts",       value: "12" },
-    ],
+    stats: [],
     hotspots: ["SCBD", "Menteng", "Kemang", "Pondok Indah", "PIK", "Kuningan"],
     to: "/properties?location=Jakarta",
     accent: "city",
@@ -63,11 +55,7 @@ const REGIONS: Region[] = [
     tagline: "Untouched Paradise",
     blurb: "Pristine beaches, surf coves and emerging luxury — the next investment frontier.",
     image: lombokImg,
-    stats: [
-      { label: "Active Villas", value: "60+" },
-      { label: "Growth (YoY)",  value: "+34%" },
-      { label: "Coastline",     value: "Endless" },
-    ],
+    stats: [],
     hotspots: ["Kuta Mandalika", "Selong Belanak", "Gili Trawangan", "Senggigi"],
     to: "/properties?location=Lombok",
     accent: "island",
@@ -78,11 +66,7 @@ const REGIONS: Region[] = [
     tagline: "Borderless Portfolio",
     blurb: "Curated luxury properties across Southeast Asia, Europe and beyond — by invitation.",
     image: internationalImg,
-    stats: [
-      { label: "Countries",   value: "14" },
-      { label: "Partners",    value: "26" },
-      { label: "Currencies",  value: "Multi" },
-    ],
+    stats: [],
     hotspots: ["Singapore", "Phuket", "Dubai", "Lisbon", "Tokyo", "London"],
     to: "/properties?intent=international",
     accent: "global",
@@ -147,7 +131,7 @@ export default function Locations() {
         <LuxeSectionHead
           eyebrow="— Curated regions"
           title="Choose your horizon"
-          description="Four worlds, one operating system. Each destination is tracked live for inventory, ROI and momentum."
+          description="Four worlds, one operating system. Browse approved listings in each destination."
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -239,8 +223,8 @@ function RegionCard({
           </div>
         </div>
 
-        {/* Stats strip */}
-        <div className="grid grid-cols-3 border-t border-luxe">
+        {/* Stats strip — only real figures */}
+        {region.stats.length > 0 && <div className="grid grid-cols-3 border-t border-luxe">
           {region.stats.map((s) => (
             <div
               key={s.label}
@@ -254,7 +238,7 @@ function RegionCard({
               </div>
             </div>
           ))}
-        </div>
+        </div>}
 
         {/* Hotspots */}
         <div className="px-6 py-5 flex flex-wrap items-center gap-2">
